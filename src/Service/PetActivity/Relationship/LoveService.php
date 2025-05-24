@@ -86,7 +86,7 @@ class LoveService
 
                 if($this->rng->rngNextInt(1, 100) <= $sexyTimesChance)
                 {
-                    $cordial = $giver->hasStatusEffect(StatusEffectEnum::CORDIAL) || $receiver->hasStatusEffect(StatusEffectEnum::CORDIAL);
+                    $cordial = $giver->hasStatusEffect(StatusEffectEnum::Cordial) || $receiver->hasStatusEffect(StatusEffectEnum::Cordial);
 
                     if($cordial)
                     {

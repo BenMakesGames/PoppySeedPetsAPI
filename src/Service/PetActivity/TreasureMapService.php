@@ -255,13 +255,13 @@ class TreasureMapService
     {
         $pet = $petWithSkills->getPet();
 
-        if($pet->getTool()->isGrayscaling() || $pet->hasStatusEffect(StatusEffectEnum::BITTEN_BY_A_VAMPIRE))
+        if($pet->getTool()->isGrayscaling() || $pet->hasStatusEffect(StatusEffectEnum::BittenByAVampire))
         {
             $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, 'While %pet:' . $pet->getId() . '.name% was thinking about what to do, a Leprechaun approached them... but upon seeing %pet:' . $pet->getId() . '.name%\'s pale visage, fled screaming into the woods! (Oops!) %pet:' . $pet->getId() . '.name% put their ' . $pet->getTool()->getFullItemName() . ' down...')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Fae-kind', 'Adventure!' ]))
             ;
 
-            if($pet->hasStatusEffect(StatusEffectEnum::BITTEN_BY_A_VAMPIRE))
+            if($pet->hasStatusEffect(StatusEffectEnum::BittenByAVampire))
                 $activityLog->setIcon('icons/status-effect/bite-vampire');
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::Arcana ], $activityLog);
@@ -300,7 +300,7 @@ class TreasureMapService
         ;
 
         $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::Arcana ], $activityLog);
-        StatusEffectHelpers::applyStatusEffect($this->em, $pet, StatusEffectEnum::EGGPLANT_CURSED, $this->rng->rngNextInt(24, 48) * 60);
+        StatusEffectHelpers::applyStatusEffect($this->em, $pet, StatusEffectEnum::EggplantCursed, $this->rng->rngNextInt(24, 48) * 60);
 
         $pet
             ->increaseEsteem(-$this->rng->rngNextInt(4, 8))

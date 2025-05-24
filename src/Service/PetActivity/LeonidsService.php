@@ -66,7 +66,7 @@ class LeonidsService
     {
         $pet = $petWithSkills->getPet();
 
-        if($petWithSkills->getPet()->hasStatusEffect(StatusEffectEnum::WEREFORM))
+        if($petWithSkills->getPet()->hasStatusEffect(StatusEffectEnum::Wereform))
         {
             $starrySpice = SpiceRepository::findOneByName($this->em, 'Starry');
 
@@ -82,7 +82,7 @@ class LeonidsService
 
             $this->inventoryService->petCollectsEnhancedItem($loot, null, $starrySpice, $pet, $pet->getName() . ' got this while playing with werecreatures in the Umbra!', $activityLog);
         }
-        else if($petWithSkills->getPet()->hasStatusEffect(StatusEffectEnum::BITTEN_BY_A_WERECREATURE))
+        else if($petWithSkills->getPet()->hasStatusEffect(StatusEffectEnum::BittenByAWerecreature))
         {
             if($pet->getTool() && $pet->getTool()->getItem()->getTreasure() && $pet->getTool()->getItem()->getTreasure()->getSilver() > 0)
             {

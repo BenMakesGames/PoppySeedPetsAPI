@@ -183,9 +183,9 @@ class IceCreamDaydream
         $pet = $petWithSkills->getPet();
 
         $possibleFates = [
-            StatusEffectEnum::FATED_DELICIOUSNESS => 'unavoidable deliciousness',
-            StatusEffectEnum::FATED_SOAKEDLY => 'a watery grave',
-            StatusEffectEnum::FATED_LUNARLY => 'the lunar surface',
+            StatusEffectEnum::FatedDeliciously => 'unavoidable deliciousness',
+            StatusEffectEnum::FatedSoakedly => 'a watery grave',
+            StatusEffectEnum::FatedLunarly => 'the lunar surface',
         ];
 
         $fate = $this->rng->rngNextFromArray(array_keys($possibleFates));

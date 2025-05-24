@@ -59,7 +59,7 @@ class IridescentHandCannonController
         if(!$pet || $pet->getOwner()->getId() !== $user->getId())
             throw new PSPPetNotFoundException();
 
-        if($pet->hasStatusEffect(StatusEffectEnum::BITTEN_BY_A_VAMPIRE) && !$pet->hasMerit(MeritEnum::BLUSH_OF_LIFE))
+        if($pet->hasStatusEffect(StatusEffectEnum::BittenByAVampire) && !$pet->hasMerit(MeritEnum::BLUSH_OF_LIFE))
             throw new PSPInvalidOperationException('It seems ' . $pet->getName() . '\'s vampire bite is preventing this from working!');
 
         if($pet->getTool())

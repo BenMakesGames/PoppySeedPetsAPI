@@ -53,12 +53,12 @@ class AwaOdoriService
             ->setParameter('minimumSocialEnergy', (PetExperienceService::SOCIAL_ENERGY_PER_HANG_OUT * 3) / 2)
         ;
 
-        if($pet->hasStatusEffect(StatusEffectEnum::WEREFORM))
+        if($pet->hasStatusEffect(StatusEffectEnum::Wereform))
         {
             $qb
                 ->join('p.statusEffects', 'se')
                 ->andWhere('se.status = :wereform')
-                ->setParameter('wereform', StatusEffectEnum::WEREFORM)
+                ->setParameter('wereform', StatusEffectEnum::Wereform)
             ;
         }
 
@@ -116,7 +116,7 @@ class AwaOdoriService
     {
         $changes = new PetChanges($pet);
 
-        StatusEffectHelpers::applyStatusEffect($this->em, $pet, StatusEffectEnum::DANCING_LIKE_A_FOOL, PetExperienceService::SOCIAL_ENERGY_PER_HANG_OUT);
+        StatusEffectHelpers::applyStatusEffect($this->em, $pet, StatusEffectEnum::DancingLikeAFool, PetExperienceService::SOCIAL_ENERGY_PER_HANG_OUT);
         $this->petExperienceService->spendSocialEnergy($pet, PetExperienceService::SOCIAL_ENERGY_PER_HANG_OUT);
 
         $pet->increaseSafety(4)->increaseLove(4)->increaseEsteem(4);

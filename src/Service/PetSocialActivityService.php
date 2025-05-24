@@ -71,7 +71,7 @@ class PetSocialActivityService
             return false;
         }
 
-        if(!$pet->hasStatusEffect(StatusEffectEnum::WEREFORM) && $this->meetRoommates($pet, $roommates))
+        if(!$pet->hasStatusEffect(StatusEffectEnum::Wereform) && $this->meetRoommates($pet, $roommates))
         {
             $this->petExperienceService->spendSocialEnergy($pet, PetExperienceService::SOCIAL_ENERGY_PER_HANG_OUT);
             return true;
@@ -79,7 +79,7 @@ class PetSocialActivityService
 
         $weather = WeatherService::getWeather(new \DateTimeImmutable(), $pet);
 
-        if(!$pet->hasStatusEffect(StatusEffectEnum::WEREFORM))
+        if(!$pet->hasStatusEffect(StatusEffectEnum::Wereform))
         {
             if($weather->isHoliday(HolidayEnum::Holi) && $this->holiService->adventure($pet))
                 return true;
@@ -95,7 +95,7 @@ class PetSocialActivityService
             [ 'activity' => SocialTimeWantEnum::HangOut, 'weight' => 60 ]
         ];
 
-        if(!$pet->hasStatusEffect(StatusEffectEnum::WEREFORM))
+        if(!$pet->hasStatusEffect(StatusEffectEnum::Wereform))
         {
             $availableGroups = $pet->getGroups()->filter(function(PetGroup $g) {
                 return $g->getSocialEnergy() >= PetGroupService::SocialEnergyPerMeet;
@@ -687,18 +687,18 @@ class PetSocialActivityService
 
         $friends = $qb->getQuery()->execute();
 
-        if($pet->hasStatusEffect(StatusEffectEnum::WEREFORM))
+        if($pet->hasStatusEffect(StatusEffectEnum::Wereform))
         {
             // pets in Wereform only hang out with other pets in Wereform
             $friends = array_values(array_filter($friends, function(PetRelationship $r) {
-                return $r->getRelationship()->hasStatusEffect(StatusEffectEnum::WEREFORM);
+                return $r->getRelationship()->hasStatusEffect(StatusEffectEnum::Wereform);
             }));
         }
         else
         {
             // pets NOT in Wereform only hang out with other pets NOT in Wereform
             $friends = array_values(array_filter($friends, function(PetRelationship $r) {
-                return !$r->getRelationship()->hasStatusEffect(StatusEffectEnum::WEREFORM);
+                return !$r->getRelationship()->hasStatusEffect(StatusEffectEnum::Wereform);
             }));
         }
 

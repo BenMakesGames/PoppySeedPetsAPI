@@ -399,19 +399,19 @@ class PetActivityService
             PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::EMPTIED_THEIR_LUNCHBOX, $lunchboxLog);
         }
 
-        if($pet->hasStatusEffect(StatusEffectEnum::WEREFORM))
+        if($pet->hasStatusEffect(StatusEffectEnum::Wereform))
         {
             if($this->rng->rngNextInt(1, 10) === 1)
-                $pet->removeStatusEffect($pet->getStatusEffect(StatusEffectEnum::WEREFORM));
+                $pet->removeStatusEffect($pet->getStatusEffect(StatusEffectEnum::Wereform));
         }
         else
         {
             if(
-                $pet->hasStatusEffect(StatusEffectEnum::BITTEN_BY_A_WERECREATURE) &&
+                $pet->hasStatusEffect(StatusEffectEnum::BittenByAWerecreature) &&
                 $this->rng->rngNextInt(1, max(20, 50 + $pet->getFood() + $pet->getSafety() * 2 + $pet->getLove() + $pet->getEsteem())) === 1
             )
             {
-                StatusEffectHelpers::applyStatusEffect($this->em, $pet, StatusEffectEnum::WEREFORM, 1);
+                StatusEffectHelpers::applyStatusEffect($this->em, $pet, StatusEffectEnum::Wereform, 1);
             }
         }
 
@@ -421,19 +421,19 @@ class PetActivityService
                 return;
         }
 
-        if($pet->hasStatusEffect(StatusEffectEnum::OIL_COVERED))
+        if($pet->hasStatusEffect(StatusEffectEnum::OilCovered))
         {
-            if($this->petCleaningSelfService->cleanUpStatusEffect($pet, StatusEffectEnum::OIL_COVERED, 'Oil'))
+            if($this->petCleaningSelfService->cleanUpStatusEffect($pet, StatusEffectEnum::OilCovered, 'Oil'))
                 return;
         }
 
-        if($pet->hasStatusEffect(StatusEffectEnum::BUBBLEGUMD))
+        if($pet->hasStatusEffect(StatusEffectEnum::BubbleGumd))
         {
-            if($this->petCleaningSelfService->cleanUpStatusEffect($pet, StatusEffectEnum::BUBBLEGUMD, 'Bubblegum'))
+            if($this->petCleaningSelfService->cleanUpStatusEffect($pet, StatusEffectEnum::BubbleGumd, 'Bubblegum'))
                 return;
         }
 
-        if($pet->hasStatusEffect(StatusEffectEnum::GOBBLE_GOBBLE) && $this->rng->rngNextInt(1, 2) === 1)
+        if($pet->hasStatusEffect(StatusEffectEnum::GobbleGobble) && $this->rng->rngNextInt(1, 2) === 1)
         {
             $changes = new PetChanges($pet);
             $activityLog = $this->huntingService->huntedTurkeyDragon($petWithSkills);
@@ -441,12 +441,12 @@ class PetActivityService
             return;
         }
 
-        if($pet->hasStatusEffect(StatusEffectEnum::LAPINE_WHISPERS) && $this->rng->rngNextInt(1, 2) === 1)
+        if($pet->hasStatusEffect(StatusEffectEnum::LapineWhispers) && $this->rng->rngNextInt(1, 2) === 1)
         {
             $changes = new PetChanges($pet);
             $activityLog = $this->umbraService->speakToBunnySpirit($pet);
             $activityLog->setChanges($changes->compare($pet));
-            $pet->removeStatusEffect($pet->getStatusEffect(StatusEffectEnum::LAPINE_WHISPERS));
+            $pet->removeStatusEffect($pet->getStatusEffect(StatusEffectEnum::LapineWhispers));
             return;
         }
 
@@ -872,7 +872,7 @@ class PetActivityService
     {
         $pet = $petWithSkills->getPet();
 
-        if($pet->hasStatusEffect(StatusEffectEnum::WEREFORM))
+        if($pet->hasStatusEffect(StatusEffectEnum::Wereform))
             return 0;
 
         $desire = $petWithSkills->getStamina()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal() - $pet->getAlcohol();
@@ -893,7 +893,7 @@ class PetActivityService
     {
         $pet = $petWithSkills->getPet();
 
-        if($pet->hasStatusEffect(StatusEffectEnum::WEREFORM))
+        if($pet->hasStatusEffect(StatusEffectEnum::Wereform))
             return 0;
 
         $desire = $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getFishingBonus()->getTotal();
@@ -931,7 +931,7 @@ class PetActivityService
     {
         $pet = $petWithSkills->getPet();
 
-        if($pet->hasStatusEffect(StatusEffectEnum::WEREFORM))
+        if($pet->hasStatusEffect(StatusEffectEnum::Wereform))
             return 0;
 
         $desire = $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getCrafts()->getTotal();
@@ -952,7 +952,7 @@ class PetActivityService
     {
         $pet = $petWithSkills->getPet();
 
-        if($pet->hasStatusEffect(StatusEffectEnum::WEREFORM))
+        if($pet->hasStatusEffect(StatusEffectEnum::Wereform))
             return 0;
 
         $desire = $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getArcana()->getTotal() + $petWithSkills->getMagicBindingBonus()->getTotal();
@@ -973,7 +973,7 @@ class PetActivityService
     {
         $pet = $petWithSkills->getPet();
 
-        if($pet->hasStatusEffect(StatusEffectEnum::WEREFORM))
+        if($pet->hasStatusEffect(StatusEffectEnum::Wereform))
             return 0;
 
         $desire = $petWithSkills->getStamina()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal();
@@ -1067,7 +1067,7 @@ class PetActivityService
     {
         $pet = $petWithSkills->getPet();
 
-        if($pet->hasStatusEffect(StatusEffectEnum::WEREFORM))
+        if($pet->hasStatusEffect(StatusEffectEnum::Wereform))
             return 0;
 
         $desire = $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getHackingBonus()->getTotal();
@@ -1088,7 +1088,7 @@ class PetActivityService
     {
         $pet = $petWithSkills->getPet();
 
-        if($pet->hasStatusEffect(StatusEffectEnum::WEREFORM))
+        if($pet->hasStatusEffect(StatusEffectEnum::Wereform))
             return 0;
 
         $desire = $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getHackingBonus()->getTotal();
@@ -1109,7 +1109,7 @@ class PetActivityService
     {
         $pet = $petWithSkills->getPet();
 
-        if($pet->hasStatusEffect(StatusEffectEnum::WEREFORM))
+        if($pet->hasStatusEffect(StatusEffectEnum::Wereform))
             return 0;
 
         $desire = $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getElectronicsBonus()->getTotal();
@@ -1130,7 +1130,7 @@ class PetActivityService
     {
         $pet = $petWithSkills->getPet();
 
-        if($pet->hasStatusEffect(StatusEffectEnum::WEREFORM))
+        if($pet->hasStatusEffect(StatusEffectEnum::Wereform))
             return 0;
 
         $desire = $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getPhysicsBonus()->getTotal();
@@ -1151,7 +1151,7 @@ class PetActivityService
     {
         $pet = $petWithSkills->getPet();
 
-        if($pet->hasStatusEffect(StatusEffectEnum::WEREFORM))
+        if($pet->hasStatusEffect(StatusEffectEnum::Wereform))
             return 0;
 
         $desire = $petWithSkills->getIntelligence()->getTotal() + (int)ceil(($petWithSkills->getScience()->getTotal() + $petWithSkills->getCrafts()->getTotal()) / 2);
@@ -1184,7 +1184,7 @@ class PetActivityService
         if(!$pet->hasMerit(MeritEnum::FAIRY_GODMOTHER))
             return false;
 
-        if($pet->hasStatusEffect(StatusEffectEnum::BITTEN_BY_A_VAMPIRE) && $this->rng->rngNextInt(1, 20) === 1)
+        if($pet->hasStatusEffect(StatusEffectEnum::BittenByAVampire) && $this->rng->rngNextInt(1, 20) === 1)
         {
             $changes = new PetChanges($pet);
 
@@ -1198,7 +1198,7 @@ class PetActivityService
                 ->increaseEsteem(12)
             ;
 
-            $pet->removeStatusEffect($pet->getStatusEffect(StatusEffectEnum::BITTEN_BY_A_VAMPIRE));
+            $pet->removeStatusEffect($pet->getStatusEffect(StatusEffectEnum::BittenByAVampire));
 
             $this->petExperienceService->spendTime($pet, 15, PetActivityStatEnum::OTHER, null);
 

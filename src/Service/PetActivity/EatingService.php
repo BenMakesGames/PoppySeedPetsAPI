@@ -120,7 +120,7 @@ class EatingService
         if($caffeine > 0)
         {
             $pet->increaseCaffeine($caffeine);
-            StatusEffectHelpers::applyStatusEffect($this->em, $pet, StatusEffectEnum::CAFFEINATED, $caffeine * 60);
+            StatusEffectHelpers::applyStatusEffect($this->em, $pet, StatusEffectEnum::Caffeinated, $caffeine * 60);
         }
         else if($caffeine < 0)
             $pet->increaseCaffeine($caffeine);
@@ -250,8 +250,8 @@ class EatingService
 
         $this->rng->rngNextShuffle($inventory);
 
-        $isThirsty = $pet->hasStatusEffect(StatusEffectEnum::THIRSTY);
-        $isJaune = $pet->hasStatusEffect(StatusEffectEnum::JAUNE);
+        $isThirsty = $pet->hasStatusEffect(StatusEffectEnum::Thirsty);
+        $isJaune = $pet->hasStatusEffect(StatusEffectEnum::Jaune);
         $gotAColdDrink = null;
         $gotButter = null;
 
@@ -349,13 +349,13 @@ class EatingService
 
             if($isThirsty && $gotAColdDrink)
             {
-                $statusEffect = $this->satisfiedCravingStatusEffect($pet, StatusEffectEnum::THIRSTY);
+                $statusEffect = $this->satisfiedCravingStatusEffect($pet, StatusEffectEnum::Thirsty);
                 $message .= ' The ' . $gotAColdDrink->getName() . ' satisfied their Thirst! They\'re feeling ' . $statusEffect . '!';
             }
 
             if($isJaune && $gotButter)
             {
-                $statusEffect = $this->satisfiedCravingStatusEffect($pet, StatusEffectEnum::JAUNE);
+                $statusEffect = $this->satisfiedCravingStatusEffect($pet, StatusEffectEnum::Jaune);
                 $message .= ' The ' . $gotButter->getName() . ' satisfied their desire to eat Butter! They\'re feeling ' . $statusEffect . '!';
             }
 
@@ -403,9 +403,9 @@ class EatingService
         $this->petExperienceService->gainAffection($pet, 2);
 
         $statusEffect = $this->rng->rngNextFromArray([
-            StatusEffectEnum::INSPIRED,
-            StatusEffectEnum::ONEIRIC,
-            StatusEffectEnum::VIVACIOUS,
+            StatusEffectEnum::Inspired,
+            StatusEffectEnum::Oneiric,
+            StatusEffectEnum::Vivacious,
         ]);
 
         StatusEffectHelpers::applyStatusEffect($this->em, $pet, $statusEffect, 8 * 60);

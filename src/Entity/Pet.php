@@ -550,11 +550,11 @@ class Pet
     #[Groups(['myPet', 'userPublicProfile', 'petPublicProfile', 'parkEvent', 'petFriend', 'hollowEarth', 'petGroupDetails', 'guildMember', 'petActivityLogAndPublicPet', 'helperPet', 'petActivityLogs', 'petActivityLogs'])]
     public function getPerceivedColorA(): string
     {
-        if($this->hasStatusEffect(StatusEffectEnum::INVISIBLE))
+        if($this->hasStatusEffect(StatusEffectEnum::Invisible))
             return '';
-        else if($this->hasStatusEffect(StatusEffectEnum::EGGPLANT_CURSED))
+        else if($this->hasStatusEffect(StatusEffectEnum::EggplantCursed))
             return '673192';
-        else if(($this->hasStatusEffect(StatusEffectEnum::BITTEN_BY_A_VAMPIRE) && !$this->hasMerit(MeritEnum::BLUSH_OF_LIFE)) || ($this->getTool() && $this->getTool()->isGrayscaling()))
+        else if(($this->hasStatusEffect(StatusEffectEnum::BittenByAVampire) && !$this->hasMerit(MeritEnum::BLUSH_OF_LIFE)) || ($this->getTool() && $this->getTool()->isGrayscaling()))
             return ColorFunctions::GrayscalifyHex($this->getColorA());
         else if($this->getTool() && $this->getTool()->isGreenifying())
             return ColorFunctions::ChangeHue($this->getColorA(), (25 + $this->id % 14) / 100);
@@ -566,11 +566,11 @@ class Pet
     #[Groups(['myPet', 'userPublicProfile', 'petPublicProfile', 'parkEvent', 'petFriend', 'hollowEarth', 'petGroupDetails', 'guildMember', 'petActivityLogAndPublicPet', 'helperPet', 'petActivityLogs'])]
     public function getPerceivedColorB(): string
     {
-        if($this->hasStatusEffect(StatusEffectEnum::INVISIBLE))
+        if($this->hasStatusEffect(StatusEffectEnum::Invisible))
             return '';
-        else if($this->hasStatusEffect(StatusEffectEnum::EGGPLANT_CURSED))
+        else if($this->hasStatusEffect(StatusEffectEnum::EggplantCursed))
             return '8b48c1';
-        else if(($this->hasStatusEffect(StatusEffectEnum::BITTEN_BY_A_VAMPIRE) && !$this->hasMerit(MeritEnum::BLUSH_OF_LIFE)) || ($this->getTool() && $this->getTool()->isGrayscaling()))
+        else if(($this->hasStatusEffect(StatusEffectEnum::BittenByAVampire) && !$this->hasMerit(MeritEnum::BLUSH_OF_LIFE)) || ($this->getTool() && $this->getTool()->isGrayscaling()))
             return ColorFunctions::GrayscalifyHex($this->getColorB());
         else if($this->getTool() && $this->getTool()->isGreenifying())
             return ColorFunctions::ChangeHue($this->getColorB(), (25 + $this->id % 14) / 100);
@@ -713,7 +713,7 @@ class Pet
             ],
         ];
 
-        if($this->hasStatusEffect(StatusEffectEnum::X_RAYD))
+        if($this->hasStatusEffect(StatusEffectEnum::XRayd))
         {
             $needs['food']['percent'] = round($this->getFullnessPercent(), 2);
             $needs['safety']['percent'] = round($this->getSafetyPercent(), 2);

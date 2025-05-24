@@ -813,7 +813,7 @@ class UmbraService
 
         $umbraCheck = $this->rng->rngNextInt(1, 10 + $petWithSkills->getArcana()->getTotal() + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getUmbraBonus()->getTotal());
 
-        if($pet->hasStatusEffect(StatusEffectEnum::BITTEN_BY_A_VAMPIRE))
+        if($pet->hasStatusEffect(StatusEffectEnum::BittenByAVampire))
         {
             $loot = $this->rng->rngNextFromArray([ 'Blood Wine', 'Linens and Things' ]);
 
@@ -848,7 +848,7 @@ class UmbraService
 
             PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::DECEIVED_A_VAMPIRE, $activityLog);
         }
-        else if($pet->hasStatusEffect(StatusEffectEnum::CORDIAL))
+        else if($pet->hasStatusEffect(StatusEffectEnum::Cordial))
         {
             $loot = $this->rng->rngNextFromArray([ 'Blood Wine', 'Linens and Things' ]);
 
@@ -928,7 +928,7 @@ class UmbraService
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'The Umbra', 'Fighting' ]))
                 ;
 
-                StatusEffectHelpers::applyStatusEffect($this->em, $pet, StatusEffectEnum::BITTEN_BY_A_VAMPIRE, 1);
+                StatusEffectHelpers::applyStatusEffect($this->em, $pet, StatusEffectEnum::BittenByAVampire, 1);
 
                 $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::Brawl, PetSkillEnum::Arcana ], $activityLog);
             }

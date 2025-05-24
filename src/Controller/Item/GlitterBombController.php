@@ -50,7 +50,7 @@ class GlitterBombController
             ]);
 
             foreach($pets as $pet)
-                StatusEffectHelpers::applyStatusEffect($em, $pet, StatusEffectEnum::GLITTER_BOMBED, 12 * 60);
+                StatusEffectHelpers::applyStatusEffect($em, $pet, StatusEffectEnum::GlitterBombed, 12 * 60);
 
             $em->remove($inventory);
             $em->flush();

@@ -107,7 +107,7 @@ class AdoptController
 
         if(CalendarFunctions::isTalkLikeAPirateDay($clock->now))
         {
-            StatusEffectHelpers::applyStatusEffect($em, $newPet, StatusEffectEnum::FATED_SOAKEDLY, 1);
+            StatusEffectHelpers::applyStatusEffect($em, $newPet, StatusEffectEnum::FatedSoakedly, 1);
         }
         else if(CalendarFunctions::isLeapDay($clock->now))
         {

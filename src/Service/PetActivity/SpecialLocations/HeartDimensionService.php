@@ -222,7 +222,7 @@ class HeartDimensionService
 
         $pet->incrementAffectionAdventures();
 
-        StatusEffectHelpers::applyStatusEffect($this->em, $pet, StatusEffectEnum::INSPIRED, 24 * 60);
+        StatusEffectHelpers::applyStatusEffect($this->em, $pet, StatusEffectEnum::Inspired, 24 * 60);
 
         return PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% relaxed for a while in the Heart Dimension, and became Inspired.')
             ->setIcon('icons/activity-logs/heart-dimension')
@@ -275,7 +275,7 @@ class HeartDimensionService
 
         $pet->incrementAffectionAdventures();
 
-        StatusEffectHelpers::applyStatusEffect($this->em, $pet, StatusEffectEnum::INSPIRED, 24 * 60);
+        StatusEffectHelpers::applyStatusEffect($this->em, $pet, StatusEffectEnum::Inspired, 24 * 60);
 
         $figure = $this->rng->rngNextFromArray([
             [ 'the First Vampire', [ '; it was really scary!', ', but it was oddly calming...' ]],
@@ -407,8 +407,8 @@ class HeartDimensionService
     {
         $message = ActivityHelpers::PetName($pet) . ' dreamed about the Heart Dimensions. They dreamed of being a flower, a forest, a grain of sand carried by the wind, a moose, a moon, a galaxy, an atom of oxygen... when they awoke, they felt simultaneously Tired, and Inspired.';
 
-        StatusEffectHelpers::applyStatusEffect($this->em, $pet, StatusEffectEnum::INSPIRED, 3 * 60);
-        StatusEffectHelpers::applyStatusEffect($this->em, $pet, StatusEffectEnum::TIRED, 3 * 60);
+        StatusEffectHelpers::applyStatusEffect($this->em, $pet, StatusEffectEnum::Inspired, 3 * 60);
+        StatusEffectHelpers::applyStatusEffect($this->em, $pet, StatusEffectEnum::Tired, 3 * 60);
 
         $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, $message)
             ->setIcon('icons/activity-logs/heart-dimension')

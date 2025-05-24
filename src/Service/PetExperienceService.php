@@ -58,7 +58,7 @@ class PetExperienceService
     {
         if(count($stats) == 0) return false;
 
-        if($pet->hasStatusEffect(StatusEffectEnum::INSPIRED))
+        if($pet->hasStatusEffect(StatusEffectEnum::Inspired))
             $exp++;
 
         if($exp < 0) return false;
@@ -144,13 +144,13 @@ class PetExperienceService
     private static function getPetFocusingStatusEffect(Pet $pet): ?FocusingStatusEffect
     {
         $possibleEffects = [
-            [ PetSkillEnum::Brawl, StatusEffectEnum::FOCUSED_BRAWL ],
-            [ PetSkillEnum::Nature, StatusEffectEnum::FOCUSED_NATURE ],
-            [ PetSkillEnum::Crafts, StatusEffectEnum::FOCUSED_CRAFTS ],
-            [ PetSkillEnum::Stealth, StatusEffectEnum::FOCUSED_STEALTH ],
-            [ PetSkillEnum::Science, StatusEffectEnum::FOCUSED_SCIENCE ],
-            [ PetSkillEnum::Music, StatusEffectEnum::FOCUSED_MUSIC ],
-            [ PetSkillEnum::Arcana, StatusEffectEnum::FOCUSED_ARCANA ],
+            [ PetSkillEnum::Brawl, StatusEffectEnum::FocusedBrawl ],
+            [ PetSkillEnum::Nature, StatusEffectEnum::FocusedNature ],
+            [ PetSkillEnum::Crafts, StatusEffectEnum::FocusedCrafts ],
+            [ PetSkillEnum::Stealth, StatusEffectEnum::FocusedStealth ],
+            [ PetSkillEnum::Science, StatusEffectEnum::FocusedScience ],
+            [ PetSkillEnum::Music, StatusEffectEnum::FocusedMusic ],
+            [ PetSkillEnum::Arcana, StatusEffectEnum::FocusedArcana ],
         ];
 
         foreach($possibleEffects as $effect)
@@ -177,7 +177,7 @@ class PetExperienceService
 
     public function spendSocialEnergy(Pet $pet, int $energy): void
     {
-        if($pet->hasStatusEffect(StatusEffectEnum::EXTRA_EXTROVERTED) || $pet->hasStatusEffect(StatusEffectEnum::MOONSTRUCK))
+        if($pet->hasStatusEffect(StatusEffectEnum::ExtraExtroverted) || $pet->hasStatusEffect(StatusEffectEnum::Moonstruck))
             $energy = (int)ceil($energy / 2);
 
         if($this->rng->rngNextInt(1, 10) === 1)
@@ -240,11 +240,11 @@ class PetExperienceService
             // some status effects TRANSFORM when they run out (like caffeinated -> tired)
             if($statusEffects[$i]->getTimeRemaining() <= 0)
             {
-                if($statusEffects[$i]->getStatus() === StatusEffectEnum::CAFFEINATED)
+                if($statusEffects[$i]->getStatus() === StatusEffectEnum::Caffeinated)
                 {
                     $newTotal = (int)ceil($statusEffects[$i]->getTotalDuration() / 2);
                     $statusEffects[$i]
-                        ->setStatus(StatusEffectEnum::TIRED)
+                        ->setStatus(StatusEffectEnum::Tired)
                         ->setTimeRemaining($statusEffects[$i]->getTimeRemaining() + $newTotal)
                         ->setTotalDuration($newTotal)
                     ;

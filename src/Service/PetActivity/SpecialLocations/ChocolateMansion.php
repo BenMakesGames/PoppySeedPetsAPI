@@ -203,7 +203,7 @@ class ChocolateMansion
         $extraInterestingness = 0;
         $deceivedTheVampire = false;
 
-        if($pet->hasStatusEffect(StatusEffectEnum::BITTEN_BY_A_VAMPIRE))
+        if($pet->hasStatusEffect(StatusEffectEnum::BittenByAVampire))
         {
             $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::OTHER, true);
             $expAmount = 1;
@@ -240,7 +240,7 @@ class ChocolateMansion
 
             $deceivedTheVampire = true;
         }
-        else if($pet->hasStatusEffect(StatusEffectEnum::CORDIAL))
+        else if($pet->hasStatusEffect(StatusEffectEnum::Cordial))
         {
             $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(20, 40), PetActivityStatEnum::OTHER, true);
             $expAmount = 0;
@@ -285,7 +285,7 @@ class ChocolateMansion
 
             $description .= '%pet:' . $pet->getId() . '.name% was overwhelmed by the attack, and forced to flee... but not before getting bitten! (Uh oh!)';
 
-            StatusEffectHelpers::applyStatusEffect($this->em, $pet, StatusEffectEnum::BITTEN_BY_A_VAMPIRE, 1);
+            StatusEffectHelpers::applyStatusEffect($this->em, $pet, StatusEffectEnum::BittenByAVampire, 1);
 
             $tags[] = 'Fighting';
         }

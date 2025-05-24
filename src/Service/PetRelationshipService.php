@@ -455,7 +455,7 @@ class PetRelationshipService
 
     private static function EitherPetIsCordial(Pet $p1, Pet $p2): bool
     {
-        return $p1->hasStatusEffect(StatusEffectEnum::CORDIAL) || $p2->hasStatusEffect(StatusEffectEnum::CORDIAL);
+        return $p1->hasStatusEffect(StatusEffectEnum::Cordial) || $p2->hasStatusEffect(StatusEffectEnum::Cordial);
     }
 
     /**

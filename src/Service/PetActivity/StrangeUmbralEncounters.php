@@ -128,11 +128,11 @@ class StrangeUmbralEncounters
     private function encounterAgares(Pet $pet): PetActivityLog
     {
         $fate = $this->rng->rngNextFromArray([
-            StatusEffectEnum::FATED_DELICIOUSNESS,
-            StatusEffectEnum::FATED_SOAKEDLY,
-            StatusEffectEnum::FATED_ELECTRICALLY,
-            StatusEffectEnum::FATED_FERALLY,
-            StatusEffectEnum::FATED_LUNARLY,
+            StatusEffectEnum::FatedDeliciously,
+            StatusEffectEnum::FatedSoakedly,
+            StatusEffectEnum::FatedElectrically,
+            StatusEffectEnum::FatedFerally,
+            StatusEffectEnum::FatedLunarly,
         ]);
 
         if($pet->getTool() && !$pet->getTool()->getEnchantment())

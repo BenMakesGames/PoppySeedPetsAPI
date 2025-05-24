@@ -863,7 +863,7 @@ class MagicBindingService
         if($umbraCheck <= 2)
         {
             $pet->increaseSafety(-6);
-            StatusEffectHelpers::applyStatusEffect($this->em, $pet, StatusEffectEnum::HEX_HEXED, 6 * 60);
+            StatusEffectHelpers::applyStatusEffect($this->em, $pet, StatusEffectEnum::HexHexed, 6 * 60);
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to enchant a Ceremonial Trident, but accidentally hexed themselves, instead! :(', '')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Magic-binding' ]))
             ;
@@ -2111,7 +2111,7 @@ class MagicBindingService
         if($umbraCheck <= 2)
         {
             $pet->increaseSafety(-6);
-            StatusEffectHelpers::applyStatusEffect($this->em, $pet, StatusEffectEnum::HEX_HEXED, 6 * 60);
+            StatusEffectHelpers::applyStatusEffect($this->em, $pet, StatusEffectEnum::HexHexed, 6 * 60);
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to enchant a Gold Trifecta, but accidentally hexed themselves, instead! :(', '')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Magic-binding' ]))
             ;
@@ -2654,7 +2654,7 @@ class MagicBindingService
         if($skillCheck <= 2)
         {
             $pet->increaseSafety(-6);
-            StatusEffectHelpers::applyStatusEffect($this->em, $pet, StatusEffectEnum::HEX_HEXED, 6 * 60);
+            StatusEffectHelpers::applyStatusEffect($this->em, $pet, StatusEffectEnum::HexHexed, 6 * 60);
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to transmute plastic into ice, but accidentally hexed themselves, instead! :(', '')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Magic-binding' ]))
             ;
@@ -2740,7 +2740,7 @@ class MagicBindingService
         if($umbraCheck <= 2)
         {
             $pet->increaseSafety(-6);
-            StatusEffectHelpers::applyStatusEffect($this->em, $pet, StatusEffectEnum::HEX_HEXED, 6 * 60);
+            StatusEffectHelpers::applyStatusEffect($this->em, $pet, StatusEffectEnum::HexHexed, 6 * 60);
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to enchant an Aubergine Scepter, but accidentally hexed themselves, instead! :(', '')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Magic-binding' ]))
             ;

@@ -186,7 +186,7 @@ class InventoryService
     {
         $item = $this->getItemWithChanceForLuckyTransformation($item);
 
-        if($pet->hasStatusEffect(StatusEffectEnum::HOT_TO_THE_TOUCH))
+        if($pet->hasStatusEffect(StatusEffectEnum::HotToTheTouch))
             $spice = (!$spice || $this->rng->rngNextInt(1, 4) == 4) ? SpiceRepository::findOneByName($this->em, 'Spicy') : $spice;
 
         if(!$spice && $item->getName() === 'Fish' && $pet->hasMerit(MeritEnum::ICHTHYASTRA) && $this->rng->rngNextInt(1, 3) === 1)
@@ -382,13 +382,13 @@ class InventoryService
             $this->responseService->setReloadInventory();
         }
 
-        if($pet->hasStatusEffect(StatusEffectEnum::FRUIT_CLOBBERING) && $item->hasItemGroup('Fresh Fruit'))
+        if($pet->hasStatusEffect(StatusEffectEnum::FruitClobbering) && $item->hasItemGroup('Fresh Fruit'))
         {
             $pectin = ItemRepository::findOneByName($this->em, 'Pectin');
 
             $extraItem = (new Inventory(owner: $pet->getOwner(), item: $pectin))
                 ->setCreatedBy($pet->getOwner())
-                ->addComment($pet->getName() . ' got this by obtaining ' . $item->getName() . ' while ' . StatusEffectEnum::FRUIT_CLOBBERING . '.')
+                ->addComment($pet->getName() . ' got this by obtaining ' . $item->getName() . ' while ' . StatusEffectEnum::FruitClobbering . '.')
                 ->setLocation(LocationEnum::Home)
                 ->setSpice($extraItemSpice)
                 ->setEnchantment($bonus)
@@ -419,11 +419,11 @@ class InventoryService
             $this->responseService->setReloadInventory();
         }
 
-        if($pet->hasStatusEffect(StatusEffectEnum::SPICED) && $item->getSpice())
+        if($pet->hasStatusEffect(StatusEffectEnum::Spiced) && $item->getSpice())
         {
             $extraItem = (new Inventory(owner: $pet->getOwner(), item: $item))
                 ->setCreatedBy($pet->getOwner())
-                ->addComment($pet->getName() . ' got this extra ' . $item->getName() . ' thanks to being ' . StatusEffectEnum::SPICED . '.')
+                ->addComment($pet->getName() . ' got this extra ' . $item->getName() . ' thanks to being ' . StatusEffectEnum::Spiced . '.')
                 ->setLocation(LocationEnum::Home)
                 ->setEnchantment($bonus)
             ;
@@ -434,11 +434,11 @@ class InventoryService
             $this->responseService->setReloadInventory();
         }
 
-        if($pet->hasStatusEffect(StatusEffectEnum::HOPPIN) && str_ends_with($item->getName(), 'Toad Legs'))
+        if($pet->hasStatusEffect(StatusEffectEnum::Hoppin) && str_ends_with($item->getName(), 'Toad Legs'))
         {
             $extraItem = (new Inventory(owner: $pet->getOwner(), item: $item))
                 ->setCreatedBy($pet->getOwner())
-                ->addComment($pet->getName() . ' got this extra ' . $item->getName() . ' thanks to being ' . StatusEffectEnum::HOPPIN . '.')
+                ->addComment($pet->getName() . ' got this extra ' . $item->getName() . ' thanks to being ' . StatusEffectEnum::Hoppin . '.')
                 ->setLocation(LocationEnum::Home)
                 ->setSpice($extraItemSpice)
                 ->setEnchantment($bonus)

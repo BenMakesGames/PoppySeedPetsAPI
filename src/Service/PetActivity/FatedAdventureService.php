@@ -58,12 +58,12 @@ class FatedAdventureService
         /** @var StatusEffect|null $fatedStatusEffect */
         $fatedStatusEffect = ArrayFunctions::find_one($pet->getStatusEffects()->toArray(), fn(StatusEffect $se) =>
             in_array($se->getStatus(), [
-                StatusEffectEnum::FATED_DELICIOUSNESS,
-                StatusEffectEnum::FATED_SOAKEDLY,
-                StatusEffectEnum::FATED_ELECTRICALLY,
-                StatusEffectEnum::FATED_FERALLY,
-                StatusEffectEnum::FATED_LUNARLY,
-                StatusEffectEnum::FATED_CHEESEWARDLY,
+                StatusEffectEnum::FatedDeliciously,
+                StatusEffectEnum::FatedSoakedly,
+                StatusEffectEnum::FatedElectrically,
+                StatusEffectEnum::FatedFerally,
+                StatusEffectEnum::FatedLunarly,
+                StatusEffectEnum::FatedCheesewardly,
             ])
         );
 
@@ -84,12 +84,12 @@ class FatedAdventureService
 
         $log = match ($fateName)
         {
-            StatusEffectEnum::FATED_DELICIOUSNESS => $this->doDeliciousFate($petWithSkills),
-            StatusEffectEnum::FATED_SOAKEDLY => $this->doWateryFate($petWithSkills),
-            StatusEffectEnum::FATED_ELECTRICALLY => $this->doElectricFate($petWithSkills),
-            StatusEffectEnum::FATED_FERALLY => $this->doFurryFate($petWithSkills),
-            StatusEffectEnum::FATED_LUNARLY => $this->doLunarFate($petWithSkills),
-            StatusEffectEnum::FATED_CHEESEWARDLY => $this->doCheesewardlyFate($petWithSkills),
+            StatusEffectEnum::FatedDeliciously => $this->doDeliciousFate($petWithSkills),
+            StatusEffectEnum::FatedSoakedly => $this->doWateryFate($petWithSkills),
+            StatusEffectEnum::FatedElectrically => $this->doElectricFate($petWithSkills),
+            StatusEffectEnum::FatedFerally => $this->doFurryFate($petWithSkills),
+            StatusEffectEnum::FatedLunarly => $this->doLunarFate($petWithSkills),
+            StatusEffectEnum::FatedCheesewardly => $this->doCheesewardlyFate($petWithSkills),
             default => throw new \Exception("Unsupported fate! Ben made a terrible mistake!"),
         };
 
@@ -228,9 +228,9 @@ class FatedAdventureService
 
         $pet->increaseEsteem(12);
 
-        StatusEffectHelpers::applyStatusEffect($this->em, $pet, StatusEffectEnum::INSPIRED, 24 * 60);
-        StatusEffectHelpers::applyStatusEffect($this->em, $pet, StatusEffectEnum::OUT_OF_THIS_WORLD, 24 * 60);
-        StatusEffectHelpers::applyStatusEffect($this->em, $pet, StatusEffectEnum::VIVACIOUS, 24 * 60);
+        StatusEffectHelpers::applyStatusEffect($this->em, $pet, StatusEffectEnum::Inspired, 24 * 60);
+        StatusEffectHelpers::applyStatusEffect($this->em, $pet, StatusEffectEnum::OutOfThisWorld, 24 * 60);
+        StatusEffectHelpers::applyStatusEffect($this->em, $pet, StatusEffectEnum::Vivacious, 24 * 60);
 
         $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(10, 20), PetActivityStatEnum::OTHER, null);
         $this->petExperienceService->gainExp($pet, 5, [ PetSkillEnum::Science ], $log);

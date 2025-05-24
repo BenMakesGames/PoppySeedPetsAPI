@@ -111,36 +111,36 @@ class StatusEffect
     {
         // these status effects don't go away unless/until something SPECIAL happens:
         if(in_array($this->status, [
-            StatusEffectEnum::BUBBLEGUMD,
-            StatusEffectEnum::OIL_COVERED,
+            StatusEffectEnum::BubbleGumd,
+            StatusEffectEnum::OilCovered,
 
-            StatusEffectEnum::BITTEN_BY_A_VAMPIRE,
-            StatusEffectEnum::BITTEN_BY_A_WERECREATURE,
-            StatusEffectEnum::WEREFORM,
+            StatusEffectEnum::BittenByAVampire,
+            StatusEffectEnum::BittenByAWerecreature,
+            StatusEffectEnum::Wereform,
 
-            StatusEffectEnum::FOCUSED_NATURE,
-            StatusEffectEnum::FOCUSED_SCIENCE,
-            StatusEffectEnum::FOCUSED_STEALTH,
-            StatusEffectEnum::FOCUSED_ARCANA,
-            StatusEffectEnum::FOCUSED_CRAFTS,
-            StatusEffectEnum::FOCUSED_BRAWL,
-            StatusEffectEnum::FOCUSED_MUSIC,
+            StatusEffectEnum::FocusedNature,
+            StatusEffectEnum::FocusedScience,
+            StatusEffectEnum::FocusedStealth,
+            StatusEffectEnum::FocusedArcana,
+            StatusEffectEnum::FocusedCrafts,
+            StatusEffectEnum::FocusedBrawl,
+            StatusEffectEnum::FocusedMusic,
 
-            StatusEffectEnum::DAYDREAM_ICE_CREAM,
-            StatusEffectEnum::DAYDREAM_PIZZA,
-            StatusEffectEnum::DAYDREAM_FOOD_FIGHT,
-            StatusEffectEnum::DAYDREAM_NOODLES,
+            StatusEffectEnum::DaydreamingIceCream,
+            StatusEffectEnum::DaydreamingPizza,
+            StatusEffectEnum::DaydreamingFoodFight,
+            StatusEffectEnum::DaydreamingNoodles,
 
-            StatusEffectEnum::FATED_DELICIOUSNESS,
-            StatusEffectEnum::FATED_SOAKEDLY,
-            StatusEffectEnum::FATED_ELECTRICALLY,
-            StatusEffectEnum::FATED_FERALLY,
-            StatusEffectEnum::FATED_LUNARLY,
-            StatusEffectEnum::FATED_CHEESEWARDLY,
+            StatusEffectEnum::FatedDeliciously,
+            StatusEffectEnum::FatedSoakedly,
+            StatusEffectEnum::FatedElectrically,
+            StatusEffectEnum::FatedFerally,
+            StatusEffectEnum::FatedLunarly,
+            StatusEffectEnum::FatedCheesewardly,
 
-            StatusEffectEnum::LAPINE_WHISPERS,
-            StatusEffectEnum::ONEIRIC,
-            StatusEffectEnum::GOBBLE_GOBBLE,
+            StatusEffectEnum::LapineWhispers,
+            StatusEffectEnum::Oneiric,
+            StatusEffectEnum::GobbleGobble,
         ]))
         {
             return $this;

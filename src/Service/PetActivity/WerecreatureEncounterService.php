@@ -126,7 +126,7 @@ class WerecreatureEncounterService
 
             $silverblood = $pet->hasMerit(MeritEnum::SILVERBLOOD);
 
-            StatusEffectHelpers::applyStatusEffect($this->em, $pet, StatusEffectEnum::BITTEN_BY_A_WERECREATURE, 1);
+            StatusEffectHelpers::applyStatusEffect($this->em, $pet, StatusEffectEnum::BittenByAWerecreature, 1);
 
             $pet
                 ->increaseEsteem($this->rng->rngNextInt(2, 4))
@@ -156,7 +156,7 @@ class WerecreatureEncounterService
                 ->increaseSafety(-$this->rng->rngNextInt(4, 8))
             ;
 
-            StatusEffectHelpers::applyStatusEffect($this->em, $pet, StatusEffectEnum::BITTEN_BY_A_WERECREATURE, 1);
+            StatusEffectHelpers::applyStatusEffect($this->em, $pet, StatusEffectEnum::BittenByAWerecreature, 1);
 
             $message .= '%pet:' . $pet->getId() . '.name% eventually escaped the creature, but not before being scratched and bitten! (Uh oh!)';
 

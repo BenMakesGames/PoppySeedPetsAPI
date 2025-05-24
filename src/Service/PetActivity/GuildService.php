@@ -260,16 +260,16 @@ class GuildService
 
             $availableEffects = [];
 
-            $inspired = $pet->getStatusEffect(StatusEffectEnum::INSPIRED);
+            $inspired = $pet->getStatusEffect(StatusEffectEnum::Inspired);
 
             if(!$inspired || $inspired->getTimeRemaining() < 20 * 60)
-                $availableEffects[] = [ 'effect' => StatusEffectEnum::INSPIRED, 'duration' => 8 * 60 ];
+                $availableEffects[] = [ 'effect' => StatusEffectEnum::Inspired, 'duration' => 8 * 60 ];
 
-            if(!$pet->hasStatusEffect(StatusEffectEnum::ONEIRIC))
-                $availableEffects[] = [ 'effect' => StatusEffectEnum::ONEIRIC, 'duration' => 1 ];
+            if(!$pet->hasStatusEffect(StatusEffectEnum::Oneiric))
+                $availableEffects[] = [ 'effect' => StatusEffectEnum::Oneiric, 'duration' => 1 ];
 
-            if($pet->hasStatusEffect(StatusEffectEnum::TIRED))
-                $availableEffects[] = [ 'effect' => StatusEffectEnum::TIRED, 'removeIt' => true ];
+            if($pet->hasStatusEffect(StatusEffectEnum::Tired))
+                $availableEffects[] = [ 'effect' => StatusEffectEnum::Tired, 'removeIt' => true ];
 
             if(count($availableEffects) > 0)
             {

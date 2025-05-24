@@ -62,23 +62,23 @@ class MagicCrystalBallController
 
         $fate = $rng->rngNextFromArray([
             [
-                'statusEffect' => StatusEffectEnum::FATED_DELICIOUSNESS,
+                'statusEffect' => StatusEffectEnum::FatedDeliciously,
                 'description' => 'a secret chamber containing a wealth of exotic foods and other treasures',
             ],
             [
-                'statusEffect' => StatusEffectEnum::FATED_SOAKEDLY,
+                'statusEffect' => StatusEffectEnum::FatedSoakedly,
                 'description' => 'a sunken ship with a locked safe'
             ],
             [
-                'statusEffect' => StatusEffectEnum::FATED_ELECTRICALLY,
+                'statusEffect' => StatusEffectEnum::FatedElectrically,
                 'description' => 'an electric shock'
             ],
             [
-                'statusEffect' => StatusEffectEnum::FATED_FERALLY,
+                'statusEffect' => StatusEffectEnum::FatedFerally,
                 'description' => 'a lone wolf with intense eyes'
             ],
             [
-                'statusEffect' => StatusEffectEnum::FATED_LUNARLY,
+                'statusEffect' => StatusEffectEnum::FatedLunarly,
                 'description' => 'a swirling cloud of moths'
             ]
         ]);

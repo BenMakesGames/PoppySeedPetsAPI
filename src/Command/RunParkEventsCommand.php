@@ -231,6 +231,6 @@ class RunParkEventsCommand extends Command
             ->getResult()
         ;
 
-        return array_values(array_filter($pets, fn(Pet $pet) => !$pet->hasStatusEffect(StatusEffectEnum::WEREFORM)));
+        return array_values(array_filter($pets, fn(Pet $pet) => !$pet->hasStatusEffect(StatusEffectEnum::Wereform)));
     }
 }

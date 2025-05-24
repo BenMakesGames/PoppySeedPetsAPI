@@ -56,7 +56,7 @@ class EquipController
             throw new PSPInvalidOperationException('Pets that aren\'t home cannot be interacted with.');
 
         if(
-            ($pet->hasStatusEffect(StatusEffectEnum::WEREFORM)) &&
+            ($pet->hasStatusEffect(StatusEffectEnum::Wereform)) &&
             $inventory->getItem()->getTreasure() &&
             $inventory->getItem()->getTreasure()->getSilver() > 0
         )
@@ -123,7 +123,7 @@ class EquipController
             throw new PSPInvalidOperationException($pet->getName() . ' does not have the Merit required to wear hats.');
 
         if(
-            $pet->hasStatusEffect(StatusEffectEnum::WEREFORM) &&
+            $pet->hasStatusEffect(StatusEffectEnum::Wereform) &&
             $inventory->getItem()->getTreasure() &&
             $inventory->getItem()->getTreasure()->getSilver() > 0
         )

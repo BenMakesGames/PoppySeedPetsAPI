@@ -191,7 +191,7 @@ class FishingService
 
     private function creditLackOfReflection(PetActivityLog $activityLog): void
     {
-        $hasNoReflection = $activityLog->getPet()->hasStatusEffect(StatusEffectEnum::INVISIBLE) || $activityLog->getPet()->hasMerit(MeritEnum::NO_SHADOW_OR_REFLECTION);
+        $hasNoReflection = $activityLog->getPet()->hasStatusEffect(StatusEffectEnum::Invisible) || $activityLog->getPet()->hasMerit(MeritEnum::NO_SHADOW_OR_REFLECTION);
 
         if($hasNoReflection && $this->rng->rngNextInt(1, 4) === 1)
             $activityLog->setEntry($activityLog->getEntry() . ' (Having no reflection is pretty useful!)');
@@ -199,7 +199,7 @@ class FishingService
 
     private function nothingBiting(Pet $pet, int $percentChance, string $atLocationName): ?PetActivityLog
     {
-        if($pet->hasStatusEffect(StatusEffectEnum::INVISIBLE) || $pet->hasMerit(MeritEnum::NO_SHADOW_OR_REFLECTION))
+        if($pet->hasStatusEffect(StatusEffectEnum::Invisible) || $pet->hasMerit(MeritEnum::NO_SHADOW_OR_REFLECTION))
             $percentChance /= 2;
 
         if($this->rng->rngNextInt(1, 100) <= $percentChance)
@@ -625,7 +625,7 @@ class FishingService
         {
             if($this->rng->rngNextInt(1, 2) === 1 && $pet->hasMerit(MeritEnum::SOOTHING_VOICE))
             {
-                if($pet->hasStatusEffect(StatusEffectEnum::BITTEN_BY_A_VAMPIRE) || ($pet->getTool() && $pet->getTool()->isGrayscaling()))
+                if($pet->hasStatusEffect(StatusEffectEnum::BittenByAVampire) || ($pet->getTool() && $pet->getTool()->isGrayscaling()))
                 {
                     $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% went fishing at a Waterfall Basin. There, ' . $pet->getName() . '\'s humming caught the attention of a mermaid! However, the mermaid saw ' . ActivityHelpers::PetName($pet) . '\'s ghastly appearance, gasped, and swam away as quickly as they could!')
                         ->setIcon('icons/status-effect/bite-vampire')

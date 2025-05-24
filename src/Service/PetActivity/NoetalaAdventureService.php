@@ -114,7 +114,7 @@ class NoetalaAdventureService
 
                 $log = PetActivityLogFactory::createReadLog($this->em, $pet, $message);
 
-                StatusEffectHelpers::applyStatusEffect($this->em, $pet, StatusEffectEnum::BITTEN_BY_A_VAMPIRE, 1);
+                StatusEffectHelpers::applyStatusEffect($this->em, $pet, StatusEffectEnum::BittenByAVampire, 1);
 
                 $this->inventoryService->petCollectsItem($rewards[$i], $pet, ArrayFunctions::list_nice($names) . ' defeated Noetala\'s Wing, and received this.', $log);
                 $this->inventoryService->petCollectsItem('Quintessence', $pet, ArrayFunctions::list_nice($names) . ' defeated Noetala\'s Wing, and received this.', $log);

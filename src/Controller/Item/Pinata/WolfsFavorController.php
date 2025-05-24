@@ -57,7 +57,7 @@ class WolfsFavorController
         if(!$pet || $pet->getOwner()->getId() !== $user->getId())
             throw new PSPPetNotFoundException();
 
-        if(!$pet->hasStatusEffect(StatusEffectEnum::WEREFORM))
+        if(!$pet->hasStatusEffect(StatusEffectEnum::Wereform))
             throw new PSPInvalidOperationException('This pet is not in its wereform.');
 
         $possibleWereforms = [];

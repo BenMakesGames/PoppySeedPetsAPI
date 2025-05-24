@@ -117,7 +117,7 @@ class HuntingService
                     break;
                 case 7:
                 case 8:
-                    if($this->canRescueAnotherHouseFairy($pet->getOwner()) && !$pet->hasStatusEffect(StatusEffectEnum::BITTEN_BY_A_VAMPIRE))
+                    if($this->canRescueAnotherHouseFairy($pet->getOwner()) && !$pet->hasStatusEffect(StatusEffectEnum::BittenByAVampire))
                         $activityLog = $this->rescueHouseFairy($pet);
                     else if($useThanksgivingPrey)
                         $activityLog = $this->huntedTurkey($petWithSkills);
@@ -161,7 +161,7 @@ class HuntingService
                         $activityLog = $this->huntedPossessedTurkey($petWithSkills);
                     else if($usePassoverPrey)
                         $activityLog = $this->noGoats($pet);
-                    else if($pet->hasStatusEffect(StatusEffectEnum::BITTEN_BY_A_VAMPIRE))
+                    else if($pet->hasStatusEffect(StatusEffectEnum::BittenByAVampire))
                         $activityLog = $this->huntedSatyr($petWithSkills);
                     else
                         $this->huntedPaperGolem($petWithSkills); // fallback, in case none of the above are good
@@ -502,7 +502,7 @@ class HuntingService
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Fighting' ]))
                 ;
                 $this->inventoryService->petCollectsItem($loot, $pet, $pet->getName() . ' took this from the body of a defeated Deep-fried Dough Golem.', $activityLog);
-                StatusEffectHelpers::applyStatusEffect($this->em, $pet, StatusEffectEnum::OIL_COVERED, 1);
+                StatusEffectHelpers::applyStatusEffect($this->em, $pet, StatusEffectEnum::OilCovered, 1);
 
                 $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::Brawl ], $activityLog);
             }
@@ -1163,7 +1163,7 @@ class HuntingService
 
         $pet->increaseFood(-1);
 
-        if($pet->hasStatusEffect(StatusEffectEnum::CORDIAL))
+        if($pet->hasStatusEffect(StatusEffectEnum::Cordial))
         {
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% encountered a Satyr; the Satyr was so enamored by ' . $pet->getName() . '\'s cordiality, they had a simply _wonderful_ time, and offered gifts before leaving in peace.', 'icons/activity-logs/drunk-satyr')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Fae-kind' ]))
@@ -1473,7 +1473,7 @@ class HuntingService
 
         $skill = 10 + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getBrawl()->getTotal();
 
-        $gobbleGobble = $pet->getStatusEffect(StatusEffectEnum::GOBBLE_GOBBLE);
+        $gobbleGobble = $pet->getStatusEffect(StatusEffectEnum::GobbleGobble);
 
         $pet->increaseFood(-1);
 

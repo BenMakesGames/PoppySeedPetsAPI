@@ -192,7 +192,7 @@ class BurntForestService
             ;
 
             StatusEffectHelpers::applyStatusEffect($this->em, $pet, $this->rng->rngNextFromArray([
-                StatusEffectEnum::INSPIRED, StatusEffectEnum::ONEIRIC, StatusEffectEnum::EXTRA_EXTROVERTED
+                StatusEffectEnum::Inspired, StatusEffectEnum::Oneiric, StatusEffectEnum::ExtraExtroverted
             ]), 4 * 60);
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::Arcana ], $activityLog);

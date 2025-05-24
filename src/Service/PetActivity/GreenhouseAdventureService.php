@@ -59,7 +59,7 @@ class GreenhouseAdventureService
 
         $harvestOrReplant = $plant->getPlant()->getName() === 'Earth Tree' ? 'replant' : 'harvest';
 
-        $cordial = $pet->hasStatusEffect(StatusEffectEnum::CORDIAL);
+        $cordial = $pet->hasStatusEffect(StatusEffectEnum::Cordial);
         $fun = $cordial ? 'a simply _wonderful_ time' : 'fun';
 
         $pet->increaseLove(3)->increaseSafety(3)->increaseEsteem(3);

@@ -23,16 +23,16 @@ use Doctrine\ORM\EntityManagerInterface;
 final class StatusEffectHelpers
 {
     public const array Bites = [
-        StatusEffectEnum::BITTEN_BY_A_VAMPIRE,
-        StatusEffectEnum::BITTEN_BY_A_WERECREATURE
+        StatusEffectEnum::BittenByAVampire,
+        StatusEffectEnum::BittenByAWerecreature
     ];
 
     public static function isImmuneToStatusEffect(Pet $pet, string $status): bool
     {
         $hasSilverblood = $pet->hasMerit(MeritEnum::SILVERBLOOD);
-        $hasVampireBite = $pet->hasStatusEffect(StatusEffectEnum::BITTEN_BY_A_VAMPIRE);
+        $hasVampireBite = $pet->hasStatusEffect(StatusEffectEnum::BittenByAVampire);
 
-        if($status == StatusEffectEnum::WEREFORM && ($hasSilverblood || $hasVampireBite))
+        if($status == StatusEffectEnum::Wereform && ($hasSilverblood || $hasVampireBite))
             return true;
 
         $statusIsABite = ArrayFunctions::any(self::Bites, fn($bite) => $bite == $status);
@@ -75,7 +75,7 @@ final class StatusEffectHelpers
 
         $statusEffectsToRemove = [];
 
-        if($status === StatusEffectEnum::WEREFORM)
+        if($status === StatusEffectEnum::Wereform)
         {
             $itemsDropped = [];
 
@@ -129,9 +129,9 @@ final class StatusEffectHelpers
     {
         return match ($status)
         {
-            StatusEffectEnum::CAFFEINATED => 8 * 60,
-            StatusEffectEnum::EGGPLANT_CURSED, StatusEffectEnum::GLITTER_BOMBED => 48 * 60,
-            StatusEffectEnum::HEX_HEXED => 6 * 60,
+            StatusEffectEnum::Caffeinated => 8 * 60,
+            StatusEffectEnum::EggplantCursed, StatusEffectEnum::GlitterBombed => 48 * 60,
+            StatusEffectEnum::HexHexed => 6 * 60,
             default => 24 * 60,
         };
     }

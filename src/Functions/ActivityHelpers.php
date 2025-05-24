@@ -35,7 +35,7 @@ final class ActivityHelpers
 
     public static function SourceOfHeatProtection(ComputedPetSkills $petWithSkills): string
     {
-        if($petWithSkills->getPet()->hasStatusEffect(StatusEffectEnum::HEAT_RESISTANT))
+        if($petWithSkills->getPet()->hasStatusEffect(StatusEffectEnum::HeatResistant))
             return 'heat-resistance';
 
         if($petWithSkills->getPet()->getTool() && $petWithSkills->getPet()->getTool()->protectsFromHeat())

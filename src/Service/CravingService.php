@@ -67,7 +67,7 @@ class CravingService
     public function maybeAddCraving(Pet $pet): void
     {
         if(
-            (!$pet->hasMerit(MeritEnum::AFFECTIONLESS) || $pet->hasStatusEffect(StatusEffectEnum::BITTEN_BY_A_VAMPIRE)) &&
+            (!$pet->hasMerit(MeritEnum::AFFECTIONLESS) || $pet->hasStatusEffect(StatusEffectEnum::BittenByAVampire)) &&
             !CravingService::petHasCraving($pet) &&
             $pet->getFullnessPercent() >= 0.5 &&
             $pet->getSafety() >= 8
@@ -95,7 +95,7 @@ class CravingService
 
     private function getRandomCravingItemGroup(Pet $pet): ItemGroup
     {
-        if($pet->hasStatusEffect(StatusEffectEnum::BITTEN_BY_A_VAMPIRE))
+        if($pet->hasStatusEffect(StatusEffectEnum::BittenByAVampire))
             return $this->em->getRepository(ItemGroup::class)->findOneBy([ 'name' => 'Bloody' ]);
 
         $cravingGroups = $this->em->getRepository(ItemGroup::class)->findBy([ 'isCraving' => 1 ]);
@@ -124,9 +124,9 @@ class CravingService
         $this->petExperienceService->gainAffection($pet, 2);
 
         $statusEffect = $this->rng->rngNextFromArray([
-            StatusEffectEnum::INSPIRED,
-            StatusEffectEnum::ONEIRIC,
-            StatusEffectEnum::VIVACIOUS,
+            StatusEffectEnum::Inspired,
+            StatusEffectEnum::Oneiric,
+            StatusEffectEnum::Vivacious,
         ]);
 
         StatusEffectHelpers::applyStatusEffect($this->em, $pet, $statusEffect, 8 * 60);

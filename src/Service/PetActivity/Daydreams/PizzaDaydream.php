@@ -215,7 +215,7 @@ class PizzaDaydream
             $pet->increaseSafety(-2); // :P
         }
 
-        StatusEffectHelpers::applyStatusEffect($this->em, $pet, StatusEffectEnum::BUBBLEGUMD, 1);
+        StatusEffectHelpers::applyStatusEffect($this->em, $pet, StatusEffectEnum::BubbleGumd, 1);
 
         return $log;
     }

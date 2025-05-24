@@ -56,10 +56,10 @@ class CachingMeritAdventureService
     {
         $pet = $petWithSkills->getPet();
 
-        if($pet->hasStatusEffect(StatusEffectEnum::CACHE_EMPTY))
+        if($pet->hasStatusEffect(StatusEffectEnum::CacheEmpty))
             return null;
 
-        StatusEffectHelpers::applyStatusEffect($this->em, $pet, StatusEffectEnum::CACHE_EMPTY, 24 * 60);
+        StatusEffectHelpers::applyStatusEffect($this->em, $pet, StatusEffectEnum::CacheEmpty, 24 * 60);
 
         $pet->increaseFood(4);
         $cacheItem = ItemRepository::findOneByName($this->em, $this->rng->rngNextFromArray(self::PossibleCachedFoods));
