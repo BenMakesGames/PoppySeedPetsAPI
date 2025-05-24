@@ -58,7 +58,7 @@ class RenamingController
 
         PetRenamingHelpers::renamePet($em, $pet, $request->request->getString('name'));
 
-        $userStatsRepository->incrementStat($user, UserStatEnum::READ_A_SCROLL);
+        $userStatsRepository->incrementStat($user, UserStatEnum::ReadAScroll);
 
         $em->remove($inventory);
 
@@ -90,7 +90,7 @@ class RenamingController
 
         PetRenamingHelpers::renameSpiritCompanion($em, $pet->getSpiritCompanion(), $request->request->getString('name'));
 
-        $userStatsRepository->incrementStat($user, UserStatEnum::READ_A_SCROLL);
+        $userStatsRepository->incrementStat($user, UserStatEnum::ReadAScroll);
 
         $em->remove($inventory);
 
@@ -124,7 +124,7 @@ class RenamingController
         if(\mb_strlen($newName) < 2 || \mb_strlen($newName) > 30)
             throw new PSPFormValidationException('Name must be between 2 and 30 characters long.');
 
-        $userStatsRepository->incrementStat($user, UserStatEnum::READ_A_SCROLL);
+        $userStatsRepository->incrementStat($user, UserStatEnum::ReadAScroll);
 
         $em->remove($inventory);
 

@@ -89,7 +89,7 @@ class TellSamarzhoustianScrollController
             $inventoryService->receiveItem($itemName, $user, $user, $user->getName() . ' got this from ' . $inventory->getItem()->getNameWithArticle() . '.', $location, $locked);
         }
 
-        $userStatsRepository->incrementStat($user, UserStatEnum::READ_A_SCROLL);
+        $userStatsRepository->incrementStat($user, UserStatEnum::ReadAScroll);
 
         $em->flush();
 

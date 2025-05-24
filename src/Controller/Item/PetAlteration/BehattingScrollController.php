@@ -59,7 +59,7 @@ class BehattingScrollController
 
         $merit = MeritRepository::findOneByName($em, MeritEnum::BEHATTED);
 
-        $userStatsRepository->incrementStat($user, UserStatEnum::READ_A_SCROLL);
+        $userStatsRepository->incrementStat($user, UserStatEnum::ReadAScroll);
 
         $em->remove($inventory);
 

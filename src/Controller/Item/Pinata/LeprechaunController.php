@@ -46,7 +46,7 @@ class LeprechaunController
 
         $em->remove($inventory);
 
-        $userStatsRepository->incrementStat($user, UserStatEnum::LOOTED_A_POT_OF_GOLD);
+        $userStatsRepository->incrementStat($user, UserStatEnum::LootedAPotOfGold);
 
         $location = $inventory->getLocation();
         $locked = $inventory->getLockedToOwner();
@@ -77,7 +77,7 @@ class LeprechaunController
         ItemControllerHelpers::validateInventory($user, $inventory, 'leprechaun/greenScroll/#/read');
         ItemControllerHelpers::validateLocationSpace($inventory, $em);
 
-        $userStatsRepository->incrementStat($user, UserStatEnum::READ_A_SCROLL);
+        $userStatsRepository->incrementStat($user, UserStatEnum::ReadAScroll);
         $userStatsRepository->incrementStat($user, 'Read ' . $inventory->getItem()->getNameWithArticle());
 
         $numberOfItems = 3;
