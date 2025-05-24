@@ -166,11 +166,7 @@ class DragonVaseController
         };
 
         if($dippedItem->getEnchantment() && $dippedItem->getEnchantment()->getName() === $bonus)
-        {
-            $responseService->addFlashMessage('The ' . InventoryModifierFunctions::getNameWithModifiers($dippedItem) . ' already has the ' . $bonus . ' bonus!');
-
-            return $responseService->success();
-        }
+            throw new PSPInvalidOperationException('The ' . InventoryModifierFunctions::getNameWithModifiers($dippedItem) . ' already has the ' . $bonus . ' bonus!');
 
         $usedDragonVase->setValue($today);
 
