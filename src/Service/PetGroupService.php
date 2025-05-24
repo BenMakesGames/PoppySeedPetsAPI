@@ -468,7 +468,7 @@ class PetGroupService
             $friendPet = $friend->getPet();
             $friendPet->addGroup($group);
 
-            PetActivityLogFactory::createUnreadLog($this->em, $friendPet, $friendPet->getName() . ' was invited to join ' . $pet->getName() . '\'s new ' . self::GROUP_TYPE_NAMES[$type] . ', ' . $group->getName() . '!')
+            PetActivityLogFactory::createUnreadLog($this->em, $friendPet, $friendPet->getName() . ' was invited to join ' . $pet->getName() . '\'s new ' . self::GROUP_TYPE_NAMES[$type->value] . ', ' . $group->getName() . '!')
                 ->addInterestingness(PetActivityLogInterestingness::NewRelationship)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Group Hangout' ]))
             ;
