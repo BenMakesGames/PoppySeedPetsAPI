@@ -16,7 +16,7 @@ namespace App\Controller\Item\Scroll;
 
 use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
-use App\Enum\UserStatEnum;
+use App\Enum\UserStat;
 use App\Functions\ArrayFunctions;
 use App\Functions\DateFunctions;
 use App\Service\Clock;
@@ -61,7 +61,7 @@ class ResourcesController
         $location = $inventory->getLocation();
         $locked = $inventory->getLockedToOwner();
 
-        $userStatsRepository->incrementStat($user, UserStatEnum::ReadAScroll);
+        $userStatsRepository->incrementStat($user, UserStat::ReadAScroll);
 
         $em->remove($inventory);
 
@@ -109,7 +109,7 @@ class ResourcesController
         $location = $inventory->getLocation();
         $locked = $inventory->getLockedToOwner();
 
-        $userStatsRepository->incrementStat($user, UserStatEnum::ReadAScroll);
+        $userStatsRepository->incrementStat($user, UserStat::ReadAScroll);
 
         $em->remove($inventory);
 

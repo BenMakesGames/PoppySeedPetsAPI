@@ -29,7 +29,7 @@ use App\Enum\PetBadgeEnum;
 use App\Enum\PetSkillEnum;
 use App\Enum\StatusEffectEnum;
 use App\Enum\UnlockableFeatureEnum;
-use App\Enum\UserStatEnum;
+use App\Enum\UserStat;
 use App\Functions\ActivityHelpers;
 use App\Functions\AdventureMath;
 use App\Functions\ArrayFunctions;
@@ -866,7 +866,7 @@ class HuntingService
 
             $this->transactionService->spendMoney($pet->getOwner(), $moneysLost, $pet->getName() . ' was outsmarted by a Thieving Magpie, ' . $description, false);
 
-            $this->userStatsRepository->incrementStat($pet->getOwner(), UserStatEnum::MoneysStolenByThievingMagpies, $moneysLost);
+            $this->userStatsRepository->incrementStat($pet->getOwner(), UserStat::MoneysStolenByThievingMagpies, $moneysLost);
 
             $pet
                 ->increaseEsteem(-2)

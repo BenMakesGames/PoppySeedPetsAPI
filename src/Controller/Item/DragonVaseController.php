@@ -20,7 +20,7 @@ use App\Enum\LocationEnum;
 use App\Enum\PetActivityLogInterestingness;
 use App\Enum\PetLocationEnum;
 use App\Enum\PetSkillEnum;
-use App\Enum\UserStatEnum;
+use App\Enum\UserStat;
 use App\Exceptions\PSPFormValidationException;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotFoundException;
@@ -32,6 +32,7 @@ use App\Functions\InventoryModifierFunctions;
 use App\Functions\PetActivityLogFactory;
 use App\Functions\UserQuestRepository;
 use App\Model\PetChanges;
+use App\Service\Clock;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\PetExperienceService;
@@ -122,8 +123,8 @@ class DragonVaseController
     #[Route("/{inventory}/dip", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function dipATool(
-        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, IRandom $rng,
-        Request $request, UserStatsService $userStatsRepository, UserAccessor $userAccessor
+        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
+        UserStatsService $userStatsRepository, UserAccessor $userAccessor, Clock $clock
     ): JsonResponse
     {
         $user = $userAccessor->getUserOrThrow();
@@ -153,32 +154,29 @@ class DragonVaseController
         if($today === $usedDragonVase->getValue())
             throw new PSPInvalidOperationException('You already dipped something into a Dragon Vase today. You\'ll just have to wait for tomorrow!');
 
+        // most of these bonuses are unique to the Dragon Vase - "Magpie's" being the exception
+        $bonus = match($clock->now->format('N')) {
+            '1' => 'Blackened', // Monday - Selene, the goddess of the moon
+            '2' => 'of Swords', // Tuesday - Ares, the god of war
+            '3' => 'Climbing', // Wednesday - Hermes, the messenger god
+            '4' => 'Magpie\'s', // Thursday - Zeus, the king of the gods
+            '5' => 'Glycyrrhiza', // Friday - Aphrodite, the goddess of love
+            '6' => 'Archaeopteryx', // Saturday - Cronus, the god of time
+            '7' => 'of Mangoes', // Sunday - Helios, the sun god
+        };
+
+        if($dippedItem->getEnchantment() && $dippedItem->getEnchantment()->getName() === $bonus)
+        {
+            $responseService->addFlashMessage('The ' . InventoryModifierFunctions::getNameWithModifiers($dippedItem) . ' already has the ' . $bonus . ' bonus!');
+
+            return $responseService->success();
+        }
+
         $usedDragonVase->setValue($today);
 
-        $dippingStat = $userStatsRepository->incrementStat($user, UserStatEnum::ToolsDippedInADragonVase);
+        $userStatsRepository->incrementStat($user, UserStat::ToolsDippedInADragonVase);
 
-        // Dragon Vase-only bonuses
-        $possibleBonuses = [
-            'of Swords', 'of Mangoes', 'Climbing',
-            'Blackened', 'Archaeopteryx'
-        ];
-
-        if($dippingStat->getValue() > 1)
-        {
-            // other bonuses:
-            $possibleBonuses[] = 'Magpie\'s';
-            $possibleBonuses[] = 'Medium-hot';
-            $possibleBonuses[] = 'Piercing';
-        }
-
-        if($dippedItem->getEnchantment())
-        {
-            $possibleBonuses = array_filter($possibleBonuses, fn(string $bonus) =>
-                $bonus !== $dippedItem->getEnchantment()->getName()
-            );
-        }
-
-        $newBonus = EnchantmentRepository::findOneByName($em, $rng->rngNextFromArray($possibleBonuses));
+        $newBonus = EnchantmentRepository::findOneByName($em, $bonus);
 
         $hadAnEnchantment = $dippedItem->getEnchantment() !== null;
         $oldName = InventoryModifierFunctions::getNameWithModifiers($dippedItem);

@@ -18,7 +18,7 @@ use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
 use App\Entity\Pet;
 use App\Enum\PetLocationEnum;
-use App\Enum\UserStatEnum;
+use App\Enum\UserStat;
 use App\Model\SummoningScrollMonster;
 use App\Service\IRandom;
 use App\Service\PetActivity\HouseMonsterService;
@@ -68,7 +68,7 @@ class SummoningController
 
         $result = $houseMonsterService->doFight('You read the scroll', $petsAtHome, $monster);
 
-        $userStatsRepository->incrementStat($user, UserStatEnum::ReadAScroll);
+        $userStatsRepository->incrementStat($user, UserStat::ReadAScroll);
 
         $em->flush();
 

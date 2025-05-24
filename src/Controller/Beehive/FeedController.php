@@ -17,7 +17,7 @@ namespace App\Controller\Beehive;
 use App\Enum\LocationEnum;
 use App\Enum\SerializationGroupEnum;
 use App\Enum\UnlockableFeatureEnum;
-use App\Enum\UserStatEnum;
+use App\Enum\UserStat;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotFoundException;
 use App\Exceptions\PSPNotUnlockedException;
@@ -73,7 +73,7 @@ class FeedController
         $beehiveService->fedRequestedItem($beehive, $alternate);
         $beehive->setInteractionPower();
 
-        $userStatsRepository->incrementStat($user, UserStatEnum::FedTheBeehive);
+        $userStatsRepository->incrementStat($user, UserStat::FedTheBeehive);
 
         $em->flush();
 

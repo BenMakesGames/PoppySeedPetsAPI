@@ -16,7 +16,7 @@ namespace App\Controller\Item\Scroll;
 
 use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
-use App\Enum\UserStatEnum;
+use App\Enum\UserStat;
 use App\Functions\ArrayFunctions;
 use App\Service\InventoryService;
 use App\Service\IRandom;
@@ -66,7 +66,7 @@ class FruitScrollController
         }
         else if($r === 2 || $r === 3) // get a bunch of the same item
         {
-            $userStatsRepository->incrementStat($user, UserStatEnum::ReadAScroll);
+            $userStatsRepository->incrementStat($user, UserStat::ReadAScroll);
 
             $item = $rng->rngNextFromArray([
                 'Pamplemousse', 'Blackberries', 'Bunch of Naners', 'Blueberries', 'Red',
@@ -93,7 +93,7 @@ class FruitScrollController
         }
         else // get a bunch of different items
         {
-            $userStatsRepository->incrementStat($user, UserStatEnum::ReadAScroll);
+            $userStatsRepository->incrementStat($user, UserStat::ReadAScroll);
 
             $possibleItems = [
                 'Fruits & Veggies Box',

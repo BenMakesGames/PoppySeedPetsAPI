@@ -16,7 +16,7 @@ namespace App\Controller\Item\Pinata;
 
 use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
-use App\Enum\UserStatEnum;
+use App\Enum\UserStat;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\ResponseService;
@@ -46,7 +46,7 @@ class CannedFoodController
         $location = $inventory->getLocation();
         $lockedToOwner = $inventory->getLockedToOwner();
 
-        $cansOpened = $userStatsRepository->incrementStat($user, UserStatEnum::CansOfFoodOpened);
+        $cansOpened = $userStatsRepository->incrementStat($user, UserStat::CansOfFoodOpened);
 
         if($cansOpened->getValue() > 3 && $rng->rngNextInt(1, 50) === 1)
         {

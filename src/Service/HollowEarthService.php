@@ -28,7 +28,7 @@ use App\Enum\HollowEarthMoveDirectionEnum;
 use App\Enum\HollowEarthRequiredActionEnum;
 use App\Enum\PetBadgeEnum;
 use App\Enum\UnlockableFeatureEnum;
-use App\Enum\UserStatEnum;
+use App\Enum\UserStat;
 use App\Functions\ArrayFunctions;
 use App\Functions\HollowEarthTileRepository;
 use App\Functions\ItemRepository;
@@ -258,7 +258,7 @@ class HollowEarthService
             ->setCurrentAction($action)
         ;
 
-        $this->userStatsRepository->incrementStat($player->getUser(), UserStatEnum::HollowEarthSpacesMoved, $movesRemaining - $player->getMovesRemaining());
+        $this->userStatsRepository->incrementStat($player->getUser(), UserStat::HollowEarthSpacesMoved, $movesRemaining - $player->getMovesRemaining());
 
         if($leftGoTile)
             PetBadgeHelpers::awardBadgeAndLog($this->em, $player->getChosenPet(), PetBadgeEnum::GO, null);

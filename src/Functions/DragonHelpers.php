@@ -18,7 +18,7 @@ use App\Entity\Dragon;
 use App\Entity\User;
 use App\Entity\UserStats;
 use App\Enum\SerializationGroupEnum;
-use App\Enum\UserStatEnum;
+use App\Enum\UserStat;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
@@ -36,7 +36,7 @@ final class DragonHelpers
     {
         $treasuresGiven = $em->getRepository(UserStats::class)->findOneBy([
             'user' => $user,
-            'stat' => UserStatEnum::TreasuresGivenToDragonHoard
+            'stat' => UserStat::TreasuresGivenToDragonHoard
         ]);
 
         $response = $normalizer->normalize($dragon, null, [ 'groups' => [

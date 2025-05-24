@@ -19,7 +19,7 @@ use App\Enum\FlavorEnum;
 use App\Enum\LocationEnum;
 use App\Enum\PetLocationEnum;
 use App\Enum\StatusEffectEnum;
-use App\Enum\UserStatEnum;
+use App\Enum\UserStat;
 use App\Exceptions\PSPFormValidationException;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotEnoughCurrencyException;
@@ -133,7 +133,7 @@ class AdoptController
 
         $transactionService->spendMoney($user, $costToAdopt, 'Adopted a new pet.');
 
-        $userStatsRepository->incrementStat($user, UserStatEnum::PetsAdopted, 1);
+        $userStatsRepository->incrementStat($user, UserStat::PetsAdopted, 1);
 
         $now = (new \DateTimeImmutable())->format('Y-m-d');
 

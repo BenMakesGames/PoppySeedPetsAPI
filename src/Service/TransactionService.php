@@ -16,7 +16,7 @@ namespace App\Service;
 
 use App\Entity\User;
 use App\Entity\UserActivityLog;
-use App\Enum\UserStatEnum;
+use App\Enum\UserStat;
 use App\Functions\PlayerLogFactory;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -43,7 +43,7 @@ class TransactionService
         $user->increaseMoneys(-$amount);
 
         if($countTotalMoneysSpentStat)
-            $this->userStatsRepository->incrementStat($user, UserStatEnum::TotalMoneysSpent, $amount);
+            $this->userStatsRepository->incrementStat($user, UserStat::TotalMoneysSpent, $amount);
 
         $tags = array_merge($additionalTags, [ 'Moneys' ]);
 

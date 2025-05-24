@@ -16,7 +16,7 @@ namespace App\Controller\Florist;
 
 use App\Entity\UserStats;
 use App\Enum\UnlockableFeatureEnum;
-use App\Enum\UserStatEnum;
+use App\Enum\UserStat;
 use App\Exceptions\PSPNotUnlockedException;
 use App\Service\FloristService;
 use App\Service\ResponseService;
@@ -43,7 +43,7 @@ class GetShopInventoryController
 
         $hasRolledSatyrDice = $em->getRepository(UserStats::class)->findOneBy([
             'user' => $user,
-            'stat' => UserStatEnum::RolledSatyrDice
+            'stat' => UserStat::RolledSatyrDice
         ]);
 
         return $responseService->success([

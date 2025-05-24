@@ -16,7 +16,7 @@ namespace App\Controller\Item\Pinata;
 
 use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
-use App\Enum\UserStatEnum;
+use App\Enum\UserStat;
 use App\Functions\ArrayFunctions;
 use App\Service\InventoryService;
 use App\Service\IRandom;
@@ -47,7 +47,7 @@ class StrangeFieldController
         $location = $inventory->getLocation();
         $lockedToOwner = $inventory->getLockedToOwner();
 
-        $userStatsRepository->incrementStat($user, UserStatEnum::StrangeFieldsCollapsed);
+        $userStatsRepository->incrementStat($user, UserStat::StrangeFieldsCollapsed);
 
         $possibleItems = [
             'Tachyon', 'Photon',

@@ -17,7 +17,7 @@ namespace App\Controller\Item;
 use App\Entity\Inventory;
 use App\Enum\LocationEnum;
 use App\Enum\PetLocationEnum;
-use App\Enum\UserStatEnum;
+use App\Enum\UserStat;
 use App\Service\HouseService;
 use App\Service\InventoryService;
 use App\Service\IRandom;
@@ -58,7 +58,7 @@ class MagicHourglassController
 
         $em->remove($inventory);
 
-        $userStatsRepository->incrementStat($user, UserStatEnum::MagicHourglassesSmashed);
+        $userStatsRepository->incrementStat($user, UserStat::MagicHourglassesSmashed);
 
         $query = $em->createQuery('
             UPDATE App\Entity\PetHouseTime AS ht

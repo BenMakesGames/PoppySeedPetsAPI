@@ -16,7 +16,7 @@ namespace App\Controller\Item\Scroll;
 
 use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
-use App\Enum\UserStatEnum;
+use App\Enum\UserStat;
 use App\Functions\ArrayFunctions;
 use App\Functions\DateFunctions;
 use App\Functions\UserQuestRepository;
@@ -50,7 +50,7 @@ class FarmerController
 
         $em->remove($inventory);
 
-        $userStatsRepository->incrementStat($user, UserStatEnum::ReadAScroll);
+        $userStatsRepository->incrementStat($user, UserStat::ReadAScroll);
 
         if($user->getGreenhouse())
         {

@@ -16,7 +16,7 @@ namespace App\Controller\Plaza;
 
 use App\Enum\LocationEnum;
 use App\Enum\UnlockableFeatureEnum;
-use App\Enum\UserStatEnum;
+use App\Enum\UserStat;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Functions\ArrayFunctions;
 use App\Model\AvailableHolidayBox;
@@ -59,7 +59,7 @@ class CollectHolidayBoxController
             $box->userQuestEntity->setValue(true);
 
         if(str_contains($box->itemName, 'Box') || str_contains($box->itemName, 'Bag'))
-            $userStatsRepository->incrementStat($user, UserStatEnum::PlazaBoxesReceived, $box->quantity);
+            $userStatsRepository->incrementStat($user, UserStat::PlazaBoxesReceived, $box->quantity);
 
         for($i = 0; $i < $box->quantity; $i++)
             $inventoryService->receiveItem($box->itemName, $user, $user, $box->comment, LocationEnum::Home, true);

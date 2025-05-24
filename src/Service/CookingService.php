@@ -20,7 +20,7 @@ use App\Entity\RecipeAttempted;
 use App\Entity\Spice;
 use App\Entity\User;
 use App\Enum\EnumInvalidValueException;
-use App\Enum\UserStatEnum;
+use App\Enum\UserStat;
 use App\Functions\ArrayFunctions;
 use App\Functions\NumberFunctions;
 use App\Functions\RecipeRepository;
@@ -212,7 +212,7 @@ class CookingService
 
         $this->em->persist($knownRecipe);
 
-        $this->userStatsRepository->incrementStat($user, UserStatEnum::RecipesLearnedByCookingBuddy);
+        $this->userStatsRepository->incrementStat($user, UserStat::RecipesLearnedByCookingBuddy);
 
         return true;
     }
@@ -287,7 +287,7 @@ class CookingService
             }
         }
 
-        $this->userStatsRepository->incrementStat($preparer, UserStatEnum::CookedSomething, $multiple);
+        $this->userStatsRepository->incrementStat($preparer, UserStat::CookedSomething, $multiple);
 
         $results = new PrepareRecipeResults();
         $results->inventory = $newInventory;

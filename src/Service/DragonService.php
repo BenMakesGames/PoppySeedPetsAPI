@@ -20,7 +20,7 @@ use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Enum\MeritEnum;
 use App\Enum\PetBadgeEnum;
-use App\Enum\UserStatEnum;
+use App\Enum\UserStat;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotFoundException;
 use App\Functions\ActivityHelpers;
@@ -139,7 +139,7 @@ class DragonService
 
         sort($offeringItemNames);
 
-        $this->userStatsRepository->incrementStat($user, UserStatEnum::TreasuresGivenToDragonHoard, count($items));
+        $this->userStatsRepository->incrementStat($user, UserStat::TreasuresGivenToDragonHoard, count($items));
 
         $silverGoodies = self::SilverGoodies;
         $goldGoodies = self::GoldGoodies;

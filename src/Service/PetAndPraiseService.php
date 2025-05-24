@@ -17,7 +17,7 @@ namespace App\Service;
 use App\Entity\Pet;
 use App\Entity\User;
 use App\Enum\PetActivityLogTagEnum;
-use App\Enum\UserStatEnum;
+use App\Enum\UserStat;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Functions\PetActivityLogFactory;
 use App\Functions\PetActivityLogTagHelpers;
@@ -82,7 +82,7 @@ class PetAndPraiseService
             ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ PetActivityLogTagEnum::Petting ]))
         ;
 
-        $this->userStatsRepository->incrementStat($petter, UserStatEnum::PettedAPet);
+        $this->userStatsRepository->incrementStat($petter, UserStat::PettedAPet);
     }
 
 }

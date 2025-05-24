@@ -21,7 +21,7 @@ use App\Entity\PetSpecies;
 use App\Entity\User;
 use App\Enum\PetLocationEnum;
 use App\Enum\PetSpeciesName;
-use App\Enum\UserStatEnum;
+use App\Enum\UserStat;
 use App\Functions\ActivityHelpers;
 use App\Functions\GrammarFunctions;
 use App\Functions\PetActivityLogFactory;
@@ -54,7 +54,7 @@ class SummoningSomethingFriendlyController
 
         $em->remove($inventory);
 
-        $userStatsRepository->incrementStat($user, UserStatEnum::ReadAScroll);
+        $userStatsRepository->incrementStat($user, UserStat::ReadAScroll);
 
         $pet = null;
         $gotASentinel = false;

@@ -19,7 +19,7 @@ use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingness;
 use App\Enum\PetBadgeEnum;
 use App\Enum\PetSkillEnum;
-use App\Enum\UserStatEnum;
+use App\Enum\UserStat;
 use App\Functions\ActivityHelpers;
 use App\Functions\MeritRepository;
 use App\Functions\PetActivityLogFactory;
@@ -98,7 +98,7 @@ class SagaSagaService
 
         $this->responseService->setReloadPets();
 
-        $this->userStatsRepository->incrementStat($pet->getOwner(), UserStatEnum::CompletedASagaSaga);
+        $this->userStatsRepository->incrementStat($pet->getOwner(), UserStat::CompletedASagaSaga);
 
         return true;
     }

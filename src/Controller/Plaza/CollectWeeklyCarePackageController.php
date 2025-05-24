@@ -17,7 +17,7 @@ namespace App\Controller\Plaza;
 use App\Enum\LocationEnum;
 use App\Enum\SerializationGroupEnum;
 use App\Enum\UnlockableFeatureEnum;
-use App\Enum\UserStatEnum;
+use App\Enum\UserStat;
 use App\Exceptions\PSPFormValidationException;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Service\InventoryService;
@@ -50,7 +50,7 @@ class CollectWeeklyCarePackageController
         if($days < 7)
             throw new PSPInvalidOperationException('It\'s too early to collect your weekly Care Package.');
 
-        $itemsDonated = $userStatsRepository->getStatValue($user, UserStatEnum::ItemsDonatedToMuseum);
+        $itemsDonated = $userStatsRepository->getStatValue($user, UserStat::ItemsDonatedToMuseum);
 
         $canGetHandicraftsBox = $itemsDonated >= 100;
         $canGetFishBag = $itemsDonated >= 450;
@@ -81,7 +81,7 @@ class CollectWeeklyCarePackageController
 
         $user->setLastAllowanceCollected($user->getLastAllowanceCollected()->modify('+' . (floor($days / 7) * 7) . ' days'));
 
-        $userStatsRepository->incrementStat($user, UserStatEnum::PlazaBoxesReceived, 1);
+        $userStatsRepository->incrementStat($user, UserStat::PlazaBoxesReceived, 1);
 
         $em->flush();
 

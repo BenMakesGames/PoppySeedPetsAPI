@@ -16,7 +16,7 @@ namespace App\Controller\Item\Pinata;
 
 use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
-use App\Enum\UserStatEnum;
+use App\Enum\UserStat;
 use App\Functions\ItemRepository;
 use App\Service\InventoryService;
 use App\Service\IRandom;
@@ -47,7 +47,7 @@ class BurntLogController
         $location = $inventory->getLocation();
         $lockedToOwner = $inventory->getLockedToOwner();
 
-        $stat = $userStatsRepository->incrementStat($user, UserStatEnum::BurntLogsBroken);
+        $stat = $userStatsRepository->incrementStat($user, UserStat::BurntLogsBroken);
 
         $extraItem = ItemRepository::findOneByName($em, $rng->rngNextFromArray([
             'Crooked Stick',

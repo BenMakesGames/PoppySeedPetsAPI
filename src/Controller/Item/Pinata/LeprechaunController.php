@@ -16,7 +16,7 @@ namespace App\Controller\Item\Pinata;
 
 use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
-use App\Enum\UserStatEnum;
+use App\Enum\UserStat;
 use App\Functions\ArrayFunctions;
 use App\Service\InventoryService;
 use App\Service\IRandom;
@@ -46,7 +46,7 @@ class LeprechaunController
 
         $em->remove($inventory);
 
-        $userStatsRepository->incrementStat($user, UserStatEnum::LootedAPotOfGold);
+        $userStatsRepository->incrementStat($user, UserStat::LootedAPotOfGold);
 
         $location = $inventory->getLocation();
         $locked = $inventory->getLockedToOwner();
@@ -77,7 +77,7 @@ class LeprechaunController
         ItemControllerHelpers::validateInventory($user, $inventory, 'leprechaun/greenScroll/#/read');
         ItemControllerHelpers::validateLocationSpace($inventory, $em);
 
-        $userStatsRepository->incrementStat($user, UserStatEnum::ReadAScroll);
+        $userStatsRepository->incrementStat($user, UserStat::ReadAScroll);
         $userStatsRepository->incrementStat($user, 'Read ' . $inventory->getItem()->getNameWithArticle());
 
         $numberOfItems = 3;

@@ -20,7 +20,7 @@ use App\Enum\FlavorEnum;
 use App\Enum\PetLocationEnum;
 use App\Enum\SerializationGroupEnum;
 use App\Enum\StoryEnum;
-use App\Enum\UserStatEnum;
+use App\Enum\UserStat;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotFoundException;
 use App\Functions\ColorFunctions;
@@ -63,7 +63,7 @@ class BugController
 
         $em->remove($inventory);
 
-        $userStatsRepository->incrementStat($user, UserStatEnum::BugsSquished);
+        $userStatsRepository->incrementStat($user, UserStat::BugsSquished);
 
         $em->flush();
 
@@ -83,8 +83,8 @@ class BugController
 
         $em->remove($inventory);
 
-        $userStatsRepository->incrementStat($user, UserStatEnum::BugsPutOutside);
-        $userStatsRepository->incrementStat($user, UserStatEnum::ItemsRecycled);
+        $userStatsRepository->incrementStat($user, UserStat::BugsPutOutside);
+        $userStatsRepository->incrementStat($user, UserStat::ItemsRecycled);
 
         $em->flush();
 
@@ -114,7 +114,7 @@ class BugController
         switch($inventory->getItem()->getName())
         {
             case 'Centipede':
-                $userStatsRepository->incrementStat($user, UserStatEnum::EvolvedACentipede);
+                $userStatsRepository->incrementStat($user, UserStat::EvolvedACentipede);
                 $inventory
                     ->changeItem(ItemRepository::findOneByName($em, 'Moth'))
                     ->addComment($user->getName() . ' fed this Centipede, allowing it to grow up into a beautiful... Moth.')
@@ -129,7 +129,7 @@ class BugController
                 break;
 
             case 'Line of Ants':
-                $userStatsRepository->incrementStat($user, UserStatEnum::FedALineOfAnts);
+                $userStatsRepository->incrementStat($user, UserStat::FedALineOfAnts);
 
                 if($item->getItem()->getName() === 'Ants on a Log')
                 {
@@ -181,7 +181,7 @@ class BugController
 
         $em->remove($item);
 
-        $userStatsRepository->incrementStat($user, UserStatEnum::BugsFed);
+        $userStatsRepository->incrementStat($user, UserStat::BugsFed);
 
         $em->flush();
 

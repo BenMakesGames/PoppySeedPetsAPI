@@ -15,7 +15,7 @@ declare(strict_types=1);
 namespace App\Controller\Item;
 
 use App\Entity\Inventory;
-use App\Enum\UserStatEnum;
+use App\Enum\UserStat;
 use App\Functions\ArrayFunctions;
 use App\Service\HotPotatoService;
 use App\Service\InventoryService;
@@ -86,7 +86,7 @@ class HotPotatoController
         }
         else
         {
-            $userStatsRepository->incrementStat($user, UserStatEnum::TossedAHotPotato);
+            $userStatsRepository->incrementStat($user, UserStat::TossedAHotPotato);
 
             return $hotPotatoService->tossItem($inventory);
         }

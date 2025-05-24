@@ -17,7 +17,7 @@ namespace App\Controller\Item\Scroll;
 use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
 use App\Entity\Pet;
-use App\Enum\UserStatEnum;
+use App\Enum\UserStat;
 use App\Exceptions\PSPFormValidationException;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotEnoughCurrencyException;
@@ -58,7 +58,7 @@ class RenamingController
 
         PetRenamingHelpers::renamePet($em, $pet, $request->request->getString('name'));
 
-        $userStatsRepository->incrementStat($user, UserStatEnum::ReadAScroll);
+        $userStatsRepository->incrementStat($user, UserStat::ReadAScroll);
 
         $em->remove($inventory);
 
@@ -90,7 +90,7 @@ class RenamingController
 
         PetRenamingHelpers::renameSpiritCompanion($em, $pet->getSpiritCompanion(), $request->request->getString('name'));
 
-        $userStatsRepository->incrementStat($user, UserStatEnum::ReadAScroll);
+        $userStatsRepository->incrementStat($user, UserStat::ReadAScroll);
 
         $em->remove($inventory);
 
@@ -124,7 +124,7 @@ class RenamingController
         if(\mb_strlen($newName) < 2 || \mb_strlen($newName) > 30)
             throw new PSPFormValidationException('Name must be between 2 and 30 characters long.');
 
-        $userStatsRepository->incrementStat($user, UserStatEnum::ReadAScroll);
+        $userStatsRepository->incrementStat($user, UserStat::ReadAScroll);
 
         $em->remove($inventory);
 

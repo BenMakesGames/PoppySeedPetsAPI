@@ -16,7 +16,7 @@ namespace App\Controller\Florist;
 
 use App\Enum\LocationEnum;
 use App\Enum\UnlockableFeatureEnum;
-use App\Enum\UserStatEnum;
+use App\Enum\UserStat;
 use App\Exceptions\PSPNotEnoughCurrencyException;
 use App\Exceptions\PSPNotUnlockedException;
 use App\Service\Clock;
@@ -138,7 +138,7 @@ class RollSatyrDiceController
         foreach($items as $itemName)
             $inventoryService->receiveItem($itemName, $user, $user, $user->getName() . ' got this from a game of Satyr Dice.', LocationEnum::Home);
 
-        $userStatsService->incrementStat($user, UserStatEnum::RolledSatyrDice);
+        $userStatsService->incrementStat($user, UserStat::RolledSatyrDice);
 
         $em->flush();
 

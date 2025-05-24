@@ -17,7 +17,7 @@ namespace App\Controller\Museum;
 use App\Entity\User;
 use App\Enum\SerializationGroupEnum;
 use App\Enum\UnlockableFeatureEnum;
-use App\Enum\UserStatEnum;
+use App\Enum\UserStat;
 use App\Exceptions\PSPNotUnlockedException;
 use App\Model\FilterResults;
 use App\Service\ResponseService;
@@ -50,7 +50,7 @@ class TopDonorsController
             ->andWhere('s.stat = :statName')
             ->addOrderBy('s.value', 'DESC')
             ->addOrderBy('s.lastTime', 'ASC')
-            ->setParameter('statName', UserStatEnum::ItemsDonatedToMuseum)
+            ->setParameter('statName', UserStat::ItemsDonatedToMuseum)
         ;
 
         $paginator = new Paginator($qb);

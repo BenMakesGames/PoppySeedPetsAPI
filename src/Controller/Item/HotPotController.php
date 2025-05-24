@@ -16,7 +16,7 @@ namespace App\Controller\Item;
 
 use App\Entity\Inventory;
 use App\Enum\LocationEnum;
-use App\Enum\UserStatEnum;
+use App\Enum\UserStat;
 use App\Exceptions\PSPFormValidationException;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotFoundException;
@@ -73,7 +73,7 @@ class HotPotController
 
         $usedHotPot->setValue($today);
 
-        $dippingStat = $userStatsRepository->incrementStat($user, UserStatEnum::FoodsDippedInAHotPot);
+        $dippingStat = $userStatsRepository->incrementStat($user, UserStat::FoodsDippedInAHotPot);
 
         // Hot Pot-only spices
         $possibleSpices = [

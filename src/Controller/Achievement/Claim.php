@@ -19,7 +19,7 @@ use App\Entity\UserBadge;
 use App\Enum\BadgeEnum;
 use App\Enum\CostOrYieldTypeEnum;
 use App\Enum\LocationEnum;
-use App\Enum\UserStatEnum;
+use App\Enum\UserStat;
 use App\Exceptions\PSPFormValidationException;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\UnreachableException;
@@ -65,7 +65,7 @@ final class Claim
 
         $em->persist($badge);
 
-        $userStatsRepository->incrementStat($user, UserStatEnum::AchievementsClaimed);
+        $userStatsRepository->incrementStat($user, UserStat::AchievementsClaimed);
 
         self::getAchievementReward($user, $progress['reward'], $inventoryService, $transactionService);
 

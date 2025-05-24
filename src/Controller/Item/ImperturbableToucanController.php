@@ -14,7 +14,7 @@ declare(strict_types=1);
 namespace App\Controller\Item;
 
 use App\Entity\Inventory;
-use App\Enum\UserStatEnum;
+use App\Enum\UserStat;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\ResponseService;
@@ -43,7 +43,7 @@ class ImperturbableToucanController
 
         $em->remove($inventory);
 
-        $userStatsService->incrementStat($user, UserStatEnum::SetAToucanFree, 1);
+        $userStatsService->incrementStat($user, UserStat::SetAToucanFree, 1);
 
         $em->flush();
 
