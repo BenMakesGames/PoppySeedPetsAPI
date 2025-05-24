@@ -217,7 +217,7 @@ class StoryService
 
     private static function choiceContainsExit(array $choice): bool
     {
-        return ArrayFunctions::any($choice['actions'], fn($action) => $action['type'] === StoryActionTypeEnum::EXIT);
+        return ArrayFunctions::any($choice['actions'], fn($action) => $action['type'] === StoryActionTypeEnum::Exit);
     }
 
     /**
@@ -236,11 +236,11 @@ class StoryService
     {
         switch($action['type'])
         {
-            case StoryActionTypeEnum::SET_STEP:
+            case StoryActionTypeEnum::SetStep:
                 $this->setStep($action['step']);
                 break;
 
-            case StoryActionTypeEnum::RECEIVE_ITEM:
+            case StoryActionTypeEnum::ReceiveItem:
                 $lockedToOwner = array_key_exists('locked', $action) && $action['locked'];
                 $description = str_replace([ '%user.name%' ], [ $this->user->getName() ], $action['description']);
 
@@ -248,16 +248,16 @@ class StoryService
 
                 break;
 
-            case StoryActionTypeEnum::DONATE_ITEM:
+            case StoryActionTypeEnum::DonateItem:
                 $this->museumService->forceDonateItem($this->user, $action['item'], $action['description']);
                 break;
 
-            case StoryActionTypeEnum::LOSE_ITEM:
+            case StoryActionTypeEnum::LoseItem:
                 $itemId = ItemRepository::getIdByName($this->em, $action['item']);
                 $this->inventoryService->loseItem($this->user, $itemId, [ LocationEnum::Home, LocationEnum::Basement ]);
                 break;
 
-            case StoryActionTypeEnum::LOSE_CALLING_INVENTORY:
+            case StoryActionTypeEnum::LoseCallingInventory:
                 if($this->callingInventory)
                     $this->em->remove($this->callingInventory);
                 else
@@ -267,22 +267,22 @@ class StoryService
 
                 break;
 
-            case StoryActionTypeEnum::INCREMENT_STAT:
+            case StoryActionTypeEnum::IncrementStat:
                 $this->userStatsRepository->incrementStat($this->user, $action['stat'], array_key_exists('change', $action) ? $action['change'] : 1);
                 break;
 
-            case StoryActionTypeEnum::SET_QUEST_VALUE:
+            case StoryActionTypeEnum::SetQuestValue:
                 UserQuestRepository::findOrCreate($this->em, $this->user, $action['quest'], $action['value'])
                     ->setValue($action['value'])
                 ;
                 break;
 
-            case StoryActionTypeEnum::UNLOCK_TRADER:
+            case StoryActionTypeEnum::UnlockTrader:
                 if(!$this->user->hasUnlockedFeature(UnlockableFeatureEnum::Trader))
                     UserUnlockedFeatureHelpers::create($this->em, $this->user, UnlockableFeatureEnum::Trader);
                 break;
 
-            case StoryActionTypeEnum::EXIT:
+            case StoryActionTypeEnum::Exit:
                 break;
 
             default:

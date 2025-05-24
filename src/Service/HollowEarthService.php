@@ -304,9 +304,9 @@ class HollowEarthService
         if(!$card)
             return;
 
-        if($player->getMovesRemaining() === 0 || $card->getRequiredAction() === HollowEarthRequiredActionEnum::YES_AND_KEEP_MOVING)
+        if($player->getMovesRemaining() === 0 || $card->getRequiredAction() === HollowEarthRequiredActionEnum::YesAndKeepMoving)
             $this->doImmediateEvent($player, $card->getEvent());
-        else if ($card->getRequiredAction() === HollowEarthRequiredActionEnum::YES_AND_STOP_MOVING)
+        else if ($card->getRequiredAction() === HollowEarthRequiredActionEnum::YesAndStopMoving)
         {
             $player->setMovesRemaining(0);
             $this->doImmediateEvent($player, $card->getEvent());

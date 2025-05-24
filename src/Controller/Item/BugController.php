@@ -293,7 +293,7 @@ class BugController
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'bug/#/squish');
 
-        $response = $storyService->doStory($user, StoryEnum::STOLEN_PLANS, $request->request, $inventory);
+        $response = $storyService->doStory($user, StoryEnum::StolenPlans, $request->request, $inventory);
 
         return $responseService->success($response, [ SerializationGroupEnum::STORY ]);
     }

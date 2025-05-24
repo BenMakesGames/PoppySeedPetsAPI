@@ -16,16 +16,14 @@ namespace App\Enum;
 
 final class StoryActionTypeEnum
 {
-    use FakeEnum;
+    public const string SetStep = 'setStep';
+    public const string ReceiveItem = 'receiveItem';
+    public const string DonateItem = 'donateItem';
+    public const string LoseItem = 'loseItem';
+    public const string LoseCallingInventory = 'loseCallingInventory';
+    public const string IncrementStat = 'incrementStat';
+    public const string SetQuestValue = 'setQuestValue';
+    public const string UnlockTrader = 'unlockTrader';
 
-    public const string SET_STEP = 'setStep';
-    public const string RECEIVE_ITEM = 'receiveItem';
-    public const string DONATE_ITEM = 'donateItem';
-    public const string LOSE_ITEM = 'loseItem';
-    public const string LOSE_CALLING_INVENTORY = 'loseCallingInventory';
-    public const string INCREMENT_STAT = 'incrementStat';
-    public const string SET_QUEST_VALUE = 'setQuestValue';
-    public const string UNLOCK_TRADER = 'unlockTrader';
-
-    public const string EXIT = 'exit';
+    public const string Exit = 'exit';
 }

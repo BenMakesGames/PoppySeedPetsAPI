@@ -49,7 +49,7 @@ class MerchantFishController
 
         if(!$user->hasUnlockedFeature(UnlockableFeatureEnum::Trader))
         {
-            $response = $storyService->doStory($user, StoryEnum::MERCHANT_FISH_MERCHANT, $request->request, $inventory);
+            $response = $storyService->doStory($user, StoryEnum::MerchantFishMerchant, $request->request, $inventory);
 
             return $responseService->success($response, [ SerializationGroupEnum::STORY ]);
         }

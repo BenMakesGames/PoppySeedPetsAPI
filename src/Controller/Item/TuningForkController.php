@@ -41,7 +41,7 @@ class TuningForkController
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'tuningFork/#/listen');
 
-        $response = $storyService->doStory($user, StoryEnum::SHARUMINYINKAS_DESPAIR, $request->request, $inventory);
+        $response = $storyService->doStory($user, StoryEnum::SharuminyinkasDespair, $request->request, $inventory);
 
         return $responseService->success($response, [ SerializationGroupEnum::STORY ]);
     }

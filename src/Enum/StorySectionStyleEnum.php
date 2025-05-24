@@ -18,7 +18,7 @@ final class StorySectionStyleEnum
 {
     use FakeEnum;
 
-    public const string DIALOG = 'dialog';
-    public const string DESCRIPTION = 'description';
-    public const string FULL_FRAME_PICTURE = 'fullFramePicture';
+    public const string Dialog = 'dialog';
+    public const string Description = 'description';
+    public const string FullFramePicture = 'fullFramePicture';
 }

@@ -18,7 +18,7 @@ final class HollowEarthRequiredActionEnum
 {
     use FakeEnum;
 
-    public const int NO = 0;
-    public const int YES_AND_KEEP_MOVING = 1;
-    public const int YES_AND_STOP_MOVING = 2;
+    public const int No = 0;
+    public const int YesAndKeepMoving = 1;
+    public const int YesAndStopMoving = 2;
 }
