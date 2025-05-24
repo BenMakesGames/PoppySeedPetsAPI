@@ -69,7 +69,7 @@ class FoodWithSpice
             $this->bonusItems[] = new BonusItemChance($food);
 
         foreach(FlavorEnum::cases() as $flavor)
-            $this->{$flavor} = $food->{'get' . $flavor->value}();
+            $this->{$flavor->value} = $food->{'get' . $flavor->value}();
 
         if($food->getGrantedSkill())
             $this->grantedSkills[] = $food->getGrantedSkill();
