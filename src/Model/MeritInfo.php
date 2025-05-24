@@ -90,6 +90,7 @@ final class MeritInfo
         MeritEnum::WONDROUS_DEXTERITY,
         MeritEnum::WONDROUS_PERCEPTION,
         MeritEnum::WONDROUS_INTELLIGENCE,
+        MeritEnum::MORTARS_AND_PESTLES,
 
         // from seeking the Philosopher's Stone
         MeritEnum::METATRON_S_TOUCH,
