@@ -158,7 +158,7 @@ class GenericAdventureService
 
             $pet->getOwner()->getGreenhouse()->setVisitingBird($bird);
 
-            return PetActivityLogFactory::createUnreadLog($this->em, $pet, 'While ' . '%pet:' . $pet->getId() . '.name% was thinking about what to do, they saw a huge ' . $bird . ' swoop into the Greenhouse and land on the Bird Bath!')
+            return PetActivityLogFactory::createUnreadLog($this->em, $pet, 'While ' . '%pet:' . $pet->getId() . '.name% was thinking about what to do, they saw a huge ' . $bird->value . ' swoop into the Greenhouse and land on the Bird Bath!')
                 ->addInterestingness(PetActivityLogInterestingness::UncommonActivity)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Greenhouse' ]))
             ;
