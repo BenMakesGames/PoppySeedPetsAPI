@@ -44,8 +44,9 @@ interface IRandom
     function rngNextInt(int $min, int $inclusiveMax): int;
 
     /**
-     * @param array $array
-     * @return mixed A random element from the array
+     * @template T
+     * @param T[] $array
+     * @return T A random element from the array
      * @phpstan-impure
      */
     function rngNextFromArray(array $array): mixed;
@@ -56,9 +57,10 @@ interface IRandom
     function rngNextShuffle(array &$array): void;
 
     /**
-     * @param array $array The array to select a subset from
+     * @template T
+     * @param T[] $array The array to select a subset from
      * @param int $number The number of elements to select
-     * @return array A random subset of the array with the specified number of elements
+     * @return T[] A random subset of the array with the specified number of elements
      * @phpstan-impure
      */
     function rngNextSubsetFromArray(array $array, int $number): array;

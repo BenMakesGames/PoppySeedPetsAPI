@@ -306,7 +306,7 @@ class EatingService
             $this->em->remove($i);
 
             if($randomFlavor)
-                $foodsEaten[] = $itemName . ' (ooh! ' . $randomFlavor . '!)';
+                $foodsEaten[] = $itemName . ' (ooh! ' . $randomFlavor->value . '!)';
             else
                 $foodsEaten[] = $itemName;
 
