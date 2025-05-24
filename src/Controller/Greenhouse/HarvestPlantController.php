@@ -23,7 +23,7 @@ use App\Enum\MoonPhaseEnum;
 use App\Enum\PetLocationEnum;
 use App\Enum\PollinatorEnum;
 use App\Enum\SerializationGroupEnum;
-use App\Enum\UserStatEnum;
+use App\Enum\UserStat;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotFoundException;
 use App\Functions\ArrayFunctions;
@@ -210,7 +210,7 @@ class HarvestPlantController
                 $message = 'You harvested ' . ArrayFunctions::list_nice_quantities($lootList) . '!';
         }
 
-        $plantsHarvested = $userStatsRepository->incrementStat($user, UserStatEnum::HarvestedAPlant);
+        $plantsHarvested = $userStatsRepository->incrementStat($user, UserStat::HarvestedAPlant);
 
         if($plantsHarvested->getValue() === 3)
         {

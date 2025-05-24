@@ -18,7 +18,7 @@ use App\Entity\Fireplace;
 use App\Enum\LocationEnum;
 use App\Enum\SerializationGroupEnum;
 use App\Enum\UnlockableFeatureEnum;
-use App\Enum\UserStatEnum;
+use App\Enum\UserStat;
 use App\Exceptions\PSPNotFoundException;
 use App\Exceptions\PSPNotUnlockedException;
 use App\Functions\ArrayFunctions;
@@ -92,7 +92,7 @@ class FeedController
 
             PlayerLogFactory::create($em, $user, $entry, [ 'Fireplace' ]);
 
-            $userStatsRepository->incrementStat($user, UserStatEnum::ItemsThrownIntoTheFireplace, count($fuelUsed));
+            $userStatsRepository->incrementStat($user, UserStat::ItemsThrownIntoTheFireplace, count($fuelUsed));
         }
 
         if($fireplace->getHelper() && $fireplace->getSoot() >= 18 * 60)

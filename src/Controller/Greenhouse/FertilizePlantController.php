@@ -17,7 +17,7 @@ namespace App\Controller\Greenhouse;
 use App\Entity\GreenhousePlant;
 use App\Entity\Inventory;
 use App\Enum\SerializationGroupEnum;
-use App\Enum\UserStatEnum;
+use App\Enum\UserStat;
 use App\Exceptions\PSPFormValidationException;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotFoundException;
@@ -64,7 +64,7 @@ class FertilizePlantController
 
         $plant->fertilize($fertilizer);
 
-        $userStatsRepository->incrementStat($user, UserStatEnum::FertilizedAPlant);
+        $userStatsRepository->incrementStat($user, UserStat::FertilizedAPlant);
 
         $plantNameArticle = GrammarFunctions::indefiniteArticle($plant->getPlant()->getName());
 

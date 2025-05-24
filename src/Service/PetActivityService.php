@@ -29,7 +29,7 @@ use App\Enum\PetActivityStatEnum;
 use App\Enum\PetBadgeEnum;
 use App\Enum\StatusEffectEnum;
 use App\Enum\UnlockableFeatureEnum;
-use App\Enum\UserStatEnum;
+use App\Enum\UserStat;
 use App\Functions\ActivityHelpers;
 use App\Functions\ArrayFunctions;
 use App\Functions\CalendarFunctions;
@@ -674,7 +674,7 @@ class PetActivityService
             case 'Peacock Plushy':
             case 'Phoenix Plushy':
             case '"Roy" Plushy':
-                if($this->rng->rngNextInt(1, 6) === 1 || $this->userStatsRepository->getStatValue($pet->getOwner(), UserStatEnum::TradedWithTheFluffmonger) === 0)
+                if($this->rng->rngNextInt(1, 6) === 1 || $this->userStatsRepository->getStatValue($pet->getOwner(), UserStat::TradedWithTheFluffmonger) === 0)
                 {
                     $this->treasureMapService->doFluffmongerTrade($pet);
                     return true;

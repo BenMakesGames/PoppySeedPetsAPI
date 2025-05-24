@@ -16,7 +16,7 @@ namespace App\Controller\Item\Pinata;
 
 use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
-use App\Enum\UserStatEnum;
+use App\Enum\UserStat;
 use App\Functions\ItemRepository;
 use App\Functions\UserQuestRepository;
 use App\Service\InventoryService;
@@ -48,7 +48,7 @@ class IceMangoController
         $location = $inventory->getLocation();
         $lockedToOwner = $inventory->getLockedToOwner();
 
-        $mangoesShattered = $userStatsRepository->incrementStat($user, UserStatEnum::ShatteredIceMango);
+        $mangoesShattered = $userStatsRepository->incrementStat($user, UserStat::ShatteredIceMango);
         $lastShatterEffect = UserQuestRepository::findOrCreate($em, $user, 'Last Ice "Mango" Shattering', 0);
 
         $possibleEffects = array_diff([ 1, 2, 3, 4 ], [ $lastShatterEffect->getValue() ]);

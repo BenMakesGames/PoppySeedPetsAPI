@@ -29,7 +29,7 @@ use App\Enum\PetSpeciesName;
 use App\Enum\PollinatorEnum;
 use App\Enum\SerializationGroupEnum;
 use App\Enum\UnlockableFeatureEnum;
-use App\Enum\UserStatEnum;
+use App\Enum\UserStat;
 use App\Functions\ArrayFunctions;
 use App\Functions\MeritRepository;
 use App\Functions\PetRepository;
@@ -101,7 +101,7 @@ class GreenhouseService
 
         $greenhouse->setVisitingBird(null);
 
-        $this->userStatsRepository->incrementStat($user, UserStatEnum::LargeBirdsApproached);
+        $this->userStatsRepository->incrementStat($user, UserStat::LargeBirdsApproached);
 
         PlayerLogFactory::create($this->em, $user, $activityLogMessage, [ 'Greenhouse', 'Birdbath' ]);
 

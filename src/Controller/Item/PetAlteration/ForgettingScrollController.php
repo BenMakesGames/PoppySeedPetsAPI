@@ -19,7 +19,7 @@ use App\Entity\Inventory;
 use App\Entity\Pet;
 use App\Enum\MeritEnum;
 use App\Enum\PetSkillEnum;
-use App\Enum\UserStatEnum;
+use App\Enum\UserStat;
 use App\Exceptions\PSPFormValidationException;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotFoundException;
@@ -106,7 +106,7 @@ class ForgettingScrollController
                 throw new PSPInvalidOperationException('That merit cannot be unlearned.');
         }
 
-        $userStatsRepository->incrementStat($user, UserStatEnum::ReadAScroll);
+        $userStatsRepository->incrementStat($user, UserStat::ReadAScroll);
 
         $em->remove($inventory);
 
@@ -178,7 +178,7 @@ class ForgettingScrollController
         if($pet->getSkills()->getStat($skill) < 1)
             throw new PSPInvalidOperationException($pet->getName() . ' does not have any points of ' . $skill . ' to unlearn.');
 
-        $userStatsRepository->incrementStat($user, UserStatEnum::ReadAScroll);
+        $userStatsRepository->incrementStat($user, UserStat::ReadAScroll);
 
         $em->remove($inventory);
 

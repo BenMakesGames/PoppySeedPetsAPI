@@ -22,7 +22,7 @@ use App\Entity\MarketBid;
 use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Enum\UnlockableFeatureEnum;
-use App\Enum\UserStatEnum;
+use App\Enum\UserStat;
 use App\Functions\InventoryModifierFunctions;
 use App\Functions\MarketListingRepository;
 use App\Functions\UserQuestRepository;
@@ -101,9 +101,9 @@ class MarketService
 
     public function transferItemToPlayer(Inventory $item, User $newOwner, int $location, int $sellPrice, string $newItemComment): void
     {
-        $this->userStatsRepository->incrementStat($item->getOwner(), UserStatEnum::TotalMoneysEarnedInMarket, $sellPrice);
-        $this->userStatsRepository->incrementStat($item->getOwner(), UserStatEnum::ItemsSoldInMarket, 1);
-        $this->userStatsRepository->incrementStat($newOwner, UserStatEnum::ItemsBoughtInMarket, 1);
+        $this->userStatsRepository->incrementStat($item->getOwner(), UserStat::TotalMoneysEarnedInMarket, $sellPrice);
+        $this->userStatsRepository->incrementStat($item->getOwner(), UserStat::ItemsSoldInMarket, 1);
+        $this->userStatsRepository->incrementStat($newOwner, UserStat::ItemsBoughtInMarket, 1);
 
         $item
             ->setSpice(null)

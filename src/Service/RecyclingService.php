@@ -17,7 +17,7 @@ namespace App\Service;
 use App\Entity\Inventory;
 use App\Entity\User;
 use App\Enum\LocationEnum;
-use App\Enum\UserStatEnum;
+use App\Enum\UserStat;
 use App\Exceptions\PSPNotFoundException;
 use App\Functions\ArrayFunctions;
 use App\Functions\CalendarFunctions;
@@ -85,7 +85,7 @@ class RecyclingService
 
             if($i->getItem()->hasUseAction('bug/#/putOutside'))
             {
-                $this->userStatsRepository->incrementStat($user, UserStatEnum::BugsPutOutside);
+                $this->userStatsRepository->incrementStat($user, UserStat::BugsPutOutside);
                 $this->em->remove($i);
                 continue;
             }
@@ -106,7 +106,7 @@ class RecyclingService
 
         if($totalRecyclingPointsEarned > 0 || $totalItemsRecycled > 0)
         {
-            $this->userStatsRepository->incrementStat($user, UserStatEnum::ItemsRecycled, $totalItemsRecycled);
+            $this->userStatsRepository->incrementStat($user, UserStat::ItemsRecycled, $totalItemsRecycled);
 
             $this->transactionService->getRecyclingPoints(
                 $user,

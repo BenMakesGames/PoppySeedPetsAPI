@@ -27,7 +27,7 @@ use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogTagEnum;
 use App\Enum\StatusEffectEnum;
 use App\Enum\UnlockableFeatureEnum;
-use App\Enum\UserStatEnum;
+use App\Enum\UserStat;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Functions\ArrayFunctions;
 use App\Functions\GrammarFunctions;
@@ -331,7 +331,7 @@ class EatingService
             if($pet->getPregnancy())
                 $pet->getPregnancy()->increaseAffection($gain);
 
-            $this->userStatsRepository->incrementStat($feeder, UserStatEnum::FoodHoursFedToPets, $foodGained);
+            $this->userStatsRepository->incrementStat($feeder, UserStat::FoodHoursFedToPets, $foodGained);
 
             $this->cravingService->maybeAddCraving($pet);
         }

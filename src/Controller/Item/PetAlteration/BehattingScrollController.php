@@ -18,7 +18,7 @@ use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
 use App\Entity\Pet;
 use App\Enum\MeritEnum;
-use App\Enum\UserStatEnum;
+use App\Enum\UserStat;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPPetNotFoundException;
 use App\Functions\MeritRepository;
@@ -59,7 +59,7 @@ class BehattingScrollController
 
         $merit = MeritRepository::findOneByName($em, MeritEnum::BEHATTED);
 
-        $userStatsRepository->incrementStat($user, UserStatEnum::ReadAScroll);
+        $userStatsRepository->incrementStat($user, UserStat::ReadAScroll);
 
         $em->remove($inventory);
 

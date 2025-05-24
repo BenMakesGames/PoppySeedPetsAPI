@@ -17,7 +17,7 @@ namespace App\Controller\Item;
 use App\Entity\Inventory;
 use App\Enum\LocationEnum;
 use App\Enum\MoonPhaseEnum;
-use App\Enum\UserStatEnum;
+use App\Enum\UserStat;
 use App\Exceptions\PSPFormValidationException;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotFoundException;
@@ -154,7 +154,7 @@ class MothController
         if($gotLove)
             $items[] = 'Chang\'e\'s Love';
 
-        $userStatsRepository->incrementStat($user, UserStatEnum::BugsPutOutside, $mothCount);
+        $userStatsRepository->incrementStat($user, UserStat::BugsPutOutside, $mothCount);
 
         $quantitiesByItem = [];
 

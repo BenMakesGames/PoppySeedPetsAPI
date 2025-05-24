@@ -16,7 +16,7 @@ namespace App\Service;
 
 use App\Entity\User;
 use App\Entity\UserStats;
-use App\Enum\UserStatEnum;
+use App\Enum\UserStat;
 use App\Functions\InMemoryCache;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -71,17 +71,17 @@ class UserStatsService
 
         $stat->increaseValue($change);
 
-        if($name === UserStatEnum::ItemsBoughtInMarket)
+        if($name === UserStat::ItemsBoughtInMarket)
         {
             if($oldValue < 50 && $stat->getValue() >= 50)
                 $user->increaseMaxMarketBids(5);
         }
-        else if($name === UserStatEnum::ItemsSoldInMarket)
+        else if($name === UserStat::ItemsSoldInMarket)
         {
             if($oldValue < 50 && $stat->getValue() >= 50)
                 $user->increaseMaxMarketBids(5);
         }
-        else if($name === UserStatEnum::ItemsDonatedToMuseum)
+        else if($name === UserStat::ItemsDonatedToMuseum)
         {
             if($oldValue < 400 && $stat->getValue() >= 400)
             {

@@ -26,7 +26,7 @@ use App\Enum\PetBadgeEnum;
 use App\Enum\PetLocationEnum;
 use App\Enum\PetPregnancyStyleEnum;
 use App\Enum\RelationshipEnum;
-use App\Enum\UserStatEnum;
+use App\Enum\UserStat;
 use App\Functions\MeritRepository;
 use App\Functions\PetActivityLogTagHelpers;
 use App\Functions\PetBadgeHelpers;
@@ -291,7 +291,7 @@ class PregnancyService
             ->increaseFood(-$this->rng->rngNextInt(8, 16))
         ;
 
-        $this->userStatsRepository->incrementStat($user, UserStatEnum::PetsBirthed);
+        $this->userStatsRepository->incrementStat($user, UserStat::PetsBirthed);
     }
 
     private const array CanonicalizedForbiddenCombinedNames = [

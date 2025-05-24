@@ -18,7 +18,7 @@ use App\Entity\Inventory;
 use App\Entity\KnownRecipes;
 use App\Enum\LocationEnum;
 use App\Enum\SerializationGroupEnum;
-use App\Enum\UserStatEnum;
+use App\Enum\UserStat;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotFoundException;
 use App\Functions\RecipeRepository;
@@ -90,7 +90,7 @@ class PrepareRecipeFromMemory
 
         $results = $cookingService->prepareRecipeWithCookingBuddy($user, $inventoryToUse, $recipe, $quantity);
 
-        $userStatsRepository->incrementStat($user, UserStatEnum::CookedSomething, $quantity);
+        $userStatsRepository->incrementStat($user, UserStat::CookedSomething, $quantity);
 
         $em->flush();
 

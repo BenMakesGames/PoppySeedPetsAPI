@@ -17,7 +17,7 @@ namespace App\Controller\Greenhouse;
 use App\Entity\Inventory;
 use App\Enum\LocationEnum;
 use App\Enum\SerializationGroupEnum;
-use App\Enum\UserStatEnum;
+use App\Enum\UserStat;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotFoundException;
 use App\Exceptions\PSPNotUnlockedException;
@@ -115,7 +115,7 @@ class FeedComposterController
         foreach($items as $item)
             $em->remove($item);
 
-        $userStatsRepository->incrementStat($user, UserStatEnum::ItemsComposted, count($items));
+        $userStatsRepository->incrementStat($user, UserStat::ItemsComposted, count($items));
 
         $user->getGreenhouse()
             ->setComposterFood($remainingFertilizer)

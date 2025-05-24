@@ -16,7 +16,7 @@ namespace App\Controller\Item\Scroll;
 
 use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
-use App\Enum\UserStatEnum;
+use App\Enum\UserStat;
 use App\Functions\ArrayFunctions;
 use App\Service\InventoryService;
 use App\Service\IRandom;
@@ -46,7 +46,7 @@ class SeaController
 
         $em->remove($inventory);
 
-        $userStatsRepository->incrementStat($user, UserStatEnum::ReadAScroll);
+        $userStatsRepository->incrementStat($user, UserStat::ReadAScroll);
 
         $items = [
             'Fish',

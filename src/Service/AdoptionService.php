@@ -18,7 +18,7 @@ use App\Entity\Pet;
 use App\Entity\PetSpecies;
 use App\Entity\User;
 use App\Enum\PetSpeciesName;
-use App\Enum\UserStatEnum;
+use App\Enum\UserStat;
 use App\Functions\CalendarFunctions;
 use App\Functions\ColorFunctions;
 use App\Functions\DateFunctions;
@@ -43,7 +43,7 @@ class AdoptionService
 
     public function getPetsAdopted(User $user): int
     {
-        return $this->userStatsRepository->getStatValue($user, UserStatEnum::PetsAdopted);
+        return $this->userStatsRepository->getStatValue($user, UserStat::PetsAdopted);
     }
 
     public function getAdoptionFee(User $user): int

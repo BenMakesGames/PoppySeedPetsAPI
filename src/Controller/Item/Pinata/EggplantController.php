@@ -17,7 +17,7 @@ namespace App\Controller\Item\Pinata;
 use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
 use App\Enum\PlayerActivityLogTagEnum;
-use App\Enum\UserStatEnum;
+use App\Enum\UserStat;
 use App\Functions\PlayerLogFactory;
 use App\Service\InventoryService;
 use App\Service\IRandom;
@@ -88,11 +88,11 @@ class EggplantController
                 $newItem->setSpice($inventory->getSpice());
             }
 
-            $userStatsRepository->incrementStat($user, UserStatEnum::EggsHarvestedFromEggplants, $eggs);
+            $userStatsRepository->incrementStat($user, UserStat::EggsHarvestedFromEggplants, $eggs);
         }
         else
         {
-            $userStatsRepository->incrementStat($user, UserStatEnum::RottenEggplants, 1);
+            $userStatsRepository->incrementStat($user, UserStat::RottenEggplants, 1);
         }
 
         if($rng->rngNextInt(1, 100) === 1)

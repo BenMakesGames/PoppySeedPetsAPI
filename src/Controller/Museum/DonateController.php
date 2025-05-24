@@ -18,7 +18,7 @@ use App\Entity\Inventory;
 use App\Entity\MuseumItem;
 use App\Enum\LocationEnum;
 use App\Enum\UnlockableFeatureEnum;
-use App\Enum\UserStatEnum;
+use App\Enum\UserStat;
 use App\Exceptions\PSPFormValidationException;
 use App\Exceptions\PSPNotFoundException;
 use App\Exceptions\PSPNotUnlockedException;
@@ -108,7 +108,7 @@ class DonateController
 
         $transactionService->getMuseumFavor($user, $totalMuseumPoints, 'You donated ' . $donationSummary . ' to the Museum.');
 
-        $userStatsRepository->incrementStat($user, UserStatEnum::ItemsDonatedToMuseum, count($inventory));
+        $userStatsRepository->incrementStat($user, UserStat::ItemsDonatedToMuseum, count($inventory));
 
         $em->flush();
 

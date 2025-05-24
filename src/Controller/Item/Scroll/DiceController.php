@@ -16,7 +16,7 @@ namespace App\Controller\Item\Scroll;
 
 use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
-use App\Enum\UserStatEnum;
+use App\Enum\UserStat;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\ResponseService;
@@ -83,7 +83,7 @@ class DiceController
             $inventoryService->receiveItem($die, $user, $user, $user->getName() . ' found this in ' . $inventory->getItem()->getNameWithArticle() . '.', $location, $lockedToOwner);
         }
 
-        $userStatsRepository->incrementStat($user, UserStatEnum::ReadAScroll);
+        $userStatsRepository->incrementStat($user, UserStat::ReadAScroll);
 
         $em->remove($inventory);
 

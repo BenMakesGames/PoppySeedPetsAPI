@@ -19,7 +19,7 @@ use App\Entity\UserStats;
 use App\Enum\EnumInvalidValueException;
 use App\Enum\LocationEnum;
 use App\Enum\UnlockableFeatureEnum;
-use App\Enum\UserStatEnum;
+use App\Enum\UserStat;
 use App\Exceptions\PSPFormValidationException;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotFoundException;
@@ -231,7 +231,7 @@ class BookstoreService
         if($flowersPurchased && $flowersPurchased->getValue() > 0)
             $bookPrices['Book of Flowers'] = 15;
 
-        $cookedSomething = $this->em->getRepository(UserStats::class)->findOneBy([ 'user' => $user, 'stat' => UserStatEnum::CookedSomething ]);
+        $cookedSomething = $this->em->getRepository(UserStats::class)->findOneBy([ 'user' => $user, 'stat' => UserStat::CookedSomething ]);
 
         if($cookedSomething)
         {
@@ -284,7 +284,7 @@ class BookstoreService
             }
         }
 
-        $itemsDonatedToMuseum = $this->em->getRepository(UserStats::class)->findOneBy([ 'user' => $user, 'stat' => UserStatEnum::ItemsDonatedToMuseum ]);
+        $itemsDonatedToMuseum = $this->em->getRepository(UserStats::class)->findOneBy([ 'user' => $user, 'stat' => UserStat::ItemsDonatedToMuseum ]);
 
         if($itemsDonatedToMuseum)
         {
@@ -341,12 +341,12 @@ class BookstoreService
 
     public function renamingScrollAvailable(User $user): bool
     {
-        $petsAdopted = $this->em->getRepository(UserStats::class)->findOneBy([ 'user' => $user, 'stat' => UserStatEnum::PetsAdopted ]);
+        $petsAdopted = $this->em->getRepository(UserStats::class)->findOneBy([ 'user' => $user, 'stat' => UserStat::PetsAdopted ]);
 
         if($petsAdopted && $petsAdopted->getValue() > 0)
             return true;
 
-        $petsBirthed = $this->em->getRepository(UserStats::class)->findOneBy([ 'user' => $user, 'stat' => UserStatEnum::PetsBirthed ]);
+        $petsBirthed = $this->em->getRepository(UserStats::class)->findOneBy([ 'user' => $user, 'stat' => UserStat::PetsBirthed ]);
 
         if($petsBirthed && $petsBirthed->getValue() > 0)
             return true;

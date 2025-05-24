@@ -18,7 +18,7 @@ use App\Entity\MonsterOfTheWeek;
 use App\Entity\MonsterOfTheWeekContribution;
 use App\Enum\LocationEnum;
 use App\Enum\MonsterOfTheWeekEnum;
-use App\Enum\UserStatEnum;
+use App\Enum\UserStat;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\UnreachableException;
 use App\Functions\ArrayFunctions;
@@ -72,21 +72,21 @@ class ClaimRewardsController
         if($monster->getCommunityTotal() >= $thresholds[0] * $monster->getLevel())
         {
             $rewards[] = $monster->getEasyPrize()->getName();
-            $userStatsService->incrementStat($user, UserStatEnum::RECEIVED_A_MINOR_PRIZE_FROM_A_GREAT_SPIRIT);
+            $userStatsService->incrementStat($user, UserStat::RECEIVED_A_MINOR_PRIZE_FROM_A_GREAT_SPIRIT);
             $userStatsService->incrementStat($user, self::ReceivedAPrizeFrom('Minor', $monster->getMonster()));
         }
 
         if($monster->getCommunityTotal() >= $thresholds[1] * $monster->getLevel())
         {
             $rewards[] = $monster->getMediumPrize()->getName();
-            $userStatsService->incrementStat($user, UserStatEnum::RECEIVED_A_MODERATE_PRIZE_FROM_A_GREAT_SPIRIT);
+            $userStatsService->incrementStat($user, UserStat::RECEIVED_A_MODERATE_PRIZE_FROM_A_GREAT_SPIRIT);
             $userStatsService->incrementStat($user, self::ReceivedAPrizeFrom('Moderate', $monster->getMonster()));
         }
 
         if($monster->getCommunityTotal() >= $thresholds[2] * $monster->getLevel())
         {
             $rewards[] = $monster->getHardPrize()->getName();
-            $userStatsService->incrementStat($user, UserStatEnum::RECEIVED_A_MAJOR_PRIZE_FROM_A_GREAT_SPIRIT);
+            $userStatsService->incrementStat($user, UserStat::RECEIVED_A_MAJOR_PRIZE_FROM_A_GREAT_SPIRIT);
             $userStatsService->incrementStat($user, self::ReceivedAPrizeFrom('Major', $monster->getMonster()));
         }
 
@@ -115,32 +115,32 @@ class ClaimRewardsController
         {
             'Minor' => match ($monster)
             {
-                MonsterOfTheWeekEnum::Anhur => UserStatEnum::RECEIVED_A_MINOR_PRIZE_FROM_A_HUNTER_OF_ANHUR,
-                MonsterOfTheWeekEnum::Boshinogami => UserStatEnum::RECEIVED_A_MINOR_PRIZE_FROM_SOME_BOSHINOGAMI,
-                MonsterOfTheWeekEnum::Cardea => UserStatEnum::RECEIVED_A_MINOR_PRIZE_FROM_CARDEAS_LOCKBEARER,
-                MonsterOfTheWeekEnum::Dionysus => UserStatEnum::RECEIVED_A_MINOR_PRIZE_FROM_DIONYSUSS_HUNGER,
-                MonsterOfTheWeekEnum::Huehuecoyotl => UserStatEnum::RECEIVED_A_MINOR_PRIZE_FROM_HUEHUECOYOTLS_FOLLY,
-                MonsterOfTheWeekEnum::EiriPersona => UserStatEnum::RECEIVED_A_MINOR_PRIZE_FROM_AN_EIRI_PERSONA,
+                MonsterOfTheWeekEnum::Anhur => UserStat::RECEIVED_A_MINOR_PRIZE_FROM_A_HUNTER_OF_ANHUR,
+                MonsterOfTheWeekEnum::Boshinogami => UserStat::RECEIVED_A_MINOR_PRIZE_FROM_SOME_BOSHINOGAMI,
+                MonsterOfTheWeekEnum::Cardea => UserStat::RECEIVED_A_MINOR_PRIZE_FROM_CARDEAS_LOCKBEARER,
+                MonsterOfTheWeekEnum::Dionysus => UserStat::RECEIVED_A_MINOR_PRIZE_FROM_DIONYSUSS_HUNGER,
+                MonsterOfTheWeekEnum::Huehuecoyotl => UserStat::RECEIVED_A_MINOR_PRIZE_FROM_HUEHUECOYOTLS_FOLLY,
+                MonsterOfTheWeekEnum::EiriPersona => UserStat::RECEIVED_A_MINOR_PRIZE_FROM_AN_EIRI_PERSONA,
                 default => throw new \Exception('Invalid monster: ' . $monster->value)
             },
             'Moderate' => match ($monster)
             {
-                MonsterOfTheWeekEnum::Anhur => UserStatEnum::RECEIVED_A_MODERATE_PRIZE_FROM_A_HUNTER_OF_ANHUR,
-                MonsterOfTheWeekEnum::Boshinogami => UserStatEnum::RECEIVED_A_MODERATE_PRIZE_FROM_SOME_BOSHINOGAMI,
-                MonsterOfTheWeekEnum::Cardea => UserStatEnum::RECEIVED_A_MODERATE_PRIZE_FROM_CARDEAS_LOCKBEARER,
-                MonsterOfTheWeekEnum::Dionysus => UserStatEnum::RECEIVED_A_MODERATE_PRIZE_FROM_DIONYSUSS_HUNGER,
-                MonsterOfTheWeekEnum::Huehuecoyotl => UserStatEnum::RECEIVED_A_MODERATE_PRIZE_FROM_HUEHUECOYOTLS_FOLLY,
-                MonsterOfTheWeekEnum::EiriPersona => UserStatEnum::RECEIVED_A_MODERATE_PRIZE_FROM_AN_EIRI_PERSONA,
+                MonsterOfTheWeekEnum::Anhur => UserStat::RECEIVED_A_MODERATE_PRIZE_FROM_A_HUNTER_OF_ANHUR,
+                MonsterOfTheWeekEnum::Boshinogami => UserStat::RECEIVED_A_MODERATE_PRIZE_FROM_SOME_BOSHINOGAMI,
+                MonsterOfTheWeekEnum::Cardea => UserStat::RECEIVED_A_MODERATE_PRIZE_FROM_CARDEAS_LOCKBEARER,
+                MonsterOfTheWeekEnum::Dionysus => UserStat::RECEIVED_A_MODERATE_PRIZE_FROM_DIONYSUSS_HUNGER,
+                MonsterOfTheWeekEnum::Huehuecoyotl => UserStat::RECEIVED_A_MODERATE_PRIZE_FROM_HUEHUECOYOTLS_FOLLY,
+                MonsterOfTheWeekEnum::EiriPersona => UserStat::RECEIVED_A_MODERATE_PRIZE_FROM_AN_EIRI_PERSONA,
                 default => throw new \Exception('Invalid monster: ' . $monster->value)
             },
             'Major' => match ($monster)
             {
-                MonsterOfTheWeekEnum::Anhur => UserStatEnum::RECEIVED_A_MAJOR_PRIZE_FROM_A_HUNTER_OF_ANHUR,
-                MonsterOfTheWeekEnum::Boshinogami => UserStatEnum::RECEIVED_A_MAJOR_PRIZE_FROM_SOME_BOSHINOGAMI,
-                MonsterOfTheWeekEnum::Cardea => UserStatEnum::RECEIVED_A_MAJOR_PRIZE_FROM_CARDEAS_LOCKBEARER,
-                MonsterOfTheWeekEnum::Dionysus => UserStatEnum::RECEIVED_A_MAJOR_PRIZE_FROM_DIONYSUSS_HUNGER,
-                MonsterOfTheWeekEnum::Huehuecoyotl => UserStatEnum::RECEIVED_A_MAJOR_PRIZE_FROM_HUEHUECOYOTLS_FOLLY,
-                MonsterOfTheWeekEnum::EiriPersona => UserStatEnum::RECEIVED_A_MAJOR_PRIZE_FROM_AN_EIRI_PERSONA,
+                MonsterOfTheWeekEnum::Anhur => UserStat::RECEIVED_A_MAJOR_PRIZE_FROM_A_HUNTER_OF_ANHUR,
+                MonsterOfTheWeekEnum::Boshinogami => UserStat::RECEIVED_A_MAJOR_PRIZE_FROM_SOME_BOSHINOGAMI,
+                MonsterOfTheWeekEnum::Cardea => UserStat::RECEIVED_A_MAJOR_PRIZE_FROM_CARDEAS_LOCKBEARER,
+                MonsterOfTheWeekEnum::Dionysus => UserStat::RECEIVED_A_MAJOR_PRIZE_FROM_DIONYSUSS_HUNGER,
+                MonsterOfTheWeekEnum::Huehuecoyotl => UserStat::RECEIVED_A_MAJOR_PRIZE_FROM_HUEHUECOYOTLS_FOLLY,
+                MonsterOfTheWeekEnum::EiriPersona => UserStat::RECEIVED_A_MAJOR_PRIZE_FROM_AN_EIRI_PERSONA,
                 default => throw new \Exception('Invalid monster: ' . $monster->value)
             }
         };

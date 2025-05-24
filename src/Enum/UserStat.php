@@ -14,10 +14,8 @@ declare(strict_types=1);
 
 namespace App\Enum;
 
-final class UserStatEnum
+final class UserStat
 {
-    use FakeEnum;
-
     public const string TotalMoneysSpent = 'Total Moneys Spent';
     public const string TotalMoneysEarnedInMarket = 'Total Moneys Earned in Market';
     public const string ItemsSoldInMarket = 'Items Sold in Market';

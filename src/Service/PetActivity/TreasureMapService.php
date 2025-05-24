@@ -25,7 +25,7 @@ use App\Enum\PetSkillEnum;
 use App\Enum\SpiritCompanionStarEnum;
 use App\Enum\StatusEffectEnum;
 use App\Enum\UnlockableFeatureEnum;
-use App\Enum\UserStatEnum;
+use App\Enum\UserStat;
 use App\Functions\AdventureMath;
 use App\Functions\ArrayFunctions;
 use App\Functions\EquipmentFunctions;
@@ -408,7 +408,7 @@ class TreasureMapService
             ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Adventure!' ]))
         ;
 
-        $this->userStatsRepository->incrementStat($pet->getOwner(), UserStatEnum::BugsPutOutside);
+        $this->userStatsRepository->incrementStat($pet->getOwner(), UserStat::BugsPutOutside);
 
         foreach($loot as $itemName)
             $this->inventoryService->petCollectsItem($itemName, $pet, $pet->getName() . ' got this from ' . $location . ', which they found by following a Fruit Fly on a String.', $activityLog);
@@ -431,7 +431,7 @@ class TreasureMapService
             $this->houseSimService->getState()->loseItem('Fluff', 1);
 
             // had fluff!
-            $fluffTradedStat = $this->userStatsRepository->incrementStat($pet->getOwner(), UserStatEnum::TradedWithTheFluffmonger);
+            $fluffTradedStat = $this->userStatsRepository->incrementStat($pet->getOwner(), UserStat::TradedWithTheFluffmonger);
 
             $fluffmongerSpecialTrades = [
                 'Behatting Scroll' => 20,

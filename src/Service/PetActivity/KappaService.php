@@ -19,7 +19,7 @@ use App\Enum\PetActivityLogInterestingness;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetBadgeEnum;
 use App\Enum\PetSkillEnum;
-use App\Enum\UserStatEnum;
+use App\Enum\UserStat;
 use App\Exceptions\PSPNotFoundException;
 use App\Functions\ActivityHelpers;
 use App\Functions\EquipmentFunctions;
@@ -128,7 +128,7 @@ class KappaService
             $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(15, 30), PetActivityStatEnum::OTHER, null);
             PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::RETURNED_A_SHIRIKODAMA, $activityLog);
 
-            $this->userStatsRepository->incrementStat($owner, UserStatEnum::PettedAPet, 1);
+            $this->userStatsRepository->incrementStat($owner, UserStat::PettedAPet, 1);
 
             PlayerLogFactory::create($this->em, $owner, ActivityHelpers::PetName($pet) . ' returned your Shirikodama! (Some Kappa must have stolen it!) You thank ' . ActivityHelpers::PetName($pet) . ' with pets and pats before swallowing the Shirikodama.', [
                 'Shirikodama',
@@ -154,7 +154,7 @@ class KappaService
             $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::OTHER, null);
             PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::RETURNED_A_SHIRIKODAMA, $activityLog);
 
-            $this->userStatsRepository->incrementStat($owner, UserStatEnum::PettedAPet, 1);
+            $this->userStatsRepository->incrementStat($owner, UserStat::PettedAPet, 1);
 
             PlayerLogFactory::create($this->em, $owner, ActivityHelpers::PetName($pet) . ' returned your Shirikodama! (Some Kappa must have stolen it!) You thank ' . ActivityHelpers::PetName($pet) . ' with pets and pats before swallowing the Shirikodama.', [
                 'Shirikodama',

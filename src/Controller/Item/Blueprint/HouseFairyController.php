@@ -21,7 +21,7 @@ use App\Entity\Pet;
 use App\Enum\MeritEnum;
 use App\Enum\PetLocationEnum;
 use App\Enum\UnlockableFeatureEnum;
-use App\Enum\UserStatEnum;
+use App\Enum\UserStat;
 use App\Functions\ArrayFunctions;
 use App\Functions\InventoryHelpers;
 use App\Functions\ItemRepository;
@@ -178,7 +178,7 @@ class HouseFairyController
             ->setStockingColorB($stockingColors[1])
         ;
 
-        if($userStatsRepository->getStatValue($user, UserStatEnum::ItemsDonatedToMuseum) >= 400)
+        if($userStatsRepository->getStatValue($user, UserStat::ItemsDonatedToMuseum) >= 400)
             $fireplace->setMantleSize(24);
 
         $em->persist($fireplace);
