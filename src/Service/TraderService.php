@@ -910,7 +910,7 @@ class TraderService
             );
         }
 
-        $uniqueOffers = $this->getSpecialOfferItemsAndPrices(self::NUMBER_OF_DAILY_SPECIAL_OFFERS - count($offers));
+        $uniqueOffers = $this->getSpecialOfferItemsAndPrices(self::NumberOfDailySpecialOffers - count($offers));
 
         foreach($uniqueOffers as $uniqueOffer)
         {
@@ -950,7 +950,7 @@ class TraderService
         };
     }
 
-    public const int NUMBER_OF_DAILY_SPECIAL_OFFERS = 5;
+    public const int NumberOfDailySpecialOffers = 5;
 
     /**
      * @return Item[]
