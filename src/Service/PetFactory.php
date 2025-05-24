@@ -75,7 +75,7 @@ class PetFactory
         ;
 
         $petHouseTime = (new PetHouseTime($pet))
-            ->setSocialEnergy((int)ceil(PetExperienceService::SOCIAL_ENERGY_PER_HANG_OUT * (4 + $pet->getExtroverted()) / 4))
+            ->setSocialEnergy((int)ceil(PetExperienceService::SocialEnergyPerHangOut * (4 + $pet->getExtroverted()) / 4))
         ;
 
         $pet->setHouseTime($petHouseTime);

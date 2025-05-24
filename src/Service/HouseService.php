@@ -52,7 +52,7 @@ class HouseService
             ->andWhere('p.location=:home')
             ->setParameter('user', $user->getId())
             ->setParameter('home', PetLocationEnum::HOME)
-            ->setParameter('minimumSocialEnergy', PetExperienceService::SOCIAL_ENERGY_PER_HANG_OUT)
+            ->setParameter('minimumSocialEnergy', PetExperienceService::SocialEnergyPerHangOut)
             ->setMaxResults(1)
             ->getQuery();
 
@@ -108,7 +108,7 @@ class HouseService
         $petsWithTime = array_values(array_filter($petsAtHome, fn(Pet $pet) =>
             $pet->getHouseTime()->getActivityTime() >= 60 ||
             (
-                $pet->getHouseTime()->getSocialEnergy() >= PetExperienceService::SOCIAL_ENERGY_PER_HANG_OUT &&
+                $pet->getHouseTime()->getSocialEnergy() >= PetExperienceService::SocialEnergyPerHangOut &&
                 $pet->getHouseTime()->getCanAttemptSocialHangoutAfter() < $now
             )
         ));
@@ -183,7 +183,7 @@ class HouseService
     private function petCanRunSocialTime(Pet $pet): bool
     {
         return
-            $pet->getHouseTime()->getSocialEnergy() >= PetExperienceService::SOCIAL_ENERGY_PER_HANG_OUT &&
+            $pet->getHouseTime()->getSocialEnergy() >= PetExperienceService::SocialEnergyPerHangOut &&
             $pet->getHouseTime()->getCanAttemptSocialHangoutAfter() < (new \DateTimeImmutable()) &&
             !$this->houseSimService->getPetHasRunSocialTime($pet)
         ;
@@ -194,7 +194,7 @@ class HouseService
         if(!$pet->isAtHome())
             return false;
 
-        if($pet->getHouseTime()->getActivityTime() < 60 && $pet->getHouseTime()->getSocialEnergy() < PetExperienceService::SOCIAL_ENERGY_PER_HANG_OUT)
+        if($pet->getHouseTime()->getActivityTime() < 60 && $pet->getHouseTime()->getSocialEnergy() < PetExperienceService::SocialEnergyPerHangOut)
             return false;
 
         if($pet->getHouseTime()->getActivityTime() < 60 && !$hungOut)

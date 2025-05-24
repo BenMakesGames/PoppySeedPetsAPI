@@ -106,8 +106,8 @@ class PetHouseTime
     {
         $this->socialEnergy = NumberFunctions::clamp(
             $this->socialEnergy - $amount,
-            -PetExperienceService::SOCIAL_ENERGY_PER_HANG_OUT,
-            PetExperienceService::SOCIAL_ENERGY_PER_HANG_OUT * 5
+            -PetExperienceService::SocialEnergyPerHangOut,
+            PetExperienceService::SocialEnergyPerHangOut * 5
         );
 
         return $this;

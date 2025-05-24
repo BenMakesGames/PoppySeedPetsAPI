@@ -474,7 +474,7 @@ class PetGroupService
             ;
         }
 
-        $this->petExperienceService->spendSocialEnergy($pet, PetExperienceService::SOCIAL_ENERGY_PER_HANG_OUT);
+        $this->petExperienceService->spendSocialEnergy($pet, PetExperienceService::SocialEnergyPerHangOut);
 
         PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% started a new ' . $groupType['description'] . ' with ' . ArrayFunctions::list_nice($friendNames) . '.')
             ->setIcon($groupType['icon']);

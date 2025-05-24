@@ -146,7 +146,7 @@ class PetActivityService
 
     public function runHour(Pet $pet): void
     {
-        $hasEventPersonality = $pet->hasActivityPersonality(ActivityPersonalityEnum::EVENTS_AND_MAPS);
+        $hasEventPersonality = $pet->hasActivityPersonality(ActivityPersonalityEnum::EventsAndMaps);
 
         if(!$pet->isAtHome())
             throw new \InvalidArgumentException('Trying to run activities for a pet that is not at home! (Ben did something horrible; please let him know.)');
@@ -860,7 +860,7 @@ class PetActivityService
         if($pet->getTool() && $pet->getTool()->getItem()->getTool())
             $desire += $pet->getTool()->getItem()->getTool()->getNature() + $pet->getTool()->getItem()->getTool()->getFishing();
 
-        if($petWithSkills->getPet()->hasActivityPersonality(ActivityPersonalityEnum::FISHING))
+        if($petWithSkills->getPet()->hasActivityPersonality(ActivityPersonalityEnum::Fishing))
             $desire += 4;
         else
             $desire += $this->rng->rngNextInt(1, 4);
@@ -881,7 +881,7 @@ class PetActivityService
         if($pet->getTool() && $pet->getTool()->getItem()->getTool())
             $desire += $pet->getTool()->getItem()->getTool()->getScience() + $pet->getTool()->getItem()->getTool()->getGathering();
 
-        if($petWithSkills->getPet()->hasActivityPersonality(ActivityPersonalityEnum::ICY_MOON))
+        if($petWithSkills->getPet()->hasActivityPersonality(ActivityPersonalityEnum::IcyMoon))
             $desire += 4;
         else
             $desire += $this->rng->rngNextInt(1, 4);
@@ -902,7 +902,7 @@ class PetActivityService
         if($pet->getTool() && $pet->getTool()->getItem()->getTool())
             $desire += $pet->getTool()->getItem()->getTool()->getScience() + $pet->getTool()->getItem()->getTool()->getFishing();
 
-        if($petWithSkills->getPet()->hasActivityPersonality(ActivityPersonalityEnum::SUBMARINE))
+        if($petWithSkills->getPet()->hasActivityPersonality(ActivityPersonalityEnum::Submarine))
             $desire += 4;
         else
             $desire += $this->rng->rngNextInt(1, 4);
@@ -919,7 +919,7 @@ class PetActivityService
         if($pet->getTool() && $pet->getTool()->getItem()->getTool())
             $desire += $pet->getTool()->getItem()->getTool()->getBrawl();
 
-        if($petWithSkills->getPet()->hasActivityPersonality(ActivityPersonalityEnum::HUNTING))
+        if($petWithSkills->getPet()->hasActivityPersonality(ActivityPersonalityEnum::Hunting))
             $desire += 4;
         else
             $desire += $this->rng->rngNextInt(1, 4);
@@ -940,7 +940,7 @@ class PetActivityService
         if($pet->getTool() && $pet->getTool()->getItem()->getTool())
             $desire += $pet->getTool()->getItem()->getTool()->getCrafts();
 
-        if($petWithSkills->getPet()->hasActivityPersonality(ActivityPersonalityEnum::CRAFTING_MUNDANE))
+        if($petWithSkills->getPet()->hasActivityPersonality(ActivityPersonalityEnum::CraftingMundane))
             $desire += 4;
         else
             $desire += $this->rng->rngNextInt(1, 4);
@@ -961,7 +961,7 @@ class PetActivityService
         if($pet->getTool() && $pet->getTool()->getItem()->getTool())
             $desire += $pet->getTool()->getItem()->getTool()->getArcana() + $pet->getTool()->getItem()->getTool()->getMagicBinding();
 
-        if($petWithSkills->getPet()->hasActivityPersonality(ActivityPersonalityEnum::CRAFTING_MAGIC))
+        if($petWithSkills->getPet()->hasActivityPersonality(ActivityPersonalityEnum::CraftingMagic))
             $desire += 4;
         else
             $desire += $this->rng->rngNextInt(1, 4);
@@ -982,7 +982,7 @@ class PetActivityService
         if($pet->getTool() && $pet->getTool()->getItem()->getTool())
             $desire += $pet->getTool()->getItem()->getTool()->getCrafts() + $pet->getTool()->getItem()->getTool()->getSmithing();
 
-        if($petWithSkills->getPet()->hasActivityPersonality(ActivityPersonalityEnum::CRAFTING_SMITHING))
+        if($petWithSkills->getPet()->hasActivityPersonality(ActivityPersonalityEnum::CraftingSmithing))
             $desire += 4;
         else
             $desire += $this->rng->rngNextInt(1, 4);
@@ -998,7 +998,7 @@ class PetActivityService
         if($pet->getTool() && $pet->getTool()->getItem()->getTool())
             $desire += $pet->getTool()->getItem()->getTool()->getArcana() + $pet->getTool()->getItem()->getTool()->getUmbra();
 
-        if($petWithSkills->getPet()->hasActivityPersonality(ActivityPersonalityEnum::UMBRA))
+        if($petWithSkills->getPet()->hasActivityPersonality(ActivityPersonalityEnum::Umbra))
             $desire += 4;
         else
             $desire += $this->rng->rngNextInt(1, 4);
@@ -1038,7 +1038,7 @@ class PetActivityService
         if($pet->getTool() && $pet->getTool()->getItem()->getTool())
             $desire += $pet->getTool()->getItem()->getTool()->getNature() + $pet->getTool()->getItem()->getTool()->getGathering();
 
-        if($petWithSkills->getPet()->hasActivityPersonality(ActivityPersonalityEnum::GATHERING))
+        if($petWithSkills->getPet()->hasActivityPersonality(ActivityPersonalityEnum::Gathering))
             $desire += 4;
         else
             $desire += $this->rng->rngNextInt(1, 4);
@@ -1055,7 +1055,7 @@ class PetActivityService
         if($pet->getTool() && $pet->getTool()->getItem()->getTool())
             $desire += $pet->getTool()->getItem()->getTool()->getNature() + $pet->getTool()->getItem()->getTool()->getClimbing();
 
-        if($petWithSkills->getPet()->hasActivityPersonality(ActivityPersonalityEnum::BEANSTALK))
+        if($petWithSkills->getPet()->hasActivityPersonality(ActivityPersonalityEnum::Beanstalk))
             $desire += 4;
         else
             $desire += $this->rng->rngNextInt(1, 4);
@@ -1076,7 +1076,7 @@ class PetActivityService
         if($pet->getTool() && $pet->getTool()->getItem()->getTool())
             $desire += $pet->getTool()->getItem()->getTool()->getScience() + $pet->getTool()->getItem()->getTool()->getHacking();
 
-        if($petWithSkills->getPet()->hasActivityPersonality(ActivityPersonalityEnum::PROTOCOL_7))
+        if($petWithSkills->getPet()->hasActivityPersonality(ActivityPersonalityEnum::Protocol7))
             $desire += 4;
         else
             $desire += $this->rng->rngNextInt(1, 4);
@@ -1097,7 +1097,7 @@ class PetActivityService
         if($pet->getTool() && $pet->getTool()->getItem()->getTool())
             $desire += $pet->getTool()->getItem()->getTool()->getScience() + $pet->getTool()->getItem()->getTool()->getHacking();
 
-        if($petWithSkills->getPet()->hasActivityPersonality(ActivityPersonalityEnum::CRAFTING_SCIENCE))
+        if($petWithSkills->getPet()->hasActivityPersonality(ActivityPersonalityEnum::CraftingScience))
             $desire += 4;
         else
             $desire += $this->rng->rngNextInt(1, 4);
@@ -1118,7 +1118,7 @@ class PetActivityService
         if($pet->getTool() && $pet->getTool()->getItem()->getTool())
             $desire += $pet->getTool()->getItem()->getTool()->getScience() + $pet->getTool()->getItem()->getTool()->getElectronics();
 
-        if($petWithSkills->getPet()->hasActivityPersonality(ActivityPersonalityEnum::CRAFTING_SCIENCE))
+        if($petWithSkills->getPet()->hasActivityPersonality(ActivityPersonalityEnum::CraftingScience))
             $desire += 4;
         else
             $desire += $this->rng->rngNextInt(1, 4);
@@ -1139,7 +1139,7 @@ class PetActivityService
         if($pet->getTool() && $pet->getTool()->getItem()->getTool())
             $desire += $pet->getTool()->getItem()->getTool()->getScience() + $pet->getTool()->getItem()->getTool()->getPhysics();
 
-        if($petWithSkills->getPet()->hasActivityPersonality(ActivityPersonalityEnum::CRAFTING_SCIENCE))
+        if($petWithSkills->getPet()->hasActivityPersonality(ActivityPersonalityEnum::CraftingScience))
             $desire += 4;
         else
             $desire += $this->rng->rngNextInt(1, 4);
@@ -1160,7 +1160,7 @@ class PetActivityService
         if($pet->getTool() && $pet->getTool()->getItem()->getTool())
             $desire += $pet->getTool()->getItem()->getTool()->getScience();
 
-        if($petWithSkills->getPet()->hasActivityPersonality(ActivityPersonalityEnum::CRAFTING_PLASTIC))
+        if($petWithSkills->getPet()->hasActivityPersonality(ActivityPersonalityEnum::CraftingPlastic))
             $desire += 4;
         else
             $desire += $this->rng->rngNextInt(1, 4);

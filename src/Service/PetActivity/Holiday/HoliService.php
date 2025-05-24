@@ -105,7 +105,7 @@ class HoliService
 
     private function doPetNoParticipation(Pet $pet): PetActivityLog
     {
-        $this->petExperienceService->spendSocialEnergy($pet, PetExperienceService::SOCIAL_ENERGY_PER_HANG_OUT);
+        $this->petExperienceService->spendSocialEnergy($pet, PetExperienceService::SocialEnergyPerHangOut);
 
         $pet->increaseLove(8);
 
@@ -116,7 +116,7 @@ class HoliService
 
     private function doReconcileWithPet(Pet $pet, PetRelationship $relationshipToReconcile): PetActivityLog
     {
-        $this->petExperienceService->spendSocialEnergy($pet, PetExperienceService::SOCIAL_ENERGY_PER_HANG_OUT);
+        $this->petExperienceService->spendSocialEnergy($pet, PetExperienceService::SocialEnergyPerHangOut);
 
         $otherPet = $relationshipToReconcile->getRelationship();
         $relationshipOtherSide = $otherPet->getRelationshipWith($pet);

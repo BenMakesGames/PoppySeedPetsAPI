@@ -50,7 +50,7 @@ class AwaOdoriService
             ->andWhere('p.food > 0')
             ->setParameter('petId', $pet->getId())
             ->setParameter('threeDaysAgo', new \DateTimeImmutable('-3 days'))
-            ->setParameter('minimumSocialEnergy', (PetExperienceService::SOCIAL_ENERGY_PER_HANG_OUT * 3) / 2)
+            ->setParameter('minimumSocialEnergy', (PetExperienceService::SocialEnergyPerHangOut * 3) / 2)
         ;
 
         if($pet->hasStatusEffect(StatusEffectEnum::Wereform))
@@ -116,8 +116,8 @@ class AwaOdoriService
     {
         $changes = new PetChanges($pet);
 
-        StatusEffectHelpers::applyStatusEffect($this->em, $pet, StatusEffectEnum::DancingLikeAFool, PetExperienceService::SOCIAL_ENERGY_PER_HANG_OUT);
-        $this->petExperienceService->spendSocialEnergy($pet, PetExperienceService::SOCIAL_ENERGY_PER_HANG_OUT);
+        StatusEffectHelpers::applyStatusEffect($this->em, $pet, StatusEffectEnum::DancingLikeAFool, PetExperienceService::SocialEnergyPerHangOut);
+        $this->petExperienceService->spendSocialEnergy($pet, PetExperienceService::SocialEnergyPerHangOut);
 
         $pet->increaseSafety(4)->increaseLove(4)->increaseEsteem(4);
 

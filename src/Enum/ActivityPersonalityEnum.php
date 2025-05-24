@@ -19,21 +19,21 @@ final class ActivityPersonalityEnum
     use FakeEnum;
 
     // 0-15 are gathering
-    public const int GATHERING = 1 << 0;
-    public const int FISHING = 1 << 1;
-    public const int HUNTING = 1 << 2;
-    public const int BEANSTALK = 1 << 3;
-    public const int SUBMARINE = 1 << 4;
-    public const int UMBRA = 1 << 5;
-    public const int PROTOCOL_7 = 1 << 6;
-    public const int ICY_MOON = 1 << 7;
+    public const int Gathering = 1 << 0;
+    public const int Fishing = 1 << 1;
+    public const int Hunting = 1 << 2;
+    public const int Beanstalk = 1 << 3;
+    public const int Submarine = 1 << 4;
+    public const int Umbra = 1 << 5;
+    public const int Protocol7 = 1 << 6;
+    public const int IcyMoon = 1 << 7;
 
-    public const int EVENTS_AND_MAPS = 1 << 15;
+    public const int EventsAndMaps = 1 << 15;
 
     // 16-31 are crafting
-    public const int CRAFTING_MUNDANE = 1 << 16;
-    public const int CRAFTING_SMITHING = 1 << 17;
-    public const int CRAFTING_MAGIC = 1 << 18;
-    public const int CRAFTING_SCIENCE = 1 << 19;
-    public const int CRAFTING_PLASTIC = 1 << 20;
+    public const int CraftingMundane = 1 << 16;
+    public const int CraftingSmithing = 1 << 17;
+    public const int CraftingMagic = 1 << 18;
+    public const int CraftingScience = 1 << 19;
+    public const int CraftingPlastic = 1 << 20;
 }

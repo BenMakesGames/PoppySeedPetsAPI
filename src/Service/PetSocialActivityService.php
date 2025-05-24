@@ -73,7 +73,7 @@ class PetSocialActivityService
 
         if(!$pet->hasStatusEffect(StatusEffectEnum::Wereform) && $this->meetRoommates($pet, $roommates))
         {
-            $this->petExperienceService->spendSocialEnergy($pet, PetExperienceService::SOCIAL_ENERGY_PER_HANG_OUT);
+            $this->petExperienceService->spendSocialEnergy($pet, PetExperienceService::SocialEnergyPerHangOut);
             return true;
         }
 
@@ -277,7 +277,7 @@ class PetSocialActivityService
             if(!array_key_exists($r->getRelationship()->getId(), $friendRelationshipsByFriendId))
                 throw new \Exception($r->getPet()->getName() . ' (#' . $r->getPet()->getId() . ') knows ' . $r->getRelationship()->getName() . ' (#' . $r->getRelationship()->getId() . '), but not the other way around! This is a bug, and should never happen! Make Ben fix it!');
 
-            if($r->getRelationship()->getHouseTime()->getSocialEnergy() >= PetExperienceService::SOCIAL_ENERGY_PER_HANG_OUT * 2)
+            if($r->getRelationship()->getHouseTime()->getSocialEnergy() >= PetExperienceService::SocialEnergyPerHangOut * 2)
                 return true;
 
             if($friendRelationshipsByFriendId[$r->getRelationship()->getId()]->getCommitment() >= $r->getCommitment())
@@ -318,7 +318,7 @@ class PetSocialActivityService
 
         $changes = new PetChanges($pet);
 
-        $this->petExperienceService->spendSocialEnergy($pet, PetExperienceService::SOCIAL_ENERGY_PER_HANG_OUT);
+        $this->petExperienceService->spendSocialEnergy($pet, PetExperienceService::SocialEnergyPerHangOut);
 
         $companion = $pet->getSpiritCompanion();
 
@@ -588,8 +588,8 @@ class PetSocialActivityService
         $petChanges = new PetChanges($pet->getPet());
         $friendChanges = new PetChanges($friend->getPet());
 
-        $this->petExperienceService->spendSocialEnergy($pet->getPet(), PetExperienceService::SOCIAL_ENERGY_PER_HANG_OUT);
-        $this->petExperienceService->spendSocialEnergy($friend->getPet(), PetExperienceService::SOCIAL_ENERGY_PER_HANG_OUT);
+        $this->petExperienceService->spendSocialEnergy($pet->getPet(), PetExperienceService::SocialEnergyPerHangOut);
+        $this->petExperienceService->spendSocialEnergy($friend->getPet(), PetExperienceService::SocialEnergyPerHangOut);
 
         $petPreviousRelationship = $pet->getCurrentRelationship();
         $friendPreviousRelationship = $friend->getCurrentRelationship();
@@ -682,7 +682,7 @@ class PetSocialActivityService
             ->setMaxResults($maxFriendsToConsider)
             ->setParameter('petId', $pet->getId())
             ->setParameter('excludedRelationshipTypes', [ RelationshipEnum::Dislike, RelationshipEnum::BrokeUp ])
-            ->setParameter('minimumFriendSocialEnergy', (PetExperienceService::SOCIAL_ENERGY_PER_HANG_OUT * 3) / 2)
+            ->setParameter('minimumFriendSocialEnergy', (PetExperienceService::SocialEnergyPerHangOut * 3) / 2)
         ;
 
         $friends = $qb->getQuery()->execute();
