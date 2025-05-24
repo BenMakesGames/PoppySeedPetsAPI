@@ -124,7 +124,7 @@ class FoodWithSpice
                 $this->grantsSelfReflection = true;
 
             foreach(FlavorEnum::cases() as $flavor)
-                $this->{$flavor} += $effects->{'get' . $flavor->value}();
+                $this->{$flavor->value} += $effects->{'get' . $flavor->value}();
 
             if($effects->getLeftovers())
                 $this->leftovers[] = $effects->getLeftovers();
