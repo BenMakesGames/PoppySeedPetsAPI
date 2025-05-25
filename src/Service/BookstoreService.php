@@ -179,9 +179,12 @@ class BookstoreService
         ];
 
         if(CalendarFunctions::isStockingStuffingSeason($this->clock->now))
-        {
             $cafePrices['Eggnog'] = 12;
-        }
+
+        //if(CalendarFunctions::isApricotFestival($this->clock->now))
+            $cafePrices['Apricot Coffee Bean Tea with Mammal Extract'] = 12;
+
+        ksort($cafePrices);
 
         return $cafePrices;
     }
