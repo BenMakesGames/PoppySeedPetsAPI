@@ -108,7 +108,11 @@ class WeedController
             $hasDarkPlots = $greenhouse->getMaxDarkPlants() > 0;
             $isRaining = WeatherService::getWeather(new \DateTimeImmutable(), null)->getRainfall() > 0;
 
-            $basicItems = [ 'Egg', 'Blackberries', 'Blueberries', 'Line of Ants' ];
+            if(CalendarFunctions::isApricotFestival($clock->now))
+                $basicItems = [ 'Apricot', 'Blueberries', 'Line of Ants' ];
+            else
+                $basicItems = [ 'Egg', 'Blackberries', 'Blueberries', 'Line of Ants' ];
+
             $slightlyCoolerItems = [ 'Narcissus', 'Plastic', 'Paper', 'Pepino Dulce' ];
 
             if($hasDarkPlots)
