@@ -107,7 +107,7 @@ final class Version20250525163917 extends AbstractMigration
         EOSQL);
 
         // Tile: Pluot Parade
-        $this->addSql(<<<EOSQL
+        $this->addSql(<<<'EOSQL'
         -- hollow earth tile card
         INSERT INTO hollow_earth_tile_card (`id`, `type_id`, `name`, `event`, `required_action`, `image`, `author`) VALUES (90,5,"Pluot Parade","{\"food\":8,\"love\":4,\"type\":\"onward\",\"buttonText\":\"Onward!\",\"description\":\"You stop in town to watch a parade that appears to be fruit based? Asking some locals, you learn it\'s a \\\"Pluot Parade\\\". You both eat some pluot donuts, have some pluot juice, and grab a couple pluots to take home. Neither of you have the faintest clue what a \\\"pluot\\\" is, but it seems pretty similar to an Apricot, so, \\ud83e\\udd37\\u200d\\u2640\\ufe0f, let\'s just say you brought two Apricots home.\",\"receiveItems\":[\"Apricot\",\"Apricot\"]}",0,"pluot-parade",NULL) ON DUPLICATE KEY UPDATE `id` = `id`;
         
