@@ -93,6 +93,16 @@ class FloristService
             ];
         }
 
+        if(CalendarFunctions::isApricotFestival($this->clock->now))
+        {
+            $apricrate = ItemRepository::findOneByName($this->em, 'Apricrate');
+
+            $inventory[] = [
+                'item' => [ 'name' => $apricrate->getName(), 'image' => $apricrate->getImage() ],
+                'cost' => 100
+            ];
+        }
+
         if($user->hasUnlockedFeature(UnlockableFeatureEnum::HollowEarth))
         {
             $flowerBasketTile = ItemRepository::findOneByName($this->em, 'Tile: Flower Basket');

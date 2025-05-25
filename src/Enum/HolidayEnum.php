@@ -16,27 +16,31 @@ namespace App\Enum;
 
 enum HolidayEnum: string
 {
+    case Eight = '8';
+    case ApricotFestival = 'Apricot Festival';
     case AprilFools = 'April Fools\'';
     case AwaOdori = 'Awa Odori';
     case BastilleDay = 'Bastille Day';
     case BlackFriday = 'Black Friday';
-    case LunarNewYear = 'Lunar New Year';
     case CincoDeMayo = 'Cinco de Mayo';
+    case CreepyMaskDay = 'Creepy Mask Day';
     case CyberMonday = 'Cyber Monday';
     case EarthDay = 'Earth Day';
     case Easter = 'Easter';
     case FourthOfJuly = '4th of July';
-    case SnakeDay = 'Snake Day';
     case Halloween = 'Halloween';
     case Hanukkah = 'Hanukkah';
     case Holi = 'Holi';
     case JelephantDay = 'Jelephant Day';
+    case LeapDay = 'Leap Day';
+    case LunarNewYear = 'Lunar New Year';
     case NewYearsDay = 'New Year\'s Day';
     case NoombatDay = 'Noombat Day';
     case PiDay = 'Pi Day';
     case PSPBirthday = 'PSP Birthday';
     case PsyPetsBirthday = 'PsyPets\' Birthday';
     case SaintPatricks = 'Saint Patrick\'s';
+    case SnakeDay = 'Snake Day';
     case StockingStuffingSeason = 'Stocking Stuffing Season';
     case SummerSolstice = 'Summer Solstice';
     case TalkLikeAPirateDay = 'Talk Like a Pirate Day';
@@ -44,9 +48,6 @@ enum HolidayEnum: string
     case Valentines = 'Valentine\'s';
     case WhiteDay = 'White Day';
     case WinterSolstice = 'Winter Solstice';
-    case Eight = '8';
-    case LeapDay = 'Leap Day';
-    case CreepyMaskDay = 'Creepy Mask Day';
 
     // weird events?
     case Leonids = 'The Leonids Meteor Shower';
