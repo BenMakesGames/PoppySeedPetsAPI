@@ -109,7 +109,7 @@ class WeedController
             $isRaining = WeatherService::getWeather(new \DateTimeImmutable(), null)->getRainfall() > 0;
 
             if(CalendarFunctions::isApricotFestival($clock->now))
-                $basicItems = [ 'Apricot', 'Blueberries', 'Line of Ants' ];
+                $basicItems = [ 'Apricot', 'Apricot', 'Blueberries', 'Line of Ants' ];
             else
                 $basicItems = [ 'Egg', 'Blackberries', 'Blueberries', 'Line of Ants' ];
 
