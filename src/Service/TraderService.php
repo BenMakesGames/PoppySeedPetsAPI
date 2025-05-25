@@ -673,6 +673,17 @@ class TraderService
     {
         $offers = [];
 
+        if(CalendarFunctions::isApricotFestival($this->clock->now))
+        {
+            $offers[] = TraderOffer::createTradeOffer(
+                [ TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Hat Box'), 1) ],
+                [ TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Aprihat'), 1) ],
+                'We have a similar festival in Tell Samarazhoustia. Ah, but not for Apricots, of course - those don\'t grow underwater!',
+                $user,
+                $quantities
+            );
+        }
+
         if(CalendarFunctions::isPsyPetsBirthday($this->clock->now))
         {
             $offers[] = TraderOffer::createTradeOffer(

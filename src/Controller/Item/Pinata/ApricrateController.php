@@ -20,6 +20,7 @@ use App\Functions\ItemRepository;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\ResponseService;
+use App\Service\UserStatsService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
@@ -33,7 +34,7 @@ class ApricrateController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function open(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
-        EntityManagerInterface $em, UserAccessor $userAccessor, IRandom $rng
+        EntityManagerInterface $em, UserAccessor $userAccessor, IRandom $rng, UserStatsService $userStatsService
     ): JsonResponse
     {
         $user = $userAccessor->getUserOrThrow();
@@ -65,6 +66,8 @@ class ApricrateController
             ->changeItem(ItemRepository::findOneByName($em, 'Empty Crate'))
             ->addComment('This was once in Apricrate, but ' . $user->getName() . ' emptied it of its Apricots.')
         ;
+
+        $userStatsService->incrementStat($user, 'Apricrates Raided');
 
         $em->flush();
 
