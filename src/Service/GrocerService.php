@@ -122,6 +122,12 @@ class GrocerService
         if(CalendarFunctions::isAHornOfPlentyDay($now))
             $inventory[] = $this->createInventoryData([ 'Horn of Plenty', 50 ], true);
 
+        if(CalendarFunctions::isApricotFestival($now))
+        {
+            $inventory[] = $this->createInventoryData([ 'Apricobbler', 20 ], true);
+            $inventory[] = $this->createInventoryData([ 'Apricot Preserves', 9 ], true);
+        }
+
         $hotBarIndex = RandomFunctions::squirrel3Noise($day, 78934) % count(self::HotBarItems);
 
         $inventory[] = $this->createInventoryData(self::HotBarItems[$hotBarIndex], true);

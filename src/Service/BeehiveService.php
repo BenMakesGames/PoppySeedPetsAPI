@@ -16,6 +16,7 @@ namespace App\Service;
 
 use App\Entity\Beehive;
 use App\Entity\User;
+use App\Functions\CalendarFunctions;
 use App\Functions\ItemRepository;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -104,6 +105,9 @@ class BeehiveService
 
         $possibleAltItems = self::AlternateDesiredItems;
         unset($possibleAltItems[$altRequestedItem]);
+
+        if(CalendarFunctions::isApricotFestival(new \DateTimeImmutable()))
+            $possibleItems = [ 'Apricot' => 1 ];
 
         // pick a new requested item
         $beehive

@@ -34,13 +34,13 @@ final class BadgeEnum
     public const string WEEKDAY_COINS_TRADED_1 = 'WeekdayCoins1';
     public const string WEEKDAY_COINS_TRADED_7 = 'WeekdayCoins7';
 
-    public const string PETTED_10 = 'Petted10';
-    public const string PETTED_100 = 'Petted100';
-    public const string PETTED_1000 = 'Petted1000';
-    public const string PETTED_10000 = 'Petted10000';
+    public const string Petted10 = 'Petted10';
+    public const string Petted100 = 'Petted100';
+    public const string Petted1000 = 'Petted1000';
+    public const string Petted10000 = 'Petted10000';
 
-    public const string MAX_PETS_4 = 'MaxPets4';
-    public const string COMPLETE_THE_HEARTSTONE_DIMENSION = 'HeartstoneDimensionCompleted';
+    public const string MaxPets4 = 'MaxPets4';
+    public const string CompleteTheHeartstoneDimension = 'HeartstoneDimensionCompleted';
 
     public const string TROPHIES_EARNED_1 = 'TrophiesEarned1';
     public const string TROPHIES_EARNED_10 = 'TrophiesEarned10';
@@ -76,10 +76,10 @@ final class BadgeEnum
     public const string TREASURES_GIVEN_TO_DRAGON_100 = 'TreasuresGivenToDragon100';
     public const string TREASURES_GIVEN_TO_DRAGON_1000 = 'TreasuresGivenToDragon1000';
 
-    public const string COOKED_10 = 'Cooked10';
-    public const string COOKED_100 = 'Cooked100';
-    public const string COOKED_1000 = 'Cooked1000';
-    public const string COOKED_10000 = 'Cooked10000';
+    public const string Cooked10 = 'Cooked10';
+    public const string Cooked100 = 'Cooked100';
+    public const string Cooked1000 = 'Cooked1000';
+    public const string Cooked10000 = 'Cooked10000';
 
     public const string DRAGON_VASE_DIPPING_10 = 'DragonVaseDipping10';
     public const string HOT_POT_DIPPING_10 = 'HotPotDipping10';
@@ -115,9 +115,9 @@ final class BadgeEnum
     public const string READ_SCROLL_10 = 'ReadScroll10';
     public const string READ_SCROLL_100 = 'ReadScroll100';
 
-    public const string ICE_MANGOES_10 = 'IceMangoes10';
+    public const string IceMangoes10 = 'IceMangoes10';
 
-    public const string WHISPER_STONE = 'WhisperStone';
+    public const string WhisperStone = 'WhisperStone';
 
     public const string HONORIFICABILITUDINITATIBUS = 'Honorificabilitudinitatibus';
     public const string SOUFFLE_STARTLER = 'SouffleStartler';
@@ -186,7 +186,10 @@ final class BadgeEnum
     public const string ZOOLOGIST_90 = 'Zoologist90';
     public const string ZOOLOGIST_100 = 'Zoologist100';
 
-    public const string ACCOUNT_AGE_365 = 'AccountAge365';
+    public const string ApricotFestival1 = 'ApricotFestival1';
+    public const string ApricotFestival10 = 'ApricotFestival10';
+
+    public const string AccountAge365 = 'AccountAge365';
 
     public const string ACHIEVEMENTS_10 = 'Achievements10';
     public const string ACHIEVEMENTS_20 = 'Achievements20';

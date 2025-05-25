@@ -31,6 +31,7 @@ use App\Functions\EnchantmentRepository;
 use App\Functions\PetBadgeHelpers;
 use App\Functions\PlayerLogFactory;
 use App\Functions\SpiceRepository;
+use App\Functions\UserQuestRepository;
 use App\Service\PetActivity\TreasureMapService;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -203,12 +204,24 @@ class DragonService
                 $this->unlockBlackDiamondHattierStyle($user);
         }
 
+        if(CalendarFunctions::isApricotFestival($this->clock->now))
+        {
+            $gotReward = UserQuestRepository::findOrCreate($this->em, $user, 'Got Apricot Festival ' . $this->clock->now->format('Y') . ' Dragon Reward', 0);
+
+            if($gotReward->getValue() === 0)
+            {
+                $goodies[] = [ 'weight' => 0, 'item' => 'Gold and Apricots', 'locked' => true ];
+                $gotReward->setValue(1);
+            }
+        }
+
         foreach($goodies as $goody)
         {
             $newItem = $this->inventoryService->receiveItem($goody['item'], $user, $user, $user->getName() . ' received this from their dragon, ' . $dragon->getName() . '.', LocationEnum::Home);
 
             if(array_key_exists('bonus', $goody)) $newItem->setEnchantment(EnchantmentRepository::findOneByName($this->em, $goody['bonus']));
             if(array_key_exists('spice', $goody)) $newItem->setSpice(SpiceRepository::findOneByName($this->em, $goody['spice']));
+            if(array_key_exists('locked', $goody)) $newItem->setLockedToOwner(true);
         }
 
         $totalMoneys = 0;

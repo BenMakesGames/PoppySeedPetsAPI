@@ -209,6 +209,12 @@ final class CalendarFunctions
         return $monthAndDay >= 812 && $monthAndDay <= 815;
     }
 
+    public static function isApricotFestival(\DateTimeInterface $dt): bool
+    {
+        $monthAndDay = (int)$dt->format('nd');
+        return $monthAndDay === 531 || $monthAndDay === 601 || $monthAndDay === 602;
+    }
+
     public static function isAHornOfPlentyDay(\DateTimeInterface $dt): bool
     {
         return
@@ -451,6 +457,9 @@ final class CalendarFunctions
 
         if(self::isCreepyMaskDay($dt))
             $events[] = HolidayEnum::CreepyMaskDay;
+
+        if(self::isApricotFestival($dt))
+            $events[] = HolidayEnum::ApricotFestival;
 
         return $events;
     }

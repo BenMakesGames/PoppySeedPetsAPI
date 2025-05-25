@@ -179,9 +179,10 @@ class BookstoreService
         ];
 
         if(CalendarFunctions::isStockingStuffingSeason($this->clock->now))
-        {
             $cafePrices['Eggnog'] = 12;
-        }
+
+        if(CalendarFunctions::isApricotFestival($this->clock->now))
+            $cafePrices['Apricot Coffee Bean Tea with Mammal Extract'] = 12;
 
         return $cafePrices;
     }
@@ -202,13 +203,18 @@ class BookstoreService
         {
             $gamePrices['Hollow Earth Booster Pack: Beginnings'] = 200;
             $gamePrices['Hollow Earth Booster Pack: Community Pack'] = 200;
+
+            if(CalendarFunctions::isApricotFestival($this->clock->now))
+                $gamePrices['Tile: Pluot Parade'] = 20;
         }
 
         if(CalendarFunctions::isStockingStuffingSeason($this->clock->now))
         {
             $gamePrices['Rock-painting Kit (for Kids)'] = 65; // 1 of each dye + 3 rocks
             $gamePrices['Sneqos & Ladders'] = 90; // 1 scales, 2 talon, 4 sticks + a six-sided die
-            $gamePrices['Tile: Everice Cream'] = 200;
+
+            if($user->hasUnlockedFeature(UnlockableFeatureEnum::HollowEarth))
+                $gamePrices['Tile: Everice Cream'] = 200;
         }
 
         return $gamePrices;

@@ -156,32 +156,32 @@ final class BadgeHelpers
                 $reward = TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($em, 'Hat Box'), 2);
                 break;
 
-            case BadgeEnum::PETTED_10:
+            case BadgeEnum::Petted10:
                 $progress = [ 'target' => 10, 'current' => self::getStatTotal($user, [ UserStat::PettedAPet ], $em, $cache) ];
                 $reward = TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($em, 'Fortune Cookie'), 1);
                 break;
 
-            case BadgeEnum::PETTED_100:
+            case BadgeEnum::Petted100:
                 $progress = [ 'target' => 100, 'current' => self::getStatTotal($user, [ UserStat::PettedAPet ], $em, $cache) ];
                 $reward = TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($em, 'Renaming Scroll'), 1);
                 break;
 
-            case BadgeEnum::PETTED_1000:
+            case BadgeEnum::Petted1000:
                 $progress = [ 'target' => 1000, 'current' => self::getStatTotal($user, [ UserStat::PettedAPet ], $em, $cache) ];
                 $reward = TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($em, 'Behatting Scroll'), 1);
                 break;
 
-            case BadgeEnum::PETTED_10000:
+            case BadgeEnum::Petted10000:
                 $progress = [ 'target' => 10000, 'current' => self::getStatTotal($user, [ UserStat::PettedAPet ], $em, $cache) ];
                 $reward = TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($em, 'Forgetting Scroll'), 1);
                 break;
 
-            case BadgeEnum::MAX_PETS_4:
+            case BadgeEnum::MaxPets4:
                 $progress = [ 'target' => 4, 'current' => $user->getMaxPets() ];
                 $reward = TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($em, 'Goodberries'), 4);
                 break;
 
-            case BadgeEnum::COMPLETE_THE_HEARTSTONE_DIMENSION:
+            case BadgeEnum::CompleteTheHeartstoneDimension:
                 $progress = [ 'target' => 1, 'current' => self::getStatTotal($user, [ 'Pet Completed the Heartstone Dimension' ], $em, $cache) ];
                 $reward = TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($em, 'Juice Box'), 1);
                 break;
@@ -356,22 +356,22 @@ final class BadgeHelpers
                 $reward = TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($em, 'Chocolate Sword'), 1);
                 break;
 
-            case BadgeEnum::COOKED_10:
+            case BadgeEnum::Cooked10:
                 $progress = [ 'target' => 10, 'current' => self::getStatTotal($user, [ UserStat::CookedSomething ], $em, $cache) ];
                 $reward = TraderOfferCostOrYield::createRecyclingPoints(10);
                 break;
 
-            case BadgeEnum::COOKED_100:
+            case BadgeEnum::Cooked100:
                 $progress = [ 'target' => 100, 'current' => self::getStatTotal($user, [ UserStat::CookedSomething ], $em, $cache) ];
                 $reward = TraderOfferCostOrYield::createRecyclingPoints(50);
                 break;
 
-            case BadgeEnum::COOKED_1000:
+            case BadgeEnum::Cooked1000:
                 $progress = [ 'target' => 1000, 'current' => self::getStatTotal($user, [ UserStat::CookedSomething ], $em, $cache) ];
                 $reward = TraderOfferCostOrYield::createRecyclingPoints(250);
                 break;
 
-            case BadgeEnum::COOKED_10000:
+            case BadgeEnum::Cooked10000:
                 $progress = [ 'target' => 10000, 'current' => self::getStatTotal($user, [ UserStat::CookedSomething ], $em, $cache) ];
                 $reward = TraderOfferCostOrYield::createRecyclingPoints(1000);
                 break;
@@ -574,12 +574,12 @@ final class BadgeHelpers
                 $reward = TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($em, 'Spice Rack'), 5);
                 break;
 
-            case BadgeEnum::ICE_MANGOES_10:
+            case BadgeEnum::IceMangoes10:
                 $progress = [ 'target' => 10, 'current' => self::getStatTotal($user, [ UserStat::ShatteredIceMango ], $em, $cache) ];
                 $reward = TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($em, 'Mango Pudding'), 1);
                 break;
 
-            case BadgeEnum::WHISPER_STONE:
+            case BadgeEnum::WhisperStone:
                 $progress = [ 'target' => 1, 'current' => self::getStatTotal($user, [ 'Listened to a Whisper Stone' ], $em, $cache) ];
                 $reward = TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($em, 'Magic Smoke'), 2);
                 break;
@@ -825,9 +825,21 @@ final class BadgeHelpers
                 $reward = TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($em, 'Alien Tissue'), 1);
                 break;
 
+            // Events
+
+            case BadgeEnum::ApricotFestival1:
+                $progress = [ 'target' => 1, 'current' => self::getStatTotal($user, [ 'Apricrates Raided' ], $em, $cache) ];
+                $reward = TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($em, 'Apricot PB&J'), 1);
+                break;
+
+            case BadgeEnum::ApricotFestival10:
+                $progress = [ 'target' => 10, 'current' => self::getStatTotal($user, [ 'Apricrates Raided' ], $em, $cache) ];
+                $reward = TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($em, 'Gold and Apricots'), 1);
+                break;
+
             // Meta
 
-            case BadgeEnum::ACCOUNT_AGE_365:
+            case BadgeEnum::AccountAge365:
                 $progress = [ 'target' => 365, 'current' => (new \DateTimeImmutable())->diff($user->getRegisteredOn())->days ];
                 $reward = TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($em, 'Candle'), 1);
                 break;
