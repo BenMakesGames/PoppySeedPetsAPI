@@ -21,15 +21,6 @@ use App\Model\WeatherForecastData;
 
 class WeatherService
 {
-    private const array HourOfDayTemperatureModifier = [
-        // 12 am ...
-        1, 1, 1, 1, 1, 0,
-        0, 1, 2, 4, 6, 7,
-        8, 8, 9, 8, 8, 7,
-        5, 4, 3, 3, 2, 2
-        //       ... 11pm
-    ];
-
     public function __construct(private readonly CacheHelper $cache)
     {
     }
@@ -66,34 +57,9 @@ class WeatherService
         $weather->holidays = $getHolidays ? CalendarFunctions::getEventData($dt) : [];
         $weather->clouds = $isLeapDay ? 1 : WeatherService::getClouds($hourSince2000);
         $weather->rainfall = $isLeapDay ? 1.5 : WeatherService::getRainfall($hourSince2000);
-        $weather->temperature = WeatherService::getTemperature($hourSince2000, $weather->rainfall);
         $weather->isNight = WeatherService::isNight((int)$hourSince2000 % 24);
 
         return $weather;
-    }
-
-    /**
-     * @return float Degrees Celsius
-     */
-    public static function getTemperature(float $hourOfYear, float $rainfall): float
-    {
-        $temp = 25 +
-            2 * sin(M_PI * 4 * ($hourOfYear - 1500) / 8760) +
-            2 * sin(M_PI * 2 * ($hourOfYear - 1500) / 8760)
-        ;
-
-        $hourOfDay = (int)$hourOfYear % 24;
-
-        $temp += self::HourOfDayTemperatureModifier[$hourOfDay];
-
-        // some random wiggling; less if it's raining
-        // (13, 23, 11, 31, and 47 are all primes)
-        $temp +=
-            WeatherService::getNoise($hourOfYear, 0.13, 0.23, 0.11, 0.31, 0.47)
-            / ($rainfall + 1)
-        ;
-
-        return $temp;
     }
 
     public static function getNoise(float $hourOfYear, float $p1, float $p2, float $p3, float $p4, float $p5): float
@@ -216,7 +182,6 @@ class WeatherService
 
     private static function computeWeatherForecast(\DateTimeImmutable $date): WeatherForecastData
     {
-        $temperatures = [];
         $clouds = [];
         $rainfalls = [];
 
@@ -225,7 +190,6 @@ class WeatherService
             $dateToConsider = $date->setTime($hour, 30, 0);
             $weather = self::getWeather($dateToConsider, null, false);
 
-            $temperatures[] = $weather->temperature;
             $clouds[] = $weather->clouds;
             $rainfalls[] = $weather->rainfall;
         }
@@ -243,10 +207,6 @@ class WeatherService
         $forecast->maxClouds = max($clouds);
         $forecast->minClouds = min($clouds);
         $forecast->avgClouds = array_sum($clouds) / 24;
-
-        $forecast->maxTemperature = max($temperatures);
-        $forecast->minTemperature = min($temperatures);
-        $forecast->avgTemperature = array_sum($temperatures) / 24;
 
         return $forecast;
     }

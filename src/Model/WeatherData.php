@@ -24,18 +24,11 @@ final class WeatherData
     #[Groups(['weather'])]
     public array $holidays;
 
-    public float $temperature;
     public float $clouds;
     public float $rainfall;
 
     #[Groups(['weather'])]
     public bool $isNight;
-
-    #[Groups(['weather'])]
-    public function getTemperature(): float
-    {
-        return round($this->temperature, 1);
-    }
 
     #[Groups(['weather'])]
     public function getClouds(): float

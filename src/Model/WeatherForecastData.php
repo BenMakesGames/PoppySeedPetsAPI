@@ -26,33 +26,12 @@ final class WeatherForecastData
     #[Groups(["weather"])]
     public array $holidays;
 
-    public float $minTemperature;
-    public float $maxTemperature;
-    public float $avgTemperature;
     public float $minClouds;
     public float $maxClouds;
     public float $avgClouds;
     public float $minRainfall;
     public float $maxRainfall;
     public float $avgRainfall;
-
-    #[Groups(["weather"])]
-    public function getMinTemperature(): float
-    {
-        return round($this->minTemperature, 1);
-    }
-
-    #[Groups(["weather"])]
-    public function getMaxTemperature(): float
-    {
-        return round($this->maxTemperature, 1);
-    }
-
-    #[Groups(["weather"])]
-    public function getAvgTemperature(): float
-    {
-        return round($this->avgTemperature, 1);
-    }
 
     #[Groups(["weather"])]
     public function getMinClouds(): float
