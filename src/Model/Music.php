@@ -86,6 +86,7 @@ class Music
 
         // Zedd
         'Let\'s get looooo-o-o-o-o-ooost... at sea-ea-ea-ea, ea-ea-ea, ea! Where theeyyy will neeever find us! Got staarrs at niiight to guide us!',
+        'Fadiiing. So slooowww. Black hooole - I feel it slipping awaaay. Here we\'re allll we\'ve gooot... if you\'re looost, I\'m diving in after yo-ooou...',
 
         // System of a Down
         'Sooooomewhere! Between the saaacred silence and sleep! Disorder! Disorder! Disooooor-o-o-orrrrr-derrrrrrrrr!',
@@ -513,5 +514,8 @@ class Music
 
         // Foreign Language, by Flight Facilities
         'Boy, it\'s just a puzzle, and the pieces they have scattered on the floor (ooh-ooh.. nah ooh-ooh...)',
+
+        // Destroy Everything You Touch, by Ladytron
+        'Everything you touch, you don\'t feel. Do not know... what you steal. Shakes your hand... takes your gun. Walks you out... of the sun.',
     ];
 }
