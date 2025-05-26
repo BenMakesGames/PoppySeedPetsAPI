@@ -434,8 +434,9 @@ class Music
         // Mario Kart Love Song, by Sam Hart
         'No one will touch us if we pick up a star, and if you spin out, you can ride in my car...',
 
-        // Dusk till Dawn, by Ladyhawk
+        // Dusk till Dawn, by Ladyhawke
         'When you sense you\'re not alone, and the darkness starts to moan-- who\'s there? Shadows all around, but: you don\'t make a sound...',
+        'Stop! Playing with my delirium... \'cause I\'m outta my head, and outta my self-controool...',
 
         // Upside Down, by Paloma Faith
         'I tell you what. What I have fooouuund. That I\'m no foo-ool. I\'m just upside down.',
