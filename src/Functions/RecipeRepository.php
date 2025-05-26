@@ -503,6 +503,7 @@ final class RecipeRepository
         [ 'name' => 'Nut Oil', 'ingredients' => '511:1', 'makes' => '195:1' ],
         [ 'name' => 'Odd Little Hammer', 'ingredients' => '788:1,1430:1', 'makes' => '1434:1' ],
         [ 'name' => 'Old Harvest Staff', 'ingredients' => '10:1,473:1', 'makes' => '474:1' ],
+        [ 'name' => 'Olive Oil', 'ingredients' => '1475:1', 'makes' => '195:1' ],
         [ 'name' => 'Onigiri', 'ingredients' => '17:1,140:1', 'makes' => '302:1' ],
         [ 'name' => 'Onion Powder', 'ingredients' => '7:1', 'makes' => '882:2' ],
         [ 'name' => 'Onion Rings', 'ingredients' => '7:1,16:1,48:1,195:1', 'makes' => '245:4' ],

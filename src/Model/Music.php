@@ -517,5 +517,8 @@ class Music
 
         // Destroy Everything You Touch, by Ladytron
         'Everything you touch, you don\'t feel. Do not know... what you steal. Shakes your hand... takes your gun. Walks you out... of the sun.',
+
+        // Blackout, by Hybrid
+        'A hybrid of hundreds of troubles... people felt us connect, and ran for shelter...',
     ];
 }

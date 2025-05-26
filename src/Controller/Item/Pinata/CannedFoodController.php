@@ -60,10 +60,11 @@ class CannedFoodController
         else
         {
             $item = $rng->rngNextFromArray([
-                'Tomato', 'Corn', 'Fish', 'Beans', 'Creamed Corn',
-                'Tomato', 'Corn', 'Fish', 'Beans', 'Creamed Corn',
+                'Tomato', 'Corn', 'Fish', 'Beans',
+                'Tomato', 'Corn', 'Fish', 'Beans',
                 'Fermented Fish', 'Coffee Beans',
                 'Tomato Soup', '"Chicken" Noodle Soup', 'Minestrone',
+                'Olives', 'Pineapple', 'Creamed Corn',
             ]);
 
             $inventoryService->receiveItem($item, $user, $user, $user->getName() . ' found this in a can. A Canned Food can.', $location, $lockedToOwner)
