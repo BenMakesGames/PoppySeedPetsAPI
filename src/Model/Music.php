@@ -240,7 +240,7 @@ class Music
         'Reading my paper in Ray\'s cafeee... the old guy next to me is loud as dayyy... rimble and ramble, while eatin\' his piiie... he dropped his wallet - now it\'s miii-ine...',
 
         // Birthday Massacre
-        'I know you\'re just pretending; there\'s no window for escape. I know you see right through me; there\'s no promise left to brea-eak.',
+        'I know we\'re just pretending; there\'s no window for mistakes. I know you see right through me; there\'s no promise left to brea-eak.',
         'Nails clawing splinters from the ceiling and floor... shrieking like the witches \'til his stitches are sore...',
 
         // Qemists, S.W.A.G.
