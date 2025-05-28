@@ -518,7 +518,11 @@ class Music
         // Destroy Everything You Touch, by Ladytron
         'Everything you touch, you don\'t feel. Do not know... what you steal. Shakes your hand... takes your gun. Walks you out... of the sun.',
 
-        // Blackout, by Hybrid
+        // Hybrid
         'A hybrid of hundreds of troubles... people felt us connect, and ran for shelter...',
+        'I\'ll learn to forgeeet the criiime, if I surviiiiive. But I swear you\'re going down if I surviiiiiiiiiiiiiiiiive!',
+
+        // Want It, by Pola & Bryson & IYAMAH
+        'It\'s insightful how I break the cycle. Now this is final. I\'mma take this like a test; brush you off with the cobwebs.',
     ];
 }
