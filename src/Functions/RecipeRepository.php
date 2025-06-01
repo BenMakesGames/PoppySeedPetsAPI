@@ -426,6 +426,7 @@ final class RecipeRepository
         [ 'name' => 'Melt Key Ring', 'ingredients' => '353:1,384:1', 'makes' => '89:1,91:1,93:1' ],
         [ 'name' => 'Melt Kin-Ball Gold Trophy', 'ingredients' => '353:1,909:1', 'makes' => '93:1' ],
         [ 'name' => 'Melt Maximum Tongs', 'ingredients' => '353:1,372:1', 'makes' => '89:3' ],
+        [ 'name' => 'Melt Mirror', 'ingredients' => '353:1,451:1', 'makes' => '91:1,142:1' ],
         [ 'name' => 'Melt New Moon', 'ingredients' => '353:1,404:1', 'makes' => '89:2' ],
         [ 'name' => 'Melt No Right Turns', 'ingredients' => '353:1,1174:1', 'makes' => '89:1' ],
         [ 'name' => 'Melt No Whisk, No Reward', 'ingredients' => '353:1,966:1', 'makes' => '89:2,93:1,937:1' ],
