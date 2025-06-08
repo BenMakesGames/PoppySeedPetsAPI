@@ -159,7 +159,7 @@ class CraftingService
                 $possibilities[] = new ActivityCallback($this->stickCraftingService->createStrawBroom(...), 10);
 
             if($this->houseSimService->hasInventory('White Cloth'))
-                $possibilities[] = new ActivityCallback($this->stickCraftingService->createTorchOrFlag(...), 10);
+                $possibilities[] = new ActivityCallback($this->stickCraftingService->createFlag(...), 10);
 
             if($this->houseSimService->hasInventory('Toadstool') && $this->houseSimService->hasInventory('Quintessence'))
                 $possibilities[] = new ActivityCallback($this->stickCraftingService->createChampignon(...), 10);

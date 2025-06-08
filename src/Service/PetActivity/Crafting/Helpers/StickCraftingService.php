@@ -153,15 +153,12 @@ class StickCraftingService
         return $activityLog;
     }
 
-    public function createTorchOrFlag(ComputedPetSkills $petWithSkills): PetActivityLog
+    public function createFlag(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
         $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getCrafts()->getTotal());
 
-        $making = ItemRepository::findOneByName($this->em, $this->rng->rngNextFromArray([
-            'Stereotypical Torch',
-            'White Flag'
-        ]));
+        $making = ItemRepository::findOneByName($this->em, 'White Flag');
 
         if($roll >= 8)
         {
