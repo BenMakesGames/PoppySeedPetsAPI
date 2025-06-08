@@ -202,7 +202,7 @@ class CookingService
         if($alreadyKnownRecipe)
             return false;
 
-        if(!ArrayFunctions::any(RecipeRepository::RECIPES, fn($recipe) => $recipe['name'] === $recipeName))
+        if(!ArrayFunctions::any(RecipeRepository::Recipes, fn($recipe) => $recipe['name'] === $recipeName))
             throw new \Exception('Cannot learn recipe "' . $recipeName . '" - it doesn\'t exist!');
 
         $knownRecipe = new KnownRecipes(

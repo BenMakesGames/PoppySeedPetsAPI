@@ -26,7 +26,7 @@ use App\Service\UserAccessor;
 #[Route("/item/fruitJuice")]
 class FruitJuiceController
 {
-    private const array RECIPES = [
+    private const array Recipes = [
         'Red Juice, and Pectin',
         'Orange Juice, and Pectin',
         'Carrot Juice, and Pectin',
@@ -47,7 +47,7 @@ class FruitJuiceController
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'fruitJuice/#/upload');
 
-        $message = $cookingService->showRecipeNamesToCookingBuddy($user, self::RECIPES);
+        $message = $cookingService->showRecipeNamesToCookingBuddy($user, self::Recipes);
 
         return $responseService->itemActionSuccess($message);
     }

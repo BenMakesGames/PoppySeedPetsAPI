@@ -89,7 +89,7 @@ class GetKnownRecipes
         // build up a dictionary in advance, for fast lookup
         $knownRecipeRecipes = [];
 
-        foreach(RecipeRepository::RECIPES as $recipe)
+        foreach(RecipeRepository::Recipes as $recipe)
         {
             if(in_array($recipe['name'], $knownRecipeNames))
                 $knownRecipeRecipes[$recipe['name']] = $recipe;

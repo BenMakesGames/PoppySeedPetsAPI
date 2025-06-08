@@ -30,7 +30,7 @@ class DuplicateRecipeTest extends KernelTestCase
     {
         $seenIngredients = [];
 
-        foreach(RecipeRepository::RECIPES as $recipe)
+        foreach(RecipeRepository::Recipes as $recipe)
         {
             if(array_key_exists($recipe['ingredients'], $seenIngredients))
                 $this->fail("Duplicate recipes found: \"{$recipe['name']}\" and \"{$seenIngredients[$recipe['ingredients']]}\".");
