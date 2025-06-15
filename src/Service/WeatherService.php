@@ -14,10 +14,9 @@ declare(strict_types=1);
 
 namespace App\Service;
 
-use App\Entity\Pet;
 use App\Functions\CalendarFunctions;
 use App\Model\WeatherData;
-use App\Model\WeatherForecastData;
+use App\Model\WeatherSky;
 
 class WeatherService
 {
@@ -25,189 +24,80 @@ class WeatherService
     {
     }
 
-    public static function getHourSince2000(\DateTimeImmutable $dt): float
+    public static function getDaySeed(\DateTimeImmutable $dt): int
     {
-        $year = $dt->format('Y') - 2000;
-
-        $isLeapYear = $dt->format('L') == 1;
-        $dayOfYear = (int)$dt->format('z');
-
-        // we don't want an extra day in leap years, for weather purposes
-        if($isLeapYear && $dayOfYear > 60)
-            $dayOfYear--;
-
-        $hourOfDay = (int)$dt->format('G');
-        $hourOfYear = $dayOfYear * 24 + $hourOfDay + ($dt->format('i') / 60); // + minute as fraction of hour
-
-        // 8760 = 365 * 24
-        return $year * 8760 + $hourOfYear;
+        return ((int)$dt->format('Y') - 2015) * 2571 + (int)$dt->format('z') * 7 + (int)$dt->format('N') - 1;
     }
 
-    public static function getWeather(\DateTimeImmutable $dt, ?Pet $pet, bool $getHolidays = true): WeatherData
+    public static function getWeather(\DateTimeImmutable $dt): WeatherData
     {
-        if($pet)
-            $dt = $dt->modify('-' . max(0, $pet->getHouseTime()->getActivityTime()) . ' minutes');
-
         $weather = new WeatherData();
-
-        $hourSince2000 = WeatherService::getHourSince2000($dt);
 
         $isLeapDay = CalendarFunctions::isLeapDay($dt);
 
-        $weather->holidays = $getHolidays ? CalendarFunctions::getEventData($dt) : [];
-        $weather->clouds = $isLeapDay ? 1 : WeatherService::getClouds($hourSince2000);
-        $weather->rainfall = $isLeapDay ? 1.5 : WeatherService::getRainfall($hourSince2000);
-        $weather->isNight = WeatherService::isNight((int)$hourSince2000 % 24);
+        $weather->holidays = CalendarFunctions::getEventData($dt);
+        $weather->sky = $isLeapDay ? WeatherSky::Snowy : WeatherService::getSky($dt);
 
         return $weather;
     }
 
-    public static function getNoise(float $hourOfYear, float $p1, float $p2, float $p3, float $p4, float $p5): float
+    public static function getSky(\DateTimeImmutable $dt): WeatherSky
     {
-        return (
-            sin($p1 * M_E * $hourOfYear) +
-            sin($p2 * M_PI * $hourOfYear) -
-            sin($p3 * M_E * $hourOfYear) -
-            sin($p4 * M_PI * $hourOfYear)
-        ) / (
-            cos($p5 * $hourOfYear) + 3
-        );
+        $daySeed = WeatherService::getDaySeed($dt);
+
+        return match ($dt->format('M'))
+        {
+            'Jan' => self::getRandomSky($daySeed, 5 / 31),
+            'Feb' => self::getRandomSky($daySeed, 3 / 28.25),
+            'Mar' => self::getRandomSky($daySeed, 3 / 31),
+            'Apr' => self::getRandomSky($daySeed, 7 / 30),
+            'May' => self::getRandomSky($daySeed, 15 / 31),
+            'Jun' => self::getRandomSky($daySeed, 17 / 30),
+            'Jul' => self::getRandomSky($daySeed, 28 / 31),
+            'Aug' => self::getRandomSky($daySeed, 28 / 31),
+            'Sep' => self::getRandomSky($daySeed, 23 / 30),
+            'Oct' => self::getRandomSky($daySeed, 22 / 31),
+            'Nov' => self::getRandomSky($daySeed, 6 /  30),
+            'Dec' => self::getRandomSky($daySeed, 12 / 31),
+        };
     }
 
-    /**
-     * @return float ??? unit of measure ???
-     */
-    public static function getRainfall(float $hourOfYear): float
+    public static function getRandomSky(int $seed, float $chanceOfRain): WeatherSky
     {
-        $moisture = WeatherService::getMoisture($hourOfYear);
+        $rng = new Xoshiro($seed);
 
-        return 5 * max(0, $moisture - 0.3);
-    }
+        if($rng->rngNextFloat() < $chanceOfRain)
+        {
+            if($rng->rngNextFloat() < 0.1) // 10% of rain is storm
+                return WeatherSky::Stormy;
 
-    /**
-     * @return float ??? unit of measure ???
-     */
-    public static function getClouds(float $hourOfYear): float
-    {
-        $moistureMinus3 = WeatherService::getMoisture($hourOfYear - 3);
-        $moistureMinus2 = WeatherService::getMoisture($hourOfYear - 2);
-        $moistureMinus1 = WeatherService::getMoisture($hourOfYear - 1);
-        $moisture = WeatherService::getMoisture($hourOfYear);
-        $moisturePlus1 = WeatherService::getMoisture($hourOfYear + 1);
-        $moisturePlus2 = WeatherService::getMoisture($hourOfYear + 2);
-        $moisturePlus3 = WeatherService::getMoisture($hourOfYear + 3);
+            return WeatherSky::Rainy;
+        }
 
-        return max(0,
-            $moistureMinus3 / 8 +
-            $moistureMinus2 / 8 +
-            $moistureMinus1 / 5 +
-            $moisture / 2 +
-            $moisturePlus1 / 5 +
-            $moisturePlus2 / 8 +
-            $moisturePlus3 / 8 -
-            0.18
-        );
-    }
+        if($rng->rngNextFloat() < $chanceOfRain / 2)
+            return WeatherSky::Cloudy;
 
-    public static function getMoisture(float $hourOfYear): float
-    {
-        $seasonal =
-            1.5 * sin(M_PI * 2 * ($hourOfYear - 3500) / 8760) +
-            sin(M_PI * 4 * ($hourOfYear - 600) / 8760) +
-            5
-        ;
-        $n1 = WeatherService::getNoise($hourOfYear, 0.011, 0.041, 0.019, 0.037, 0.71) + 1.25;
-        $n2 = WeatherService::getNoise($hourOfYear, 0.17, 0.23, 0.13, 0.37, 0.53) + 1.25;
-
-        return ($seasonal * $n1 * $n2) / 50;
-    }
-
-    public static function isNight(int $hourOfDay): bool
-    {
-        return ($hourOfDay < 6 || $hourOfDay >= 18);
+        return WeatherSky::Clear;
     }
 
     /**
      * @return WeatherData[]
      */
-    public function get24HourForecast(): array
+    public function getWeatherForecast(): array
     {
-        $now = new \DateTimeImmutable();
+        $weather = [];
 
-        return $this->cache->getOrCompute(
-            'Weather Forecast ' . $now->format('Y-m-d G'),
-            \DateInterval::createFromDateString('1 hour'),
-            fn() => self::compute24HourForecast()
-        );
-    }
-
-    /**
-     * @return WeatherData[]
-     */
-    private static function compute24HourForecast(): array
-    {
-        $forecast = [];
-        $now = new \DateTimeImmutable();
-
-        for($hour = 0; $hour < 24; $hour++)
+        for($day = 0; $day <= 6; $day++)
         {
-            $now = $now->modify('+1 hour');
-            $forecast[] = self::getWeather($now, null, false);
+            $date = (new \DateTimeImmutable())->modify('+' . $day . ' days');
+
+            $weather[] = $this->cache->getOrCompute(
+                'Weather ' . $date->format('Y-m-d'),
+                \DateInterval::createFromDateString('1 day'),
+                fn() => self::getWeather($date->setTime(0, 0, 0))
+            );
         }
 
-        return $forecast;
-    }
-
-    /**
-     * @return WeatherForecastData[]
-     */
-    public function get6DayForecast(): array
-    {
-        $forecast = [];
-
-        for($day = 1; $day <= 6; $day++)
-            $forecast[] = $this->getWeatherForecast((new \DateTimeImmutable())->modify('+' . $day . 'days'));
-
-        return $forecast;
-    }
-
-    public function getWeatherForecast(\DateTimeImmutable $date): WeatherForecastData
-    {
-        return $this->cache->getOrCompute(
-            'Weather Forecast ' . $date->format('Y-m-d'),
-            \DateInterval::createFromDateString('1 day'),
-            fn() => self::computeWeatherForecast($date->setTime(0, 0, 0))
-        );
-    }
-
-    private static function computeWeatherForecast(\DateTimeImmutable $date): WeatherForecastData
-    {
-        $clouds = [];
-        $rainfalls = [];
-
-        for($hour = 0; $hour < 24; $hour++)
-        {
-            $dateToConsider = $date->setTime($hour, 30, 0);
-            $weather = self::getWeather($dateToConsider, null, false);
-
-            $clouds[] = $weather->clouds;
-            $rainfalls[] = $weather->rainfall;
-        }
-
-        $forecast = new WeatherForecastData();
-
-        $forecast->date = $date->setTime(0, 0, 0);
-
-        $forecast->holidays = CalendarFunctions::getEventData($forecast->date);
-
-        $forecast->maxRainfall = max($rainfalls);
-        $forecast->minRainfall = min($rainfalls);
-        $forecast->avgRainfall = array_sum($rainfalls) / 24;
-
-        $forecast->maxClouds = max($clouds);
-        $forecast->minClouds = min($clouds);
-        $forecast->avgClouds = array_sum($clouds) / 24;
-
-        return $forecast;
+        return $weather;
     }
 }

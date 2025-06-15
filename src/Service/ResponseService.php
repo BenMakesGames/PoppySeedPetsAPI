@@ -11,7 +11,6 @@ declare(strict_types=1);
  * You should have received a copy of the GNU General Public License along with The Poppy Seed Pets API. If not, see <https://www.gnu.org/licenses/>.
  */
 
-
 namespace App\Service;
 
 use App\Entity\Item;
@@ -45,7 +44,6 @@ class ResponseService
         private readonly SerializerInterface $serializer,
         private readonly NormalizerInterface $normalizer,
         private readonly EntityManagerInterface $em,
-        private readonly WeatherService $weatherService,
         private readonly UserAccessor $userAccessor
     )
     {
@@ -91,13 +89,6 @@ class ResponseService
             else
                 setcookie('sessionId', $this->sessionId, time() + 60 * 60 * 24 * 7, '/', 'poppyseedpets.com', true, true);
         }
-
-        $weather = WeatherService::getWeather(new \DateTimeImmutable(), null);
-
-        $responseData['weather'] = $this->normalizer->normalize([
-            'today' => $weather,
-            'forecast' => $this->weatherService->get24HourForecast(),
-        ], null, [ 'groups' => [ SerializationGroupEnum::WEATHER ]]);
 
         $this->injectUserData($responseData);
 

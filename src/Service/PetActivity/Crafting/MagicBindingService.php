@@ -16,6 +16,7 @@ namespace App\Service\PetActivity\Crafting;
 
 use App\Entity\PetActivityLog;
 use App\Enum\MeritEnum;
+use App\Enum\MoonPhaseEnum;
 use App\Enum\PetActivityLogInterestingness;
 use App\Enum\PetActivityLogTagEnum;
 use App\Enum\PetActivityStatEnum;
@@ -23,6 +24,7 @@ use App\Enum\PetBadgeEnum;
 use App\Enum\PetSkillEnum;
 use App\Enum\StatusEffectEnum;
 use App\Functions\ActivityHelpers;
+use App\Functions\DateFunctions;
 use App\Functions\EnchantmentRepository;
 use App\Functions\ItemRepository;
 use App\Functions\PetActivityLogFactory;
@@ -64,7 +66,7 @@ class MagicBindingService
      */
     public function getCraftingPossibilities(ComputedPetSkills $petWithSkills): array
     {
-        $weather = WeatherService::getWeather($this->clock->now, $petWithSkills->getPet());
+        $moonPhase = DateFunctions::moonPhase($this->clock->now);
 
         $possibilities = [];
 
@@ -193,8 +195,17 @@ class MagicBindingService
             if($this->houseSimService->hasInventory('Fishing Recorder') && $this->houseSimService->hasInventory('Music Note'))
                 $possibilities[] = new ActivityCallback($this->createKokopelli(...), 8);
 
-            if($this->houseSimService->hasInventory('Crystal Ball') && $weather->isNight)
+            if(
+                $this->houseSimService->hasInventory('Crystal Ball') &&
+                (
+                    $moonPhase === MoonPhaseEnum::FullMoon ||
+                    $moonPhase === MoonPhaseEnum::WaningGibbous ||
+                    $moonPhase === MoonPhaseEnum::WaxingGibbous
+                )
+            )
+            {
                 $possibilities[] = new ActivityCallback($this->createMoonPearl(...), 8);
+            }
 
             if($this->houseSimService->hasInventory('Silver Bar') && $this->houseSimService->hasInventory('Paint Stripper'))
                 $possibilities[] = new ActivityCallback($this->createAmbrotypicSolvent(...), 8);
@@ -2806,9 +2817,7 @@ class MagicBindingService
             $this->houseSimService->getState()->loseItem('Sidereal Leaf Spear', 1);
             $pet->increaseEsteem(3);
 
-            $weather = WeatherService::getWeather(new \DateTimeImmutable(), $pet);
-
-            $makes = $weather->isNight ? 'Midnight' : 'Sunrise';
+            $makes = $this->rng->rngNextFromArray([' Midnight', 'Sunrise' ]);
 
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% enchanted a Sidereal Spear, creating ' . $makes . '!', '')
                 ->addInterestingness(PetActivityLogInterestingness::HoHum + 18)

@@ -37,7 +37,7 @@ class GetForecastController
         $user = $userAccessor->getUserOrThrow();
 
         $data = [
-            'forecast' => $weatherService->get6DayForecast(),
+            'forecast' => $weatherService->getWeatherForecast(),
             'holidayBoxes' => array_map(
                 fn(AvailableHolidayBox $box) => $box->nameWithQuantity,
                 $plazaService->getAvailableHolidayBoxes($user)

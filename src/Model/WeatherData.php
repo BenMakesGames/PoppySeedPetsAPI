@@ -20,30 +20,29 @@ use Symfony\Component\Serializer\Attribute\Groups;
 
 final class WeatherData
 {
+    public \DateTimeImmutable $date;
+
     /** @var HolidayEnum[] */
-    #[Groups(['weather'])]
     public array $holidays;
 
-    public float $clouds;
-    public float $rainfall;
-
-    #[Groups(['weather'])]
-    public bool $isNight;
-
-    #[Groups(['weather'])]
-    public function getClouds(): float
-    {
-        return round($this->clouds, 2);
-    }
-
-    #[Groups(['weather'])]
-    public function getRainfall(): float
-    {
-        return round($this->rainfall, 2);
-    }
+    public WeatherSky $sky;
 
     public function isHoliday(HolidayEnum $holiday): bool
     {
         return in_array($holiday, $this->holidays);
     }
+
+    public function isRaining()
+    {
+        return $this->sky === WeatherSky::Rainy || $this->sky === WeatherSky::Stormy;
+    }
+}
+
+enum WeatherSky: string
+{
+    case Clear = 'clear';
+    case Cloudy = 'cloudy';
+    case Rainy = 'rainy';
+    case Snowy = 'snowy';
+    case Stormy = 'stormy';
 }

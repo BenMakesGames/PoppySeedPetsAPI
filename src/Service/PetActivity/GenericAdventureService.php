@@ -137,7 +137,7 @@ class GenericAdventureService
                 return $activityLog;
 
             // if it's raining, and a pet is wearing a hat...
-            if($pet->getHat() && WeatherService::getWeather(new \DateTimeImmutable(), $pet)->getRainfall() > 0)
+            if($pet->getHat() && WeatherService::getWeather(new \DateTimeImmutable())->isRaining())
             {
                 $activityLog = $this->hattierService->petMaybeUnlockAura(
                     $pet,
