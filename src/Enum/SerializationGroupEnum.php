@@ -68,7 +68,6 @@ final class SerializationGroupEnum
     public const string MY_MARKET_BIDS = 'myBids';
     public const string GLOBAL_STATS = 'globalStats';
     public const string DESIGN_GOAL = 'designGoal';
-    public const string WEATHER = 'weather';
     public const string MY_STYLE = 'myStyle';
     public const string PUBLIC_STYLE = 'publicStyle';
     public const string MY_MENU = 'myMenu';

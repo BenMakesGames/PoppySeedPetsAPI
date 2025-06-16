@@ -35,6 +35,7 @@ class WeatherService
 
         $isLeapDay = CalendarFunctions::isLeapDay($dt);
 
+        $weather->date = $dt;
         $weather->holidays = CalendarFunctions::getEventData($dt);
         $weather->sky = $isLeapDay ? WeatherSky::Snowy : WeatherService::getSky($dt);
 

@@ -12,33 +12,34 @@ declare(strict_types=1);
  */
 
 
-namespace App\Controller\Weather;
+namespace App\Controller\Plaza;
 
 use App\Enum\SerializationGroupEnum;
+use App\Model\AvailableHolidayBox;
+use App\Service\PlazaService;
 use App\Service\ResponseService;
 use App\Service\WeatherService;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
+use App\Service\UserAccessor;
 
-#[Route("/weather")]
-class GetForecastController
+#[Route("/plaza")]
+class GetHolidayBoxesController
 {
-    #[Route("", methods: ["GET"])]
-    public function getForecast(
-        ResponseService $responseService, WeatherService $weatherService
+    #[Route("/holidayBoxes", methods: ["GET"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
+    public function getHolidayBoxes(
+        ResponseService $responseService, PlazaService $plazaService, UserAccessor $userAccessor
     ): JsonResponse
     {
-        $data = [
-            'forecast' => array_map(
-                fn($forecast) => [
-                    'date' => $forecast->date->format('Y-m-d'),
-                    'sky' => $forecast->sky->value,
-                    'holidays' => $forecast->holidays
-                ],
-                $weatherService->getWeatherForecast()
-            ),
-        ];
+        $user = $userAccessor->getUserOrThrow();
 
-        return $responseService->success($data);
+        return $responseService->success([
+            'holidayBoxes' => array_map(
+                fn(AvailableHolidayBox $box) => $box->nameWithQuantity,
+                $plazaService->getAvailableHolidayBoxes($user)
+            )
+        ]);
     }
 }
