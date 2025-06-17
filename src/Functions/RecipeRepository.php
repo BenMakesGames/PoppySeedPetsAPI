@@ -234,6 +234,7 @@ final class RecipeRepository
         [ 'name' => 'Falafel', 'ingredients' => '7:1,170:1,195:1', 'makes' => '1086:2' ],
         [ 'name' => 'Fermented Fish Onigiri', 'ingredients' => '17:1,140:1,200:1', 'makes' => '309:3' ],
         [ 'name' => 'Fermented Fish', 'ingredients' => '10:1,33:1', 'makes' => '200:2' ],
+        [ 'name' => 'Fiberglass', 'ingredients' => '40:1,142:1', 'makes' => '143:1' ],
         [ 'name' => 'Fig Wine Vinegar', 'ingredients' => '10:1,797:1', 'makes' => '146:2' ],
         [ 'name' => 'Fig Wine', 'ingredients' => '10:1,363:1', 'makes' => '797:2' ],
         [ 'name' => 'Figurt', 'ingredients' => '113:1,363:1', 'makes' => '1112:2' ],
