@@ -16,7 +16,7 @@ namespace DoctrineMigrations;
 use Doctrine\DBAL\Schema\Schema;
 use Doctrine\Migrations\AbstractMigration;
 
-final class Version20250618231112 extends AbstractMigration
+final class Version20250618231113 extends AbstractMigration
 {
     public function getDescription(): string
     {
@@ -25,6 +25,9 @@ final class Version20250618231112 extends AbstractMigration
 
     public function up(Schema $schema): void
     {
+        $this->addSql("DELETE FROM doctrine_migration_versions WHERE version='DoctrineMigrations\Version20250618231112'");
+        $this->addSql("DELETE FROM doctrine_migration_versions WHERE version='DoctrineMigrations\Version20191018181048'");
+
         $this->addSql(<<<'EOSQL'
         -- food effect
         INSERT INTO item_food (`id`, `food`, `love`, `junk`, `alcohol`, `earthy`, `fruity`, `tannic`, `spicy`, `creamy`, `meaty`, `planty`, `fishy`, `floral`, `fatty`, `oniony`, `chemically`, `caffeine`, `psychedelic`, `granted_skill`, `chance_for_bonus_item`, `random_flavor`, `contains_tentacles`, `granted_status_effect`, `granted_status_effect_duration`, `is_candy`, `leftovers_id`, `bonus_item_group_id`) VALUES (528,4,5,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,NULL,NULL,0,0,NULL,NULL,0,NULL,NULL) ON DUPLICATE KEY UPDATE `id` = `id`;
