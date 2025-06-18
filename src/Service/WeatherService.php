@@ -48,18 +48,18 @@ class WeatherService
 
         return match ($dt->format('M'))
         {
-            'Jan' => self::getRandomSky($daySeed, 5 / 31),
-            'Feb' => self::getRandomSky($daySeed, 3 / 28.25),
-            'Mar' => self::getRandomSky($daySeed, 3 / 31),
-            'Apr' => self::getRandomSky($daySeed, 7 / 30),
+            'Jan' => self::getRandomSky($daySeed, 7 / 31),
+            'Feb' => self::getRandomSky($daySeed, 5 / 28.25),
+            'Mar' => self::getRandomSky($daySeed, 5 / 31),
+            'Apr' => self::getRandomSky($daySeed, 10 / 30),
             'May' => self::getRandomSky($daySeed, 15 / 31),
             'Jun' => self::getRandomSky($daySeed, 17 / 30),
-            'Jul' => self::getRandomSky($daySeed, 28 / 31),
-            'Aug' => self::getRandomSky($daySeed, 28 / 31),
-            'Sep' => self::getRandomSky($daySeed, 23 / 30),
-            'Oct' => self::getRandomSky($daySeed, 22 / 31),
-            'Nov' => self::getRandomSky($daySeed, 6 /  30),
-            'Dec' => self::getRandomSky($daySeed, 12 / 31),
+            'Jul' => self::getRandomSky($daySeed, 25 / 31),
+            'Aug' => self::getRandomSky($daySeed, 25 / 31),
+            'Sep' => self::getRandomSky($daySeed, 21 / 30),
+            'Oct' => self::getRandomSky($daySeed, 21 / 31),
+            'Nov' => self::getRandomSky($daySeed, 8 /  30),
+            'Dec' => self::getRandomSky($daySeed, 13 / 31),
         };
     }
 
@@ -69,7 +69,7 @@ class WeatherService
 
         if($rng->rngNextFloat() < $chanceOfRain)
         {
-            if($rng->rngNextFloat() < 0.1) // 10% of rain is storm
+            if($rng->rngNextFloat() < 0.2) // 20% of rain is storm
                 return WeatherSky::Stormy;
 
             return WeatherSky::Rainy;
