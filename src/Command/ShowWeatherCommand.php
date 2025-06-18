@@ -45,7 +45,7 @@ class ShowWeatherCommand extends Command
         else
             $time = new \DateTimeImmutable($time);
 
-        $weather = WeatherService::getWeather($time, null);
+        $weather = WeatherService::getWeather($time);
 
         var_export($weather);
 

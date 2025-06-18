@@ -89,7 +89,7 @@ class HuntingService
         $activityLog = null;
         $changes = new PetChanges($pet);
 
-        $weather = WeatherService::getWeather($this->clock->now, $pet);
+        $weather = WeatherService::getWeather($this->clock->now);
 
         if(DateFunctions::moonPhase($this->clock->now) === MoonPhaseEnum::FullMoon && $this->rng->rngNextInt(1, 100) === 1)
         {

@@ -39,6 +39,7 @@ use App\Functions\StatusEffectHelpers;
 use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
 use App\Model\WeatherData;
+use App\Model\WeatherSky;
 use App\Service\Clock;
 use App\Service\FieldGuideService;
 use App\Service\HattierService;
@@ -81,7 +82,7 @@ class UmbraService
             $activityLog = $this->leonidsService->adventure($petWithSkills);
         }
         else {
-            $weather = WeatherService::getWeather(new \DateTimeImmutable(), $pet);
+            $weather = WeatherService::getWeather(new \DateTimeImmutable());
 
             // psychedelics bonus is built into getUmbra()
             $skill = 10 + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getArcana()->getTotal() + $petWithSkills->getUmbraBonus()->getTotal();
@@ -432,7 +433,7 @@ class UmbraService
 
     private function found2Moneys(ComputedPetSkills $petWithSkills, WeatherData $weather): PetActivityLog
     {
-        if($weather->getRainfall() > 0 && $weather->getRainfall() < 2)
+        if($weather->sky === WeatherSky::Rainy)
             return $this->foundDrizzlyBear($petWithSkills);
 
         $pet = $petWithSkills->getPet();
@@ -615,7 +616,7 @@ class UmbraService
 
     private function fishingAtRiver(ComputedPetSkills $petWithSkills, WeatherData $weather): PetActivityLog
     {
-        if($weather->getRainfall() > 0 && $weather->getRainfall() < 2)
+        if($weather->sky === WeatherSky::Rainy)
             return $this->foundDrizzlyBear($petWithSkills);
 
         $pet = $petWithSkills->getPet();

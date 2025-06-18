@@ -77,7 +77,7 @@ class PetSocialActivityService
             return true;
         }
 
-        $weather = WeatherService::getWeather(new \DateTimeImmutable(), $pet);
+        $weather = WeatherService::getWeather(new \DateTimeImmutable());
 
         if(!$pet->hasStatusEffect(StatusEffectEnum::Wereform))
         {

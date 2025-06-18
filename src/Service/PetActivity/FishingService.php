@@ -476,7 +476,7 @@ class FishingService
     {
         $pet = $petWithSkills->getPet();
 
-        $toadChance = WeatherService::getWeather(new \DateTimeImmutable(), $pet)->getRainfall() > 0 ? 100 : 34;
+        $toadChance = WeatherService::getWeather(new \DateTimeImmutable())->isRaining() ? 100 : 34;
 
         $nothingBiting = $this->nothingBiting($pet, 20, 'at a Roadside Creek');
         if($nothingBiting !== null) return $nothingBiting;

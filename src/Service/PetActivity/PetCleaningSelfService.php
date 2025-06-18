@@ -51,14 +51,14 @@ class PetCleaningSelfService
         $changes = new PetChanges($pet);
 
         $pet->removeStatusEffect($pet->getStatusEffect($statusEffect));
-        $weather = WeatherService::getWeather(new \DateTimeImmutable(), $pet);
+        $weather = WeatherService::getWeather(new \DateTimeImmutable());
 
         if($pet->hasMerit(MeritEnum::GOURMAND))
         {
             $this->cleanUpWithGourmand($pet, $itemOnBody, $changes);
             return false;
         }
-        else if($weather->getRainfall() > 0)
+        else if($weather->isRaining())
         {
             $this->cleanUpWithRain($pet, $itemOnBody, $changes);
             return true;

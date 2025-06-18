@@ -66,19 +66,18 @@ class DragonService
 
     // currently sums to 75
     private const array GemGoodies = [
-        [ 'weight' => 20, 'item' => 'Scroll of Resources' ], // 26.6%
-        [ 'weight' => 10, 'item' => 'Liquid-hot Magma' ], // 13.3%
-        [ 'weight' => 10, 'item' => 'Firestone' ],
-        [ 'weight' => 10, 'item' => 'Lightning in a Bottle' ],
+        [ 'weight' => 25, 'item' => 'Scroll of Resources' ], // 33%
+        [ 'weight' => 15, 'item' => 'Liquid-hot Magma' ], // 20%
+        [ 'weight' => 10, 'item' => 'Firestone' ], // 13.3333%
         // ^ 2/3 chance of being one of those
 
         // 1/3 chance of being one of these:
-        [ 'weight' => 5, 'item' => 'Box of Ores' ],
-        [ 'weight' => 5, 'item' => 'Secret Seashell' ],
-        [ 'weight' => 5, 'item' => 'Scroll of Resources' ],
-        [ 'weight' => 5, 'item' => 'Stereotypical Bone' ],
-        [ 'weight' => 3, 'item' => 'Rib' ],
-        [ 'weight' => 2, 'item' => 'Dino Skull' ],
+        [ 'weight' => 5, 'item' => 'Box of Ores' ], // 6.6666%
+        [ 'weight' => 5, 'item' => 'Secret Seashell' ], // 6.6666%
+        [ 'weight' => 5, 'item' => 'Scroll of Resources' ], // 6.6666%
+        [ 'weight' => 5, 'item' => 'Stereotypical Bone' ], // 6.6666%
+        [ 'weight' => 3, 'item' => 'Rib' ], // 4%
+        [ 'weight' => 2, 'item' => 'Dino Skull' ], // 2.6666%
     ];
 
     public function __construct(

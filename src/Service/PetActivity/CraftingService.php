@@ -1678,7 +1678,7 @@ class CraftingService
     private function createEatYourFruitsAndVeggies(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $weather = WeatherService::getWeather(new \DateTimeImmutable(), $pet);
+        $weather = WeatherService::getWeather(new \DateTimeImmutable());
         $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getDexterity()->getTotal() * 2 + $petWithSkills->getCrafts()->getTotal());
 
         if($roll <= 2 && $pet->getFood() < 4)
@@ -2230,7 +2230,7 @@ class CraftingService
     private function createCaroteneStick(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $weather = WeatherService::getWeather(new \DateTimeImmutable(), $pet);
+        $weather = WeatherService::getWeather(new \DateTimeImmutable());
         $craftsCheck = $this->rng->rngNextInt(1, 20 + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal());
 
         if($craftsCheck < 14)

@@ -347,7 +347,7 @@ class GatheringService
 
     private function foundTeaBush(Pet $pet): PetActivityLog
     {
-        if(WeatherService::getWeather(new \DateTimeImmutable(), $pet)->getRainfall() > 0 && $this->rng->rngNextInt(1, 4) === 1)
+        if(WeatherService::getWeather(new \DateTimeImmutable())->isRaining() && $this->rng->rngNextInt(1, 4) === 1)
         {
             $message = '%pet:' . $pet->getId() . '.name% found a Tea Bush, and grabbed a few Tea Leaves, as well as some Worms which had surfaced to escape the rain.';
 
@@ -447,7 +447,7 @@ class GatheringService
 
         $pet = $petWithSkills->getPet();
 
-        $toadChance = WeatherService::getWeather(new \DateTimeImmutable(), $pet)->getRainfall() > 0 ? 75 : 25;
+        $toadChance = WeatherService::getWeather(new \DateTimeImmutable())->isRaining() ? 75 : 25;
 
         if($this->rng->rngNextInt(1, 100) <= $toadChance)
         {
@@ -715,7 +715,7 @@ class GatheringService
             'Sweet Beet', 'Sweet Beet', 'Ginger', 'Rice Flower'
         ];
 
-        if(WeatherService::getWeather(new \DateTimeImmutable(), $pet)->getRainfall() > 0)
+        if(WeatherService::getWeather(new \DateTimeImmutable())->isRaining())
             $possibleLoot[] = 'Worms';
 
         $loot = [];

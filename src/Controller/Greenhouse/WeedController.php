@@ -106,7 +106,7 @@ class WeedController
 
             $hasWaterPlots = $greenhouse->getMaxWaterPlants() > 0;
             $hasDarkPlots = $greenhouse->getMaxDarkPlants() > 0;
-            $isRaining = WeatherService::getWeather(new \DateTimeImmutable(), null)->getRainfall() > 0;
+            $isRaining = WeatherService::getWeather(new \DateTimeImmutable())->isRaining();
 
             $basicItems = CalendarFunctions::isApricotFestival($clock->now)
                 ? [ 'Apricot', 'Apricot', 'Blueberries', 'Line of Ants' ]

@@ -46,9 +46,9 @@ class BenjaminFranklinController
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'benjaminFranklin/#/fly');
 
-        $weather = WeatherService::getWeather(new \DateTimeImmutable(), null);
+        $weather = WeatherService::getWeather(new \DateTimeImmutable());
 
-        if($weather->getRainfall() <= 0)
+        if(!$weather->isRaining())
         {
             return $responseService->itemActionSuccess('You had a nice time, and all, but you suspect something _more interesting_ would happen if you flew the kite while it was raining out.');
         }
