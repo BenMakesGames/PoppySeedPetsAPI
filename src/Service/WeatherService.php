@@ -48,18 +48,18 @@ class WeatherService
 
         return match ($dt->format('M'))
         {
-            'Jan' => self::getRandomSky($daySeed, 7 / 31),
-            'Feb' => self::getRandomSky($daySeed, 5 / 28.25),
-            'Mar' => self::getRandomSky($daySeed, 5 / 31),
-            'Apr' => self::getRandomSky($daySeed, 10 / 30),
-            'May' => self::getRandomSky($daySeed, 15 / 31),
-            'Jun' => self::getRandomSky($daySeed, 17 / 30),
-            'Jul' => self::getRandomSky($daySeed, 25 / 31),
-            'Aug' => self::getRandomSky($daySeed, 25 / 31),
-            'Sep' => self::getRandomSky($daySeed, 21 / 30),
-            'Oct' => self::getRandomSky($daySeed, 21 / 31),
-            'Nov' => self::getRandomSky($daySeed, 8 /  30),
-            'Dec' => self::getRandomSky($daySeed, 13 / 31),
+            'Jan' => self::getRandomSky($daySeed, 6 / 31),
+            'Feb' => self::getRandomSky($daySeed, 4 / 28.25),
+            'Mar' => self::getRandomSky($daySeed, 4 / 31),
+            'Apr' => self::getRandomSky($daySeed, 8 / 30),
+            'May' => self::getRandomSky($daySeed, 12 / 31),
+            'Jun' => self::getRandomSky($daySeed, 15 / 30),
+            'Jul' => self::getRandomSky($daySeed, 20 / 31),
+            'Aug' => self::getRandomSky($daySeed, 20 / 31),
+            'Sep' => self::getRandomSky($daySeed, 17 / 30),
+            'Oct' => self::getRandomSky($daySeed, 16 / 31),
+            'Nov' => self::getRandomSky($daySeed, 6 /  30),
+            'Dec' => self::getRandomSky($daySeed, 10 / 31),
         };
     }
 
