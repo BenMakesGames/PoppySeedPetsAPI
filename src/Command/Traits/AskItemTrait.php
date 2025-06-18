@@ -47,7 +47,7 @@ trait AskItemTrait
             $question = new Question($prompt . ' (~)', null);
 
         $question->setValidator(function($itemName) {
-            $itemName = trim($itemName);
+            $itemName = $itemName === null ? '~' : trim($itemName);
 
             if($itemName === '~') return null;
 
