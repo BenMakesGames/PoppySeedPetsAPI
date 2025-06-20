@@ -15,7 +15,6 @@ declare(strict_types=1);
 namespace App\Controller\Weather;
 
 use App\Attributes\DoesNotRequireHouseHours;
-use App\Enum\SerializationGroupEnum;
 use App\Service\ResponseService;
 use App\Service\WeatherService;
 use Symfony\Component\HttpFoundation\JsonResponse;
