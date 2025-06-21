@@ -50,20 +50,27 @@ class CookingBuddy
 
     #[ORM\OneToOne(inversedBy: 'cookingBuddy', cascade: ['persist', 'remove'])]
     #[ORM\JoinColumn(nullable: false)]
-    private ?User $owner = null;
+    private User $owner;
 
     #[ORM\Column(length: 40)]
-    private ?string $name = null;
+    private string $name;
 
     #[ORM\Column(length: 40)]
-    private ?string $appearance = null;
+    private string $appearance;
+
+    public function __construct(User $owner, string $name, string $appearance)
+    {
+        $this->owner = $owner;
+        $this->name = $name;
+        $this->appearance = $appearance;
+    }
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getOwner(): ?User
+    public function getOwner(): User
     {
         return $this->owner;
     }
@@ -75,7 +82,7 @@ class CookingBuddy
         return $this;
     }
 
-    public function getName(): ?string
+    public function getName(): string
     {
         return $this->name;
     }
@@ -92,7 +99,7 @@ class CookingBuddy
         return $this;
     }
 
-    public function getAppearance(): ?string
+    public function getAppearance(): string
     {
         return $this->appearance;
     }

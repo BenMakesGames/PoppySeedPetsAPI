@@ -88,11 +88,11 @@ class MarketService
 
     public function logExchange(Inventory $itemForSale, int $price): DailyMarketInventoryTransaction
     {
-        $log = (new DailyMarketInventoryTransaction())
-            ->setInventory($itemForSale->getId())
-            ->setItem($itemForSale->getItem())
-            ->setPrice($price)
-        ;
+        $log = new DailyMarketInventoryTransaction(
+            inventoryId: $itemForSale->getId(),
+            item: $itemForSale->getItem(),
+            price: $price
+        );
 
         $this->em->persist($log);
 

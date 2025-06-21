@@ -28,12 +28,18 @@ class LunchboxItem
 
     #[ORM\ManyToOne(targetEntity: Pet::class, inversedBy: 'lunchboxItems')]
     #[ORM\JoinColumn(nullable: false)]
-    private $pet;
+    private Pet $pet;
 
     #[ORM\OneToOne(targetEntity: Inventory::class, inversedBy: 'lunchboxItem')]
     #[ORM\JoinColumn(nullable: false)]
     #[Groups(['myPet'])]
-    private $inventoryItem;
+    private Inventory $inventoryItem;
+
+    public function __construct(Pet $pet, Inventory $inventoryItem)
+    {
+        $this->pet = $pet;
+        $this->inventoryItem = $inventoryItem;
+    }
 
     public function getId(): ?int
     {

@@ -86,7 +86,7 @@ class PetGroup
     }
 
     /**
-     * @return Collection|Pet[]
+     * @return Collection<int, Pet>
      */
     public function getMembers(): Collection
     {

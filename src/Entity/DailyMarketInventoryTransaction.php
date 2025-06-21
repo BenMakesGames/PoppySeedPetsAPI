@@ -28,14 +28,21 @@ class DailyMarketInventoryTransaction
     private ?int $id = null;
 
     #[ORM\Column(type: 'integer')]
-    private $inventory;
+    private int $inventory;
 
     #[ORM\Column(type: 'integer')]
-    private $price;
+    private int $price;
 
     #[ORM\ManyToOne(targetEntity: Item::class)]
     #[ORM\JoinColumn(nullable: false)]
-    private $item;
+    private Item $item;
+
+    public function __construct(int $inventoryId, Item $item, int $price)
+    {
+        $this->inventory = $inventoryId;
+        $this->item = $item;
+        $this->price = $price;
+    }
 
     public function getId(): ?int
     {

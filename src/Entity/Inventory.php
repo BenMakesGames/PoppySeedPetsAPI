@@ -60,7 +60,7 @@ class Inventory
 
     #[ORM\Column(type: 'json')]
     #[Groups(["myInventory", "fireplaceMantle"])]
-    private $comments = [];
+    private array $comments = [];
 
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[Groups(["myInventory"])]

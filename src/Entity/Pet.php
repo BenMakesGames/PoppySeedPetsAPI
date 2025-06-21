@@ -1036,7 +1036,7 @@ class Pet
     }
 
     /**
-     * @return Collection|PetRelationship[]
+     * @return Collection<int, PetRelationship>
      */
     public function getPetRelationships(): Collection
     {
@@ -1121,7 +1121,7 @@ class Pet
     }
 
     /**
-     * @return Collection|StatusEffect[]
+     * @return Collection<int, StatusEffect>
      */
     public function getStatusEffects(): Collection
     {
@@ -1242,7 +1242,7 @@ class Pet
     }
 
     /**
-     * @return Collection|self[]
+     * @return Collection<int, self>
      */
     public function getMotheredPets(): Collection
     {
@@ -1285,7 +1285,7 @@ class Pet
     }
 
     /**
-     * @return Collection|self[]
+     * @return Collection<int, self>
      */
     public function getFatheredPets(): Collection
     {
@@ -1329,7 +1329,7 @@ class Pet
     }
 
     /**
-     * @return Collection|Merit[]
+     * @return Collection<int, Merit>
      */
     public function getMerits(): Collection
     {
@@ -1419,7 +1419,7 @@ class Pet
     }
 
     /**
-     * @return Collection|PetGroup[]
+     * @return Collection<int, PetGroup>
      */
     public function getGroups(): Collection
     {
@@ -1576,7 +1576,7 @@ class Pet
     }
 
     /**
-     * @return Collection|LunchboxItem[]
+     * @return Collection<int, LunchboxItem>
      */
     public function getLunchboxItems(): Collection
     {

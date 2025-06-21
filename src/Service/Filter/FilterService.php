@@ -32,9 +32,6 @@ interface FilterServiceInterface
 
 trait FilterService
 {
-    /**
-     * @var Filterer
-     */
     private Filterer $filterer;
 
     public function getResults(ParameterBag $parameters): FilterResults

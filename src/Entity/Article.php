@@ -48,7 +48,7 @@ class Article
 
     #[ORM\ManyToMany(targetEntity: DesignGoal::class, inversedBy: 'articles')]
     #[Groups(['article'])]
-    private $designGoals;
+    private Collection $designGoals;
 
     #[ORM\Column(type: 'string', length: 50, nullable: true)]
     #[Groups(['article'])]
@@ -107,7 +107,7 @@ class Article
     }
 
     /**
-     * @return Collection|DesignGoal[]
+     * @return Collection<int, DesignGoal[]>
      */
     public function getDesignGoals(): Collection
     {

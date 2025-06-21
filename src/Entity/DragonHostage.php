@@ -55,6 +55,17 @@ class DragonHostage
     #[ORM\Column(type: 'string', length: 6)]
     private string $colorB;
 
+    public function __construct(Dragon $dragon, DragonHostageTypeEnum $type, string $name, string $appearance, string $dialog, string $colorA, string $colorB)
+    {
+        $this->dragon = $dragon;
+        $this->type = $type;
+        $this->name = $name;
+        $this->appearance = $appearance;
+        $this->dialog = $dialog;
+        $this->colorA = $colorA;
+        $this->colorB = $colorB;
+    }
+
     public function getId(): ?int
     {
         return $this->id;

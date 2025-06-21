@@ -75,7 +75,7 @@ class DesignGoal
     }
 
     /**
-     * @return Collection|Article[]
+     * @return Collection<int, Article>
      */
     public function getArticles(): Collection
     {

@@ -42,9 +42,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /** @phpstan-ignore property.unusedType */
     private ?int $id = null;
 
-    /**
-     * @var string
-     */
     #[ORM\Column(type: 'string', length: 180, unique: true)]
     #[Groups(['myAccount'])]
     private string $email;
@@ -90,13 +87,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private int $maxPets = 2;
 
     #[ORM\OneToMany(targetEntity: UserFollowing::class, mappedBy: 'user', orphanRemoval: true, fetch: 'EXTRA_LAZY')]
-    private $following;
+    private Collection $following;
 
     #[ORM\OneToMany(targetEntity: UserFollowing::class, mappedBy: 'following', orphanRemoval: true, fetch: 'EXTRA_LAZY')]
-    private $followedBy;
+    private Collection $followedBy;
 
     #[ORM\OneToMany(targetEntity: 'App\Entity\UserStats', mappedBy: 'user', orphanRemoval: true, fetch: 'EXTRA_LAZY')]
-    private $stats;
+    private Collection $stats;
 
     #[Groups(["myAccount"])]
     #[ORM\Column(type: 'integer')]
@@ -295,7 +292,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     /**
-     * @return Collection|Pet[]
+     * @return Collection<int, Pet>
      */
     public function getPets(): Collection
     {
@@ -359,7 +356,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     /**
-     * @return Collection|UserFollowing[]
+     * @return Collection<int, UserFollowing>
      */
     public function getFollowing(): Collection
     {
@@ -377,7 +374,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     /**
-     * @return Collection|UserStats[]
+     * @return Collection<int, UserStats>
      */
     public function getStats(): Collection
     {
@@ -436,7 +433,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     /**
-     * @return Collection|GreenhousePlant[]
+     * @return Collection<int, GreenhousePlant>
      */
     public function getGreenhousePlants(): Collection
     {
@@ -473,7 +470,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     /**
-     * @return Collection|UserSession[]
+     * @return Collection<int, UserSession>
      */
     public function getUserSessions(): Collection
     {
@@ -617,7 +614,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     /**
-     * @return Collection|UserUnlockedAura[]
+     * @return Collection<int, UserUnlockedAura>
      */
     public function getUnlockedAuras(): Collection
     {

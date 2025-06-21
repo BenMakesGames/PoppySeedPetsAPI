@@ -29,22 +29,22 @@ class DailyMarketItemAverage
 
     #[ORM\ManyToOne(targetEntity: Item::class)]
     #[ORM\JoinColumn(nullable: false)]
-    private $item;
+    private Item $item;
 
     #[ORM\Column(type: 'float')]
-    private $averagePrice;
+    private float $averagePrice;
 
     #[ORM\Column(type: 'date_immutable')]
     private $date;
 
     #[ORM\Column(type: 'float')]
-    private $minPrice;
+    private float $minPrice;
 
     #[ORM\Column(type: 'float')]
-    private $maxPrice;
+    private float $maxPrice;
 
     #[ORM\Column(type: 'integer')]
-    private $volume;
+    private int $volume;
 
     public function __construct()
     {

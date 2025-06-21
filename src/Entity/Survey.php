@@ -96,7 +96,7 @@ class Survey
     }
 
     /**
-     * @return Collection|SurveyQuestion[]
+     * @return Collection<int, SurveyQuestion>
      */
     public function getQuestions(): Collection
     {

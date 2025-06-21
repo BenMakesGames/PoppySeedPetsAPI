@@ -49,6 +49,15 @@ class Dragon
         ],
     ];
 
+    public const array DragonNames = [
+        'Tanin', 'Draak', 'Dragua', 'Zenido', 'Vishap', 'Herensuge', 'Ghuṛi Biśēṣa',
+        'Chinjoka', 'Qiú', 'Lohikäärme', 'Drak\'oni', 'Ḍrēgana', 'Naga', 'Ajagar',
+        'Zaj', 'Sárkány', 'Dreki', 'Ryū', 'Aydahar', 'Neak', 'Yong', 'Zîha',
+        'Ajıdaar', 'Mangkon', 'Pūķis', 'Zmej', 'Tarakona', 'Luu', 'Smok', 'Balaur',
+        'Tarako', 'Dhiragoni', 'Makarā', 'Masduulaagii', 'Joka', 'Aƶdaho', 'Ṭirākaṉ',
+        'Mạngkr', 'Ejderha', 'Ajdaho', 'Inamba',
+    ];
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
@@ -61,18 +70,18 @@ class Dragon
 
     #[Groups(["myFireplace", "myDragon"])]
     #[ORM\Column(type: 'string', length: 20, nullable: true)]
-    private ?string $name = null;
+    private string $name;
 
     #[ORM\Column(type: 'integer')]
     private int $food = 0;
 
     #[Groups(["myFireplace", "myDragon"])]
     #[ORM\Column(type: 'string', length: 6, nullable: true)]
-    private ?string $colorA = null;
+    private string $colorA;
 
     #[Groups(["myFireplace", "myDragon"])]
     #[ORM\Column(type: 'string', length: 6, nullable: true)]
-    private ?string $colorB = null;
+    private string $colorB;
 
     #[ORM\Column(type: 'boolean')]
     private bool $isAdult = false;
@@ -94,11 +103,11 @@ class Dragon
 
     #[ORM\Column(type: 'json', nullable: true)]
     #[Groups(['myDragon'])]
-    private $greetings = [];
+    private array $greetings = [];
 
     #[ORM\Column(type: 'json', nullable: true)]
     #[Groups(['myDragon'])]
-    private $thanks = [];
+    private array $thanks = [];
 
     #[ORM\Column(type: 'smallint')]
     #[Groups(['myDragon'])]
@@ -124,10 +133,14 @@ class Dragon
     /** @phpstan-ignore property.unused */
     private int $version;
 
-    public function __construct(User $owner)
+    public function __construct(User $owner, string $colorA, string $colorB)
     {
         $this->owner = $owner;
+        $this->colorA = $colorA;
+        $this->colorB = $colorB;
+
         $this->appearance = self::AppearanceImages[array_rand(self::AppearanceImages)];
+        $this->name = self::DragonNames[array_rand(self::DragonNames)];
     }
 
     public function getId(): ?int
@@ -262,24 +275,24 @@ class Dragon
         return $this;
     }
 
-    public function getGreetings(): ?array
+    public function getGreetings(): array
     {
         return $this->greetings;
     }
 
-    public function setGreetings(?array $greetings): self
+    public function setGreetings(array $greetings): self
     {
         $this->greetings = $greetings;
 
         return $this;
     }
 
-    public function getThanks(): ?array
+    public function getThanks(): array
     {
         return $this->thanks;
     }
 
-    public function setThanks(?array $thanks): self
+    public function setThanks(array $thanks): self
     {
         $this->thanks = $thanks;
 

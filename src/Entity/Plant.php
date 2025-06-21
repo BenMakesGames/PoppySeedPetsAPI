@@ -179,7 +179,7 @@ class Plant
     }
 
     /**
-     * @return Collection|PlantYield[]
+     * @return Collection<int, PlantYield>
      */
     public function getPlantYields(): Collection
     {

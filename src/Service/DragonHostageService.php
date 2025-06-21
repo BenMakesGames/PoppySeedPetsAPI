@@ -37,17 +37,16 @@ class DragonHostageService
         $crownColor = $this->rng->rngNextFromArray(self::CrownColors);
         $creatureColor = $this->rng->rngNextFromArray(self::HostageColors[$type->value]);
         $name = $this->generateHostageName($type);
-        $dialog = $this->generateHostageDialog();
 
-        return (new DragonHostage())
-            ->setDragon($dragon)
-            ->setType($type)
-            ->setAppearance('1') // later, make more appearances: $this->rng->rngNextInt(1, 3)
-            ->setColorA($crownColor)
-            ->setColorB($creatureColor)
-            ->setName($name)
-            ->setDialog($dialog)
-        ;
+        return new DragonHostage(
+            dragon: $dragon,
+            type: $type,
+            name: $name,
+            appearance: '1', // later, make more appearances: $this->rng->rngNextInt(1, 3)
+            dialog: $this->generateHostageDialog(),
+            colorA: $crownColor,
+            colorB: $creatureColor
+        );
     }
 
     public function generateHostageName(DragonHostageTypeEnum $type): string

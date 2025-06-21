@@ -37,7 +37,7 @@ class FieldGuideEntry
     private ?string $image = null;
 
     #[ORM\Column(type: 'text')]
-    private $description;
+    private string $description;
 
     public function getId(): ?int
     {

@@ -34,11 +34,11 @@ class Letter
 
     #[Groups(["myLetters"])]
     #[ORM\Column(type: 'text')]
-    private $body;
+    private string $body;
 
     #[Groups(["myLetters"])]
     #[ORM\Column(type: 'string', length: 255)]
-    private $title;
+    private string $title;
 
     #[Groups(["myLetters"])]
     #[ORM\ManyToOne(targetEntity: Item::class)]
