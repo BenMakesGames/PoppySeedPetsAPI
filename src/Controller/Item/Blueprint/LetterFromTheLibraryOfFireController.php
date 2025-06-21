@@ -99,18 +99,11 @@ The Library of Fire is always open. We look forward to seeing you!');
                 $colors[1] = $temp;
             }
 
-            $dragon = (new Dragon(owner: $user))
-                ->setName($rng->rngNextFromArray([
-                    'Tanin', 'Draak', 'Dragua', 'Zenido', 'Vishap', 'Herensuge', 'Ghuṛi Biśēṣa',
-                    'Chinjoka', 'Qiú', 'Lohikäärme', 'Drak\'oni', 'Ḍrēgana', 'Naga', 'Ajagar',
-                    'Zaj', 'Sárkány', 'Dreki', 'Ryū', 'Aydahar', 'Neak', 'Yong', 'Zîha',
-                    'Ajıdaar', 'Mangkon', 'Pūķis', 'Zmej', 'Tarakona', 'Luu', 'Smok', 'Balaur',
-                    'Tarako', 'Dhiragoni', 'Makarā', 'Masduulaagii', 'Joka', 'Aƶdaho', 'Ṭirākaṉ',
-                    'Mạngkr', 'Ejderha', 'Ajdaho', 'Inamba',
-                ]))
-                ->setColorA($rng->rngNextTweakedColor($colors[0]))
-                ->setColorB($rng->rngNextTweakedColor($colors[1]))
-            ;
+            $dragon = new Dragon(
+                owner: $user,
+                colorA: $rng->rngNextTweakedColor($colors[0]),
+                colorB: $rng->rngNextTweakedColor($colors[1])
+            );
 
             $em->persist($dragon);
 

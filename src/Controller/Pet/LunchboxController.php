@@ -66,10 +66,10 @@ class LunchboxController
         if($inventory->getForSale())
             $em->remove($inventory->getForSale());
 
-        $lunchboxItem = (new LunchboxItem())
-            ->setPet($pet)
-            ->setInventoryItem($inventory)
-        ;
+        $lunchboxItem = new LunchboxItem(
+            pet: $pet,
+            inventoryItem: $inventory,
+        );
 
         $em->persist($lunchboxItem);
 

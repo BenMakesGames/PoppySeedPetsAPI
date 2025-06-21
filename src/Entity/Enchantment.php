@@ -29,16 +29,16 @@ class Enchantment
 
     #[Groups(["myInventory", "itemEncyclopedia", "marketItem", "fireplaceFuel", "greenhouseFertilizer", "myPet", "fireplaceMantle", "dragonTreasure", "myAura"])]
     #[ORM\Column(type: 'string', length: 20, unique: true)]
-    private $name;
+    private string $name;
 
     #[Groups(["myInventory", "itemEncyclopedia", "marketItem", "fireplaceFuel", "greenhouseFertilizer", "myPet", "fireplaceMantle", "dragonTreasure"])]
     #[ORM\Column(type: 'boolean')]
-    private $isSuffix;
+    private bool $isSuffix;
 
     #[Groups(["myInventory", "itemEncyclopedia", "marketItem", "myPet"])]
     #[ORM\OneToOne(targetEntity: 'App\Entity\ItemTool', inversedBy: 'enchantment', cascade: ['persist', 'remove'])]
     #[ORM\JoinColumn(nullable: false)]
-    private $effects;
+    private ItemTool $effects;
 
     #[Groups(["myInventory", "myPet", "itemEncyclopedia", "marketItem", "myAura", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails"])]
     #[ORM\ManyToOne(targetEntity: Aura::class)]

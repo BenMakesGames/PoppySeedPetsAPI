@@ -68,10 +68,11 @@ class CookingBuddy
         {
             $responseText = 'You plug the ' . $inventory->getItem()->getName() . ' into an outlet in your kitchen, and it springs to life! (The Cooking Buddy has been added to your menu!)';
 
-            $cookingBuddy = (new \App\Entity\CookingBuddy())
-                ->setOwner($user)
-                ->setAppearance($inventory->getItem()->getImage())
-                ->generateNewName($rng);
+            $cookingBuddy = new \App\Entity\CookingBuddy(
+                owner: $user,
+                name: $rng->rngNextFromArray(\App\Entity\CookingBuddy::Names),
+                appearance: $inventory->getItem()->getImage()
+            );
 
             $em->persist($cookingBuddy);
             $em->remove($inventory);

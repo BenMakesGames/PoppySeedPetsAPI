@@ -64,11 +64,12 @@ class BeehiveService
         if($user->getBeehive())
             throw new \Exception('Player #' . $user->getId() . ' already has a beehive!');
 
-        $beehive = (new Beehive())
-            ->setQueenName($this->rng->rngNextFromArray(self::QueenNames))
-            ->setRequestedItem(ItemRepository::findOneByName($this->em, array_rand(self::DesiredItems)))
-            ->setAlternateRequestedItem(ItemRepository::findOneByName($this->em, array_rand(self::AlternateDesiredItems)))
-        ;
+        $beehive = new Beehive(
+            user: $user,
+            name: $this->rng->rngNextFromArray(self::QueenNames),
+            requestedItem: ItemRepository::findOneByName($this->em, array_rand(self::DesiredItems)),
+            alternateRequestedItem: ItemRepository::findOneByName($this->em, array_rand(self::AlternateDesiredItems))
+        );
 
         $this->em->persist($beehive);
 

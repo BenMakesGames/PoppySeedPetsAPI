@@ -104,7 +104,7 @@ class HollowEarthTile
     }
 
     /**
-     * @return Collection<HollowEarthTileType>
+     * @return Collection<int, HollowEarthTileType>
      */
     public function getTypes(): Collection
     {

@@ -57,25 +57,19 @@ class Beehive
     #[ORM\Column(type: 'integer')]
     private int $interactionPower = 48;
 
-    /**
-     * @var Item
-     */
     #[Groups(['myBeehive'])]
     #[ORM\ManyToOne(targetEntity: Item::class)]
     #[ORM\JoinColumn(nullable: false)]
-    private $requestedItem;
+    private Item $requestedItem;
 
-    /**
-     * @var Item
-     */
     #[Groups(['myBeehive'])]
     #[ORM\ManyToOne(targetEntity: Item::class)]
     #[ORM\JoinColumn(nullable: false)]
-    private $alternateRequestedItem;
+    private Item $alternateRequestedItem;
 
     #[Groups(["helperPet"])]
     #[ORM\OneToOne(targetEntity: Pet::class, cascade: ['persist', 'remove'])]
-    private $helper;
+    private ?Pet $helper = null;
 
     /** @noinspection PhpUnusedPrivateFieldInspection */
     #[ORM\Version]
@@ -83,12 +77,20 @@ class Beehive
     /** @phpstan-ignore property.unused */
     private int $version;
 
+    public function __construct(User $user, string $name, Item $requestedItem, Item $alternateRequestedItem)
+    {
+        $this->user = $user;
+        $this->queenName = $name;
+        $this->requestedItem = $requestedItem;
+        $this->alternateRequestedItem = $alternateRequestedItem;
+    }
+
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getUser(): ?User
+    public function getUser(): User
     {
         return $this->user;
     }
