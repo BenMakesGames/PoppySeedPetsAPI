@@ -95,7 +95,7 @@ class IceCreamDaydream
 
         $this->inventoryService->petCollectsItem('Neapolitan Ice Cream', $pet, $pet->getName() . ' found this in a daydream.', $log);
 
-        PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::PULLED_AN_ITEM_FROM_A_DREAM, $log);
+        PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::PulledAnItemFromADream, $log);
 
         return $log;
     }
@@ -115,7 +115,7 @@ class IceCreamDaydream
 
             $this->inventoryService->petCollectsItem('Mini Chocolate Chip Cookies', $pet, $pet->getName() . ' found this in a daydream.', $log);
 
-            PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::PULLED_AN_ITEM_FROM_A_DREAM, $log);
+            PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::PulledAnItemFromADream, $log);
 
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::Arcana ], $log);
 
@@ -173,7 +173,7 @@ class IceCreamDaydream
 
         $this->inventoryService->petCollectsItem('Mystery Syrup', $pet, $pet->getName() . ' found this in a daydream.', $log);
 
-        PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::PULLED_AN_ITEM_FROM_A_DREAM, $log);
+        PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::PulledAnItemFromADream, $log);
 
         return $log;
     }

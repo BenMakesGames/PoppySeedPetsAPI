@@ -154,7 +154,7 @@ class DreamingService
             ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Dream' ]))
         ;
 
-        PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::PULLED_AN_ITEM_FROM_A_DREAM, $log);
+        PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::PulledAnItemFromADream, $log);
 
         return $log;
     }

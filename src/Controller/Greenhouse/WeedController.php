@@ -196,7 +196,7 @@ class WeedController
             $foundItem2Name = $foundItem2?->getItem()?->getName();
 
             if($extraItem === 'Scales' || $foundItem2Name === 'Scales' || $foundItem2Name === 'Freshly-squeezed Fish Oil')
-                PetBadgeHelpers::awardBadge($em, $helper, PetBadgeEnum::GREENHOUSE_FISHER, $activityLogEntry);
+                PetBadgeHelpers::awardBadge($em, $helper, PetBadgeEnum::GreenhouseFisher, $activityLogEntry);
         }
 
         $message .= ' ' . $rng->rngNextFromArray([ 'Noice!', 'Yoink!', '👍', '👌', 'Neat-o!', 'Okey dokey!' ]);

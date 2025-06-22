@@ -20,6 +20,7 @@ use App\Entity\PetQuest;
 use App\Entity\UserQuest;
 use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingness;
+use App\Enum\PetActivityLogTagEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetBadgeEnum;
 use App\Enum\PetSkillEnum;
@@ -91,7 +92,7 @@ class ChocolateMansion
         $activityLog
             ->addInterestingness(PetActivityLogInterestingness::UncommonActivity)
             ->setChanges($changes->compare($pet))
-            ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Le Manoir de Chocolat', 'Adventure!' ]))
+            ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Le Manoir de Chocolat', PetActivityLogTagEnum::Adventure ]))
         ;
 
         $this->fieldGuideService->maybeUnlock($pet->getOwner(), 'Le Manoir de Chocolat', $this->getEntryDescription($pet));
@@ -184,7 +185,7 @@ class ChocolateMansion
             $this->inventoryService->petCollectsItem($item, $pet, $pet->getName() . ' got this from a spectre in the attic of le Manoir de Chocolat.', $activityLog);
 
         if(in_array('Chocolate Feather Bonnet', $loot))
-            PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::FOUND_A_CHOCOLATE_FEATHER_BONNET, $activityLog);
+            PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::FoundAChocolateFeatherBonnet, $activityLog);
 
         $this->petExperienceService->gainExp($pet, $expAmount, $expStats, $activityLog);
 
@@ -314,7 +315,7 @@ class ChocolateMansion
         $this->petExperienceService->gainExp($pet, $expAmount, $expStats, $activityLog);
 
         if($deceivedTheVampire)
-            PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::DECEIVED_A_VAMPIRE, $activityLog);
+            PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::DeceivedAVampire, $activityLog);
 
         return $activityLog;
     }

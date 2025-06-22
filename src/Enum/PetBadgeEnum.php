@@ -18,74 +18,76 @@ final class PetBadgeEnum
     use FakeEnum;
 
     // affection!
-    public const string REVEALED_FAVORITE_FLAVOR = 'revealedFavoriteFlavor';
-    public const string COMPLETED_HEART_DIMENSION = 'completedHeartDimension';
-    public const string TRIED_ON_A_NEW_STYLE = 'triedOnANewStyle';
-    public const string HAD_A_FOOD_CRAVING_SATISFIED = 'hadAFoodCravingSatisfied';
+    public const string RevealedFavoriteFlavor = 'revealedFavoriteFlavor';
+    public const string CompletedHeartDimension = 'completedHeartDimension';
+    public const string TriedOnANewStyle = 'triedOnANewStyle';
+    public const string HadAFoodCravingSatisfied = 'hadAFoodCravingSatisfied';
 
     // park events
-    public const string FIRST_PLACE_CHESS = 'chessWinner';
-    public const string FIRST_PLACE_JOUSTING = 'joustingWinner';
-    public const string FIRST_PLACE_KIN_BALL = 'kinBallWinner';
+    public const string FirstPlaceChess = 'chessWinner';
+    public const string FirstPlaceJousting = 'joustingWinner';
+    public const string FirstPlaceKinBall = 'kinBallWinner';
 
     // misc activities
-    public const string CREATED_SENTIENT_BEETLE = 'createdSentientBeetle';
-    public const string MET_THE_FLUFFMONGER = 'fluffmonger';
-    public const string OUTSMARTED_A_THIEVING_MAGPIE = 'outsmartedAThievingMagpie';
-    public const string DECEIVED_A_VAMPIRE = 'deceivedAVampire';
-    public const string FOUND_CETGUELIS_TREASURE = 'foundCetguelisTreasure';
-    public const string HAD_A_BABY = 'parent';
-    public const string CLIMB_TO_TOP_OF_BEANSTALK = 'summitBeanstalk';
-    public const string SING_WITH_WHALES = 'singWithWhales';
-    public const string PRODUCED_A_SKILL_SCROLL = 'producedASkillScroll';
-    public const string PULLED_AN_ITEM_FROM_A_DREAM = 'pulledAnItemFromADream';
-    public const string GO = 'go';
-    public const string VISITED_THE_BURNT_FOREST = 'visitedTheBurntForest';
-    public const string JUMPED_ROPE_WITH_A_BUG = 'jumpedRopeWithABug';
-    public const string WRANGLED_WITH_INFINITIES = 'wrangledWithInfinities';
-    public const string EXPLORED_AN_ICY_MOON = 'exploredAnIcyMoon';
-    public const string MET_A_FAMOUS_VIDEO_GAME_CHARACTER = 'metAFamousVideoGameCharacter';
-    public const string MINTED_MONEYS = 'mintedMoneys';
-    public const string RETURNED_A_SHIRIKODAMA = 'returnedAShirikodama';
-    public const string DEFEATED_A_WERECREATURE_WITH_SILVER = 'defeatedAWerecreatureWithSilver';
-    public const string POOPED_SHED_OR_BATHED = 'poopedShedOrBathed';
-    public const string FISHED_AT_THE_ISLE_OF_RETREATING_TEETH = 'fishedAtTheIsleOfRetreatingTeeth';
-    public const string EXTRACT_QUINT_FROM_COOKIES = 'extractQuintFromCookies';
-    public const string STRUGGLED_WITH_A_3D_PRINTER = 'struggledWithA3DPrinter';
-    public const string EMPTIED_THEIR_LUNCHBOX = 'emptiedTheirLunchbox';
-    public const string CRAFTED_WITH_A_FULL_HOUSE = 'craftedWithAFullHouse';
-    public const string CLIMBED_THE_TOWER_OF_TRIALS = 'climbedTheTowerOfTrials';
-    public const string FOUND_A_CHOCOLATE_FEATHER_BONNET = 'foundAChocolateFeatherBonnet';
-    public const string VISITED_THE_FRUCTAL_PLANE = 'visitedTheFructalPlane';
+    public const string CreatedSentientBeetle = 'createdSentientBeetle';
+    public const string MetTheFluffmonger = 'fluffmonger';
+    public const string OutsmartedAThievingMagpie = 'outsmartedAThievingMagpie';
+    public const string DeceivedAVampire = 'deceivedAVampire';
+    public const string FoundCetguelisTreasure = 'foundCetguelisTreasure';
+    public const string HadABaby = 'parent';
+    public const string ClimbedToTopOfBeanstalk = 'summitBeanstalk';
+    public const string SungWithWhales = 'singWithWhales';
+    public const string ProducedASkillScroll = 'producedASkillScroll';
+    public const string PulledAnItemFromADream = 'pulledAnItemFromADream';
+    public const string Go = 'go';
+    public const string VisitedTheBurntForest = 'visitedTheBurntForest';
+    public const string JumpedRopeWithABug = 'jumpedRopeWithABug';
+    public const string WrangledWithInfinities = 'wrangledWithInfinities';
+    public const string ExploredAnIcyMoon = 'exploredAnIcyMoon';
+    public const string MetAFamousVideoGameCharacter = 'metAFamousVideoGameCharacter';
+    public const string MintedMoneys = 'mintedMoneys';
+    public const string ReturnedAShirikodama = 'returnedAShirikodama';
+    public const string DefeatedAWerecreatureWithSilver = 'defeatedAWerecreatureWithSilver';
+    public const string PoopedShedOrBathed = 'poopedShedOrBathed';
+    public const string FishedAtTheIsleOfRetreatingTeeth = 'fishedAtTheIsleOfRetreatingTeeth';
+    public const string ExtractQuintFromCookies = 'extractQuintFromCookies';
+    public const string StruggledWithA3DPrinter = 'struggledWithA3DPrinter';
+    public const string EmptiedTheirLunchbox = 'emptiedTheirLunchbox';
+    public const string CraftedWithAFullHouse = 'craftedWithAFullHouse';
+    public const string ClimbedTheTowerOfTrials = 'climbedTheTowerOfTrials';
+    public const string FoundAChocolateFeatherBonnet = 'foundAChocolateFeatherBonnet';
+    public const string VisitedTheFructalPlane = 'visitedTheFructalPlane';
+    public const string Hoopmaster = 'hoopmaster';
+    public const string TasteTheRainbow = 'tasteTheRainbow';
 
     // add-on helper activities
-    public const string WAS_AN_ACCOUNTANT = 'increasedADragonsHoard';
-    public const string WAS_A_CHIMNEY_SWEEP = 'sweptTheChimneyOfGnomes';
-    public const string GREENHOUSE_FISHER = 'fishedInTheGreenhouse';
-    public const string BEE_NANA = 'beeNana';
+    public const string WasAnAccountant = 'increasedADragonsHoard';
+    public const string WasAChimneySweep = 'sweptTheChimneyOfGnomes';
+    public const string GreenhouseFisher = 'fishedInTheGreenhouse';
+    public const string BeeNana = 'beeNana';
 
     // the quest for the philosopher's stone
-    public const string FOUND_METATRONS_FIRE = 'foundMetatronsFire';
-    public const string FOUND_VESICA_HYDRARGYRUM = 'foundVesicaHydrargyrum';
-    public const string FOUND_EARTHS_EGG = 'foundEarthsEgg';
-    public const string FOUND_MERKABA_OF_AIR = 'foundMerkabaOfAir';
+    public const string FoundMetatronsFire = 'foundMetatronsFire';
+    public const string FoundVesicaHydrargyrum = 'foundVesicaHydrargyrum';
+    public const string FoundEarthsEgg = 'foundEarthsEgg';
+    public const string FoundMerkabaOfAir = 'foundMerkabaOfAir';
 
     // fighting monsters at home
-    public const string DEFEATED_NOETALAS_WING = 'defeatedNoetalasWing';
-    public const string DEFEATED_CRYSTALLINE_ENTITY = 'defeatedCrystallineEntity';
-    public const string DEFEATED_BIVUS_RELEASE = 'defeatedBivusRelease';
+    public const string DefeatedNoetalasWing = 'defeatedNoetalasWing';
+    public const string DefeatedCrystallineEntity = 'defeatedCrystallineEntity';
+    public const string DefeatedBivusRelease = 'defeatedBivusRelease';
 
     // levels
-    public const string LEVEL_20 = 'level20';
-    public const string LEVEL_40 = 'level40';
-    public const string LEVEL_60 = 'level60';
-    public const string LEVEL_80 = 'level80';
-    public const string LEVEL_100 = 'level100';
+    public const string Level20 = 'level20';
+    public const string Level40 = 'level40';
+    public const string Level60 = 'level60';
+    public const string Level80 = 'level80';
+    public const string Level100 = 'level100';
 
     // holiday events
-    public const string FOUND_A_PLASTIC_EGG = 'foundAPlasticEgg';
-    public const string FOUND_ONE_CLOVER_LEAF = 'foundOneCloverLeaf';
-    public const string DEFEATED_A_TURKEY_KING = 'defeatedATurkeyKing';
-    public const string WUVWY = 'wuvwy';
-    public const string WAS_GIVEN_A_COSTUME_NAME = 'wasGivenACostumeName';
+    public const string FoundAPlasticEgg = 'foundAPlasticEgg';
+    public const string FoundOneCloverLeaf = 'foundOneCloverLeaf';
+    public const string DefeatedATurkeyKing = 'defeatedATurkeyKing';
+    public const string Wuvwy = 'wuvwy';
+    public const string WasGivenACostumeName = 'wasGivenACostumeName';
 }

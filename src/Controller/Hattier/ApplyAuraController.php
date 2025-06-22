@@ -88,7 +88,7 @@ class ApplyAuraController
 
         $pet->getHat()->setEnchantment($unlockedAura->getAura());
 
-        PetBadgeHelpers::awardBadgeAndLog($em, $pet, PetBadgeEnum::TRIED_ON_A_NEW_STYLE, null);
+        PetBadgeHelpers::awardBadgeAndLog($em, $pet, PetBadgeEnum::TriedOnANewStyle, null);
 
         $em->flush();
 

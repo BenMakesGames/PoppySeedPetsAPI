@@ -63,7 +63,7 @@ class TwuWuvCraftingService
             ;
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::Crafts ], $activityLog);
             $this->inventoryService->petCollectsItem($makingItem, $pet, $pet->getName() . ' made this with the power of Twu Wuv!', $activityLog);
-            PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::WUVWY, $activityLog);
+            PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::Wuvwy, $activityLog);
         }
         else
         {
@@ -127,7 +127,7 @@ class TwuWuvCraftingService
             ;
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::Crafts ], $activityLog);
             $this->inventoryService->petCollectsItem($makingItem, $pet, $pet->getName() . ' forged this with the power of Twu Wuv!', $activityLog);
-            PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::WUVWY, $activityLog);
+            PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::Wuvwy, $activityLog);
             return $activityLog;
         }
         else

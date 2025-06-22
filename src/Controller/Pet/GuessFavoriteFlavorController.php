@@ -78,7 +78,7 @@ class GuessFavoriteFlavorController
             $responseService->setReloadInventory();
             $data = $pet;
 
-            PetBadgeHelpers::awardBadgeAndLog($em, $pet, PetBadgeEnum::REVEALED_FAVORITE_FLAVOR, $user->getName() . ' correctly guessed ' . $pet->getName() . '\'s favorite flavor! A Heartstone materialized in front of their body, and floated into ' . $user->getName() . '\'s hands!');
+            PetBadgeHelpers::awardBadgeAndLog($em, $pet, PetBadgeEnum::RevealedFavoriteFlavor, $user->getName() . ' correctly guessed ' . $pet->getName() . '\'s favorite flavor! A Heartstone materialized in front of their body, and floated into ' . $user->getName() . '\'s hands!');
         }
         else
         {

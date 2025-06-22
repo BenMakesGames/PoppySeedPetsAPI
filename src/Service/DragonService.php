@@ -258,7 +258,7 @@ class DragonService
 
                 $this->transactionService->getMoney($user, $totalMoneys, 'Earned by ' . $helper->getName() . ' by investing some of your dragon\'s wealth.', [ 'Dragon Den' ]);
 
-                PetBadgeHelpers::awardBadgeAndLog($this->em, $helper, PetBadgeEnum::WAS_AN_ACCOUNTANT, ActivityHelpers::PetName($helper) . ' made money for your dragon through skilled investing.');
+                PetBadgeHelpers::awardBadgeAndLog($this->em, $helper, PetBadgeEnum::WasAnAccountant, ActivityHelpers::PetName($helper) . ' made money for your dragon through skilled investing.');
             }
 
             if($dragon->getByproductProgress() >= 100)

@@ -138,7 +138,7 @@ class ClaimRewardsController
 
             if($fireplace->getHelper())
             {
-                PetBadgeHelpers::awardBadgeAndLog($em, $fireplace->getHelper(), PetBadgeEnum::WAS_A_CHIMNEY_SWEEP, null);
+                PetBadgeHelpers::awardBadgeAndLog($em, $fireplace->getHelper(), PetBadgeEnum::WasAChimneySweep, null);
             }
         }
 

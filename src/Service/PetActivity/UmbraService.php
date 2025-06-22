@@ -830,7 +830,7 @@ class UmbraService
 
             $this->inventoryService->petCollectsItem($loot, $pet, $pet->getName() . ' stole this from a vampire castle.', $activityLog);
 
-            PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::DECEIVED_A_VAMPIRE, $activityLog);
+            PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::DeceivedAVampire, $activityLog);
         }
         else if($pet->getTool() && $pet->getTool()->isGrayscaling())
         {
@@ -847,7 +847,7 @@ class UmbraService
 
             $this->inventoryService->petCollectsItem($loot, $pet, $pet->getName() . ' stole this from a vampire castle.', $activityLog);
 
-            PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::DECEIVED_A_VAMPIRE, $activityLog);
+            PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::DeceivedAVampire, $activityLog);
         }
         else if($pet->hasStatusEffect(StatusEffectEnum::Cordial))
         {

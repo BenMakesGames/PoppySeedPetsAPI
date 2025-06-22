@@ -17,6 +17,7 @@ namespace App\Service\PetActivity\SpecialLocations;
 use App\Entity\Pet;
 use App\Entity\PetActivityLog;
 use App\Enum\PetActivityLogInterestingness;
+use App\Enum\PetActivityLogTagEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetBadgeEnum;
 use App\Enum\PetSkillEnum;
@@ -68,7 +69,7 @@ class HeartDimensionService
         $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(15, 30), PetActivityStatEnum::OTHER, null);
 
         $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name%\'s Affection Level must be increased before they can venture into the Heart Dimension again.')
-            ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Heart Dimension', 'Adventure!' ]))
+            ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Heart Dimension', PetActivityLogTagEnum::Adventure ]))
         ;
 
         $this->unequipHeartstone($pet, $activityLog);
@@ -105,7 +106,7 @@ class HeartDimensionService
             $bugChance1InX = 40;
 
         $activityLog
-            ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Adventure!' ]))
+            ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ PetActivityLogTagEnum::Adventure ]))
             ->setChanges($changes->compare($pet))
         ;
 
@@ -360,7 +361,7 @@ class HeartDimensionService
             ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Heart Dimension' ]))
         ;
 
-        PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::COMPLETED_HEART_DIMENSION, $log);
+        PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::CompletedHeartDimension, $log);
 
         return $log;
     }

@@ -94,7 +94,7 @@ class PizzaDaydream
 
         $this->inventoryService->petCollectsItem('Pizza Box', $pet, $pet->getName() . ' had this delivered to them in a daydream!', $petLog);
 
-        PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::PULLED_AN_ITEM_FROM_A_DREAM, $petLog);
+        PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::PulledAnItemFromADream, $petLog);
 
         // do the stuff for the daydreamed-about pet:
         if($pet->getOwner()->getId() !== $otherPet->getOwner()->getId())
@@ -121,7 +121,7 @@ class PizzaDaydream
 
         $this->inventoryService->petCollectsItem('Pizza Box', $pet, $pet->getName() . ' had this delivered to them in a daydream!', $petLog);
 
-        PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::PULLED_AN_ITEM_FROM_A_DREAM, $petLog);
+        PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::PulledAnItemFromADream, $petLog);
 
         return $petLog;
     }
@@ -178,7 +178,7 @@ class PizzaDaydream
         foreach($loot as $itemName)
             $this->inventoryService->petCollectsItem($itemName, $pet, $pet->getName() . ' pulled this from the surface of a pizza planet they daydreamed about...', $log);
 
-        PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::PULLED_AN_ITEM_FROM_A_DREAM, $log);
+        PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::PulledAnItemFromADream, $log);
 
         $this->petExperienceService->gainExp($pet, $exp, [ PetSkillEnum::Nature ], $log);
 
@@ -193,7 +193,7 @@ class PizzaDaydream
 
         $this->inventoryService->petCollectsItem('Cheesy Flakes', $pet, $pet->getName() . ' pulled this from the surface of a pizza planet they daydreamed about...', $log);
 
-        PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::PULLED_AN_ITEM_FROM_A_DREAM, $log);
+        PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::PulledAnItemFromADream, $log);
 
         return $log;
     }

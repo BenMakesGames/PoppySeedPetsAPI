@@ -85,7 +85,7 @@ class FoodFightDaydream
 
             $this->inventoryService->petCollectsItem('Chocolate Bar', $pet, 'The remains of a chocolate dragon which ' . $pet->getName() . ' ate in a daydream.', $log);
 
-            PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::PULLED_AN_ITEM_FROM_A_DREAM, $log);
+            PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::PulledAnItemFromADream, $log);
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::Brawl ], $log);
 
@@ -123,7 +123,7 @@ class FoodFightDaydream
                     break;
             }
 
-            PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::PULLED_AN_ITEM_FROM_A_DREAM, $log);
+            PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::PulledAnItemFromADream, $log);
 
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::Brawl ], $log);
             $pet->increaseEsteem(4);
@@ -141,7 +141,7 @@ class FoodFightDaydream
 
             $this->inventoryService->petCollectsItem('Chocolate Bar', $pet, 'A piece of a chocolate dragon than fell on ' . $pet->getName() . ' in a daydream.', $log);
 
-            PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::PULLED_AN_ITEM_FROM_A_DREAM, $log);
+            PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::PulledAnItemFromADream, $log);
 
             return $log;
         }
@@ -162,7 +162,7 @@ class FoodFightDaydream
         if($this->rng->rngNextBool())
             $this->inventoryService->petCollectsItem('Sugar', $pet, $pet->getName() . ' got covered by this in a daydream.', $log);
 
-        PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::PULLED_AN_ITEM_FROM_A_DREAM, $log);
+        PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::PulledAnItemFromADream, $log);
 
         $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::Brawl ], $log);
 
@@ -188,7 +188,7 @@ class FoodFightDaydream
         foreach($loot as $itemName)
             $this->inventoryService->petCollectsItem($itemName, $pet, $pet->getName() . ' found this in a daydream.', $log);
 
-        PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::PULLED_AN_ITEM_FROM_A_DREAM, $log);
+        PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::PulledAnItemFromADream, $log);
 
         $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::Brawl ], $log);
 
@@ -207,7 +207,7 @@ class FoodFightDaydream
         $this->inventoryService->petCollectsItem('Pickled Veggie Slices', $pet, $pet->getName() . ' found this in a daydream.', $log);
         $this->inventoryService->petCollectsItem('Pickled Veggie Slices', $pet, $pet->getName() . ' found this in a daydream.', $log);
 
-        PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::PULLED_AN_ITEM_FROM_A_DREAM, $log);
+        PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::PulledAnItemFromADream, $log);
 
         return $log;
     }

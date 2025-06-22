@@ -111,7 +111,7 @@ class PetExperienceService
                 $newItem = $this->inventoryService->petCollectsItem('Skill Scroll: ' . $statToLevel, $pet, $pet->getName() . ', a ' . $statToLevel . '-master, produced this scroll.', $activityLog);
                 $newItem->setLockedToOwner(true);
 
-                PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::PRODUCED_A_SKILL_SCROLL, $activityLog);
+                PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::ProducedASkillScroll, $activityLog);
             }
             else
             {
@@ -123,12 +123,12 @@ class PetExperienceService
                 ;
             }
 
-            if($pet->getLevel() == 20) PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::LEVEL_20, $activityLog);
-            if($pet->getLevel() == 40) PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::LEVEL_40, $activityLog);
+            if($pet->getLevel() == 20) PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::Level20, $activityLog);
+            if($pet->getLevel() == 40) PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::Level40, $activityLog);
             if($pet->getLevel() == 50) $this->unlockLevel50Style($pet);
-            if($pet->getLevel() == 60) PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::LEVEL_60, $activityLog);
-            if($pet->getLevel() == 80) PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::LEVEL_80, $activityLog);
-            if($pet->getLevel() == 100) PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::LEVEL_100, $activityLog);
+            if($pet->getLevel() == 60) PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::Level60, $activityLog);
+            if($pet->getLevel() == 80) PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::Level80, $activityLog);
+            if($pet->getLevel() == 100) PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::Level100, $activityLog);
 
         }
 

@@ -415,7 +415,7 @@ class DeepSeaService
 
         $this->fieldGuideService->maybeUnlock($pet->getOwner(), 'Whales', $activityLog->getEntry());
 
-        PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::SING_WITH_WHALES, $activityLog);
+        PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::SungWithWhales, $activityLog);
 
         return $activityLog;
     }

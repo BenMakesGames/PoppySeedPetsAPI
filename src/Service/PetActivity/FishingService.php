@@ -867,7 +867,7 @@ class FishingService
         if($alsoGetFishBones)
             $this->inventoryService->petCollectsItem('Fish Bones', $pet, $pet->getName() . ' got this from The Isle of Retreating Teeth.', $activityLog);
 
-        PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::FISHED_AT_THE_ISLE_OF_RETREATING_TEETH, $activityLog);
+        PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::FishedAtTheIsleOfRetreatingTeeth, $activityLog);
 
         $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::FISH, true);
 

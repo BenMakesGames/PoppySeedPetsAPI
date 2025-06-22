@@ -98,7 +98,7 @@ class PlasticPrinterService
             ]))
         ;
 
-        PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::STRUGGLED_WITH_A_3D_PRINTER, $activityLog);
+        PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::StruggledWithA3DPrinter, $activityLog);
 
         $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::Crafts, PetSkillEnum::Science ], $activityLog);
         $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::PLASTIC_PRINT, false);

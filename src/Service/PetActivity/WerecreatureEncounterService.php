@@ -71,7 +71,7 @@ class WerecreatureEncounterService
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, array_merge($tags, [ 'Werecreature', 'Fighting' ])))
                 ;
 
-                PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::DEFEATED_A_WERECREATURE_WITH_SILVER, $activityLog);
+                PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::DefeatedAWerecreatureWithSilver, $activityLog);
 
                 $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::Arcana ], $activityLog);
                 $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::HUNT, true);
@@ -105,7 +105,7 @@ class WerecreatureEncounterService
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, array_merge($tags, [ 'Werecreature', 'Fighting' ])))
                 ;
 
-                PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::DEFEATED_A_WERECREATURE_WITH_SILVER, $activityLog);
+                PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::DefeatedAWerecreatureWithSilver, $activityLog);
 
                 $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::Arcana ], $activityLog);
                 $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::HUNT, true);

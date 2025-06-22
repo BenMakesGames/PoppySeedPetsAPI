@@ -129,7 +129,7 @@ class BurntForestService
 
             $this->fieldGuideService->maybeUnlock($pet->getOwner(), 'Burnt Forest', ActivityHelpers::PetName($pet) . ' used their ' . $pet->getTool()->getFullItemName() . ' to visit the Burnt Forest.');
 
-            PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::VISITED_THE_BURNT_FOREST, $activityLog);
+            PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::VisitedTheBurntForest, $activityLog);
         }
     }
 

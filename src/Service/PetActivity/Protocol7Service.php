@@ -316,7 +316,7 @@ class Protocol7Service
         $this->inventoryService->petCollectsItem('Black Bow', $pet, $pet->getName() . ' received this from a girl named ' . $name . ' in Project-E.', $activityLog);
         $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::PROTOCOL_7, true);
 
-        PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::MET_A_FAMOUS_VIDEO_GAME_CHARACTER, $activityLog);
+        PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::MetAFamousVideoGameCharacter, $activityLog);
 
         return $activityLog;
     }

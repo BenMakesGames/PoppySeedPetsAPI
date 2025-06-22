@@ -61,7 +61,7 @@ class LostInTownService
 
         $activityLog
             ->addInterestingness(PetActivityLogInterestingness::UncommonActivity)
-            ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Adventure!' ]))
+            ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ PetActivityLogTagEnum::Adventure ]))
             ->setChanges($changes->compare($pet))
         ;
 
