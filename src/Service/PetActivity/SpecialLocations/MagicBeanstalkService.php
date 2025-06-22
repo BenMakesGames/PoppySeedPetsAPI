@@ -535,7 +535,7 @@ class MagicBeanstalkService
             $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 75), PetActivityStatEnum::GATHER, false);
         }
 
-        PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::CLIMB_TO_TOP_OF_BEANSTALK, $activityLog);
+        PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::ClimbedToTopOfBeanstalk, $activityLog);
 
         return $activityLog;
     }

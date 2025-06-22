@@ -235,7 +235,7 @@ class KinBallService implements ParkEventInterface
                     $this->inventoryService->petCollectsItem($trophyItem, $participant->pet, $comment, $log);
 
                 if($participant->isWinner)
-                    PetBadgeHelpers::awardBadge($this->em, $participant->pet, PetBadgeEnum::FIRST_PLACE_KIN_BALL, $log);
+                    PetBadgeHelpers::awardBadge($this->em, $participant->pet, PetBadgeEnum::FirstPlaceKinBall, $log);
 
                 $this->petExperienceService->gainExp(
                     $participant->pet,

@@ -16,6 +16,7 @@ namespace App\Service\PetActivity\SpecialLocations;
 
 use App\Entity\PetActivityLog;
 use App\Enum\PetActivityLogInterestingness;
+use App\Enum\PetActivityLogTagEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
 use App\Functions\ActivityHelpers;
@@ -59,7 +60,7 @@ class Caerbannog
 
         $activityLog
             ->addInterestingness(PetActivityLogInterestingness::UncommonActivity)
-            ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Adventure!' ]))
+            ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ PetActivityLogTagEnum::Adventure ]))
             ->setChanges($changes->compare($pet))
         ;
 

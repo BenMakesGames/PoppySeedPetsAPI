@@ -179,7 +179,7 @@ class GatheringHolidayAdventureService
             }
 
             if($numItems > 0)
-                PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::FOUND_A_PLASTIC_EGG, $activityLog);
+                PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::FoundAPlasticEgg, $activityLog);
         }
         else if($holiday === GatheringHolidayEnum::SaintPatricks)
         {
@@ -192,7 +192,7 @@ class GatheringHolidayAdventureService
             }
 
             if($numItems > 0)
-                PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::FOUND_ONE_CLOVER_LEAF, $activityLog);
+                PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::FoundOneCloverLeaf, $activityLog);
         }
         else if($holiday === GatheringHolidayEnum::LunarNewYear)
         {

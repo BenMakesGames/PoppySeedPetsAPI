@@ -124,7 +124,7 @@ class NoetalaAdventureService
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Fighting' ]))
                 ;
 
-                PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::DEFEATED_NOETALAS_WING, $log);
+                PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::DefeatedNoetalasWing, $log);
 
                 $i = ($i + 1) % count($rewards);
             }

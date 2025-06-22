@@ -261,7 +261,7 @@ class HollowEarthService
         $this->userStatsRepository->incrementStat($player->getUser(), UserStat::HollowEarthSpacesMoved, $movesRemaining - $player->getMovesRemaining());
 
         if($leftGoTile)
-            PetBadgeHelpers::awardBadgeAndLog($this->em, $player->getChosenPet(), PetBadgeEnum::GO, null);
+            PetBadgeHelpers::awardBadgeAndLog($this->em, $player->getChosenPet(), PetBadgeEnum::Go, null);
     }
 
     private function getNextTile(HollowEarthPlayer $player): HollowEarthTile

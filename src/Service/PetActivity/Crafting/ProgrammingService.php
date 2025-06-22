@@ -626,7 +626,7 @@ class ProgrammingService
 
         $activityLog = $this->responseService->createActivityLog($pet, $impDiscovery . ' %pet:' . $pet->getId() . '.name% ran away until the imp finally gave up and returned to the strange dimension from whence it came.', 'icons/activity-logs/confused');
 
-        PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::WRANGLED_WITH_INFINITIES, $activityLog);
+        PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::WrangledWithInfinities, $activityLog);
 
         $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::Science ], $activityLog);
         $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::PROGRAM, false);
@@ -903,7 +903,7 @@ class ProgrammingService
             $this->petExperienceService->gainExp($pet, 4, [ PetSkillEnum::Science ], $activityLog);
             $this->inventoryService->petCollectsItem('Sentient Beetle', $pet, $pet->getName() . ' gave this beetle sentience by uploading an AI into its brain.', $activityLog);
 
-            PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::CREATED_SENTIENT_BEETLE, $activityLog);
+            PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::CreatedSentientBeetle, $activityLog);
         }
         else
         {

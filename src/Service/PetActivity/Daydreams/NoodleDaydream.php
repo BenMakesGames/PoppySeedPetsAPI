@@ -79,7 +79,7 @@ class NoodleDaydream
 
         $this->inventoryService->petCollectsItem('Farmer\'s Scroll', $pet, $pet->getName() . ' received this after watching a puppet show in a daydream.', $log);
 
-        PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::PULLED_AN_ITEM_FROM_A_DREAM, $log);
+        PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::PulledAnItemFromADream, $log);
 
         return $log;
     }
@@ -130,7 +130,7 @@ class NoodleDaydream
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::Brawl ], $log);
         }
 
-        PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::PULLED_AN_ITEM_FROM_A_DREAM, $log);
+        PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::PulledAnItemFromADream, $log);
 
         return $log;
     }

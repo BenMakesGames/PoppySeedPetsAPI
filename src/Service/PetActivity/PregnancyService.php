@@ -260,7 +260,7 @@ class PregnancyService
                 $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% gave birth to ' . $describeBabies . '!', '');
         }
 
-        PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::HAD_A_BABY, $activityLog);
+        PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::HadABaby, $activityLog);
 
         $activityLog
             ->addInterestingness(PetActivityLogInterestingness::GaveBirth)

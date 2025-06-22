@@ -119,7 +119,7 @@ class HarvestController
                     $inventoryService->petCollectsItem($extraItem2, $helper, $helper->getName() . ' helped ' . $user->getName() . '\'s bees gathered this.', $activityLog);
 
                     if($extraItem1 === 'Naner' || $extraItem2 === 'Naner')
-                        PetBadgeHelpers::awardBadge($em, $helper, PetBadgeEnum::BEE_NANA, $activityLog);
+                        PetBadgeHelpers::awardBadge($em, $helper, PetBadgeEnum::BeeNana, $activityLog);
                 }
                 else
                 {
@@ -161,7 +161,7 @@ class HarvestController
                     $inventoryService->petCollectsItem($extraItem, $helper, $helper->getName() . ' helped ' . $user->getName() . '\'s bees ' . $verb . ' this.', $activityLog);
 
                     if($extraItem === 'Naner')
-                        PetBadgeHelpers::awardBadge($em, $helper, PetBadgeEnum::BEE_NANA, $activityLog);
+                        PetBadgeHelpers::awardBadge($em, $helper, PetBadgeEnum::BeeNana, $activityLog);
                 }
 
                 $activityLog

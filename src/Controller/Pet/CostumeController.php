@@ -56,7 +56,7 @@ class CostumeController
 
         $pet->setCostume($costume);
 
-        PetBadgeHelpers::awardBadgeAndLog($em, $pet, PetBadgeEnum::WAS_GIVEN_A_COSTUME_NAME, ActivityHelpers::UserName($user) . ' gave ' . ActivityHelpers::PetName($pet) . '\'s Halloween costume a name.');
+        PetBadgeHelpers::awardBadgeAndLog($em, $pet, PetBadgeEnum::WasGivenACostumeName, ActivityHelpers::UserName($user) . ' gave ' . ActivityHelpers::PetName($pet) . '\'s Halloween costume a name.');
 
         $em->flush();
 

@@ -83,6 +83,7 @@ use App\Service\PetActivity\SpecialLocations\HeartDimensionService;
 use App\Service\PetActivity\SpecialLocations\IcyMoonService;
 use App\Service\PetActivity\SpecialLocations\LostInTownService;
 use App\Service\PetActivity\SpecialLocations\MagicBeanstalkService;
+use App\Service\PetActivity\SportsBallActivityService;
 use App\Service\PetActivity\TreasureMapService;
 use App\Service\PetActivity\UmbraService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -139,7 +140,8 @@ class PetActivityService
         private readonly DokiDokiService $dokiDokiService,
         private readonly LostInTownService $lostInTownService,
         private readonly FructalPlaneService $fructalPlaneService,
-        private readonly MortarOrPestleService $mortarOrPestleService
+        private readonly MortarOrPestleService $mortarOrPestleService,
+        private readonly SportsBallActivityService $sportsBallActivityService
     )
     {
     }
@@ -278,7 +280,7 @@ class PetActivityService
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ PetActivityLogTagEnum::Sick ]))
                     ->setChanges($changes->compare($pet));
 
-                PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::POOPED_SHED_OR_BATHED, $log);
+                PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::PoopedShedOrBathed, $log);
 
                 return;
             }
@@ -396,7 +398,7 @@ class PetActivityService
                 ->addInterestingness($itemsLeftInLunchbox === 0 ? PetActivityLogInterestingness::LunchboxEmpty : 1)
             ;
 
-            PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::EMPTIED_THEIR_LUNCHBOX, $lunchboxLog);
+            PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::EmptiedTheirLunchbox, $lunchboxLog);
         }
 
         if($pet->hasStatusEffect(StatusEffectEnum::Wereform))
@@ -512,7 +514,7 @@ class PetActivityService
                 $activityLog = $do[0]->adventure($petWithSkills, $do[1]);
                 $activityLog->setEntry($description . ' ' . $activityLog->getEntry());
 
-                PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::CRAFTED_WITH_A_FULL_HOUSE, $activityLog);
+                PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::CraftedWithAFullHouse, $activityLog);
 
                 if($activityLog->getChanges()->containsLevelUp())
                     $activityLog->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Level-up' ]));
@@ -654,51 +656,9 @@ class PetActivityService
 
         switch($pet->getTool()->getItem()->getName())
         {
-            case 'Cetgueli\'s Treasure Map':
-                $this->treasureMapService->doCetguelisTreasureMap($petWithSkills);
-                return true;
-
-            case 'Silver Keyblade':
-            case 'Gold Keyblade':
-                if($pet->getFood() > 0 && $this->rng->rngNextInt(1, 10) === 1)
-                {
-                    $this->treasureMapService->doKeybladeTower($petWithSkills);
-                    return true;
-                }
-
-                break;
-
-            case 'Rainbow Dolphin Plushy':
-            case 'Sneqo Plushy':
-            case 'Bulbun Plushy':
-            case 'Peacock Plushy':
-            case 'Phoenix Plushy':
-            case '"Roy" Plushy':
-                if($this->rng->rngNextInt(1, 6) === 1 || $this->userStatsRepository->getStatValue($pet->getOwner(), UserStat::TradedWithTheFluffmonger) === 0)
-                {
-                    $this->treasureMapService->doFluffmongerTrade($pet);
-                    return true;
-                }
-
-                break;
-
             case '"Gold" Idol':
                 $this->treasureMapService->doGoldIdol($pet);
                 return true;
-
-            case 'Heartstone':
-                if(!$this->heartDimensionService->canAdventure($pet))
-                {
-                    $this->heartDimensionService->notEnoughAffectionAdventure($pet);
-                    return true;
-                }
-                else if($this->rng->rngNextInt(1, 100) <= $this->heartDimensionService->chanceOfHeartDimensionAdventure($pet))
-                {
-                    $this->heartDimensionService->adventure($petWithSkills);
-                    return true;
-                }
-
-                break;
 
             case '5-leaf Clover':
                 $this->treasureMapService->doLeprechaun($petWithSkills);
@@ -724,6 +684,10 @@ class PetActivityService
                 }
                 break;
 
+            case 'Cetgueli\'s Treasure Map':
+                $this->treasureMapService->doCetguelisTreasureMap($petWithSkills);
+                return true;
+
             case 'Chocolate Key':
                 $this->chocolateMansion->adventure($petWithSkills);
                 return true;
@@ -748,6 +712,24 @@ class PetActivityService
                 $this->treasureMapService->doFruitHunting($pet);
                 return true;
 
+            case 'Green Sportsball Ball':
+                $this->sportsBallActivityService->doGreenSportsballBall($petWithSkills);
+                return true;
+
+            case 'Heartstone':
+                if(!$this->heartDimensionService->canAdventure($pet))
+                {
+                    $this->heartDimensionService->notEnoughAffectionAdventure($pet);
+                    return true;
+                }
+                else if($this->rng->rngNextInt(1, 100) <= $this->heartDimensionService->chanceOfHeartDimensionAdventure($pet))
+                {
+                    $this->heartDimensionService->adventure($petWithSkills);
+                    return true;
+                }
+
+                break;
+
             case 'Jump Rope':
                 if($this->rng->rngNextInt(1, 4) == 1)
                 {
@@ -757,17 +739,17 @@ class PetActivityService
                 break;
 
             case 'Large Radish':
-                if($this->rng->rngNextInt(1, 10) == 1)
-                {
-                    $this->dokiDokiService->adventure($petWithSkills);
-                    return true;
-                }
-                break;
+                $this->dokiDokiService->adventure($petWithSkills);
+                return true;
 
             case 'Mortar or Pestle':
                 if($this->mortarOrPestleService->findTheOtherBit($petWithSkills->getPet()))
                     return true;
                 break;
+
+            case 'Orange Sportsball Ball':
+                $this->sportsBallActivityService->doOrangeSportsballBall($petWithSkills);
+                return true;
 
             case 'Saucepan':
                 if($this->rng->rngNextInt(1, 10) === 1)
@@ -798,6 +780,14 @@ class PetActivityService
                 }
                 break;
 
+            case 'Sportsball Oar':
+                $this->sportsBallActivityService->doSportsballOar($petWithSkills);
+                return true;
+
+            case 'Sportsball Pin':
+                $this->sportsBallActivityService->doSportsballPin($petWithSkills);
+                return true;
+
             case 'Winged Key':
                 $this->treasureMapService->doAbundantiasVault($pet);
                 return true;
@@ -805,6 +795,30 @@ class PetActivityService
             case 'Woher Cuán Nani-nani':
                 $this->lostInTownService->adventure($petWithSkills);
                 return true;
+
+            case 'Silver Keyblade':
+            case 'Gold Keyblade':
+                if($pet->getFood() > 0 && $this->rng->rngNextInt(1, 10) === 1)
+                {
+                    $this->treasureMapService->doKeybladeTower($petWithSkills);
+                    return true;
+                }
+
+                break;
+
+            case 'Rainbow Dolphin Plushy':
+            case 'Sneqo Plushy':
+            case 'Bulbun Plushy':
+            case 'Peacock Plushy':
+            case 'Phoenix Plushy':
+            case '"Roy" Plushy':
+                if($this->rng->rngNextInt(1, 6) === 1 || $this->userStatsRepository->getStatValue($pet->getOwner(), UserStat::TradedWithTheFluffmonger) === 0)
+                {
+                    $this->treasureMapService->doFluffmongerTrade($pet);
+                    return true;
+                }
+
+                break;
         }
 
         if($pet->getTool()->getEnchantment())

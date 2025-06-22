@@ -69,18 +69,18 @@ class JumpRopeService
 
         $activityLog
             ->addInterestingness(PetActivityLogInterestingness::UncommonActivity)
-            ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Adventure!' ]))
+            ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ PetActivityLogTagEnum::Adventure ]))
             ->setChanges($changes->compare($pet))
         ;
 
-        $bugChance = $pet->getBadges()->exists(Fn(int $i, PetBadge $p) => $p->getBadge() === PetBadgeEnum::JUMPED_ROPE_WITH_A_BUG)
+        $bugChance = $pet->getBadges()->exists(Fn(int $i, PetBadge $p) => $p->getBadge() === PetBadgeEnum::JumpedRopeWithABug)
             ? 75
             : 6;
 
         if(AdventureMath::petAttractsBug($this->rng, $pet, $bugChance))
         {
             if($this->inventoryService->petAttractsRandomBug($pet))
-                PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::JUMPED_ROPE_WITH_A_BUG, $activityLog);
+                PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::JumpedRopeWithABug, $activityLog);
         }
 
         return $activityLog;

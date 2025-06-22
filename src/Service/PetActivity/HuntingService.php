@@ -1511,7 +1511,7 @@ class HuntingService
             if($gobbleGobble !== null)
             {
                 $this->inventoryService->petCollectsItem('Turkey King', $pet, $pet->getName() . ' got this from defeating a Turkeydragon.', $activityLog);
-                PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::DEFEATED_A_TURKEY_KING, $activityLog);
+                PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::DefeatedATurkeyKing, $activityLog);
             }
 
             $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::Brawl, PetSkillEnum::Nature ], $activityLog);

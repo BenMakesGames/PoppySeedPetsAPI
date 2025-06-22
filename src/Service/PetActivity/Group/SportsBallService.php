@@ -18,6 +18,7 @@ use App\Entity\Pet;
 use App\Entity\PetGroup;
 use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingness;
+use App\Enum\PetActivityLogTagEnum;
 use App\Enum\PetSkillEnum;
 use App\Functions\GroupNameGenerator;
 use App\Functions\ItemRepository;
@@ -157,7 +158,7 @@ class SportsBallService
             '%p1% and %p2% avoided talking as much as possible while playing Sportsball with ' . $group->getName() . '.',
             'Met during a ' . $group->getName() . ' game.',
             '%p1% met %p2% during a ' . $group->getName() . ' game.',
-            [ 'Sportsball' ],
+            [ PetActivityLogTagEnum::Sportsball ],
             100
         );
 

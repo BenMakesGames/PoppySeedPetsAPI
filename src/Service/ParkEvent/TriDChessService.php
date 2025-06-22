@@ -305,7 +305,7 @@ class TriDChessService implements ParkEventInterface
                 $this->inventoryService->petCollectsItem($trophyItem, $participant->pet, $comment, $log);
 
             if($participant->isWinner)
-                PetBadgeHelpers::awardBadge($this->em, $participant->pet, PetBadgeEnum::FIRST_PLACE_CHESS, $log);
+                PetBadgeHelpers::awardBadge($this->em, $participant->pet, PetBadgeEnum::FirstPlaceChess, $log);
 
             $this->petExperienceService->gainExp(
                 $participant->pet,

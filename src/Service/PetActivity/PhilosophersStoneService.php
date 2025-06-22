@@ -18,6 +18,7 @@ namespace App\Service\PetActivity;
 use App\Entity\PetActivityLog;
 use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingness;
+use App\Enum\PetActivityLogTagEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetBadgeEnum;
 use App\Enum\PetSkillEnum;
@@ -132,7 +133,7 @@ class PhilosophersStoneService
 
                     $this->inventoryService->petCollectsItem('Metatron\'s Fire', $pet, $pet->getName() . ' found this after defeating the Lava Giant!', $activityLog);
 
-                    PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::FOUND_METATRONS_FIRE, $activityLog);
+                    PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::FoundMetatronsFire, $activityLog);
                 }
             }
             else
@@ -155,7 +156,7 @@ class PhilosophersStoneService
 
         $activityLog
             ->setChanges($changes->compare($pet))
-            ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Adventure!' ]))
+            ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ PetActivityLogTagEnum::Adventure ]))
         ;
 
         return $activityLog;
@@ -238,7 +239,7 @@ class PhilosophersStoneService
                     $this->inventoryService->petCollectsItem('Quintessence', $pet, $pet->getName() . ' got this from the ice cave in the frozen quag in the Umbra.', $activityLog);
                     $this->inventoryService->petCollectsItem('Vesica Hydrargyrum', $pet, $pet->getName() . ' found this in the heart of the ice cave in the frozen quag in the Umbra!', $activityLog);
 
-                    PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::FOUND_VESICA_HYDRARGYRUM, $activityLog);
+                    PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::FoundVesicaHydrargyrum, $activityLog);
                 }
             }
             else
@@ -253,7 +254,7 @@ class PhilosophersStoneService
 
         $activityLog
             ->setChanges($changes->compare($pet))
-            ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Adventure!' ]))
+            ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ PetActivityLogTagEnum::Adventure ]))
         ;
 
         return $activityLog;
@@ -324,7 +325,7 @@ class PhilosophersStoneService
 
                     $this->inventoryService->petCollectsItem('Earth\'s Egg', $pet, $pet->getName() . ' got this from ' . $aMonsterType . ' Jabberwock!', $activityLog);
 
-                    PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::FOUND_EARTHS_EGG, $activityLog);
+                    PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::FoundEarthsEgg, $activityLog);
                 }
                 else
                 {
@@ -357,7 +358,7 @@ class PhilosophersStoneService
 
         $activityLog
             ->setChanges($changes->compare($pet))
-            ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Adventure!' ]))
+            ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ PetActivityLogTagEnum::Adventure ]))
         ;
 
         return $activityLog;
@@ -391,7 +392,7 @@ class PhilosophersStoneService
 
         $this->inventoryService->petCollectsItem('Merkaba of Air', $pet, $pet->getName() . ' got this by splitting a bolt of lightning in two!', $activityLog);
 
-        PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::FOUND_MERKABA_OF_AIR, $activityLog);
+        PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::FoundMerkabaOfAir, $activityLog);
 
         $pet->getTool()->setEnchantment(null);
 
@@ -399,7 +400,7 @@ class PhilosophersStoneService
 
         $activityLog
             ->addInterestingness(PetActivityLogInterestingness::OneTimeQuestActivity)
-            ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Adventure!' ]))
+            ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ PetActivityLogTagEnum::Adventure ]))
             ->setChanges($changes->compare($pet))
         ;
 

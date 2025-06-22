@@ -77,7 +77,7 @@ class IcyMoonService
 
         $activityLog->setChanges($changes->compare($pet));
 
-        PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::EXPLORED_AN_ICY_MOON, $activityLog);
+        PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::ExploredAnIcyMoon, $activityLog);
 
         return $activityLog;
     }

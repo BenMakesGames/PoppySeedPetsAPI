@@ -104,7 +104,7 @@ class SummoningScrollMonster
         $monster->majorReward = 'Forgetting Scroll';
         $monster->minorRewards = [ 'Fiberglass', 'Gypsum' ];
         $monster->element = SummoningScrollMonsterElementEnum::Electricity;
-        $monster->petBadge = PetBadgeEnum::DEFEATED_CRYSTALLINE_ENTITY;
+        $monster->petBadge = PetBadgeEnum::DefeatedCrystallineEntity;
 
         return $monster;
     }
@@ -118,7 +118,7 @@ class SummoningScrollMonster
         $monster->majorReward = 'Collimated Lance';
         $monster->minorRewards = [ 'Photon', 'Gravitational Waves' ];
         $monster->element = SummoningScrollMonsterElementEnum::Fire;
-        $monster->petBadge = PetBadgeEnum::DEFEATED_BIVUS_RELEASE;
+        $monster->petBadge = PetBadgeEnum::DefeatedBivusRelease;
         $monster->fieldGuideEntry = 'Bivu';
 
         return $monster;

@@ -47,7 +47,7 @@ class PoopingService
             ->addInterestingness(PetActivityLogInterestingness::ActivityUsingMerit)
         ;
 
-        PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::POOPED_SHED_OR_BATHED, $activityLog);
+        PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::PoopedShedOrBathed, $activityLog);
     }
 
     public function poopDarkMatter(Pet $pet): PetActivityLog
@@ -72,7 +72,7 @@ class PoopingService
             $this->inventoryService->petCollectsItem('Dark Matter', $pet, $pet->getName() . ' pooped this.', $activityLog);
         }
 
-        PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::POOPED_SHED_OR_BATHED, $activityLog);
+        PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::PoopedShedOrBathed, $activityLog);
 
         return $activityLog;
     }

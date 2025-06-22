@@ -613,7 +613,7 @@ class MagicBindingService
                 ]))
             ;
 
-            PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::EXTRACT_QUINT_FROM_COOKIES, $activityLog);
+            PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::ExtractQuintFromCookies, $activityLog);
 
             $this->inventoryService->petCollectsItem('Quintessence', $pet, $pet->getName() . ' extracted this from some Thaumatoxic Cookies.', $activityLog);
             $this->inventoryService->petCollectsItem('Quintessence', $pet, $pet->getName() . ' extracted this from some Thaumatoxic Cookies.', $activityLog);

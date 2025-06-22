@@ -135,6 +135,6 @@ class CravingService
             ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ PetActivityLogTagEnum::Eating ]))
             ->setIcon('icons/status-effect/craving');
 
-        PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::HAD_A_FOOD_CRAVING_SATISFIED, $log);
+        PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::HadAFoodCravingSatisfied, $log);
     }
 }
