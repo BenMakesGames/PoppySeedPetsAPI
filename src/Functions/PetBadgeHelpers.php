@@ -113,6 +113,7 @@ final class PetBadgeHelpers
         PetBadgeEnum::VisitedTheFructalPlane => 'Very few non-fruit-based lifeforms see the Fructal Plane - %pet.name% should count themselves... lucky? Well, sticky, at least. They should also count themselves as having received the Fructal Plane badge, because they totally did!',
         PetBadgeEnum::Hoopmaster => 'Nothing but net! %pet.name% is now officially a Hoopmaster!',
         PetBadgeEnum::TasteTheRainbow => '%pet.name% tasted a Rainbow while skittling, and got the badge to prove it!',
+        PetBadgeEnum::Musashi => 'The way of the oar-sword is the way of victory! %pet.name% has mastered the art and earned the Musashi badge!',
 
         PetBadgeEnum::WasAnAccountant => 'Accounting is FUN! :D (Incidentally, that\'s also the name of the badge %pet.name% just earned!)',
         PetBadgeEnum::WasAChimneySweep => '🎵 With gnomes and with smoke all billered and curled, your pet got a badge: Chimney Sweep World! 🎵',

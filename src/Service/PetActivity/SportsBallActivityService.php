@@ -1,6 +1,16 @@
 <?php
 declare(strict_types = 1);
 
+/**
+ * This file is part of the Poppy Seed Pets API.
+ *
+ * The Poppy Seed Pets API is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * The Poppy Seed Pets API is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along with The Poppy Seed Pets API. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 namespace App\Service\PetActivity;
 
 use App\Entity\PetActivityLog;
@@ -9,7 +19,9 @@ use App\Enum\PetActivityLogTagEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
 use App\Functions\ActivityHelpers;
+use App\Functions\EnchantmentRepository;
 use App\Functions\EquipmentFunctions;
+use App\Functions\ItemRepository;
 use App\Functions\PetActivityLogFactory;
 use App\Functions\PetActivityLogTagHelpers;
 use App\Functions\PetBadgeHelpers;
@@ -144,6 +156,65 @@ class SportsBallActivityService
 
         // Destroy the Sportsball Pin
         EquipmentFunctions::destroyPetTool($this->em, $pet);
+
+        // Set up the activity log
+        $activityLog
+            ->addInterestingness(PetActivityLogInterestingness::UncommonActivity)
+            ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
+                PetActivityLogTagEnum::Adventure,
+                PetActivityLogTagEnum::Sportsball
+            ]))
+            ->setChanges($changes->compare($pet))
+        ;
+        
+        return $activityLog;
+    }
+
+    public function doSportsballOar(ComputedPetSkills $petWithSkills): PetActivityLog
+    {
+        $pet = $petWithSkills->getPet();
+        
+        $changes = new PetChanges($pet);
+
+        // Calculate skill check based on pet's dexterity and brawl or crafts skill
+        $skillCheck = $this->rng->rngNextInt(1, 20) + $petWithSkills->getDexterity()->getTotal() + max($petWithSkills->getBrawl()->getTotal(), $petWithSkills->getCrafts()->getTotal());
+
+        [$outcome, $expAwarded] = match(true) {
+            $skillCheck >= 18 => ['victory', 3],
+            default => ['defeat', 1],
+        };
+
+        // Transform the oar into a wooden sword
+        $pet->getTool()
+            ->changeItem(ItemRepository::findOneByName($this->em, 'Wooden Sword'))
+            ->setEnchantment(EnchantmentRepository::findOneByName($this->em, 'Racketing'))
+            ->addComment($pet->getName() . ' carved this from a Sportsball Oar during a Sportsball duel!')
+        ;
+
+        // Create activity log based on outcome
+        $activityLog = match($outcome) {
+            'victory' => PetActivityLogFactory::createUnreadLog(
+                $this->em, 
+                $pet, 
+                ActivityHelpers::PetName($pet) . ' carved their Sportsball Oar into a wooden sword and dueled another sportsballer. They won, capturing their opponent\'s flag! (Sportsball is so confusing...)'
+            ),
+            'defeat' => PetActivityLogFactory::createUnreadLog(
+                $this->em, 
+                $pet, 
+                ActivityHelpers::PetName($pet) . ' carved their Sportsball Oar into a wooden sword and dueled another sportsballer. Unfortunately, they lost the duel. (Sportsball is so confusing...)'
+            ),
+            default => throw new \Exception('Unexpected outcome in Sportsball Oar activity')
+        };
+
+        // Award White Flag for victory
+        if($outcome === 'victory')
+        {
+            $this->inventoryService->petCollectsItem('White Flag', $pet, $pet->getName() . ' captured this from their defeated opponent in a Sportsball duel!', $activityLog);
+            PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::Musashi, $activityLog);
+        }
+
+        $this->petExperienceService->gainExp($pet, $expAwarded, [PetSkillEnum::Brawl, PetSkillEnum::Crafts], $activityLog);
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 45), PetActivityStatEnum::OTHER, null);
 
         // Set up the activity log
         $activityLog

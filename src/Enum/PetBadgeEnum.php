@@ -59,6 +59,7 @@ final class PetBadgeEnum
     public const string VisitedTheFructalPlane = 'visitedTheFructalPlane';
     public const string Hoopmaster = 'hoopmaster';
     public const string TasteTheRainbow = 'tasteTheRainbow';
+    public const string Musashi = 'musashi';
 
     // add-on helper activities
     public const string WasAnAccountant = 'increasedADragonsHoard';
