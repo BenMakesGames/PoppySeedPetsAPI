@@ -228,4 +228,66 @@ class SportsBallActivityService
         
         return $activityLog;
     }
+
+    public function doGreenSportsballBall(ComputedPetSkills $petWithSkills): PetActivityLog
+    {
+        $pet = $petWithSkills->getPet();
+        
+        $changes = new PetChanges($pet);
+
+        // Randomly select one of the three possible items
+        $revealedItem = ItemRepository::findOneByName($this->em, $this->rng->rngNextFromArray([
+            'Beans',
+            'Donut Holes',
+            'Egg',
+            'Falafel',
+            'Fluff',
+            'Fortune Cookie',
+            'Glowing Six-sided Die',
+            'Gulab Jamun',
+            'Hot Potato',
+            'Meatless Meatballs',
+            'Mixed Nuts',
+            'Moon Pearl',
+            'Olives',
+            'Orange',
+            'Plastic',
+            'Red Hard Candy',
+            'Rice',
+            'Rock',
+            'Sand-covered... Something',
+            'Silica Grounds',
+            'Sweet Beet',
+            'Tiny Black Hole',
+            'Yellow Hard Candy',
+        ]));
+
+        // Create activity log
+        $activityLog = PetActivityLogFactory::createUnreadLog(
+            $this->em, 
+            $pet, 
+            ActivityHelpers::PetName($pet) . ' broke open their Green Sportsball Ball and found ' . $revealedItem->getNameWithArticle() . ' inside! (Sportsball is so confusing...)'
+        );
+
+        // Award the revealed item
+        $this->inventoryService->petCollectsItem($revealedItem, $pet, $pet->getName() . ' found this inside a Green Sportsball Ball!', $activityLog);
+
+        // Award experience
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(15, 25), PetActivityStatEnum::OTHER, null);
+
+        // Destroy the Green Sportsball Ball
+        EquipmentFunctions::destroyPetTool($this->em, $pet);
+
+        // Set up the activity log
+        $activityLog
+            ->addInterestingness(PetActivityLogInterestingness::UncommonActivity)
+            ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
+                PetActivityLogTagEnum::Adventure,
+                PetActivityLogTagEnum::Sportsball
+            ]))
+            ->setChanges($changes->compare($pet))
+        ;
+        
+        return $activityLog;
+    }
 }

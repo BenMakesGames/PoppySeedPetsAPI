@@ -712,6 +712,10 @@ class PetActivityService
                 $this->treasureMapService->doFruitHunting($pet);
                 return true;
 
+            case 'Green Sportsball Ball':
+                $this->sportsBallActivityService->doGreenSportsballBall($petWithSkills);
+                return true;
+
             case 'Heartstone':
                 if(!$this->heartDimensionService->canAdventure($pet))
                 {
