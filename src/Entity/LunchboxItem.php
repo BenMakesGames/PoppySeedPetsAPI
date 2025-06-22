@@ -28,7 +28,7 @@ class LunchboxItem
 
     #[ORM\ManyToOne(targetEntity: Pet::class, inversedBy: 'lunchboxItems')]
     #[ORM\JoinColumn(nullable: false)]
-    private Pet $pet;
+    private ?Pet $pet;
 
     #[ORM\OneToOne(targetEntity: Inventory::class, inversedBy: 'lunchboxItem')]
     #[ORM\JoinColumn(nullable: false)]
