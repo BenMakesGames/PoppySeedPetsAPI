@@ -63,7 +63,7 @@ class DaycareController
         UserAccessor $userAccessor
     ): JsonResponse
     {
-        $petIds = array_unique($request->request->all('pets'));
+        $petIds = array_map(fn($petId) => (int)$petId, array_unique($request->request->all('pets')));
 
         if(ArrayFunctions::any($petIds, fn(int $id) => $id <= 0))
             throw new PSPFormValidationException('Invalid pet ID(s) provided.');
