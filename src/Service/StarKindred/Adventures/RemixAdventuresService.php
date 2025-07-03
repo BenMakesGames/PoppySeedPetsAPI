@@ -188,8 +188,35 @@ class RemixAdventuresService
      */
     public function doMagicTower(MonthlyStoryAdventureStep $step, array $pets): AdventureResult
     {
-        // To be implemented
-        return new AdventureResult("", []);
+        return match($this->rng->rngNextInt(1, 3))
+        {
+            1 => $this->doCustomEncounter(
+                $pets,
+                fn(ComputedPetSkills $pet) => (int)ceil(($pet->getStrength()->getTotal() + $pet->getStamina()->getTotal()) / 2) + $pet->getBrawl()->getTotal(),
+                'Tower Chest',
+                [ 'Talon', 'Silver Bar', 'Fluff', 'Scales', 'Stereotypical Bone', 'Limestone', 'Iron Sword', 'Quintessence' ],
+                "It's like the Tower of Trials - floor after floor of monsters, with the occasional puzzle thrown in for a little extra flavor. (At least this one doesn't need a keyblade to enter!)"
+            ),
+            2 => $this->doCustomEncounter(
+                $pets,
+                fn(ComputedPetSkills $pet) => (int)ceil(($pet->getPerception()->getTotal() + $pet->getArcana()->getTotal()) / 2) + $pet->getMagicBindingBonus()->getTotal(),
+                $this->rng->rngNextFromArray([ 'Scroll of Illusions', 'Scroll of Dice' ]),
+                [
+                    'Quintessence', 'Tiny Scroll of Resources', 'Crystal Ball', 'Silver Bar', 'Glass',
+                    'Mikronium', 'Megalium', 'Gold Tuning Fork', 'Quinacridone Magenta Dye', 'White Cloth',
+                    'Viscaria', 'Wolf\'s Bane', 'Witch-hazel', 'Liquid-hot Magma',
+                ],
+                "This tower, though long abandoned, was clearly once home to a powerful wizard. Many of the rooms are empty, but several remain untouched behind magic seals..."
+            ),
+            3 => $this->doCustomEncounter(
+                $pets,
+                fn(ComputedPetSkills $pet) => (int)ceil(($pet->getStrength()->getTotal() + $pet->getDexterity()->getTotal()) / 2) + $pet->getBrawl()->getTotal(),
+                $this->rng->rngNextFromArray([ 'Monster Chest', 'Gold Chest', 'Ruby Chest' ]),
+                [ 'Talon', 'Scales', 'Gold Bar', 'Gold Bar', 'Gold Bar', 'Silver Bar', 'Silver Bar', 'Dino Skull', 'Gold Key', 'Silver Colander', 'Liquid-hot Magma' ],
+                "Though many dragons live inside caves, some find more comfortable homes, like magic towers... inside caves!"
+            ),
+            default => throw new \Exception("Invalid encounter type"),
+        };
     }
 
     /**
