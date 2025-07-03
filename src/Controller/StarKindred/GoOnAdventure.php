@@ -25,7 +25,7 @@ use App\Exceptions\PSPPetNotFoundException;
 use App\Functions\UserQuestRepository;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
-use App\Service\StarKindred\MonthlyStoryAdventureService;
+use App\Service\StarKindred\StarKindredAdventureService;
 use App\Service\UserAccessor;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -41,7 +41,7 @@ class GoOnAdventure
     public function handle(
         Request $request,
         MonthlyStoryAdventureStep $step,
-        MonthlyStoryAdventureService $adventureService,
+        StarKindredAdventureService $starKindred,
         EntityManagerInterface $em,
         ResponseService $responseService,
         UserAccessor $userAccessor
@@ -52,7 +52,7 @@ class GoOnAdventure
         if(!$user->hasUnlockedFeature(UnlockableFeatureEnum::StarKindred))
             throw new PSPNotUnlockedException('★Kindred');
 
-        if($step->getAdventure()->isREMIX() && !$adventureService->userCanPlayREMIX($user))
+        if($step->getAdventure()->isREMIX() && !$starKindred->userCanPlayREMIX($user))
             throw new PSPNotUnlockedException('★Kindred REMIX');
 
         $today = (new \DateTimeImmutable())->format('Y-m-d');
@@ -66,10 +66,10 @@ class GoOnAdventure
         if(InventoryService::countTotalInventory($em, $user, LocationEnum::Home) > 150)
             throw new PSPInvalidOperationException('Your house is far too cluttered to play ★Kindred!');
 
-        if($adventureService->isStepCompleted($user, $step))
+        if($starKindred->isStepCompleted($user, $step))
             throw new PSPInvalidOperationException('You already completed that step!');
 
-        if($step->getPreviousStep() && !$adventureService->isPreviousStepCompleted($user, $step))
+        if($step->getPreviousStep() && !$starKindred->isPreviousStepCompleted($user, $step))
             throw new PSPInvalidOperationException('You must have completed the previous step in the story!');
 
         $petIds = $request->request->all('pets');
@@ -90,7 +90,7 @@ class GoOnAdventure
         if(count($pets) != count($petIds))
             throw new PSPPetNotFoundException();
 
-        $message = $adventureService->completeStep($user, $step, $pets);
+        $message = $starKindred->completeStep($user, $step, $pets);
 
         $em->flush();
 

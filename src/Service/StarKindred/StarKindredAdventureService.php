@@ -24,7 +24,7 @@ use App\Service\StarKindred\Adventures\RemixAdventuresService;
 use App\Service\StarKindred\Adventures\StandardAdventuresService;
 use Doctrine\ORM\EntityManagerInterface;
 
-class MonthlyStoryAdventureService
+class StarKindredAdventureService
 {
     public function __construct(
         private readonly InventoryService $inventoryService,
@@ -112,7 +112,7 @@ class MonthlyStoryAdventureService
         $this->em->persist($completedStep);
     }
 
-    public function userCanPlayREMIX(User $user)
+    public function userCanPlayREMIX(User $user): bool
     {
         $adventuresCompleted = (int)$this->em->getRepository(UserMonthlyStoryAdventureStepCompleted::class)
             ->createQueryBuilder('c')
