@@ -52,6 +52,9 @@ class GoOnAdventure
         if(!$user->hasUnlockedFeature(UnlockableFeatureEnum::StarKindred))
             throw new PSPNotUnlockedException('★Kindred');
 
+        if($step->getAdventure()->isREMIX() && !$adventureService->userCanPlayREMIX($user))
+            throw new PSPNotUnlockedException('★Kindred REMIX');
+
         $today = (new \DateTimeImmutable())->format('Y-m-d');
         $playedStarKindred = UserQuestRepository::findOrCreate($em, $user, 'Played ★Kindred', (new \DateTimeImmutable())->modify('-1 day')->format('Y-m-d'));
 

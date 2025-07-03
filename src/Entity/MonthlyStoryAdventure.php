@@ -39,19 +39,19 @@ class MonthlyStoryAdventure
 
     #[Groups([ "starKindredStory" ])]
     #[ORM\Column(type: 'integer')]
-    private int $releaseNumber;
+    private int $releaseNumber = 0;
 
     #[Groups([ "starKindredStory", "starKindredStoryDetails" ])]
     #[ORM\Column(type: 'integer')]
-    private int $releaseYear;
+    private int $releaseYear = 0;
 
     #[Groups([ "starKindredStory", "starKindredStoryDetails" ])]
     #[ORM\Column(type: 'integer')]
-    private int $releaseMonth;
+    private int $releaseMonth = 0;
 
     #[Groups([ "starKindredStoryDetails" ])]
     #[ORM\Column(type: 'boolean')]
-    private bool $isDark;
+    private bool $isDark = false;
 
     #[ORM\OneToMany(targetEntity: MonthlyStoryAdventureStep::class, mappedBy: 'adventure', orphanRemoval: true)]
     private Collection $steps;
@@ -90,7 +90,12 @@ class MonthlyStoryAdventure
         return $this;
     }
 
-    public function getReleaseNumber(): ?int
+    public function isREMIX()
+    {
+        return $this->releaseNumber === 0;
+    }
+
+    public function getReleaseNumber(): int
     {
         return $this->releaseNumber;
     }
@@ -102,7 +107,7 @@ class MonthlyStoryAdventure
         return $this;
     }
 
-    public function getReleaseYear(): ?int
+    public function getReleaseYear(): int
     {
         return $this->releaseYear;
     }
@@ -114,7 +119,7 @@ class MonthlyStoryAdventure
         return $this;
     }
 
-    public function getReleaseMonth(): ?int
+    public function getReleaseMonth(): int
     {
         return $this->releaseMonth;
     }
@@ -126,7 +131,7 @@ class MonthlyStoryAdventure
         return $this;
     }
 
-    public function getIsDark(): ?bool
+    public function getIsDark(): bool
     {
         return $this->isDark;
     }

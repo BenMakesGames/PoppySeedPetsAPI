@@ -111,4 +111,17 @@ class MonthlyStoryAdventureService
 
         $this->em->persist($completedStep);
     }
+
+    public function userCanPlayREMIX(User $user)
+    {
+        $adventuresCompleted = (int)$this->em->getRepository(UserMonthlyStoryAdventureStepCompleted::class)
+            ->createQueryBuilder('c')
+            ->select('COUNT(c)')
+            ->where('c.user = :user')
+            ->setParameter('user', $user)
+            ->getQuery()
+            ->getSingleScalarResult();
+
+        return $adventuresCompleted >= 50;
+    }
 }

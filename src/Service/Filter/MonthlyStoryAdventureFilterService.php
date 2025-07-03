@@ -17,6 +17,7 @@ namespace App\Service\Filter;
 use App\Entity\MonthlyStoryAdventure;
 use App\Entity\User;
 use App\Entity\UserMonthlyStoryAdventureStepCompleted;
+use App\Service\StarKindred\MonthlyStoryAdventureService;
 use App\Service\UserAccessor;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
@@ -29,14 +30,18 @@ class MonthlyStoryAdventureFilterService implements FilterServiceInterface
 
     public const int PageSize = 12;
 
-    private EntityManagerInterface $em;
+    private MonthlyStoryAdventureService $monthlyStoryAdventureService;
     /** @var EntityRepository<MonthlyStoryAdventure> */
     private EntityRepository $repository;
     private User $user;
 
-    public function __construct(EntityManagerInterface $em, UserAccessor $userAccessor)
+    public function __construct(
+        EntityManagerInterface $em,
+        UserAccessor $userAccessor,
+        MonthlyStoryAdventureService $monthlyStoryAdventureService
+    )
     {
-        $this->em = $em;
+        $this->monthlyStoryAdventureService = $monthlyStoryAdventureService;
         $this->repository = $em->getRepository(MonthlyStoryAdventure::class);
         $this->user = $userAccessor->getUserOrThrow();
 
@@ -55,15 +60,7 @@ class MonthlyStoryAdventureFilterService implements FilterServiceInterface
         $qb = $this->repository->createQueryBuilder('a')
             ->orderBy('a.releaseNumber', 'ASC');
 
-        $adventuresCompleted = (int)$this->em->getRepository(UserMonthlyStoryAdventureStepCompleted::class)
-            ->createQueryBuilder('c')
-            ->select('COUNT(c)')
-            ->where('c.user = :user')
-            ->setParameter('user', $this->user)
-            ->getQuery()
-            ->getSingleScalarResult();
-
-        if($adventuresCompleted < 50)
+        if(!$this->monthlyStoryAdventureService->userCanPlayREMIX($this->user))
             $qb = $qb->andWhere('a.releaseNumber > 0');
 
         return $qb;
