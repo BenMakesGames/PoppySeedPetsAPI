@@ -113,7 +113,7 @@ class RemixAdventuresService
                 $pets,
                 fn(ComputedPetSkills $pet) => (int)ceil(($pet->getStrength()->getTotal() + $pet->getDexterity()->getTotal()) / 2) + $pet->getBrawl()->getTotal(),
                 $this->rng->rngNextFromArray([ 'Nature Box', 'Monster Box' ]),
-                [ 'Silver Bar', 'Scales', 'Striped Microcline', 'Magic Leaf', 'Crooked Stick', 'Dragon Tongue', 'Bag of Fertilizer' ],
+                [ 'Silver Bar', 'Scales', 'Striped Microcline', 'Magic Leaf', 'Crooked Stick', 'Dragon Tongue', 'Bag of Fertilizer', 'Burnt Log' ],
                 "A forest dragon has apparently made a home here. It guards an unconventional treasure, but treasure is treasure!"
             ),
             // bandit encampment:
@@ -260,8 +260,20 @@ class RemixAdventuresService
      */
     public function doTreasureRoom(MonthlyStoryAdventureStep $step, array $pets): AdventureResult
     {
-        // To be implemented
-        return new AdventureResult("", []);
+        return $this->doCustomEncounter(
+            $pets,
+            fn(ComputedPetSkills $pet) => (int)ceil(($pet->getStrength()->getTotal() + $pet->getDexterity()->getTotal()) / 2) + $pet->getGatheringBonus()->getTotal(),
+            $this->rng->rngNextFromArray([ 'Monster Chest', 'Gold Chest', 'Ruby Chest' ]),
+            [
+                'Gold Bar', 'Gold Bar', 'Gold Bar', 'Gold Bar', 'Gold Bar', 'Gold Bar',
+                'Silver Bar', 'Silver Bar', 'Silver Bar', 'Silver Bar',
+                'Gold Key', 'Silver Key',
+                'Gold Triangle', 'Silver Colander',
+                'Scroll of Resources', 'Tiny Scroll of Resources', 'Firestone', '"Gold" Idol',
+                'Rib', 'Scroll of Tell Samarzhoustian Delights', 'Gold Ring',
+            ],
+            "Hot dang! A room full of riches! It's like the treasure room of a dragon, but... without the dragon? Hm... might not want to stay too long, just in case...",
+        );
     }
 
     private function doCustomEncounter(array $pets, callable $petSkillFn, string $freeLoot, array $lootTable, string $narrative): AdventureResult
