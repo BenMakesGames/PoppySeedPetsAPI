@@ -63,7 +63,7 @@ class MonthlyStoryAdventureFilterService implements FilterServiceInterface
             ->getQuery()
             ->getSingleScalarResult();
 
-        if($adventuresCompleted < 50)
+        if($adventuresCompleted < 10) // TODO: change this back to 50!
             $qb = $qb->andWhere('a.releaseNumber > 0');
 
         return $qb;

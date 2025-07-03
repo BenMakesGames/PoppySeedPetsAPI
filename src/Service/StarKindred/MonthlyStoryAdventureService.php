@@ -93,6 +93,7 @@ class MonthlyStoryAdventureService
             StoryAdventureTypeEnum::RemixUndergroundVillage => $this->remixAdventures->doUndergroundVillage($step, $petSkills),
             StoryAdventureTypeEnum::RemixGraveyard => $this->remixAdventures->doGraveyard($step, $petSkills),
             StoryAdventureTypeEnum::RemixTheDeep => $this->remixAdventures->doTheDeep($step, $petSkills),
+            StoryAdventureTypeEnum::RemixTreasureRoom => $this->remixAdventures->doTreasureRoom($step, $petSkills),
             default => throw new \Exception('Oh, dang: Ben forgot to implement this story adventure type! :('),
         };
 

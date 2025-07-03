@@ -99,7 +99,7 @@ class RemixAdventuresService
             1 => $this->doRandomEncounter(
                 $pets,
                 fn(ComputedPetSkills $pet) => (int)ceil(($pet->getStrength()->getTotal() + $pet->getDexterity()->getTotal()) / 2) + $pet->getBrawl()->getTotal(),
-                'Monster Box',
+                $this->rng->rngNextFromArray([ 'Nature Box', 'Monster Box' ]),
                 [ 'Silver Bar', 'Scales', 'Striped Microcline', 'Magic Leaf', 'Crooked Stick', 'Dragon Tongue', 'Bag of Fertilizer' ],
                 "A forest dragon has apparently made a home here. It guards an unconventional treasure, but treasure is treasure!"
             ),
@@ -128,18 +128,32 @@ class RemixAdventuresService
      */
     public function doCave(MonthlyStoryAdventureStep $step, array $pets): AdventureResult
     {
-        if($this->rng->rngNextBool())
-            return $this->standardAdventures->doMineGold($step, $pets);
-        else
+        return match($this->rng->rngNextInt(1, 4))
         {
-            return $this->doRandomEncounter(
+            1 => $this->standardAdventures->doMineGold($step, $pets),
+            2 => $this->doRandomEncounter(
                 $pets,
                 fn(ComputedPetSkills $pet) => (int)ceil(($pet->getStrength()->getTotal() + $pet->getStamina()->getTotal()) / 2) + $pet->getNature()->getTotal() + $pet->getGatheringBonus()->getTotal(),
                 'Box of Ores',
                 [ 'Rock', 'Silica Grounds' ],
                 "There's little to find in this part of the caves besides rock, dirt, and sand..."
-            );
-        }
+            ),
+            3 => $this->doRandomEncounter(
+                $pets,
+                fn(ComputedPetSkills $pet) => (int)ceil(($pet->getStrength()->getTotal() + $pet->getStamina()->getTotal()) / 2) + $pet->getBrawl()->getTotal(),
+                'Sand-covered... Something',
+                [ 'Silica Grounds', 'Limestone', 'Limestone', 'Rock' ],
+                "Why are so many golems made of Limestone? You can try asking one, but I doubt you'll get an answer..."
+            ),
+            4 => $this->doRandomEncounter(
+                $pets,
+                fn(ComputedPetSkills $pet) => (int)ceil(($pet->getPerception()->getTotal() + $pet->getDexterity()->getTotal()) / 2) + $pet->getBrawl()->getTotal(),
+                'Dark Matter',
+                [ 'Dark Matter', 'Fluff', 'Talon', 'Small Bag of Fertilizer' ],
+                "One of the main problems with caves is the dark. Another is poop-filled bats. Either on its own would be manageable, but combined?!"
+            ),
+            default => throw new \Exception("Invalid encounter type"),
+        };
     }
 
     /**
@@ -196,6 +210,15 @@ class RemixAdventuresService
      * @param ComputedPetSkills[] $pets
      */
     public function doTheDeep(MonthlyStoryAdventureStep $step, array $pets): AdventureResult
+    {
+        // To be implemented
+        return new AdventureResult("", []);
+    }
+
+    /**
+     * @param ComputedPetSkills[] $pets
+     */
+    public function doTreasureRoom(MonthlyStoryAdventureStep $step, array $pets): AdventureResult
     {
         // To be implemented
         return new AdventureResult("", []);
