@@ -12,7 +12,7 @@ declare(strict_types=1);
  */
 
 
-namespace App\Controller\MonthlyStoryAdventure;
+namespace App\Controller\StarKindred;
 
 use App\Entity\MonthlyStoryAdventure;
 use App\Entity\MonthlyStoryAdventureStep;
@@ -28,7 +28,7 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use App\Service\UserAccessor;
 
-#[Route("/monthlyStoryAdventure")]
+#[Route("/starKindred")]
 class GetById
 {
     #[Route("/{story}", methods: ["GET"])]

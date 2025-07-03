@@ -12,7 +12,7 @@ declare(strict_types=1);
  */
 
 
-namespace App\Controller\MonthlyStoryAdventure;
+namespace App\Controller\StarKindred;
 
 use App\Entity\MonthlyStoryAdventureStep;
 use App\Entity\Pet;
@@ -24,16 +24,16 @@ use App\Exceptions\PSPNotUnlockedException;
 use App\Exceptions\PSPPetNotFoundException;
 use App\Functions\UserQuestRepository;
 use App\Service\InventoryService;
-use App\Service\MonthlyStoryAdventureService;
 use App\Service\ResponseService;
+use App\Service\StarKindred\MonthlyStoryAdventureService;
+use App\Service\UserAccessor;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
-use App\Service\UserAccessor;
 
-#[Route("/monthlyStoryAdventure")]
+#[Route("/starKindred")]
 class GoOnAdventure
 {
     #[Route("/do/{step}", methods: ["POST"])]

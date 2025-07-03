@@ -24,4 +24,15 @@ enum StoryAdventureTypeEnum: string
     case TreasureHunt = 'TreasureHunt';
     case WanderingMonster = 'WanderingMonster';
     case RandomRecruit = 'RecruitTown';
+
+    case RemixShipwreck = 'RemixShipwreck';
+    case RemixBeach = 'RemixBeach';
+    case RemixForest = 'RemixForest';
+    case RemixCave = 'RemixCave';
+    case RemixUndergroundLake = 'RemixUndergroundLake';
+    case RemixMagicTower = 'RemixMagicTower';
+    case RemixUmbralPlants = 'RemixUmbralPlants';
+    case RemixUndergroundVillage = 'RemixUndergroundVillage';
+    case RemixGraveyard = 'RemixGraveyard';
+    case RemixTheDeep = 'RemixTheDeep';
 }
