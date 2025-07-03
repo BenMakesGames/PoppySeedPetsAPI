@@ -32,23 +32,36 @@ class RemixAdventuresService
      */
     public function doShipwreck(MonthlyStoryAdventureStep $step, array $pets): AdventureResult
     {
-        if($this->rng->rngNextBool())
+        switch($this->rng->rngNextInt(1, 3))
         {
-            $result = $this->standardAdventures->doWanderingMonster($step, $pets);
+            case 1:
+                $result = $this->standardAdventures->doWanderingMonster($step, $pets);
 
-            return new AdventureResult(
-                "Entering the shipwreck, there's a group of goblin-like creatures - it looks like they've already cleared the place of valuables, but...\n\n" . $result->text,
-                $result->loot
-            );
-        }
-        else
-        {
-            $result = $this->standardAdventures->doTreasureHunt($step, $pets);
+                return new AdventureResult(
+                    "This shipwreck has apparently been temporarily claimed by group of goblin-like creatures! Well: their stay is about to get a lot... temporarier!\n\n" . $result->text,
+                    $result->loot
+                );
 
-            return new AdventureResult(
-                "It looks like nature has been reclaiming the ship for many years. Many people have no doubt already searched it, but who knows...\n\n" . $result->text,
-                $result->loot
-            );
+            case 2:
+                return $this->doCustomEncounter(
+                    $pets,
+                    fn(ComputedPetSkills $pet) => (int)ceil(($pet->getPerception()->getTotal() + $pet->getStamina()->getTotal()) / 2) + $pet->getNature()->getTotal() + $pet->getGatheringBonus()->getTotal(),
+                    $this->rng->rngNextFromArray([ 'Ceremonial Trident', 'Secret Seashell', 'Rusted, Busted Mechanism' ]),
+                    [ 'Seaweed', 'Silica Grounds', 'Crooked Stick', 'String', 'Rock', 'Rusty Rapier', 'Plastic Bottle', 'Canned Food' ],
+                    "It looks like nature has been reclaiming this ship for many years. Many people have no doubt already searched it, but given enough time searching, something will surely turn up?"
+                );
+
+            case 3:
+                return $this->doCustomEncounter(
+                    $pets,
+                    fn(ComputedPetSkills $pet) => (int)ceil(($pet->getDexterity()->getTotal() + $pet->getStamina()->getTotal()) / 2) + $pet->getNature()->getTotal() + $pet->getGatheringBonus()->getTotal(),
+                    'Seaweed',
+                    [ 'Seaweed', 'Seaweed', 'Seaweed', 'Seaweed', 'Crooked Stick', 'Silica Grounds' ],
+                    "It looks like nature has been reclaiming this ship for many years... welp: that's a lot of free kelp!"
+                );
+
+            default:
+                throw new \Exception("Invalid encounter type");
         }
     }
 
@@ -65,7 +78,7 @@ class RemixAdventuresService
                 );
 
             case 2:
-                return $this->doRandomEncounter(
+                return $this->doCustomEncounter(
                     $pets,
                     fn(ComputedPetSkills $pet) => (int)ceil(($pet->getPerception()->getTotal() + $pet->getDexterity()->getTotal()) / 2) + $pet->getNature()->getTotal() + $pet->getFishingBonus()->getTotal(),
                     'Fish Bag',
@@ -74,7 +87,7 @@ class RemixAdventuresService
                 );
 
             case 3:
-                return $this->doRandomEncounter(
+                return $this->doCustomEncounter(
                     $pets,
                     fn(ComputedPetSkills $pet) => (int)ceil(($pet->getStrength()->getTotal() + $pet->getStamina()->getTotal()) / 2) + $pet->getNature()->getTotal() + $pet->getGatheringBonus()->getTotal(),
                     'Sand Dollar',
@@ -96,7 +109,7 @@ class RemixAdventuresService
         return match($this->rng->rngNextInt(1, 3))
         {
             // dragon:
-            1 => $this->doRandomEncounter(
+            1 => $this->doCustomEncounter(
                 $pets,
                 fn(ComputedPetSkills $pet) => (int)ceil(($pet->getStrength()->getTotal() + $pet->getDexterity()->getTotal()) / 2) + $pet->getBrawl()->getTotal(),
                 $this->rng->rngNextFromArray([ 'Nature Box', 'Monster Box' ]),
@@ -104,7 +117,7 @@ class RemixAdventuresService
                 "A forest dragon has apparently made a home here. It guards an unconventional treasure, but treasure is treasure!"
             ),
             // bandit encampment:
-            2 => $this->doRandomEncounter(
+            2 => $this->doCustomEncounter(
                 $pets,
                 fn(ComputedPetSkills $pet) => (int)ceil(($pet->getStrength()->getTotal() + $pet->getDexterity()->getTotal()) / 2) + $pet->getBrawl()->getTotal(),
                 'Wrapped Sword',
@@ -112,7 +125,7 @@ class RemixAdventuresService
                 "In the center of the forest is a makeshift encampment of bandits. They weren't expecting visitors, and they don't exactly have a welcoming attitude."
             ),
             // forest spirit:
-            3 => $this->doRandomEncounter(
+            3 => $this->doCustomEncounter(
                 $pets,
                 fn(ComputedPetSkills $pet) => (int)ceil(($pet->getPerception()->getTotal() + $pet->getDexterity()->getTotal()) / 2) + $pet->getBrawl()->getTotal() + $pet->getUmbraBonus()->getTotal(),
                 'Fish Bag',
@@ -131,21 +144,21 @@ class RemixAdventuresService
         return match($this->rng->rngNextInt(1, 4))
         {
             1 => $this->standardAdventures->doMineGold($step, $pets),
-            2 => $this->doRandomEncounter(
+            2 => $this->doCustomEncounter(
                 $pets,
                 fn(ComputedPetSkills $pet) => (int)ceil(($pet->getStrength()->getTotal() + $pet->getStamina()->getTotal()) / 2) + $pet->getNature()->getTotal() + $pet->getGatheringBonus()->getTotal(),
                 'Box of Ores',
                 [ 'Rock', 'Silica Grounds' ],
                 "There's little to find in this part of the caves besides rock, dirt, and sand..."
             ),
-            3 => $this->doRandomEncounter(
+            3 => $this->doCustomEncounter(
                 $pets,
                 fn(ComputedPetSkills $pet) => (int)ceil(($pet->getStrength()->getTotal() + $pet->getStamina()->getTotal()) / 2) + $pet->getBrawl()->getTotal(),
                 'Sand-covered... Something',
                 [ 'Silica Grounds', 'Limestone', 'Limestone', 'Rock' ],
                 "Why are so many golems made of Limestone? You can try asking one, but I doubt you'll get an answer..."
             ),
-            4 => $this->doRandomEncounter(
+            4 => $this->doCustomEncounter(
                 $pets,
                 fn(ComputedPetSkills $pet) => (int)ceil(($pet->getPerception()->getTotal() + $pet->getDexterity()->getTotal()) / 2) + $pet->getBrawl()->getTotal(),
                 'Dark Matter',
@@ -161,7 +174,7 @@ class RemixAdventuresService
      */
     public function doUndergroundLake(MonthlyStoryAdventureStep $step, array $pets): AdventureResult
     {
-        return $this->doRandomEncounter(
+        return $this->doCustomEncounter(
             $pets,
             fn(ComputedPetSkills $pet) => (int)ceil(($pet->getPerception()->getTotal() + $pet->getDexterity()->getTotal()) / 2) + $pet->getNature()->getTotal(),
             'Fish Bag',
@@ -224,7 +237,7 @@ class RemixAdventuresService
         return new AdventureResult("", []);
     }
 
-    private function doRandomEncounter(array $pets, callable $petSkillFn, string $freeLoot, array $lootTable, string $narrative): AdventureResult
+    private function doCustomEncounter(array $pets, callable $petSkillFn, string $freeLoot, array $lootTable, string $narrative): AdventureResult
     {
         $roll = $this->rng->rngNextInt(1, 20);
 
