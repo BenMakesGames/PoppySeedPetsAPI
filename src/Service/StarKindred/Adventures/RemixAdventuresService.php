@@ -87,4 +87,76 @@ class RemixAdventuresService
             return new AdventureResult($text, $loot);
         }
     }
+
+    /**
+     * @param ComputedPetSkills[] $pets
+     */
+    public function doForest(MonthlyStoryAdventureStep $step, array $pets): AdventureResult
+    {
+        // To be implemented
+        return new AdventureResult("", []);
+    }
+
+    /**
+     * @param ComputedPetSkills[] $pets
+     */
+    public function doCave(MonthlyStoryAdventureStep $step, array $pets): AdventureResult
+    {
+        // To be implemented
+        return new AdventureResult("", []);
+    }
+
+    /**
+     * @param ComputedPetSkills[] $pets
+     */
+    public function doUndergroundLake(MonthlyStoryAdventureStep $step, array $pets): AdventureResult
+    {
+        // To be implemented
+        return new AdventureResult("", []);
+    }
+
+    /**
+     * @param ComputedPetSkills[] $pets
+     */
+    public function doMagicTower(MonthlyStoryAdventureStep $step, array $pets): AdventureResult
+    {
+        // To be implemented
+        return new AdventureResult("", []);
+    }
+
+    /**
+     * @param ComputedPetSkills[] $pets
+     */
+    public function doUmbralPlants(MonthlyStoryAdventureStep $step, array $pets): AdventureResult
+    {
+        // To be implemented
+        return new AdventureResult("", []);
+    }
+
+    /**
+     * @param ComputedPetSkills[] $pets
+     */
+    public function doUndergroundVillage(MonthlyStoryAdventureStep $step, array $pets): AdventureResult
+    {
+        // To be implemented
+        return new AdventureResult("", []);
+    }
+
+    /**
+     * @param ComputedPetSkills[] $pets
+     */
+    public function doGraveyard(MonthlyStoryAdventureStep $step, array $pets): AdventureResult
+    {
+        // To be implemented
+        return new AdventureResult("", []);
+    }
+
+    /**
+     * @param ComputedPetSkills[] $pets
+     */
+    public function doTheDeep(MonthlyStoryAdventureStep $step, array $pets): AdventureResult
+    {
+        // To be implemented
+        return new AdventureResult("", []);
+    }
 }

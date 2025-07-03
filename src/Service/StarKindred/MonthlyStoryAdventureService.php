@@ -85,6 +85,14 @@ class MonthlyStoryAdventureService
             StoryAdventureTypeEnum::WanderingMonster => $this->standardAdventures->doWanderingMonster($step, $petSkills),
             StoryAdventureTypeEnum::RemixShipwreck => $this->remixAdventures->doShipwreck($step, $petSkills),
             StoryAdventureTypeEnum::RemixBeach => $this->remixAdventures->doBeach($step, $petSkills),
+            StoryAdventureTypeEnum::RemixForest => $this->remixAdventures->doForest($step, $petSkills),
+            StoryAdventureTypeEnum::RemixCave => $this->remixAdventures->doCave($step, $petSkills),
+            StoryAdventureTypeEnum::RemixUndergroundLake => $this->remixAdventures->doUndergroundLake($step, $petSkills),
+            StoryAdventureTypeEnum::RemixMagicTower => $this->remixAdventures->doMagicTower($step, $petSkills),
+            StoryAdventureTypeEnum::RemixUmbralPlants => $this->remixAdventures->doUmbralPlants($step, $petSkills),
+            StoryAdventureTypeEnum::RemixUndergroundVillage => $this->remixAdventures->doUndergroundVillage($step, $petSkills),
+            StoryAdventureTypeEnum::RemixGraveyard => $this->remixAdventures->doGraveyard($step, $petSkills),
+            StoryAdventureTypeEnum::RemixTheDeep => $this->remixAdventures->doTheDeep($step, $petSkills),
             default => throw new \Exception('Oh, dang: Ben forgot to implement this story adventure type! :('),
         };
 
