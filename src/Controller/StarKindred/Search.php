@@ -12,7 +12,7 @@ declare(strict_types=1);
  */
 
 
-namespace App\Controller\MonthlyStoryAdventure;
+namespace App\Controller\StarKindred;
 
 use App\Enum\SerializationGroupEnum;
 use App\Enum\UnlockableFeatureEnum;
@@ -25,7 +25,7 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use App\Service\UserAccessor;
 
-#[Route("/monthlyStoryAdventure")]
+#[Route("/starKindred")]
 class Search
 {
     #[Route("/", methods: ["GET"])]
