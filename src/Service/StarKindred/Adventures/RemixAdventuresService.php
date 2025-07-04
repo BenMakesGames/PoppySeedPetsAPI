@@ -14,8 +14,10 @@ declare(strict_types = 1);
 namespace App\Service\StarKindred\Adventures;
 
 use App\Entity\MonthlyStoryAdventureStep;
+use App\Functions\DateFunctions;
 use App\Model\ComputedPetSkills;
 use App\Model\MonthlyStoryAdventure\AdventureResult;
+use App\Service\Clock;
 use App\Service\IRandom;
 
 class RemixAdventuresService
@@ -23,6 +25,7 @@ class RemixAdventuresService
     public function __construct(
         private readonly IRandom $rng,
         private readonly StandardAdventuresService $standardAdventures,
+        private readonly Clock $clock,
     )
     {
     }
@@ -148,7 +151,7 @@ class RemixAdventuresService
                 $pets,
                 fn(ComputedPetSkills $pet) => (int)ceil(($pet->getStrength()->getTotal() + $pet->getStamina()->getTotal()) / 2) + $pet->getNature()->getTotal() + $pet->getGatheringBonus()->getTotal(),
                 'Box of Ores',
-                [ 'Rock', 'Silica Grounds' ],
+                [ 'Rock', 'Rock', 'Rock', 'Silica Grounds', 'Silica Grounds', 'Silica Grounds', 'Gypsum' ],
                 "There's little to find in this part of the caves besides rock, dirt, and sand..."
             ),
             3 => $this->doCustomEncounter(
@@ -224,8 +227,27 @@ class RemixAdventuresService
      */
     public function doUmbralPlants(MonthlyStoryAdventureStep $step, array $pets): AdventureResult
     {
-        // To be implemented
-        return new AdventureResult("", []);
+        return match($this->rng->rngNextInt(1, 2))
+        {
+            1 => $this->doCustomEncounter(
+                $pets,
+                fn(ComputedPetSkills $pet) => $pet->getDexterity()->getTotal() + $pet->getNature()->getTotal() + $pet->getGatheringBonus()->getTotal(),
+                'Nature Box',
+                [
+                    'Purple Corn',
+                ],
+                "Tall, purple plants grow here, blowing in the wind."
+            ),
+            2 => $this->doCustomEncounter(
+                $pets,
+                fn(ComputedPetSkills $pet) => $pet->getStrength()->getTotal() + $pet->getNature()->getTotal() + $pet->getGatheringBonus()->getTotal(),
+                'Monster Box',
+                [
+                    'Tentacle',
+                ],
+                "From a distance they look like tall, purple plants blowing in a wind. However..."
+            ),
+        };
     }
 
     /**

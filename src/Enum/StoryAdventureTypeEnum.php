@@ -32,7 +32,7 @@ enum StoryAdventureTypeEnum: string
     case RemixUndergroundLake = 'RemixUndergroundLake';
     case RemixMagicTower = 'RemixMagicTower';
     case RemixUmbralPlants = 'RemixUmbralPlants';
-    case RemixUndergroundVillage = 'RemixUndergroundVillage';
+    case RemixDarkVillage = 'RemixDarkVillage';
     case RemixGraveyard = 'RemixGraveyard';
     case RemixTheDeep = 'RemixTheDeep';
     case RemixTreasureRoom = 'RemixTreasureRoom';

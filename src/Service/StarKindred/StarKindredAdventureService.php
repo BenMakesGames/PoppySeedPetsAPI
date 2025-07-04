@@ -90,7 +90,7 @@ class StarKindredAdventureService
             StoryAdventureTypeEnum::RemixUndergroundLake => $this->remixAdventures->doUndergroundLake($step, $petSkills),
             StoryAdventureTypeEnum::RemixMagicTower => $this->remixAdventures->doMagicTower($step, $petSkills),
             StoryAdventureTypeEnum::RemixUmbralPlants => $this->remixAdventures->doUmbralPlants($step, $petSkills),
-            StoryAdventureTypeEnum::RemixUndergroundVillage => $this->remixAdventures->doUndergroundVillage($step, $petSkills),
+            StoryAdventureTypeEnum::RemixDarkVillage => $this->remixAdventures->doUndergroundVillage($step, $petSkills),
             StoryAdventureTypeEnum::RemixGraveyard => $this->remixAdventures->doGraveyard($step, $petSkills),
             StoryAdventureTypeEnum::RemixTheDeep => $this->remixAdventures->doTheDeep($step, $petSkills),
             StoryAdventureTypeEnum::RemixTreasureRoom => $this->remixAdventures->doTreasureRoom($step, $petSkills),
