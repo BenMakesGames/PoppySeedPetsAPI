@@ -18,7 +18,7 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route("/starKindred")]
 class RestartRemix
 {
-    #[Route("/restartRemix/{monthlyStoryAdventureId}", methods: ["POST"])]
+    #[Route("/restartRemix/{monthlyStoryAdventure}", methods: ["POST"])]
     public function restartRemix(
         MonthlyStoryAdventure $monthlyStoryAdventure,
         UserAccessor $userAccessor,

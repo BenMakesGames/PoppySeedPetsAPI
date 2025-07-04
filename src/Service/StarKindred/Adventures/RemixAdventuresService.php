@@ -14,18 +14,15 @@ declare(strict_types = 1);
 namespace App\Service\StarKindred\Adventures;
 
 use App\Entity\MonthlyStoryAdventureStep;
-use App\Functions\DateFunctions;
 use App\Model\ComputedPetSkills;
 use App\Model\MonthlyStoryAdventure\AdventureResult;
-use App\Service\Clock;
 use App\Service\IRandom;
 
 class RemixAdventuresService
 {
     public function __construct(
         private readonly IRandom $rng,
-        private readonly StandardAdventuresService $standardAdventures,
-        private readonly Clock $clock,
+        private readonly StandardAdventuresService $standardAdventures
     )
     {
     }
@@ -131,7 +128,7 @@ class RemixAdventuresService
             3 => $this->doCustomEncounter(
                 $pets,
                 fn(ComputedPetSkills $pet) => (int)ceil(($pet->getPerception()->getTotal() + $pet->getDexterity()->getTotal()) / 2) + $pet->getBrawl()->getTotal() + $pet->getUmbraBonus()->getTotal(),
-                'Fish Bag',
+                'Monster-summoning Scroll',
                 [ 'Crooked Stick', 'Quintessence', 'Quintessence', 'Talon', 'Dark Scales', 'Music Note' ],
                 "The canopy deepens, and the air grows cooler. This forgotten area of the forest has fallen closer to the Umbra, and been overrun by restless animal spirits!"
             ),
@@ -149,7 +146,7 @@ class RemixAdventuresService
             1 => $this->standardAdventures->doMineGold($step, $pets),
             2 => $this->doCustomEncounter(
                 $pets,
-                fn(ComputedPetSkills $pet) => (int)ceil(($pet->getStrength()->getTotal() + $pet->getStamina()->getTotal()) / 2) + $pet->getNature()->getTotal() + $pet->getGatheringBonus()->getTotal(),
+                fn(ComputedPetSkills $pet) => (int)ceil(($pet->getStrength()->getTotal() + $pet->getStamina()->getTotal()) / 2) + $pet->getNature()->getTotal() + $pet->getMiningBonus()->getTotal(),
                 'Box of Ores',
                 [ 'Rock', 'Rock', 'Rock', 'Silica Grounds', 'Silica Grounds', 'Silica Grounds', 'Gypsum' ],
                 "There's little to find in this part of the caves besides rock, dirt, and sand..."
@@ -247,6 +244,7 @@ class RemixAdventuresService
                 ],
                 "From a distance they look like tall, purple plants blowing in a wind. However..."
             ),
+            default => throw new \Exception("Invalid encounter type"),
         };
     }
 
@@ -255,8 +253,12 @@ class RemixAdventuresService
      */
     public function doUndergroundVillage(MonthlyStoryAdventureStep $step, array $pets): AdventureResult
     {
-        // To be implemented
-        return new AdventureResult("", []);
+        $result = $this->standardAdventures->doRandomRecruit($step, $pets);
+
+        return new AdventureResult(
+            "In a small village deep underground, one of its inhabitants is restless, looking for an opportunity to strike out on their own adventure...\n\n" . $result->text,
+            $result->loot
+        );
     }
 
     /**
@@ -264,8 +266,13 @@ class RemixAdventuresService
      */
     public function doGraveyard(MonthlyStoryAdventureStep $step, array $pets): AdventureResult
     {
-        // To be implemented
-        return new AdventureResult("", []);
+        return $this->doCustomEncounter(
+            $pets,
+            fn(ComputedPetSkills $pet) => (int)ceil(($pet->getDexterity()->getTotal() + $pet->getStrength()->getTotal()) / 2) + $pet->getBrawl()->getTotal() + $pet->getUmbraBonus()->getTotal(),
+            'Blackonite',
+            [ 'Rock', 'Quintessence', 'Quintessence', 'Filthy Cloth', 'Grandparoot' ],
+            "A graveyard deep beneath the surface of the earth? It's hard to think of many things that could be more haunted."
+        );
     }
 
     /**
@@ -273,8 +280,30 @@ class RemixAdventuresService
      */
     public function doTheDeep(MonthlyStoryAdventureStep $step, array $pets): AdventureResult
     {
-        // To be implemented
-        return new AdventureResult("", []);
+        return match($this->rng->rngNextInt(1, 2))
+        {
+            1 => $this->doCustomEncounter(
+                $pets,
+                fn(ComputedPetSkills $pet) => (int)ceil(($pet->getStamina()->getTotal() + $pet->getDexterity()->getTotal()) / 2) + $pet->getGatheringBonus()->getTotal() + $pet->getMiningBonus()->getTotal(),
+                'Firestone',
+                [
+                    'Liquid-hot Magma', 'Liquid-hot Magma', 'Liquid-hot Magma', 'Liquid-hot Magma', 'Liquid-hot Magma', 'Liquid-hot Magma',
+                    'Iron Ore', 'Iron Ore', 'Silver Ore', 'Gold Ore',
+                    'Striped Microcline'
+                ],
+                "Deep underground, rivers of magma dimly illuminate long, winding passages."
+            ),
+            2 => $this->doCustomEncounter(
+                $pets,
+                fn(ComputedPetSkills $pet) => (int)ceil(($pet->getStamina()->getTotal() + $pet->getDexterity()->getTotal()) / 2) + $pet->getGatheringBonus()->getTotal() + $pet->getMiningBonus()->getTotal(),
+                'Monster Box',
+                [
+                    'Tentacle', 'Talon', 'Scales', 'Dark Matter', 'Gravitational Waves', 'Quintessence',
+                ],
+                "What horrors lie hidden deep within the earth? Even in close-combat, the creatures are difficult to see, but they are large, loud, and lighting-fast."
+            ),
+            default => throw new \Exception("Invalid encounter type"),
+        };
     }
 
     /**
