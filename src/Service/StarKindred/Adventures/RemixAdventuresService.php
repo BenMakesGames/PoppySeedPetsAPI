@@ -14,15 +14,19 @@ declare(strict_types = 1);
 namespace App\Service\StarKindred\Adventures;
 
 use App\Entity\MonthlyStoryAdventureStep;
+use App\Enum\StatusEffectEnum;
+use App\Functions\StatusEffectHelpers;
 use App\Model\ComputedPetSkills;
 use App\Model\MonthlyStoryAdventure\AdventureResult;
 use App\Service\IRandom;
+use Doctrine\ORM\EntityManagerInterface;
 
 class RemixAdventuresService
 {
     public function __construct(
         private readonly IRandom $rng,
-        private readonly StandardAdventuresService $standardAdventures
+        private readonly StandardAdventuresService $standardAdventures,
+        private readonly EntityManagerInterface $em,
     )
     {
     }
@@ -174,13 +178,34 @@ class RemixAdventuresService
      */
     public function doUndergroundLake(MonthlyStoryAdventureStep $step, array $pets): AdventureResult
     {
-        return $this->doCustomEncounter(
-            $pets,
-            fn(ComputedPetSkills $pet) => (int)ceil(($pet->getPerception()->getTotal() + $pet->getDexterity()->getTotal()) / 2) + $pet->getNature()->getTotal(),
-            'Fish Bag',
-            [ 'Toadstool', 'Toadstool', 'Rock', 'Chanterelle', 'Chanterelle' ],
-            "The lake is home to a variety of mushrooms and fish. Most seem edible, anyway..."
-        );
+        switch($this->rng->rngNextInt(1, 3))
+        {
+            case 1:
+                return $this->doCustomEncounter(
+                    $pets,
+                    fn(ComputedPetSkills $pet) => (int)ceil(($pet->getPerception()->getTotal() + $pet->getDexterity()->getTotal()) / 2) + $pet->getNature()->getTotal(),
+                    'Fish Bag',
+                    [ 'Toadstool', 'Toadstool', 'Rock', 'Chanterelle', 'Chanterelle' ],
+                    "The lake is home to a variety of mushrooms and fish. Most seem edible, anyway..."
+                );
+
+            case 2:
+                foreach($pets as $pet)
+                    StatusEffectHelpers::applyStatusEffect($this->em, $pet->getPet(), StatusEffectEnum::FatedSoakedly, 1);
+
+                return new AdventureResult("Staring into the lake, the figure of a person is seen, as if standing directly behind you...\n\n(Your pets are now Fated (Soakedly)!)", []);
+
+            case 3:
+                return $this->doCustomEncounter(
+                    $pets,
+                    fn(ComputedPetSkills $pet) => (int)ceil(($pet->getPerception()->getTotal() + $pet->getDexterity()->getTotal()) / 2) + $pet->getNature()->getTotal(),
+                    'Ice Mango',
+                    [ 'Everice', 'Everice', 'Everice', 'Fish Bones', 'Cobweb', 'Quintessence' ],
+                    "Typically the deeper you go the hotter it gets, but here cold air can be seen rising off the surface of the lake. What could be responsible for such a phenomenon?"
+                );
+            default:
+                throw new \Exception("Invalid encounter type");
+        }
     }
 
     /**
