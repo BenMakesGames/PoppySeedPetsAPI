@@ -36,7 +36,7 @@ class RemixAdventuresService
      */
     public function doShipwreck(MonthlyStoryAdventureStep $step, array $pets): AdventureResult
     {
-        switch($this->rng->rngNextInt(1, 3))
+        switch($this->rng->rngNextInt(1, 4))
         {
             case 1:
                 $result = $this->standardAdventures->doWanderingMonster($step, $pets);
@@ -62,6 +62,15 @@ class RemixAdventuresService
                     'Seaweed',
                     [ 'Seaweed', 'Seaweed', 'Seaweed', 'Seaweed', 'Crooked Stick', 'Silica Grounds' ],
                     "It looks like nature has been reclaiming this ship for many years... welp: that's a lot of free kelp!"
+                );
+
+            case 4:
+                return $this->doCustomEncounter(
+                    $pets,
+                    fn(ComputedPetSkills $pet) => $pet->getIntelligence()->getTotal() + (int)ceil(($pet->getArcana()->getTotal() + $pet->getCrafts()->getTotal()) / 2),
+                    'Scroll of the Sea',
+                    [ 'Gold Bar', 'Compass', 'Canned Food', 'Fish Stew', 'Rusty Rapier', 'Quintessence' ],
+                    "The shipwreck is haunted by spectral sailors who turn out to be more curious than hostile. They're fascinated by your modern tools and equipment, and you stay a while swapping stories from your respective times. (They also give you some stuff - neat!)"
                 );
 
             default:
@@ -110,7 +119,7 @@ class RemixAdventuresService
     public function doForest(MonthlyStoryAdventureStep $step, array $pets): AdventureResult
     {
         // dragon, or bandit encampment, or forest spirit:
-        return match($this->rng->rngNextInt(1, 3))
+        return match($this->rng->rngNextInt(1, 4))
         {
             // dragon:
             1 => $this->doCustomEncounter(
@@ -135,6 +144,13 @@ class RemixAdventuresService
                 'Monster-summoning Scroll',
                 [ 'Crooked Stick', 'Quintessence', 'Quintessence', 'Talon', 'Dark Scales', 'Music Note' ],
                 "The canopy deepens, and the air grows cooler. This forgotten area of the forest has fallen closer to the Umbra, and been overrun by restless animal spirits!"
+            ),
+            4 => $this->doCustomEncounter(
+                $pets,
+                fn(ComputedPetSkills $pet) => $pet->getIntelligence()->getTotal() + $pet->getArcana()->getTotal() + $pet->getUmbraBonus()->getTotal(),
+                $this->rng->rngNextFromArray([ 'Glowing Protojelly', 'Magpie Pouch', 'Espophone' ]),
+                [ 'Quintessence', 'Jar of Fireflies', 'World\'s Best Sugar Cookie', 'Wings', 'Music Note', 'Pink Fairy Floss', 'Coriander Flower', 'Moon Pearl' ],
+                "A temporary market has sprung up in a forest clearing, run by fairy merchants. They're selling trinkets and food, but only accept unusual forms of payment, like \"the sound of a cat's purr\" or \"a memory of a perfect sunset\"..."
             ),
             default => throw new \Exception("Invalid encounter type"),
         };
@@ -263,7 +279,7 @@ class RemixAdventuresService
             2 => $this->doCustomEncounter(
                 $pets,
                 fn(ComputedPetSkills $pet) => $pet->getStrength()->getTotal() + $pet->getNature()->getTotal() + $pet->getGatheringBonus()->getTotal(),
-                'Monster Box',
+                'Noetala Egg',
                 [
                     'Tentacle',
                 ],
