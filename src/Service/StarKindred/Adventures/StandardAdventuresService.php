@@ -1,5 +1,5 @@
 <?php
-declare(strict_types=1);
+declare(strict_types = 1);
 
 /**
  * This file is part of the Poppy Seed Pets API.
@@ -11,213 +11,38 @@ declare(strict_types=1);
  * You should have received a copy of the GNU General Public License along with The Poppy Seed Pets API. If not, see <https://www.gnu.org/licenses/>.
  */
 
+namespace App\Service\StarKindred\Adventures;
 
-namespace App\Service;
-
+use App\Entity\Enchantment;
 use App\Entity\MonthlyStoryAdventureStep;
-use App\Entity\Pet;
-use App\Entity\User;
-use App\Entity\UserMonthlyStoryAdventureStepCompleted;
-use App\Enum\LocationEnum;
-use App\Enum\StoryAdventureTypeEnum;
 use App\Enum\UnlockableFeatureEnum;
 use App\Functions\ArrayFunctions;
 use App\Functions\DateFunctions;
 use App\Model\ComputedPetSkills;
 use App\Model\MonthlyStoryAdventure\AdventureResult;
-use Doctrine\ORM\EntityManagerInterface;
+use App\Service\Clock;
+use App\Service\HattierService;
+use App\Service\IRandom;
 
-class MonthlyStoryAdventureService
+class StandardAdventuresService
 {
     public function __construct(
-        private readonly InventoryService $inventoryService,
-        private readonly EntityManagerInterface $em,
         private readonly IRandom $rng,
+        private readonly Clock $clock,
         private readonly HattierService $hattierService,
-        private readonly Clock $clock
     )
     {
     }
 
-    public function isStepCompleted(User $user, MonthlyStoryAdventureStep $step): bool
-    {
-        $completedStep = $this->em->getRepository(UserMonthlyStoryAdventureStepCompleted::class)->createQueryBuilder('c')
-            ->select('COUNT(c.id) AS qty')
-            ->andWhere('c.user=:user')
-            ->andWhere('c.adventureStep=:adventureStep')
-            ->setParameter('user', $user)
-            ->setParameter('adventureStep', $step)
-            ->getQuery()
-            ->getSingleResult();
-
-        return $completedStep['qty'] > 0;
-    }
-
-    public function isPreviousStepCompleted(User $user, MonthlyStoryAdventureStep $step): bool
-    {
-        $previousStep = $this->em->getRepository(MonthlyStoryAdventureStep::class)->createQueryBuilder('s')
-            ->andWhere('s.step=:step')
-            ->andWhere('s.adventure=:adventure')
-            ->setParameter('step', $step->getPreviousStep())
-            ->setParameter('adventure', $step->getAdventure()->getId())
-            ->getQuery()
-            ->getSingleResult()
-        ;
-
-        if(!$previousStep)
-            throw new \Exception('Ben has made a terrible error: one of the story adventure steps could not be found. And it totally should have been.');
-
-        return $this->isStepCompleted($user, $previousStep);
-    }
-
-    /**
-     * @param Pet[] $pets
-     */
-    public function completeStep(User $user, MonthlyStoryAdventureStep $step, array $pets): string
-    {
-        $petSkills = array_map(fn(Pet $pet) => $pet->getComputedSkills(), $pets);
-
-        $results = match ($step->getType())
-        {
-            StoryAdventureTypeEnum::CollectStone => $this->doCollectStone($user, $step, $petSkills),
-            StoryAdventureTypeEnum::Gather => $this->doGather($user, $step, $petSkills),
-            StoryAdventureTypeEnum::Hunt => $this->doHunt($user, $step, $petSkills),
-            StoryAdventureTypeEnum::MineGold => $this->doMineGold($user, $step, $petSkills),
-            StoryAdventureTypeEnum::RandomRecruit => $this->doRandomRecruit($user, $step, $petSkills),
-            StoryAdventureTypeEnum::Story => $this->doStory($user, $step, $petSkills),
-            StoryAdventureTypeEnum::TreasureHunt => $this->doTreasureHunt($user, $step, $petSkills),
-            StoryAdventureTypeEnum::WanderingMonster => $this->doWanderingMonster($user, $step, $petSkills),
-            default => throw new \Exception('Oh, dang: Ben forgot to implement this story adventure type! :('),
-        };
-
-        foreach($results->loot as $item)
-            $this->inventoryService->receiveItem($item, $user, $user, $user->getName() . ' gave this to their pets during a game of ★Kindred.', LocationEnum::Home);
-
-        $this->markStepComplete($user, $step);
-
-        return $results->text;
-    }
-
-    private function markStepComplete(User $user, MonthlyStoryAdventureStep $step): void
-    {
-        $completedStep = new UserMonthlyStoryAdventureStepCompleted($user, $step);
-
-        $this->em->persist($completedStep);
-    }
-
     /**
      * @param ComputedPetSkills[] $pets
      */
-    private function getAdventureLoot(MonthlyStoryAdventureStep $step, array $pets, callable $petSkillFn, int $roll, string $freeLoot, array $lootTable): array
-    {
-        $loot = MonthlyStoryAdventureService::getFixedLoot($step);
-
-        $loot[] = $freeLoot;
-
-        $totalSkill = ArrayFunctions::sum($pets, $petSkillFn) + $roll - 10;
-
-        $extraBits = floor($totalSkill / 5);
-
-        for($i = 0; $i < $extraBits; $i++)
-            $loot[] = $this->rng->rngNextFromArray($lootTable);
-
-        return $loot;
-    }
-
-    private static function getFixedLoot(MonthlyStoryAdventureStep $step): array
-    {
-        if(!$step->getTreasure())
-            return [];
-
-        return match ($step->getTreasure())
-        {
-            'GoldChest' => [ 'Gold Chest' ],
-            'BigBasicChest' => [ 'Handicrafts Supply Box' ],
-            'CupOfLife' => [ 'Cup of Life' ],
-            'TwilightChest' => [ 'Twilight Box' ],
-            'TreasureMap' => [ 'Piece of Cetgueli\'s Map' ],
-            'WrappedSword' => [ 'Wrapped Sword' ],
-            'RubyChest' => [ 'Ruby Chest' ],
-            'BoxOfOres' => [ 'Box of Ores' ],
-            'CrystallizedQuint' => [ 'Quintessence' ],
-            'Ship' => [ 'Paper Boat' ],
-            'SkeletalRemains' => [ 'Dino Skull' ],
-            'BlackFlag' => [ 'Black Flag' ],
-            'ShalurianLighthouse' => [ 'Scroll of the Sea' ],
-            'Rainbow' => [ 'Rainbow' ],
-            'SmallMushrooms', 'LargeMushroom' => [ 'Toadstool' ],
-            'PurpleGrass' => [ 'Quinacridone Magenta Dye' ],
-            'EnormousTibia' => [ 'Stereotypical Bone' ],
-            'FishBag' => [ 'Fish Bag' ],
-            default => throw new \Exception("Bad Ben! He didn't code support for this adventure's treasure: \"{$step->getTreasure()}\"!"),
-        };
-    }
-
-    /**
-     * @param ComputedPetSkills[] $pets
-     */
-    private function describeAdventure(array $pets, MonthlyStoryAdventureStep $step, int $roll, array $loot): string
-    {
-        $text = $step->getNarrative() ?? '';
-
-        if($roll > 0 && count($loot) > 0)
-        {
-            if($text != '') $text .= "\n\n";
-
-            $text .= "(The pets roll for loot, and get a {$roll}! After adding their skill points, you award them " . ArrayFunctions::list_nice_sorted($loot) . '.)';
-        }
-        else if(count($loot) > 0)
-        {
-            if($text != '') $text .= "\n\n";
-
-            $text .= "(You award your pets " . ArrayFunctions::list_nice_sorted($loot) . '!)';
-        }
-
-        if($step->getAura())
-        {
-            $auraText = $this->awardAura($pets, $step);
-
-            if($text && $auraText) $text .= "\n\n" . $auraText;
-        }
-
-        return $text;
-    }
-
-    /**
-     * @param ComputedPetSkills[] $pets
-     */
-    private function awardAura(array $pets, MonthlyStoryAdventureStep $step): ?string
-    {
-        $petSkills = $this->rng->rngNextFromArray($pets);
-        $pet = $petSkills->getPet();
-
-        $unlocked = $this->hattierService->petMaybeUnlockAura(
-            $pet,
-            $step->getAura(),
-            'While playing ★Kindred, %pet:' . $pet->getId() . '.name% was inspired to create a new hat style!',
-            'While playing ★Kindred, %pet:' . $pet->getId() . '.name% was inspired to create a new hat style!',
-            'While playing ★Kindred, %pet:' . $pet->getId() . '.name% was inspired to create a new hat style!'
-        );
-
-        if(!$unlocked)
-            return null;
-
-        if($pet->getOwner()->hasUnlockedFeature(UnlockableFeatureEnum::Hattier))
-            return "(Inspired by the story, {$pet->getName()} created a new hat styling: {$step->getAura()->getName()}! Find it at the Hattier!)";
-        else
-            return "(Inspired by the story, {$pet->getName()} created a new hat styling?! What!? (The Hattier has been unlocked! Check it out in the menu!))";
-    }
-
-
-    /**
-     * @param ComputedPetSkills[] $pets
-     */
-    private function doCollectStone(User $user, MonthlyStoryAdventureStep $step, array $pets): AdventureResult
+    public function doCollectStone(MonthlyStoryAdventureStep $step, array $pets): AdventureResult
     {
         $roll = $this->rng->rngNextInt(1, 20);
 
         $loot = $this->getAdventureLoot(
-            $step,
+            $step->getTreasure(),
             $pets,
             fn(ComputedPetSkills $pet) => $pet->getStrength()->getTotal() + $pet->getStamina()->getTotal() + $pet->getPerception()->getTotal() + $pet->getGatheringBonus()->getTotal(),
             $roll,
@@ -225,11 +50,11 @@ class MonthlyStoryAdventureService
             [
                 'Rock', 'Rock',
                 'Silica Grounds', 'Limestone',
-                'Iron Ore', 'Gypsum'
+                'Iron Ore', 'Gypsum',
             ],
         );
 
-        $text = $this->describeAdventure($pets, $step, $roll, $loot);
+        $text = $this->describeAdventure($pets, $step->getNarrative(), $roll, $loot, $step->getAura());
 
         return new AdventureResult($text, $loot);
     }
@@ -237,25 +62,25 @@ class MonthlyStoryAdventureService
     /**
      * @param ComputedPetSkills[] $pets
      */
-    private function doGather(User $user, MonthlyStoryAdventureStep $step, array $pets): AdventureResult
+    public function doGather(MonthlyStoryAdventureStep $step, array $pets): AdventureResult
     {
         $roll = $this->rng->rngNextInt(1, 20);
 
         $wheatOrCorn = DateFunctions::isCornMoon($this->clock->now) ? 'Corn' : 'Wheat';
 
         $loot = $this->getAdventureLoot(
-            $step,
+            $step->getTreasure(),
             $pets,
             fn(ComputedPetSkills $pet) => $pet->getDexterity()->getTotal() + $pet->getNature()->getTotal() + $pet->getGatheringBonus()->getTotal(),
             $roll,
             'Nature Box',
             [
                 $wheatOrCorn, 'Rice', 'Orange', 'Naner', 'Red', 'Fluff', 'Crooked Stick', 'Coconut',
-                'Blackberries', 'Blueberries', 'Sweet Beet'
+                'Blackberries', 'Blueberries', 'Sweet Beet',
             ],
         );
 
-        $text = $this->describeAdventure($pets, $step, $roll, $loot);
+        $text = $this->describeAdventure($pets, $step->getNarrative(), $roll, $loot, $step->getAura());
 
         return new AdventureResult($text, $loot);
     }
@@ -263,12 +88,12 @@ class MonthlyStoryAdventureService
     /**
      * @param ComputedPetSkills[] $pets
      */
-    private function doHunt(User $user, MonthlyStoryAdventureStep $step, array $pets): AdventureResult
+    public function doHunt(MonthlyStoryAdventureStep $step, array $pets): AdventureResult
     {
         $roll = $this->rng->rngNextInt(1, 20);
 
         $loot = $this->getAdventureLoot(
-            $step,
+            $step->getTreasure(),
             $pets,
             fn(ComputedPetSkills $pet) => (int)ceil(($pet->getStrength()->getTotal() + $pet->getDexterity()->getTotal()) / 2) + $pet->getBrawl()->getTotal(),
             $roll,
@@ -276,7 +101,7 @@ class MonthlyStoryAdventureService
             [ 'Feathers', 'Fluff', 'Talon', 'Scales', 'Egg', 'Fish' ]
         );
 
-        $text = $this->describeAdventure($pets, $step, $roll, $loot);
+        $text = $this->describeAdventure($pets, $step->getNarrative(), $roll, $loot, $step->getAura());
 
         return new AdventureResult($text, $loot);
     }
@@ -284,12 +109,12 @@ class MonthlyStoryAdventureService
     /**
      * @param ComputedPetSkills[] $pets
      */
-    private function doMineGold(User $user, MonthlyStoryAdventureStep $step, array $pets): AdventureResult
+    public function doMineGold(MonthlyStoryAdventureStep $step, array $pets): AdventureResult
     {
         $roll = $this->rng->rngNextInt(1, 20);
 
         $loot = $this->getAdventureLoot(
-            $step,
+            $step->getTreasure(),
             $pets,
             fn(ComputedPetSkills $pet) => (int)ceil(($pet->getStrength()->getTotal() + $pet->getStamina()->getTotal()) / 2) + $pet->getNature()->getTotal() + $pet->getGatheringBonus()->getTotal(),
             $roll,
@@ -297,7 +122,7 @@ class MonthlyStoryAdventureService
             [ 'Gold Ore', 'Gold Ore', 'Silver Ore', 'Iron Ore' ]
         );
 
-        $text = $this->describeAdventure($pets, $step, $roll, $loot);
+        $text = $this->describeAdventure($pets, $step->getNarrative(), $roll, $loot, $step->getAura());
 
         return new AdventureResult($text, $loot);
     }
@@ -305,9 +130,9 @@ class MonthlyStoryAdventureService
     /**
      * @param ComputedPetSkills[] $pets
      */
-    private function doRandomRecruit(User $user, MonthlyStoryAdventureStep $step, array $pets): AdventureResult
+    public function doRandomRecruit(MonthlyStoryAdventureStep $step, array $pets): AdventureResult
     {
-        $loot = MonthlyStoryAdventureService::getFixedLoot($step);
+        $loot = self::getFixedLoot($step->getTreasure());
 
         $plushy = $this->rng->rngNextFromArray([
             // "Roy" Plushy is a special event item
@@ -335,7 +160,7 @@ class MonthlyStoryAdventureService
 
         if($step->getAura())
         {
-            $auraText = $this->awardAura($pets, $step);
+            $auraText = $this->awardAura($pets, $step->getAura());
 
             if($auraText) $text .= "\n\n" . $auraText;
         }
@@ -346,10 +171,10 @@ class MonthlyStoryAdventureService
     /**
      * @param ComputedPetSkills[] $pets
      */
-    private function doStory(User $user, MonthlyStoryAdventureStep $step, array $pets): AdventureResult
+    public function doStory(MonthlyStoryAdventureStep $step, array $pets): AdventureResult
     {
-        $loot = MonthlyStoryAdventureService::getFixedLoot($step);
-        $text = $this->describeAdventure($pets, $step, 0, $loot);
+        $loot = self::getFixedLoot($step->getTreasure());
+        $text = $this->describeAdventure($pets, $step->getNarrative(), 0, $loot, $step->getAura());
 
         return new AdventureResult($text, $loot);
     }
@@ -357,10 +182,10 @@ class MonthlyStoryAdventureService
     /**
      * @param ComputedPetSkills[] $pets
      */
-    private function doTreasureHunt(User $user, MonthlyStoryAdventureStep $step, array $pets): AdventureResult
+    public function doTreasureHunt(MonthlyStoryAdventureStep $step, array $pets): AdventureResult
     {
-        $loot = MonthlyStoryAdventureService::getFixedLoot($step);
-        $text = $this->describeAdventure($pets, $step, 0, $loot);
+        $loot = self::getFixedLoot($step->getTreasure());
+        $text = $this->describeAdventure($pets, $step->getNarrative(), 0, $loot, $step->getAura());
 
         return new AdventureResult($text, $loot);
     }
@@ -368,12 +193,12 @@ class MonthlyStoryAdventureService
     /**
      * @param ComputedPetSkills[] $pets
      */
-    private function doWanderingMonster(User $user, MonthlyStoryAdventureStep $step, array $pets): AdventureResult
+    public function doWanderingMonster(MonthlyStoryAdventureStep $step, array $pets): AdventureResult
     {
         $roll = $this->rng->rngNextInt(1, 20);
 
         $loot = $this->getAdventureLoot(
-            $step,
+            $step->getTreasure(),
             $pets,
             fn(ComputedPetSkills $pet) => (int)ceil(($pet->getStrength()->getTotal() + $pet->getDexterity()->getTotal()) / 2) + $pet->getBrawl()->getTotal(),
             $roll,
@@ -381,9 +206,112 @@ class MonthlyStoryAdventureService
             [ 'Feathers', 'Fluff', 'Talon', 'Scales', 'Egg' ]
         );
 
-        $text = $this->describeAdventure($pets, $step, $roll, $loot);
+        $text = $this->describeAdventure($pets, $step->getNarrative(), $roll, $loot, $step->getAura());
 
         return new AdventureResult($text, $loot);
+    }
+
+    /**
+     * @param ComputedPetSkills[] $pets
+     */
+    public function getAdventureLoot(?string $stepTreasure, array $pets, callable $petSkillFn, int $roll, string $freeLoot, array $lootTable): array
+    {
+        $loot = self::getFixedLoot($stepTreasure);
+
+        $loot[] = $freeLoot;
+
+        $totalSkill = ArrayFunctions::sum($pets, $petSkillFn) + $roll - 10;
+
+        $extraBits = floor($totalSkill / 5);
+
+        for($i = 0; $i < $extraBits; $i++)
+            $loot[] = $this->rng->rngNextFromArray($lootTable);
+
+        return $loot;
+    }
+
+    public static function getFixedLoot(?string $stepTreasure): array
+    {
+        if(!$stepTreasure)
+            return [];
+
+        return match ($stepTreasure)
+        {
+            'GoldChest' => [ 'Gold Chest' ],
+            'BigBasicChest' => [ 'Handicrafts Supply Box' ],
+            'CupOfLife' => [ 'Cup of Life' ],
+            'TwilightChest' => [ 'Twilight Box' ],
+            'TreasureMap' => [ 'Piece of Cetgueli\'s Map' ],
+            'WrappedSword' => [ 'Wrapped Sword' ],
+            'RubyChest' => [ 'Ruby Chest' ],
+            'BoxOfOres' => [ 'Box of Ores' ],
+            'CrystallizedQuint' => [ 'Quintessence' ],
+            'Ship' => [ 'Paper Boat' ],
+            'SkeletalRemains' => [ 'Dino Skull' ],
+            'BlackFlag' => [ 'Black Flag' ],
+            'ShalurianLighthouse' => [ 'Scroll of the Sea' ],
+            'Rainbow' => [ 'Rainbow' ],
+            'SmallMushrooms', 'LargeMushroom' => [ 'Toadstool' ],
+            'PurpleGrass' => [ 'Quinacridone Magenta Dye' ],
+            'EnormousTibia' => [ 'Stereotypical Bone' ],
+            'FishBag' => [ 'Fish Bag' ],
+            default => throw new \Exception("Bad Ben! He didn't code support for this adventure's treasure: \"{$stepTreasure}\"!"),
+        };
+    }
+
+    /**
+     * @param ComputedPetSkills[] $pets
+     */
+    private function awardAura(array $pets, Enchantment $enchantment): ?string
+    {
+        $petSkills = $this->rng->rngNextFromArray($pets);
+        $pet = $petSkills->getPet();
+
+        $unlocked = $this->hattierService->petMaybeUnlockAura(
+            $pet,
+            $enchantment,
+            'While playing ★Kindred, %pet:' . $pet->getId() . '.name% was inspired to create a new hat style!',
+            'While playing ★Kindred, %pet:' . $pet->getId() . '.name% was inspired to create a new hat style!',
+            'While playing ★Kindred, %pet:' . $pet->getId() . '.name% was inspired to create a new hat style!'
+        );
+
+        if(!$unlocked)
+            return null;
+
+        if($pet->getOwner()->hasUnlockedFeature(UnlockableFeatureEnum::Hattier))
+            return "(Inspired by the story, {$pet->getName()} created a new hat styling: {$enchantment->getName()}! Find it at the Hattier!)";
+        else
+            return "(Inspired by the story, {$pet->getName()} created a new hat styling?! What!? (The Hattier has been unlocked! Check it out in the menu!))";
+    }
+
+    /**
+     * @param ComputedPetSkills[] $pets
+     */
+    public function describeAdventure(array $pets, ?string $narrative, int $roll, array $loot, ?Enchantment $aura): string
+    {
+        $text = $narrative ?? '';
+
+        if($roll > 0 && count($loot) > 0)
+        {
+            if($text != '') $text .= "\n\n";
+
+            $text .= "(The pets roll for loot, and get a {$roll}! After adding their skill points, you award them " . ArrayFunctions::list_nice_sorted($loot) . '.)';
+        }
+        else if(count($loot) > 0)
+        {
+            if($text != '') $text .= "\n\n";
+
+            $text .= "(You award your pets " . ArrayFunctions::list_nice_sorted($loot) . '!)';
+        }
+
+        if($aura)
+        {
+            $auraText = $this->awardAura($pets, $aura);
+
+            if($text && $auraText) $text .= "\n\n" . $auraText;
+        }
+
+        return $text;
     }
 
     // these names were copied from the StarKindred API code on 2022-08-28

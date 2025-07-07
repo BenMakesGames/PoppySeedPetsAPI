@@ -12,7 +12,7 @@ declare(strict_types=1);
  */
 
 
-namespace App\Controller\MonthlyStoryAdventure;
+namespace App\Controller\StarKindred;
 
 use App\Entity\MonthlyStoryAdventure;
 use App\Entity\MonthlyStoryAdventureStep;
@@ -22,26 +22,30 @@ use App\Enum\UnlockableFeatureEnum;
 use App\Exceptions\PSPNotUnlockedException;
 use App\Functions\UserQuestRepository;
 use App\Service\ResponseService;
+use App\Service\StarKindred\StarKindredAdventureService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use App\Service\UserAccessor;
 
-#[Route("/monthlyStoryAdventure")]
+#[Route("/starKindred")]
 class GetById
 {
     #[Route("/{story}", methods: ["GET"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function handle(
         MonthlyStoryAdventure $story, ResponseService $responseService, EntityManagerInterface $em,
-        UserAccessor $userAccessor
+        UserAccessor $userAccessor, StarKindredAdventureService $starKindred
     ): JsonResponse
     {
         $user = $userAccessor->getUserOrThrow();
 
         if(!$user->hasUnlockedFeature(UnlockableFeatureEnum::StarKindred))
             throw new PSPNotUnlockedException('★Kindred');
+
+        if($story->isREMIX() && !$starKindred->userCanPlayREMIX($user))
+            throw new PSPNotUnlockedException('★Kindred REMIX');
 
         $complete = $em->getRepository(UserMonthlyStoryAdventureStepCompleted::class)
             ->createQueryBuilder('c')
