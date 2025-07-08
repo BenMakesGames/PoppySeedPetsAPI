@@ -18,6 +18,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Annotation\SerializedName;
 
 #[ORM\Entity]
 class MonthlyStoryAdventure
@@ -90,6 +91,8 @@ class MonthlyStoryAdventure
         return $this;
     }
 
+    #[Groups([ "starKindredStory" ])]
+    #[SerializedName('isREMIX')]
     public function isREMIX()
     {
         return $this->releaseNumber === 0;
