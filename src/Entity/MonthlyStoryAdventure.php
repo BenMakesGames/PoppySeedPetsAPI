@@ -91,7 +91,7 @@ class MonthlyStoryAdventure
         return $this;
     }
 
-    #[Groups([ "starKindredStory" ])]
+    #[Groups([ "starKindredStoryDetails" ])]
     #[SerializedName('isREMIX')]
     public function isREMIX()
     {
