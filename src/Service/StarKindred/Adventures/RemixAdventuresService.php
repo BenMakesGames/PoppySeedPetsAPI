@@ -215,7 +215,7 @@ class RemixAdventuresService
                 return $this->doCustomEncounter(
                     $pets,
                     fn(ComputedPetSkills $pet) => (int)ceil(($pet->getPerception()->getTotal() + $pet->getDexterity()->getTotal()) / 2) + $pet->getNature()->getTotal(),
-                    'Ice Mango',
+                    'Ice "Mango"',
                     [ 'Everice', 'Everice', 'Everice', 'Fish Bones', 'Cobweb', 'Quintessence' ],
                     "Typically the deeper you go the hotter it gets, but here cold air can be seen rising off the surface of the lake. What could be responsible for such a phenomenon?"
                 );
