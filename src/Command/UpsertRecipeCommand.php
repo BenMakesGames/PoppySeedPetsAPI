@@ -16,6 +16,7 @@ namespace App\Command;
 
 use App\Command\Traits\AskItemTrait;
 use App\Entity\ItemFood;
+use App\Functions\ArrayFunctions;
 use App\Functions\RecipeRepository;
 use App\Model\ItemQuantity;
 use App\Service\InventoryService;
@@ -59,6 +60,14 @@ class UpsertRecipeCommand extends PoppySeedPetsCommand
         return $food;
     }
 
+    /**
+     * @param ItemQuantity[] $quantities
+     */
+    public static function totalFertilizer(array $quantities): int
+    {
+        return ArrayFunctions::sum($quantities, fn(ItemQuantity $quantity) => $quantity->item->getFertilizer() * $quantity->quantity);
+    }
+
     protected function doCommand(): int
     {
         if(strtolower($_SERVER['APP_ENV']) !== 'dev')
@@ -86,23 +95,27 @@ class UpsertRecipeCommand extends PoppySeedPetsCommand
         $this->em->flush();
 
         $ingredientFood = self::totalFood(InventoryService::deserializeItemList($this->em, $recipe['ingredients']));
+        $ingredientFertilizer = self::totalFertilizer(InventoryService::deserializeItemList($this->em, $recipe['ingredients']));
         $makesFood = self::totalFood(InventoryService::deserializeItemList($this->em, $recipe['makes']));
+        $makesFertilizer = self::totalFertilizer(InventoryService::deserializeItemList($this->em, $recipe['makes']));
 
         $this->output->writeln('Ingredient food value totals:');
-        $this->output->writeln('  Food: ' . $ingredientFood->getFood());
-        $this->output->writeln('  Love: ' . $ingredientFood->getLove());
-        $this->output->writeln('  Junk: ' . $ingredientFood->getJunk());
-        $this->output->writeln('  Alcohol : ' . $ingredientFood->getAlcohol());
-        $this->output->writeln('  Caffeine: ' . $ingredientFood->getCaffeine());
-        $this->output->writeln('  Trippy  : ' . $ingredientFood->getPsychedelic());
+        $this->output->writeln('  Fertilizer: ' . $ingredientFertilizer);
+        $this->output->writeln('  Food      : ' . $ingredientFood->getFood());
+        $this->output->writeln('  Love      : ' . $ingredientFood->getLove());
+        $this->output->writeln('  Junk      : ' . $ingredientFood->getJunk());
+        $this->output->writeln('  Alcohol   : ' . $ingredientFood->getAlcohol());
+        $this->output->writeln('  Caffeine  : ' . $ingredientFood->getCaffeine());
+        $this->output->writeln('  Trippy    : ' . $ingredientFood->getPsychedelic());
         $this->output->writeln('');
         $this->output->writeln('Product food value totals:');
-        $this->output->writeln('  Food: ' . $makesFood->getFood());
-        $this->output->writeln('  Love: ' . $makesFood->getLove());
-        $this->output->writeln('  Junk: ' . $makesFood->getJunk());
-        $this->output->writeln('  Alcohol : ' . $makesFood->getAlcohol());
-        $this->output->writeln('  Caffeine: ' . $makesFood->getCaffeine());
-        $this->output->writeln('  Trippy  : ' . $makesFood->getPsychedelic());
+        $this->output->writeln('  Fertilizer: ' . $makesFertilizer);
+        $this->output->writeln('  Food      : ' . $makesFood->getFood());
+        $this->output->writeln('  Love      : ' . $makesFood->getLove());
+        $this->output->writeln('  Junk      : ' . $makesFood->getJunk());
+        $this->output->writeln('  Alcohol   : ' . $makesFood->getAlcohol());
+        $this->output->writeln('  Caffeine  : ' . $makesFood->getCaffeine());
+        $this->output->writeln('  Trippy    : ' . $makesFood->getPsychedelic());
         $this->output->writeln('');
         $this->output->writeln('PHP:');
         $escapedName = str_replace("'", "\\'", $name);
