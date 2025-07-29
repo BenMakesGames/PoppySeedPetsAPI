@@ -252,7 +252,7 @@ class RemixAdventuresService
             3 => $this->doCustomEncounter(
                 $pets,
                 fn(ComputedPetSkills $pet) => (int)ceil(($pet->getStrength()->getTotal() + $pet->getDexterity()->getTotal()) / 2) + $pet->getBrawl()->getTotal(),
-                $this->rng->rngNextFromArray([ 'Monster Chest', 'Gold Chest', 'Ruby Chest' ]),
+                $this->rng->rngNextFromArray([ 'Monster Box', 'Gold Chest', 'Ruby Chest' ]),
                 [ 'Talon', 'Scales', 'Gold Bar', 'Gold Bar', 'Gold Bar', 'Silver Bar', 'Silver Bar', 'Dino Skull', 'Gold Key', 'Silver Colander', 'Liquid-hot Magma' ],
                 "Though many dragons live inside caves, some find more comfortable homes, like magic towers... inside caves!"
             ),
@@ -355,7 +355,7 @@ class RemixAdventuresService
         return $this->doCustomEncounter(
             $pets,
             fn(ComputedPetSkills $pet) => (int)ceil(($pet->getStrength()->getTotal() + $pet->getDexterity()->getTotal()) / 2) + $pet->getGatheringBonus()->getTotal(),
-            $this->rng->rngNextFromArray([ 'Monster Chest', 'Gold Chest', 'Ruby Chest' ]),
+            $this->rng->rngNextFromArray([ 'Monster Box', 'Gold Chest', 'Ruby Chest' ]),
             [
                 'Gold Bar', 'Gold Bar', 'Gold Bar', 'Gold Bar', 'Gold Bar', 'Gold Bar',
                 'Silver Bar', 'Silver Bar', 'Silver Bar', 'Silver Bar',
