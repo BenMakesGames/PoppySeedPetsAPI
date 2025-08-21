@@ -19,6 +19,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity()]
 #[ORM\Index(name: 'badge_idx', columns: ['badge'])]
+#[ORM\UniqueConstraint('pet_badge_unique', ['pet_id', 'badge'])]
 class PetBadge
 {
     #[ORM\Id]
