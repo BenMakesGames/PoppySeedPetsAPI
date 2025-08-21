@@ -142,9 +142,8 @@ class PetSkills
         if($this->{$statName} < 20)
         {
             $this->{$statName}++;
+            $this->computeLevel();
         }
-
-        $this->computeLevel();
 
         return $this;
     }
@@ -157,9 +156,8 @@ class PetSkills
         if($this->{$statName} > 0)
         {
             $this->{$statName}--;
+            $this->computeLevel();
         }
-
-        $this->computeLevel();
 
         return $this;
     }

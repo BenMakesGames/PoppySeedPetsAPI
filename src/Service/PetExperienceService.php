@@ -25,6 +25,8 @@ use App\Enum\PetBadgeEnum;
 use App\Enum\PetSkillEnum;
 use App\Enum\StatusEffectEnum;
 use App\Enum\UnlockableFeatureEnum;
+use App\Exceptions\PSPFormValidationException;
+use App\Exceptions\PSPInvalidOperationException;
 use App\Functions\ActivityHelpers;
 use App\Functions\ArrayFunctions;
 use App\Functions\CalendarFunctions;
@@ -87,6 +89,8 @@ class PetExperienceService
 
         $focusStatusEffect = $levelUp ? PetExperienceService::getPetFocusingStatusEffect($pet) : null;
 
+        $oldLevel = $pet->getLevel();
+
         while($pet->getExperience() >= $pet->getExperienceToLevel())
         {
             $pet->decreaseExperience($pet->getExperienceToLevel());
@@ -122,20 +126,40 @@ class PetExperienceService
                     ->addInterestingness(PetActivityLogInterestingness::LevelUp)
                 ;
             }
-
-            if($pet->getLevel() == 20) PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::Level20, $activityLog);
-            if($pet->getLevel() == 40) PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::Level40, $activityLog);
-            if($pet->getLevel() == 50) $this->unlockLevel50Style($pet);
-            if($pet->getLevel() == 60) PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::Level60, $activityLog);
-            if($pet->getLevel() == 80) PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::Level80, $activityLog);
-            if($pet->getLevel() == 100) PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::Level100, $activityLog);
-
         }
 
         if($levelUp)
             $activityLog->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Level-up' ]));
 
+        $this->checkForLevelUpBadges($pet, $oldLevel, $activityLog);
+
         return $levelUp;
+    }
+
+    public function forceIncreaseSkill(Pet $pet, string $skill, int $amount, PetActivityLog $activityLog)
+    {
+        if(!PetSkillEnum::isAValue($skill))
+            throw new EnumInvalidValueException(PetSkillEnum::class, $skill);
+
+        if($pet->getSkills()->getStat($skill) >= 20)
+            throw new PSPInvalidOperationException('Pet skill ' . $skill . ' is already at max level.');
+
+        $oldLevel = $pet->getLevel();
+
+        for($i = 0; $i < $amount; $i++)
+            $pet->getSkills()->increaseStat($skill);
+
+        $this->checkForLevelUpBadges($pet, $oldLevel, $activityLog);
+    }
+
+    private function checkForLevelUpBadges(Pet $pet, int $oldLevel, PetActivityLog $activityLog): void
+    {
+        if($oldLevel < 20 && $pet->getLevel() >= 20) PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::Level20, $activityLog);
+        if($oldLevel < 40 && $pet->getLevel() >= 40) PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::Level40, $activityLog);
+        if($oldLevel < 50 && $pet->getLevel() >= 50) $this->unlockLevel50Style($pet);
+        if($oldLevel < 60 && $pet->getLevel() >= 60) PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::Level60, $activityLog);
+        if($oldLevel < 80 && $pet->getLevel() >= 80) PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::Level80, $activityLog);
+        if($oldLevel < 100 && $pet->getLevel() >= 100) PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::Level100, $activityLog);
     }
 
     /**

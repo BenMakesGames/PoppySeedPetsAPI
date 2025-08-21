@@ -29,6 +29,7 @@ use App\Functions\ArrayFunctions;
 use App\Functions\MeritFunctions;
 use App\Functions\PetActivityLogFactory;
 use App\Functions\UserUnlockedFeatureHelpers;
+use App\Service\PetExperienceService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -120,7 +121,7 @@ class AffectionRewardController
     #[Route("/{pet}/chooseAffectionReward/skill", methods: ["POST"], requirements: ["pet" => "\d+"])]
     public function chooseAffectionRewardSkill(
         Pet $pet, Request $request, ResponseService $responseService, EntityManagerInterface $em,
-        UserAccessor $userAccessor
+        UserAccessor $userAccessor, PetExperienceService $petExperienceService
     ): JsonResponse
     {
         $user = $userAccessor->getUserOrThrow();
@@ -142,11 +143,11 @@ class AffectionRewardController
         if($pet->getSkills()->getStat($skillName) >= 20)
             throw new PSPInvalidOperationException($pet->getName() . '\'s ' . $skillName . ' is already max!');
 
-        $pet->getSkills()->increaseStat($skillName);
-        $pet->increaseAffectionRewardsClaimed();
-
-        PetActivityLogFactory::createUnreadLog($em, $pet, '%pet:' . $pet->getId() . '.name% trained hard in ' . $skillName . ' at %user:' . $user->getId() . '.name\'s% suggestion.')
+        $activityLog = PetActivityLogFactory::createUnreadLog($em, $pet, '%pet:' . $pet->getId() . '.name% trained hard in ' . $skillName . ' at %user:' . $user->getId() . '.name\'s% suggestion.')
             ->setIcon('ui/merit-icon');
+
+        $petExperienceService->forceIncreaseSkill($pet, $skillName, 1, $activityLog);
+        $pet->increaseAffectionRewardsClaimed();
 
         $em->flush();
 

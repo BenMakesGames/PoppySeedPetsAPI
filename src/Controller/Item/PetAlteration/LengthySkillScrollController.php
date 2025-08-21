@@ -23,6 +23,7 @@ use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPPetNotFoundException;
 use App\Functions\PetActivityLogFactory;
 use App\Functions\PetActivityLogTagHelpers;
+use App\Service\PetExperienceService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -38,7 +39,7 @@ class LengthySkillScrollController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function increaseSkill(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
-        UserAccessor $userAccessor
+        UserAccessor $userAccessor, PetExperienceService $petExperienceService
     ): JsonResponse
     {
         $user = $userAccessor->getUserOrThrow();
@@ -64,13 +65,12 @@ class LengthySkillScrollController
 
         $em->remove($inventory);
 
-        $pet->getSkills()->increaseStat($skill);
-        $pet->getSkills()->increaseStat($skill);
-
-        PetActivityLogFactory::createUnreadLog($em, $pet, '%pet:' . $pet->getId() . '.name% was read ' . $inventory->getItem()->getNameWithArticle() . ', increasing their ' . ucfirst($skill) . ' to ' . $pet->getSkills()->getStat($skill) . '!')
+        $activityLog = PetActivityLogFactory::createUnreadLog($em, $pet, '%pet:' . $pet->getId() . '.name% was read ' . $inventory->getItem()->getNameWithArticle() . ', increasing their ' . ucfirst($skill) . ' to ' . $pet->getSkills()->getStat($skill) . '!')
             ->setIcon('items/scroll/lengthy-skill')
             ->addTags(PetActivityLogTagHelpers::findByNames($em, [ 'Level-up' ]))
         ;
+
+        $petExperienceService->forceIncreaseSkill($pet, $skill, 2, $activityLog);
 
         $em->flush();
 
