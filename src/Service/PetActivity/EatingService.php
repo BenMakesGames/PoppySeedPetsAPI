@@ -233,7 +233,10 @@ class EatingService
         foreach($food->grantedSkills as $skill)
         {
             if($pet->getSkills()->getStat($skill) < 1)
-                $pet->getSkills()->increaseStat($skill);
+            {
+                $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, 'Such skillful food! ' . $pet->getName() . ' got a point of ' . $skill . '!');
+                $this->petExperienceService->forceIncreaseSkill($pet, $skill, 1, $activityLog);
+            }
         }
     }
 

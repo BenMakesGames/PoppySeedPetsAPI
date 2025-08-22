@@ -41,7 +41,7 @@ final class PetBadgeHelpers
         $pet->addBadge($newBadge);
 
         $log
-            ->setEntry($log->getEntry() . ' ' . str_replace('%pet.name%', ActivityHelpers::PetName($pet), self::BadgeHurrahs[$badgeName]))
+            ->setEntry($log->getEntry() . ' Also: whoa! ' . str_replace('%pet.name%', ActivityHelpers::PetName($pet), self::BadgeHurrahs[$badgeName]))
             ->addTag(PetActivityLogTagHelpers::findOneByName($em, PetActivityLogTagEnum::Badge))
             ->addInterestingness(PetActivityLogInterestingness::ActivityYieldingPetBadge)
         ;

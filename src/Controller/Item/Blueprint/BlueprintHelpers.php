@@ -66,9 +66,9 @@ class BlueprintHelpers
             ->addInterestingness(PetActivityLogInterestingness::RareActivity)
         ;
 
-        if($skill)
+        if($skill && $pet->getSkills()->getStat($skill) < 20)
         {
-            $pet->getSkills()->increaseStat($skill);
+            $petExperienceService->forceIncreaseSkill($pet, $skill, 1, $activityLog);
 
             $activityLog
                 ->addInterestingness(PetActivityLogInterestingness::LevelUp)

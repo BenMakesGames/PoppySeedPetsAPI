@@ -22,6 +22,7 @@ use App\Exceptions\PSPFormValidationException;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPPetNotFoundException;
 use App\Functions\PetActivityLogFactory;
+use App\Service\PetExperienceService;
 use App\Service\ResponseService;
 use App\Service\UserAccessor;
 use Doctrine\ORM\EntityManagerInterface;
@@ -37,75 +38,75 @@ class SkillScrollController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function increaseBrawl(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
-        UserAccessor $userAccessor
+        UserAccessor $userAccessor, PetExperienceService $petExperienceService
     ): JsonResponse
     {
-        return $this->doSkillScroll($inventory, $request, $em, $responseService, PetSkillEnum::Brawl, $userAccessor);
+        return $this->doSkillScroll($inventory, $request, $em, $responseService, PetSkillEnum::Brawl, $userAccessor, $petExperienceService);
     }
 
     #[Route("/craftsSkillScroll/{inventory}", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function increaseCrafts(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
-        UserAccessor $userAccessor
+        UserAccessor $userAccessor, PetExperienceService $petExperienceService
     ): JsonResponse
     {
-        return $this->doSkillScroll($inventory, $request, $em, $responseService, PetSkillEnum::Crafts, $userAccessor);
+        return $this->doSkillScroll($inventory, $request, $em, $responseService, PetSkillEnum::Crafts, $userAccessor, $petExperienceService);
     }
 
     #[Route("/musicSkillScroll/{inventory}", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function increaseMusic(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
-        UserAccessor $userAccessor
+        UserAccessor $userAccessor, PetExperienceService $petExperienceService
     ): JsonResponse
     {
-        return $this->doSkillScroll($inventory, $request, $em, $responseService, PetSkillEnum::Music, $userAccessor);
+        return $this->doSkillScroll($inventory, $request, $em, $responseService, PetSkillEnum::Music, $userAccessor, $petExperienceService);
     }
 
     #[Route("/natureSkillScroll/{inventory}", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function increaseNature(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
-        UserAccessor $userAccessor
+        UserAccessor $userAccessor, PetExperienceService $petExperienceService
     ): JsonResponse
     {
-        return $this->doSkillScroll($inventory, $request, $em, $responseService, PetSkillEnum::Nature, $userAccessor);
+        return $this->doSkillScroll($inventory, $request, $em, $responseService, PetSkillEnum::Nature, $userAccessor, $petExperienceService);
     }
 
     #[Route("/scienceSkillScroll/{inventory}", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function increaseScience(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
-        UserAccessor $userAccessor
+        UserAccessor $userAccessor, PetExperienceService $petExperienceService
     ): JsonResponse
     {
-        return $this->doSkillScroll($inventory, $request, $em, $responseService, PetSkillEnum::Science, $userAccessor);
+        return $this->doSkillScroll($inventory, $request, $em, $responseService, PetSkillEnum::Science, $userAccessor, $petExperienceService);
     }
 
     #[Route("/stealthSkillScroll/{inventory}", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function increaseStealth(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
-        UserAccessor $userAccessor
+        UserAccessor $userAccessor, PetExperienceService $petExperienceService
     ): JsonResponse
     {
-        return $this->doSkillScroll($inventory, $request, $em, $responseService, PetSkillEnum::Stealth, $userAccessor);
+        return $this->doSkillScroll($inventory, $request, $em, $responseService, PetSkillEnum::Stealth, $userAccessor, $petExperienceService);
     }
 
     #[Route("/arcanaSkillScroll/{inventory}", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function increaseArcana(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
-        UserAccessor $userAccessor
+        UserAccessor $userAccessor, PetExperienceService $petExperienceService
     ): JsonResponse
     {
-        return $this->doSkillScroll($inventory, $request, $em, $responseService, PetSkillEnum::Arcana, $userAccessor);
+        return $this->doSkillScroll($inventory, $request, $em, $responseService, PetSkillEnum::Arcana, $userAccessor, $petExperienceService);
     }
 
     private function doSkillScroll(
         Inventory $inventory, Request $request, EntityManagerInterface $em, ResponseService $responseService, string $skill,
-        UserAccessor $userAccessor
+        UserAccessor $userAccessor, PetExperienceService $petExperienceService
     ): JsonResponse
     {
         $user = $userAccessor->getUserOrThrow();
@@ -126,12 +127,12 @@ class SkillScrollController
 
         $em->remove($inventory);
 
-        $pet->getSkills()->increaseStat($skill);
+        $activityLog = PetActivityLogFactory::createUnreadLog($em, $pet, '%pet:' . $pet->getId() . '.name% was read ' . $inventory->getItem()->getNameWithArticle() . ', increasing their ' . ucfirst($skill) . ' to ' . $pet->getSkills()->getStat($skill) . '!')
+            ->setIcon('items/scroll/skill/' . $skill);
+
+        $petExperienceService->forceIncreaseSkill($pet, $skill, 1, $activityLog);
 
         $em->flush();
-
-        PetActivityLogFactory::createUnreadLog($em, $pet, '%pet:' . $pet->getId() . '.name% was read ' . $inventory->getItem()->getNameWithArticle() . ', increasing their ' . ucfirst($skill) . ' to ' . $pet->getSkills()->getStat($skill) . '!')
-            ->setIcon('items/scroll/skill/' . $skill);
 
         return $responseService->itemActionSuccess(null, [ 'itemDeleted' => true ]);
     }
