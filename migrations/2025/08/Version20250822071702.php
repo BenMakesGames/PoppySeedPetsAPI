@@ -22,18 +22,15 @@ final class Version20250822071702 extends AbstractMigration
 {
     public function getDescription(): string
     {
-        return 'Add fatty & creamy flavors to Gulab Jamun';
+        return 'Add creamy flavor to Gulab Jamun, and increase food, love, and junk';
     }
 
     public function up(Schema $schema): void
     {
-        // Add fatty & creamy flavors to Gulab Jamun
-        $this->addSql("UPDATE item_food SET fatty = 1, creamy = 1 WHERE id = 1476");
+        $this->addSql("UPDATE item_food SET creamy = 1,food=3,love=3,junk=3 WHERE id = 1476");
     }
 
     public function down(Schema $schema): void
     {
-        // Revert Gulab Jamun flavor change
-        $this->addSql("UPDATE item_food SET fatty = 0, creamy = 0 WHERE id = 1476");
     }
 }
