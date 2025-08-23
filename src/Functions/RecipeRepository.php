@@ -11,7 +11,6 @@ declare(strict_types=1);
  * You should have received a copy of the GNU General Public License along with The Poppy Seed Pets API. If not, see <https://www.gnu.org/licenses/>.
  */
 
-
 namespace App\Functions;
 
 final class RecipeRepository
@@ -629,6 +628,7 @@ final class RecipeRepository
         [ 'name' => 'Rusty Rapier', 'ingredients' => '10:1,107:1', 'makes' => '104:1' ],
         [ 'name' => 'S\'more', 'ingredients' => '325:1,668:1,1161:1', 'makes' => '1162:1' ],
         [ 'name' => 'Salsa', 'ingredients' => '7:1,133:1,248:1', 'makes' => '396:2' ],
+        [ 'name' => 'Sandwill Scroch', 'ingredients' => '33:1,65:1,67:1,108:1,512:1', 'makes' => '1482:1' ],
         [ 'name' => 'Scroll of Dice', 'ingredients' => '950:1,1430:1', 'makes' => '1075:1' ],
         [ 'name' => 'Scroll of Resources', 'ingredients' => '906:1,1130:1', 'makes' => '907:1' ],
         [ 'name' => 'Shakshouka', 'ingredients' => '14:1,133:1,248:1', 'makes' => '249:2' ],
