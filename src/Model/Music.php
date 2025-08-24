@@ -236,6 +236,7 @@ class Music
         // The Seatbelts
         'In the dream that pulls you along, won\'t go carry a jelly bean. In your dream they\'re never on top. Let\'s get funky, Pumpkinheeeeeaaaaad! Yo, Pumpkinheeeeeaaaaad! Yo, Pumpkinheeeeeaaaaad! Yo, Pumpkinheeeeeaaaaad!',
         'La la la la la la la laaa laaaaa... la la la la la la la la laaaaa... la la la la laaa laaa! La la la la laaa laaa la la! We are the doggy-doggy dogs! We are the doggy-doggy dogs!',
+        'I like you like he like she likes chick-en booone... everyone looks like a crazy chick-en booone...',
 
         // Don't Bother None, by Mai Yamane
         'Reading my paper in Ray\'s cafeee... the old guy next to me is loud as dayyy... rimble and ramble, while eatin\' his piiie... he dropped his wallet - now it\'s miii-ine...',
@@ -267,7 +268,7 @@ class Music
         'I dig my hole, you build a wall. I dig my hole, you build a wall. One day that wall is gonna fa-a-all.',
 
         // MINMI, Song of Four Seasons
-        'Haru wo tsuge! Odoridasu sansai... Satsu wo miru ugi! Nohara karakusa kawaku wa...',
+        'Haru wo tsuge! Odoridasu sansai... Natsu wo miru uji! Nohara karakusa kawaku wa...',
 
         // Daft Punk
         'Music\'s got me feeling so free, we\'re gonna celebrate - celebrate and dance so free. One more time...',
