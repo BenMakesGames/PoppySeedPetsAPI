@@ -668,7 +668,7 @@ class Protocol7Service
         {
             if($petWithSkills->getHasProtectionFromElectricity()->getTotal() > 0)
             {
-                $activityLog->setEntry($activityLog->getEntry() . ' Their shock-resistance protected them from the sudden burst of energy.')
+                $activityLog->appendEntry('Their shock-resistance protected them from the sudden burst of energy.')
                     ->addInterestingness(PetActivityLogInterestingness::ActivityUsingMerit)
                 ;
             }
@@ -677,7 +677,7 @@ class Protocol7Service
                 $pet->increaseFood(-1);
                 $pet->increaseSafety(-$this->rng->rngNextInt(3, 6));
 
-                $activityLog->setEntry($activityLog->getEntry() . ' %pet:' . $pet->getId() . '.name% was unprotected from the sudden burst of energy, and received a minor shock.');
+                $activityLog->appendEntry(ActivityHelpers::PetName($pet) . ' was unprotected from the sudden burst of energy, and received a minor shock.');
             }
         }
 
@@ -843,7 +843,7 @@ class Protocol7Service
 
             if($lucky)
             {
-                $activityLog->setEntry($activityLog->getEntry() . ' Lucky~!')
+                $activityLog->appendEntry('Lucky~!')
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Lucky~!' ]));
                 $itemComment .= ' Lucky~!';
             }

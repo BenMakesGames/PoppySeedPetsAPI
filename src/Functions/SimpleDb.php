@@ -52,12 +52,12 @@ final class SimpleDb
     {
         $parts = parse_url($uri);
 
-        $driver = $parts['scheme'];
-        $host = $parts['host'];
-        $port = $parts['port'];
-        $user = $parts['user'];
-        $pass = $parts['pass'];
-        $dbname = ltrim($parts['path'], '/');
+        $driver = $parts['scheme'] ?? '';
+        $host = $parts['host'] ?? '';
+        $port = $parts['port'] ?? '';
+        $user = $parts['user'] ?? '';
+        $pass = $parts['pass'] ?? '';
+        $dbname = ltrim($parts['path'] ?? '', '/');
 
         return [
             'dsn' => "$driver:host=$host" . ($port ? ";port=$port" : "") . ";dbname=$dbname",

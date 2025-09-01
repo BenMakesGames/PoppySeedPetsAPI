@@ -18,6 +18,7 @@ use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
 use App\Enum\PetSkillEnum;
 use App\Enum\UnlockableFeatureEnum;
+use App\Exceptions\PSPNotUnlockedException;
 use App\Functions\InventoryHelpers;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
@@ -44,9 +45,12 @@ class MoondialBlueprintController
         ItemControllerHelpers::validateInventory($user, $inventory, 'moondialBlueprint');
 
         if(!$user->hasUnlockedFeature(UnlockableFeatureEnum::Greenhouse))
-            return $responseService->error(400, [ 'You need a Greenhouse to build a Moondial!' ]);
+            throw new PSPNotUnlockedException('Greenhouse');
 
-        if($user->getGreenhouse()->hasMoondial())
+        $greenhouse = $user->getGreenhouse()
+            ?? throw new PSPNotUnlockedException('Greenhouse');
+
+        if($greenhouse->hasMoondial())
             return $responseService->error(200, [ 'Your Greenhouse already has a Moondial!' ]);
 
         $pet = BlueprintHelpers::getPet($em, $user, $request);
@@ -61,7 +65,7 @@ class MoondialBlueprintController
         $em->remove($rock);
         $em->remove($inventory);
 
-        $user->getGreenhouse()->setHasMoondial(true);
+        $greenhouse->setHasMoondial(true);
 
         $flashMessage = 'You build a Moondial with ' . $pet->getName() . '!';
 

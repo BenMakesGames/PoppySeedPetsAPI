@@ -122,7 +122,7 @@ class PetExperienceService
                 $pet->getSkills()->increaseStat($statToLevel);
 
                 $activityLog
-                    ->setEntry($activityLog->getEntry() . ' %pet:' . $pet->getId() . '.name% leveled up! +1 ' . ucfirst($statToLevel) . '!')
+                    ->appendEntry(ActivityHelpers::PetName($pet) . ' leveled up! +1 ' . ucfirst($statToLevel) . '!')
                     ->addInterestingness(PetActivityLogInterestingness::LevelUp)
                 ;
             }
@@ -148,6 +148,12 @@ class PetExperienceService
 
         for($i = 0; $i < $amount; $i++)
             $pet->getSkills()->increaseStat($skill);
+
+        $activityLog
+            ->appendEntry(ActivityHelpers::PetName($pet) . '\'s ' . ucfirst($skill) . ' has increased to ' . $pet->getSkills()->getStat($skill) . '!')
+            ->addInterestingness(PetActivityLogInterestingness::LevelUp)
+            ->addTags([ PetActivityLogTagHelpers::findByNames($this->em, [ 'Level-up' ]) ])
+        ;
 
         $this->checkForLevelUpBadges($pet, $oldLevel, $activityLog);
     }

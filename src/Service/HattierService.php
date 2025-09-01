@@ -171,14 +171,14 @@ class HattierService
             UserUnlockedFeatureHelpers::create($this->em, $user, UnlockableFeatureEnum::Hattier);
 
             if($customActivityUnlockMessage)
-                $activityLog->setEntry($activityLog->getEntry() . ' ' . $customActivityUnlockMessage);
+                $activityLog->appendEntry($customActivityUnlockMessage);
             else
-                $activityLog->setEntry($activityLog->getEntry() . ' (The Hattier has been unlocked! Check it out in the menu!)');
+                $activityLog->appendEntry('(The Hattier has been unlocked! Check it out in the menu!)');
 
             $this->unlockStartingAuras($user);
         }
         else
-            $activityLog->setEntry($activityLog->getEntry() . ' (A new style has been added to the Hattier!)');
+            $activityLog->appendEntry('(A new style has been added to the Hattier!)');
 
         $cacheKey = $this->getAuraUnlockedCacheKey($user, $enchantment);
 
@@ -265,7 +265,7 @@ class HattierService
         if($pet->getHat() && !$pet->getHat()->getEnchantment())
         {
             $activityLog
-                ->setEntry($activityLog->getEntry() . ' ' . $addedToHatDescription)
+                ->appendEntry($addedToHatDescription)
                 ->addInterestingness(PetActivityLogInterestingness::RareActivity)
             ;
 
@@ -274,7 +274,7 @@ class HattierService
         else
         {
             $activityLog
-                ->setEntry($activityLog->getEntry() . ' ' . $notAddedToHatDescription)
+                ->appendEntry($notAddedToHatDescription)
                 ->addInterestingness(PetActivityLogInterestingness::RareActivity)
             ;
         }

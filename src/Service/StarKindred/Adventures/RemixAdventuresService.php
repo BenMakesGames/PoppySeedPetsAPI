@@ -14,6 +14,7 @@ declare(strict_types = 1);
 namespace App\Service\StarKindred\Adventures;
 
 use App\Entity\MonthlyStoryAdventureStep;
+use App\Entity\Pet;
 use App\Enum\StatusEffectEnum;
 use App\Functions\StatusEffectHelpers;
 use App\Model\ComputedPetSkills;
@@ -78,6 +79,9 @@ class RemixAdventuresService
         }
     }
 
+    /**
+     * @param ComputedPetSkills[] $pets
+     */
     public function doBeach(MonthlyStoryAdventureStep $step, array $pets): AdventureResult
     {
         switch($this->rng->rngNextInt(1, 3))
@@ -368,6 +372,10 @@ class RemixAdventuresService
         );
     }
 
+    /**
+     * @param ComputedPetSkills[] $pets
+     * @param string[] $lootTable
+     */
     private function doCustomEncounter(array $pets, callable $petSkillFn, string $freeLoot, array $lootTable, string $narrative): AdventureResult
     {
         $roll = $this->rng->rngNextInt(1, 20);

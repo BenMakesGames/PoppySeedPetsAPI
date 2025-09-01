@@ -65,7 +65,7 @@ class LengthySkillScrollController
 
         $em->remove($inventory);
 
-        $activityLog = PetActivityLogFactory::createUnreadLog($em, $pet, '%pet:' . $pet->getId() . '.name% was read ' . $inventory->getItem()->getNameWithArticle() . ', increasing their ' . ucfirst($skill) . ' to ' . $pet->getSkills()->getStat($skill) . '!')
+        $activityLog = PetActivityLogFactory::createUnreadLog($em, $pet, '%pet:' . $pet->getId() . '.name% was read ' . $inventory->getItem()->getNameWithArticle() . '...')
             ->setIcon('items/scroll/lengthy-skill')
             ->addTags(PetActivityLogTagHelpers::findByNames($em, [ 'Level-up' ]))
         ;

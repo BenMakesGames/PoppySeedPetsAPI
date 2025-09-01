@@ -260,7 +260,7 @@ class IcyMoonService
             if($pet->hasMerit(MeritEnum::SHOCK_RESISTANT))
             {
                 $activityLog
-                    ->setEntry($activityLog->getEntry() . ' (Their shock-resistance helped, but dang, that thing is crazy!)')
+                    ->appendEntry('(Their shock-resistance helped, but dang, that thing is crazy!)')
                     ->addInterestingness(PetActivityLogInterestingness::ActivityUsingMerit)
                 ;
             }
@@ -280,7 +280,7 @@ class IcyMoonService
             if($pet->hasMerit(MeritEnum::SHOCK_RESISTANT))
             {
                 $activityLog
-                    ->setEntry($activityLog->getEntry() . ' (Their shock-resistance helped, but dang, that thing is crazy!)')
+                    ->appendEntry('(Their shock-resistance helped, but dang, that thing is crazy!)')
                     ->addInterestingness(PetActivityLogInterestingness::ActivityUsingMerit)
                 ;
             }
@@ -346,7 +346,7 @@ class IcyMoonService
             {
                 if($petWithSkills->getHasProtectionFromHeat()->getTotal() > 0)
                 {
-                    $activityLog->setEntry($activityLog->getEntry() . ' The core was hot, but their ' . ActivityHelpers::SourceOfHeatProtection($petWithSkills) . ' protected them.')
+                    $activityLog->appendEntry('The core was hot, but their ' . ActivityHelpers::SourceOfHeatProtection($petWithSkills) . ' protected them.')
                         ->addInterestingness(PetActivityLogInterestingness::ActivityUsingMerit)
                         ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ PetActivityLogTagEnum::Heatstroke ]))
                     ;
@@ -357,9 +357,9 @@ class IcyMoonService
                     $pet->increaseSafety(-$this->rng->rngNextInt(2, 4));
 
                     if($this->rng->rngNextInt(1, 20) === 1)
-                        $activityLog->setEntry($activityLog->getEntry() . ' The core was CRAZY hot, and I don\'t mean in a sexy way; %pet:' . $pet->getId() . '.name% got a bit light-headed while crawling through the tunnels.');
+                        $activityLog->appendEntry('The core was CRAZY hot, and I don\'t mean in a sexy way; %pet:' . $pet->getId() . '.name% got a bit light-headed while crawling through the tunnels.');
                     else
-                        $activityLog->setEntry($activityLog->getEntry() . ' The core was CRAZY hot, and %pet:' . $pet->getId() . '.name% got a bit light-headed while while crawling through the tunnels.');
+                        $activityLog->appendEntry('The core was CRAZY hot, and %pet:' . $pet->getId() . '.name% got a bit light-headed while while crawling through the tunnels.');
 
                     $activityLog->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ PetActivityLogTagEnum::Heatstroke ]));
                 }
@@ -371,7 +371,7 @@ class IcyMoonService
 
                 $lavaOrFirestone = $this->rng->rngNextFromArray([ 'Liquid-hot Magma', 'Firestone' ]);
 
-                $activityLog->setEntry($activityLog->getEntry() . ' As they were leaving, the caves began to shake violently! %pet:' . $pet->getId() . '.name% managed to start up the Tiny Rocketship, and shot out of the moon as it crumbled into pieces!')
+                $activityLog->appendEntry('As they were leaving, the caves began to shake violently! %pet:' . $pet->getId() . '.name% managed to start up the Tiny Rocketship, and shot out of the moon as it crumbled into pieces!')
                     ->addInterestingness(PetActivityLogInterestingness::UncommonActivity)
                     ->addTag(PetActivityLogTagHelpers::findOneByName($this->em, PetActivityLogTagEnum::Location_Escaping_Icy_Moon))
                 ;

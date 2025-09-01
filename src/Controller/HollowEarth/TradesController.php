@@ -41,7 +41,10 @@ class TradesController
     ): JsonResponse
     {
         $user = $userAccessor->getUserOrThrow();
-        $player = $user->getHollowEarthPlayer();
+
+        $player = $user->getHollowEarthPlayer()
+            ?? throw new PSPInvalidOperationException('You\'re not currently exploring the Hollow Earth!');
+
         $tile = $player->getCurrentTile();
 
         if(!$tile || !$tile->getIsTradingDepot())
@@ -64,7 +67,10 @@ class TradesController
     ): JsonResponse
     {
         $user = $userAccessor->getUserOrThrow();
-        $player = $user->getHollowEarthPlayer();
+
+        $player = $user->getHollowEarthPlayer()
+            ?? throw new PSPInvalidOperationException('You\'re not currently exploring the Hollow Earth!');
+
         $tile = $player->getCurrentTile();
 
         if(!$tile || !$tile->getIsTradingDepot())

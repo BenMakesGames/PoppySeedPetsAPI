@@ -110,6 +110,16 @@ class PetActivityLog
         return $this;
     }
 
+    public function appendEntry(string $entry): self
+    {
+        if($this->entry)
+            $this->entry .= ' ' . $entry;
+        else
+            $this->entry = $entry;
+
+        return $this;
+    }
+
     public function getCreatedOn(): \DateTimeImmutable
     {
         return $this->createdOn;

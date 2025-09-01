@@ -16,7 +16,9 @@ namespace Service;
 
 use App\Entity\Item;
 use App\Entity\Pet;
+use App\Entity\PetSkills;
 use App\Entity\PetSpecies;
+use App\Entity\User;
 use App\Service\PetActivity\DreamingService;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use function PHPUnit\Framework\assertFalse;
@@ -44,7 +46,7 @@ class DreamingServiceTest extends KernelTestCase
         $dummyItem = new Item();
         $dummyItem->setName('Dummy Item');
 
-        $dummyDreamer = new Pet();
+        $dummyDreamer = new Pet(new User('any name', 'any@email.com'), new PetSkills());
         $dummyDreamer->setName('Dreamer');
 
         $dummySpecies = new PetSpecies();

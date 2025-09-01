@@ -69,11 +69,6 @@ class BlueprintHelpers
         if($skill && $pet->getSkills()->getStat($skill) < 20)
         {
             $petExperienceService->forceIncreaseSkill($pet, $skill, 1, $activityLog);
-
-            $activityLog
-                ->addInterestingness(PetActivityLogInterestingness::LevelUp)
-                ->setEntry($activityLog->getEntry() . ' +1 ' . ucfirst($skill) . '!')
-                ->addTags(PetActivityLogTagHelpers::findByNames($em, [ 'Level-up' ]));
         }
     }
 }

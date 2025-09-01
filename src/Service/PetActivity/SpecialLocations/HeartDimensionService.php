@@ -118,7 +118,7 @@ class HeartDimensionService
 
     private function unequipHeartstone(Pet $pet, PetActivityLog $activityLog): void
     {
-        $activityLog->setEntry($activityLog->getEntry() . ' %pet:' . $pet->getId() . '.name% put the Heartstone down.');
+        $activityLog->appendEntry('%pet:' . $pet->getId() . '.name% put the Heartstone down.');
         EquipmentFunctions::unequipPet($pet);
     }
 

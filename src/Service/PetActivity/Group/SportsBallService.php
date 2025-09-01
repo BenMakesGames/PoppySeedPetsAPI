@@ -145,7 +145,7 @@ class SportsBallService
             if($this->rng->rngNextInt(1, 10) === 1 && $member->getId() !== $lowestPerformer)
             {
                 $loot = ItemRepository::findOneByName($this->em, $this->rng->rngNextFromArray(self::PossibleLoot));
-                $activityLog->setEntry($activityLog->getEntry() . ' ' . $member->getName() . ' accidentally brought ' . $loot->getNameWithArticle() . ' home after the game. (Oops! (Oh well.))');
+                $activityLog->appendEntry($member->getName() . ' accidentally brought ' . $loot->getNameWithArticle() . ' home after the game. (Oops! (Oh well.))');
                 $this->inventoryService->petCollectsItem($loot, $member, $this->formatMessage($message, $member, $group), $activityLog);
             }
 

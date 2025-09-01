@@ -467,7 +467,7 @@ class DeepSeaService
         {
             if($petWithSkills->getHasProtectionFromHeat()->getTotal() > 0)
             {
-                $activityLog->setEntry($activityLog->getEntry() . ' The Volcano was hot, but their ' . ActivityHelpers::SourceOfHeatProtection($petWithSkills) . ' protected them.')
+                $activityLog->appendEntry('The Volcano was hot, but their ' . ActivityHelpers::SourceOfHeatProtection($petWithSkills) . ' protected them.')
                     ->addInterestingness(PetActivityLogInterestingness::ActivityUsingMerit)
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Submarine', 'Gathering', 'Dark', 'Heatstroke' ]))
                 ;
@@ -478,9 +478,9 @@ class DeepSeaService
                 $pet->increaseSafety(-$this->rng->rngNextInt(2, 4));
 
                 if($this->rng->rngNextInt(1, 20) === 1)
-                    $activityLog->setEntry($activityLog->getEntry() . ' The Volcano was CRAZY hot, and I don\'t mean in a sexy way; %pet:' . $pet->getId() . '.name% got a bit light-headed while cramped inside the Submarine.');
+                    $activityLog->appendEntry('The Volcano was CRAZY hot, and I don\'t mean in a sexy way; %pet:' . $pet->getId() . '.name% got a bit light-headed while cramped inside the Submarine.');
                 else
-                    $activityLog->setEntry($activityLog->getEntry() . ' The Volcano was CRAZY hot, and %pet:' . $pet->getId() . '.name% got a bit light-headed while cramped inside the Submarine.');
+                    $activityLog->appendEntry('The Volcano was CRAZY hot, and %pet:' . $pet->getId() . '.name% got a bit light-headed while cramped inside the Submarine.');
 
                 $activityLog->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Submarine', 'Gathering', 'Dark', 'Heatstroke' ]));
             }

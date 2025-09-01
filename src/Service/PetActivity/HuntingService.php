@@ -1452,7 +1452,7 @@ class HuntingService
 
             if($getExtraItem)
             {
-                $activityLog->setEntry($activityLog->getEntry() . ' They found one of the sticks that had been thrown at them, and returned home.');
+                $activityLog->appendEntry('They found one of the sticks that had been thrown at them, and returned home.');
 
                 if($pet->hasMerit(MeritEnum::EIDETIC_MEMORY))
                     $this->inventoryService->petCollectsItem('Crooked Stick', $pet, 'This was thrown at ' . $pet->getName() . ' while they were out hunting, probably by an Argopelter.', $activityLog);

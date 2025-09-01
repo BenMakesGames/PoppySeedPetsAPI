@@ -28,7 +28,7 @@ class LunchboxItem
 
     #[ORM\ManyToOne(targetEntity: Pet::class, inversedBy: 'lunchboxItems')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Pet $pet;
+    private Pet $pet;
 
     #[ORM\OneToOne(targetEntity: Inventory::class, inversedBy: 'lunchboxItem')]
     #[ORM\JoinColumn(nullable: false)]
@@ -46,19 +46,19 @@ class LunchboxItem
         return $this->id;
     }
 
-    public function getPet(): ?Pet
+    public function getPet(): Pet
     {
         return $this->pet;
     }
 
-    public function setPet(?Pet $pet): self
+    public function setPet(Pet $pet): self
     {
         $this->pet = $pet;
 
         return $this;
     }
 
-    public function getInventoryItem(): ?Inventory
+    public function getInventoryItem(): Inventory
     {
         return $this->inventoryItem;
     }

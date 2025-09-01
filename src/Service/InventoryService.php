@@ -213,7 +213,7 @@ class InventoryService
                 if(DateFunctions::isCornMoon($this->clock->now))
                 {
                     $activityLog
-                        ->setEntry($activityLog->getEntry() . ' The ' . $item->getName() . ' was transformed into... Corn??? (That\'s not how the curse is supposed to work!)')
+                        ->appendEntry('The ' . $item->getName() . ' was transformed into... Corn??? (That\'s not how the curse is supposed to work!)')
                         ->addInterestingness(PetActivityLogInterestingness::UncommonActivity)
                     ;
 
@@ -222,7 +222,7 @@ class InventoryService
                 else
                 {
                     $activityLog
-                        ->setEntry($activityLog->getEntry() . ' The ' . $item->getName() . ' was transformed into Wheat by their curse!')
+                        ->appendEntry('The ' . $item->getName() . ' was transformed into Wheat by their curse!')
                         ->addInterestingness(PetActivityLogInterestingness::UncommonActivity)
                     ;
 
@@ -232,7 +232,7 @@ class InventoryService
             else if($item->getName() === 'Wheat' || $item->getName() === 'Wheat Flower')
             {
                 $activityLog
-                    ->setEntry($activityLog->getEntry() . ' The ' . $item->getName() . ' was transformed into a Gold Bar by their curse!')
+                    ->appendEntry('The ' . $item->getName() . ' was transformed into a Gold Bar by their curse!')
                     ->addInterestingness(PetActivityLogInterestingness::UncommonActivity)
                 ;
 
@@ -455,9 +455,9 @@ class InventoryService
         if($cancelGather)
         {
             if(count($replacementItemNames) > 0)
-                $activityLog->setEntry($activityLog->getEntry() . ' And the ' . $item->getName() . ' transformed into ' . ArrayFunctions::list_nice($replacementItemNames) . '!');
+                $activityLog->appendEntry('And the ' . $item->getName() . ' transformed into ' . ArrayFunctions::list_nice($replacementItemNames) . '!');
             else
-                $activityLog->setEntry($activityLog->getEntry() . ' However, the ' . $item->getName() . ' melted away instantly!');
+                $activityLog->appendEntry('However, the ' . $item->getName() . ' melted away instantly!');
 
             return null;
         }

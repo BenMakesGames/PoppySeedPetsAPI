@@ -29,6 +29,7 @@ use App\Enum\StatusEffectEnum;
 use App\Enum\UnlockableFeatureEnum;
 use App\Enum\UserStat;
 use App\Exceptions\PSPInvalidOperationException;
+use App\Functions\ActivityHelpers;
 use App\Functions\ArrayFunctions;
 use App\Functions\GrammarFunctions;
 use App\Functions\ItemRepository;
@@ -85,9 +86,9 @@ class EatingService
         if($activityLog)
         {
             if($randomFlavor)
-                $activityLog->setEntry($activityLog->getEntry() . ' ' . $pet->getName() . ' immediately ate the ' . $food->name . '. (Ooh! ' . ucwords($randomFlavor->value) . '!');
+                $activityLog->appendEntry(ActivityHelpers::PetName($pet) . ' immediately ate the ' . $food->name . '. (Ooh! ' . ucwords($randomFlavor->value) . '!');
             else
-                $activityLog->setEntry($activityLog->getEntry() . ' ' . $pet->getName() . ' immediately ate the ' . $food->name . '.');
+                $activityLog->appendEntry(ActivityHelpers::PetName($pet) . ' immediately ate the ' . $food->name . '.');
 
             $activityLog->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Eating' ]));
         }
@@ -234,7 +235,7 @@ class EatingService
         {
             if($pet->getSkills()->getStat($skill) < 1)
             {
-                $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, 'Such skillful food! ' . $pet->getName() . ' got a point of ' . $skill . '!');
+                $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, 'Such skillful food!');
                 $this->petExperienceService->forceIncreaseSkill($pet, $skill, 1, $activityLog);
             }
         }
