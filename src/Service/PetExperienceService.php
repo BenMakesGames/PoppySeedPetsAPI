@@ -152,7 +152,7 @@ class PetExperienceService
         $activityLog
             ->appendEntry(ActivityHelpers::PetName($pet) . '\'s ' . ucfirst($skill) . ' has increased to ' . $pet->getSkills()->getStat($skill) . '!')
             ->addInterestingness(PetActivityLogInterestingness::LevelUp)
-            ->addTags([ PetActivityLogTagHelpers::findByNames($this->em, [ 'Level-up' ]) ])
+            ->addTags([ PetActivityLogTagHelpers::findOneByName($this->em, 'Level-up') ])
         ;
 
         $this->checkForLevelUpBadges($pet, $oldLevel, $activityLog);
