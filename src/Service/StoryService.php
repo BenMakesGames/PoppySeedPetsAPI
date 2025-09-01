@@ -36,14 +36,6 @@ use Symfony\Component\HttpFoundation\ParameterBag;
 
 class StoryService
 {
-    private User $user;
-    private UserQuest $step;
-    private Story $story;
-    private StorySection $currentSection;
-    /** @var ItemQuantity[]|null */ private ?array $userInventory = null;
-
-    private Inventory $callingInventory;
-
     public function __construct(
         private readonly EntityManagerInterface $em,
         private readonly InventoryService $inventoryService,
@@ -60,17 +52,22 @@ class StoryService
      */
     public function doStory(User $user, int $storyId, ParameterBag $request, Inventory $callingInventory = null): StoryStep
     {
-        $story = $this->em->getRepository(Story::class)->find($storyId);
+        $story = $this->em->getRepository(Story::class)->find($storyId)
+            ?? throw new PSPNotFoundException('That Story doesn\'t exist! (Uh oh! Is something broken? Maybe reload and try again?)');
 
-        if (!$story)
-            throw new PSPNotFoundException('That Story doesn\'t exist! (Uh oh! Is something broken? Maybe reload and try again?)');
+        $step = UserQuestRepository::findOrCreate($this->em, $user, $story->getQuestValue(), $story->getFirstSection()->getId());
 
-        $this->story = $story;
-        $this->callingInventory = $callingInventory;
-        $this->user = $user;
-        $this->step = UserQuestRepository::findOrCreate($this->em, $user, $this->story->getQuestValue(), $this->story->getFirstSection()->getId());
+        $currentSection = $this->em->getRepository(StorySection::class)->find($step->getValue())
+            ?? throw new \Exception('Uh oh! You\'re apparently on a step of the story that doesn\'t exist! This is a terrible error! Please let Ben know!');
 
-        $this->setCurrentSection();
+        $storyState = new StoryState(
+            user: $user,
+            step: $step,
+            story: $story,
+            currentSection: $currentSection,
+            userInventory: null,
+            callingInventory: $callingInventory
+        );
 
         if($request->has('choice'))
         {
@@ -79,83 +76,69 @@ class StoryService
             if($choice === '')
                 throw new PSPFormValidationException('You didn\'t choose a choice!');
 
-            $response = $this->makeChoice($choice);
+            $response = $this->makeChoice($storyState, $choice);
         }
         else
-            $response = $this->getStoryStep();
+            $response = $this->getStoryStep($storyState);
 
         $this->em->flush();
 
         return $response;
     }
 
-    /**
-     * @throws \Exception
-     */
-    private function getStoryStep(): StoryStep
+    private function getStoryStep(StoryState $state): StoryStep
     {
-        if(!$this->story) throw new \Exception('StoryService was not properly prepared!');
-
-        return $this->serializeStorySection();
+        return $this->serializeStorySection($state);
     }
 
     /**
      * @throws \Exception
      */
-    private function makeChoice(string $userChoice): StoryStep
+    private function makeChoice(StoryState $state, string $userChoice): StoryStep
     {
-        if(!$this->story) throw new \Exception('StoryService was not properly prepared!');
+        $availableChoices = $state->currentSection->getChoices()
+            ?? throw new PSPFormValidationException('There is no such option. (Maybe reload and try again?)');
 
-        $choice = ArrayFunctions::find_one($this->currentSection->getChoices(), function($c) use ($userChoice) {
+        $choice = ArrayFunctions::find_one($availableChoices, function($c) use ($userChoice) {
             return $c['text'] === $userChoice;
         });
 
-        if(!$choice || !$this->choiceIsChoosable($choice))
+        if(!$choice || !$this->choiceIsChoosable($state, $choice))
             throw new PSPFormValidationException('There is no such option. (Maybe reload and try again?)');
 
         // in case we had to create new stuff before interpreting the actions, flush the DB
         $this->em->flush();
 
-        $this->payAnyCosts($choice);
-        $this->interpretActions($choice['actions']);
+        $this->payAnyCosts($state, $choice);
+        $this->interpretActions($state, $choice['actions']);
 
         $this->em->flush();
 
-        return $this->serializeStorySection();
+        return $this->serializeStorySection($state);
     }
 
-    private function payAnyCosts(array $choice): void
+    private function payAnyCosts(StoryState $state, array $choice): void
     {
         if(array_key_exists('requiredInventory', $choice))
         {
             $requiredInventory = InventoryService::deserializeItemList($this->em, $choice['requiredInventory']);
 
             foreach($requiredInventory as $quantity)
-                $this->inventoryService->loseItem($this->user, $quantity->item->getId(), [ LocationEnum::Home, LocationEnum::Basement ], $quantity->quantity);
+                $this->inventoryService->loseItem($state->user, $quantity->item->getId(), [ LocationEnum::Home, LocationEnum::Basement ], $quantity->quantity);
         }
     }
 
-    /**
-     * @throws \Exception
-     */
-    private function setCurrentSection(): void
+    private function serializeStorySection(StoryState $state): StoryStep
     {
-        $this->currentSection = $this->em->getRepository(StorySection::class)->find($this->step->getValue());
+        $storyStep = StoryStep::createFromStorySection($state->currentSection);
 
-        if(!$this->currentSection) throw new \Exception('Uh oh! You\'re apparently on a step of the story that doesn\'t exist! This is a terrible error! Please let Ben know!');
-    }
-
-    private function serializeStorySection(): StoryStep
-    {
-        $storyStep = StoryStep::createFromStorySection($this->currentSection);
-
-        foreach($this->currentSection->getChoices() as $choice)
+        foreach($state->currentSection->getChoices() as $choice)
         {
-            if($this->choiceIsVisible($choice))
+            if($this->choiceIsVisible($state, $choice))
             {
                 $c = new StoryStepChoice();
                 $c->text = $choice['text'];
-                $c->enabled = $this->choiceIsEnabled($choice);
+                $c->enabled = $this->choiceIsEnabled($state, $choice);
                 $c->exitOnSelect = StoryService::choiceContainsExit($choice);
 
                 $storyStep->choices[] = $c;
@@ -165,31 +148,31 @@ class StoryService
         return $storyStep;
     }
 
-    private function choiceIsChoosable(array $choice): bool
+    private function choiceIsChoosable(StoryState $state, array $choice): bool
     {
         return
-            $this->choiceIsVisible($choice) &&
-            $this->choiceIsEnabled($choice)
+            $this->choiceIsVisible($state, $choice) &&
+            $this->choiceIsEnabled($state, $choice)
         ;
     }
 
-    private function choiceIsVisible(array $choice): bool
+    private function choiceIsVisible(StoryState $state, array $choice): bool
     {
         if(array_key_exists('hideIf', $choice))
         {
-            if($this->jsonLogicParserService->evaluate($choice['hideIf'], $this->user))
+            if($this->jsonLogicParserService->evaluate($choice['hideIf'], $state->user))
                 return false;
         }
 
         return true;
     }
 
-    private function choiceIsEnabled(array $choice): bool
+    private function choiceIsEnabled(StoryState $state, array $choice): bool
     {
         if(array_key_exists('requiredInventory', $choice))
         {
             $requiredInventory = InventoryService::deserializeItemList($this->em, $choice['requiredInventory']);
-            $userInventory = $this->getUserInventory();
+            $userInventory = $this->getUserInventory($state);
 
             if(!InventoryService::hasRequiredItems($requiredInventory, $userInventory))
                 return false;
@@ -197,7 +180,7 @@ class StoryService
 
         if(array_key_exists('disabledIf', $choice))
         {
-            if($this->jsonLogicParserService->evaluate($choice['disabledIf'], $this->user))
+            if($this->jsonLogicParserService->evaluate($choice['disabledIf'], $state->user))
                 return false;
         }
 
@@ -207,12 +190,12 @@ class StoryService
     /**
      * @return ItemQuantity[]
      */
-    private function getUserInventory(): array
+    private function getUserInventory(StoryState $state): array
     {
-        if(!$this->userInventory)
-            $this->userInventory = $this->inventoryService->getInventoryQuantities($this->user, LocationEnum::Home, 'name');
+        if(!$state->userInventory)
+            $state->userInventory = $this->inventoryService->getInventoryQuantities($state->user, LocationEnum::Home, 'name');
 
-        return $this->userInventory;
+        return $state->userInventory;
     }
 
     private static function choiceContainsExit(array $choice): bool
@@ -223,43 +206,43 @@ class StoryService
     /**
      * @throws \Exception
      */
-    private function interpretActions(array $actions): void
+    private function interpretActions(StoryState $state, array $actions): void
     {
         foreach($actions as $action)
-            $this->interpretAction($action);
+            $this->interpretAction($state, $action);
     }
 
     /**
      * @throws \Exception
      */
-    private function interpretAction(array $action): void
+    private function interpretAction(StoryState $state, array $action): void
     {
         switch($action['type'])
         {
             case StoryActionTypeEnum::SetStep:
-                $this->setStep($action['step']);
+                $this->setStep($state, $action['step']);
                 break;
 
             case StoryActionTypeEnum::ReceiveItem:
                 $lockedToOwner = array_key_exists('locked', $action) && $action['locked'];
-                $description = str_replace([ '%user.name%' ], [ $this->user->getName() ], $action['description']);
+                $description = str_replace([ '%user.name%' ], [ $state->user->getName() ], $action['description']);
 
-                $this->inventoryService->receiveItem($action['item'], $this->user, null, $description, LocationEnum::Home, $lockedToOwner);
+                $this->inventoryService->receiveItem($action['item'], $state->user, null, $description, LocationEnum::Home, $lockedToOwner);
 
                 break;
 
             case StoryActionTypeEnum::DonateItem:
-                $this->museumService->forceDonateItem($this->user, $action['item'], $action['description']);
+                $this->museumService->forceDonateItem($state->user, $action['item'], $action['description']);
                 break;
 
             case StoryActionTypeEnum::LoseItem:
                 $itemId = ItemRepository::getIdByName($this->em, $action['item']);
-                $this->inventoryService->loseItem($this->user, $itemId, [ LocationEnum::Home, LocationEnum::Basement ]);
+                $this->inventoryService->loseItem($state->user, $itemId, [ LocationEnum::Home, LocationEnum::Basement ]);
                 break;
 
             case StoryActionTypeEnum::LoseCallingInventory:
-                if($this->callingInventory)
-                    $this->em->remove($this->callingInventory);
+                if($state->callingInventory)
+                    $this->em->remove($state->callingInventory);
                 else
                     throw new \InvalidArgumentException('Ben made a boo-boo: no calling inventory was set.');
 
@@ -268,18 +251,18 @@ class StoryService
                 break;
 
             case StoryActionTypeEnum::IncrementStat:
-                $this->userStatsRepository->incrementStat($this->user, $action['stat'], array_key_exists('change', $action) ? $action['change'] : 1);
+                $this->userStatsRepository->incrementStat($state->user, $action['stat'], array_key_exists('change', $action) ? $action['change'] : 1);
                 break;
 
             case StoryActionTypeEnum::SetQuestValue:
-                UserQuestRepository::findOrCreate($this->em, $this->user, $action['quest'], $action['value'])
+                UserQuestRepository::findOrCreate($this->em, $state->user, $action['quest'], $action['value'])
                     ->setValue($action['value'])
                 ;
                 break;
 
             case StoryActionTypeEnum::UnlockTrader:
-                if(!$this->user->hasUnlockedFeature(UnlockableFeatureEnum::Trader))
-                    UserUnlockedFeatureHelpers::create($this->em, $this->user, UnlockableFeatureEnum::Trader);
+                if(!$state->user->hasUnlockedFeature(UnlockableFeatureEnum::Trader))
+                    UserUnlockedFeatureHelpers::create($this->em, $state->user, UnlockableFeatureEnum::Trader);
                 break;
 
             case StoryActionTypeEnum::Exit:
@@ -293,9 +276,26 @@ class StoryService
     /**
      * @throws \Exception
      */
-    private function setStep(int $newStep): void
+    private function setStep(StoryState $state, int $newStep): void
     {
-        $this->step->setValue($newStep);
-        $this->setCurrentSection();
+        $state->step->setValue($newStep);
+
+        $state->currentSection = $this->em->getRepository(StorySection::class)->find($newStep)
+            ?? throw new \Exception('Uh oh! You\'re apparently on a step of the story that doesn\'t exist! This is a terrible error! Please let Ben know!');
+    }
+}
+
+final class StoryState
+{
+    public function __construct(
+        public readonly User $user,
+        public UserQuest $step,
+        public Story $story,
+        public StorySection $currentSection,
+        /** @var ItemQuantity[]|null $userInventory */
+        public ?array $userInventory,
+        public Inventory $callingInventory
+    )
+    {
     }
 }

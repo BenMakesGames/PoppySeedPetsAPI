@@ -785,13 +785,13 @@ class StickCraftingService
         {
             $this->inventoryService->petCollectsItem($extraLoot, $pet, $pet->getName() . ' found this on a stick!', $activityLog);
 
-            $activityLog->setEntry($activityLog->getEntry() . ' While they were doing that, they spotted a ' . $extraLoot . '! ... wait, make that TWO! They grabbed both before they could get away!')
+            $activityLog->appendEntry('While they were doing that, they spotted a ' . $extraLoot . '! ... wait, make that TWO! They grabbed both before they could get away!')
                 ->addInterestingness(PetActivityLogInterestingness::HoHum + 20)
             ;
         }
         else
         {
-            $activityLog->setEntry($activityLog->getEntry() . ' While they were doing that, they spotted a ' . $extraLoot . '! They grabbed it before it could get away!')
+            $activityLog->appendEntry('While they were doing that, they spotted a ' . $extraLoot . '! They grabbed it before it could get away!')
                 ->addInterestingness(PetActivityLogInterestingness::HoHum + 20)
             ;
         }

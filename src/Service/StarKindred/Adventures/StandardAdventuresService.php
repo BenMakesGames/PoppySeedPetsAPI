@@ -213,6 +213,8 @@ class StandardAdventuresService
 
     /**
      * @param ComputedPetSkills[] $pets
+     * @param string[] $lootTable
+     * @return string[]
      */
     public function getAdventureLoot(?string $stepTreasure, array $pets, callable $petSkillFn, int $roll, string $freeLoot, array $lootTable): array
     {
@@ -230,6 +232,9 @@ class StandardAdventuresService
         return $loot;
     }
 
+    /**
+     * @return string[]
+     */
     public static function getFixedLoot(?string $stepTreasure): array
     {
         if(!$stepTreasure)
@@ -286,6 +291,7 @@ class StandardAdventuresService
 
     /**
      * @param ComputedPetSkills[] $pets
+     * @param string[] $loot
      */
     public function describeAdventure(array $pets, ?string $narrative, int $roll, array $loot, ?Enchantment $aura): string
     {

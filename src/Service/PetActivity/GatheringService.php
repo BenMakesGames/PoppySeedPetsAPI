@@ -420,7 +420,7 @@ class GatheringService
         if($getPinecone)
         {
             $activityLog
-                ->setEntry($activityLog->getEntry() . ' Hm-what? There was a Pinecone in the bush, too?!')
+                ->appendEntry('Hm-what? There was a Pinecone in the bush, too?!')
                 ->addInterestingness(PetActivityLogInterestingness::UncommonActivity)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Special Event', 'Stocking Stuffing Season' ]))
             ;
@@ -791,7 +791,7 @@ class GatheringService
             if($lucky)
             {
                 $activityLog
-                    ->setEntry($activityLog->getEntry() . ' (Honeydont?! Lucky~!)')
+                    ->appendEntry('(Honeydont?! Lucky~!)')
                     ->addInterestingness(PetActivityLogInterestingness::ActivityUsingMerit)
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Lucky~!' ]))
                 ;
@@ -1058,7 +1058,7 @@ class GatheringService
             if($lucky)
             {
                 $activityLog
-                    ->setEntry($activityLog->getEntry() . ' (Melowatern!? Lucky~!)')
+                    ->appendEntry('(Melowatern!? Lucky~!)')
                     ->addInterestingness(PetActivityLogInterestingness::ActivityUsingMerit)
                 ;
                 $tags[] = 'Lucky~!';
@@ -1135,7 +1135,7 @@ class GatheringService
             if($lucky)
             {
                 $activityLog
-                    ->setEntry($activityLog->getEntry() . ' (Melowatern!? Lucky~!)')
+                    ->appendEntry('(Melowatern!? Lucky~!)')
                     ->addInterestingness(PetActivityLogInterestingness::ActivityUsingMerit)
                 ;
                 $tags[] = 'Lucky~!';
@@ -1451,7 +1451,7 @@ class GatheringService
 
             if($petWithSkills->getHasProtectionFromHeat()->getTotal() > 0)
             {
-                $activityLog->setEntry($activityLog->getEntry() . ' ' . ucfirst($locationName) . ' was hot, but their ' . ActivityHelpers::SourceOfHeatProtection($petWithSkills) . ' protected them.')
+                $activityLog->appendEntry(ucfirst($locationName) . ' was hot, but their ' . ActivityHelpers::SourceOfHeatProtection($petWithSkills) . ' protected them.')
                     ->addInterestingness(PetActivityLogInterestingness::ActivityUsingMerit)
                 ;
             }
@@ -1464,9 +1464,9 @@ class GatheringService
 
                 // why need to have unlocked the greenhouse? just testing that you've been playing for a while
                 if($this->rng->rngNextInt(1, 20) === 1 && $pet->getOwner()->hasUnlockedFeature(UnlockableFeatureEnum::Greenhouse))
-                    $activityLog->setEntry($activityLog->getEntry() . ' ' . ucfirst($locationName) . ' was CRAZY hot, and I don\'t mean in a sexy way; %pet:' . $pet->getId() . '.name% got a bit light-headed.');
+                    $activityLog->appendEntry(ucfirst($locationName) . ' was CRAZY hot, and I don\'t mean in a sexy way; %pet:' . $pet->getId() . '.name% got a bit light-headed.');
                 else
-                    $activityLog->setEntry($activityLog->getEntry() . ' ' . ucfirst($locationName) . ' was CRAZY hot, and %pet:' . $pet->getId() . '.name% got a bit light-headed.');
+                    $activityLog->appendEntry(ucfirst($locationName) . ' was CRAZY hot, and %pet:' . $pet->getId() . '.name% got a bit light-headed.');
             }
         }
     }

@@ -60,6 +60,7 @@ class WeatherService
             'Oct' => self::getRandomSky($daySeed, 16 / 31),
             'Nov' => self::getRandomSky($daySeed, 6 /  30),
             'Dec' => self::getRandomSky($daySeed, 10 / 31),
+            default => throw new \Exception('Invalid month')
         };
     }
 

@@ -30,6 +30,7 @@ use App\Functions\ArrayFunctions;
 use App\Functions\CalendarFunctions;
 use App\Functions\ColorFunctions;
 use App\Functions\ItemRepository;
+use App\Model\ItemQuantity;
 use App\Model\TraderOffer;
 use App\Model\TraderOfferCostOrYield;
 use Doctrine\ORM\AbstractQuery;
@@ -155,6 +156,9 @@ class TraderService
         return null;
     }
 
+    /**
+     * @return array{title: string, trades: TraderOffer[]}[]
+     */
     public function getOffers(User $user): array
     {
         $quantities = $this->inventoryService->getInventoryQuantities($user, LocationEnum::Home, 'name');
@@ -240,6 +244,10 @@ class TraderService
         return $offers;
     }
 
+    /**
+     * @param ItemQuantity[] $quantities
+     * @return TraderOffer[]
+     */
     private function getBleachOffers(User $user, array $quantities): array
     {
         return [
@@ -420,6 +428,10 @@ class TraderService
         ];
     }
 
+    /**
+     * @param ItemQuantity[] $quantities
+     * @return TraderOffer[]
+     */
     private function getDigitalOffers(User $user, array $quantities): array
     {
         return [
@@ -493,6 +505,10 @@ class TraderService
         ];
     }
 
+    /**
+     * @param ItemQuantity[] $quantities
+     * @return TraderOffer[]
+     */
     private function getBugOffers(User $user, array $quantities): array
     {
         $stickInsect = ItemRepository::findOneByName($this->em, 'Stick Insect');
@@ -557,6 +573,10 @@ class TraderService
         ];
     }
 
+    /**
+     * @param ItemQuantity[] $quantities
+     * @return TraderOffer[]
+     */
     private function getHollowEarthOffers(User $user, array $quantities): array
     {
         return [

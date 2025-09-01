@@ -42,8 +42,8 @@ class GetGreenhouseController
     {
         $user = $userAccessor->getUserOrThrow();
 
-        if(!$user->getGreenhouse())
-            throw new PSPNotUnlockedException('Greenhouse');
+        $greenhouse = $user->getGreenhouse()
+            ?? throw new PSPNotUnlockedException('Greenhouse');
 
         $greenhouseService->maybeAssignPollinators($user);
 
@@ -51,7 +51,7 @@ class GetGreenhouseController
             'groups' => [ SerializationGroupEnum::GREENHOUSE_PLANT, SerializationGroupEnum::MY_GREENHOUSE, SerializationGroupEnum::HELPER_PET ]
         ]);
 
-        if($user->getGreenhouse()->getHasBirdBath())
+        if($greenhouse->getHasBirdBath())
         {
             $data['hasBubblegum'] = self::hasItemInBirdbath($em, $user, 'Bubblegum');
             $data['hasOil'] = self::hasItemInBirdbath($em, $user, 'Oil');

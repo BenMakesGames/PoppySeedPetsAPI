@@ -179,7 +179,7 @@ class WeedController
 
                 $bonusFlower = $rng->rngNextFromArray($possibleFlowers);
 
-                $activityLogEntry->setEntry($activityLogEntry->getEntry() . ' ... oh! And a ' . $bonusFlower . '!');
+                $activityLogEntry->appendEntry('... oh! And a ' . $bonusFlower . '!');
             }
 
             $inventoryService->petCollectsItem($extraItemObject, $helper, $helper->getName() . ' found this while weeding the Greenhouse with ' . $user->getName() . $extraDetail, $activityLogEntry);

@@ -797,7 +797,7 @@ class UmbraService
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::Stealth, PetSkillEnum::Arcana ], $activityLog);
 
             if($this->rng->rngNextInt(1, 50) === 1)
-                $activityLog->setEntry($activityLog->getEntry() . ' ("Snuck"? "Sneaked"? I dunno. One of thems.)');
+                $activityLog->appendEntry('("Snuck"? "Sneaked"? I dunno. One of thems.)');
 
             $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::UMBRA, true);
         }

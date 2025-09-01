@@ -54,11 +54,11 @@ class Pet
 
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'pets')]
     #[Groups(['petPublicProfile', 'parkEvent'])]
-    private $owner;
+    private User $owner;
 
     #[ORM\Column(type: 'string', length: 40)]
     #[Groups([SerializationGroupEnum::MY_PET, 'userPublicProfile', 'petPublicProfile', 'parkEvent', 'petFriend', 'hollowEarth', 'petGroupDetails', 'spiritCompanionPublicProfile', 'guildMember', 'petActivityLogAndPublicPet', 'helperPet'])]
-    private $name;
+    private string $name;
 
     #[ORM\Column(type: 'integer')]
     private int $food = 0;
@@ -103,9 +103,9 @@ class Pet
     #[ORM\Column(type: 'datetime_immutable')]
     private \DateTimeImmutable $lastInteracted;
 
-    #[ORM\OneToOne(inversedBy: 'pet', targetEntity: PetSkills::class, cascade: ['persist', 'remove'])]
+    #[ORM\OneToOne(targetEntity: PetSkills::class, cascade: ['persist', 'remove'])]
     #[ORM\JoinColumn(nullable: false)]
-    private $skills;
+    private PetSkills $skills;
 
     #[ORM\ManyToOne(targetEntity: PetSpecies::class)]
     #[ORM\JoinColumn(nullable: false)]
@@ -168,12 +168,12 @@ class Pet
     private Collection $statusEffects;
 
     #[ORM\Column(type: 'smallint')]
-    private $sexDrive;
+    private int $sexDrive;
 
     #[ORM\OneToOne(targetEntity: PetBaby::class, inversedBy: 'parent', cascade: ['persist', 'remove'])]
     #[ORM\JoinColumn(onDelete: 'CASCADE')]
     #[Groups([SerializationGroupEnum::MY_PET, 'userPublicProfile', 'petPublicProfile', 'petFriend', 'petGroupDetails', 'helperPet'])]
-    private $pregnancy;
+    private ?PetBaby $pregnancy;
 
     #[ORM\ManyToOne(inversedBy: 'motheredPets', targetEntity: Pet::class)]
     private ?Pet $mom = null;
@@ -292,10 +292,12 @@ class Pet
     #[ORM\OneToMany(mappedBy: 'pet', targetEntity: PetBadge::class, orphanRemoval: true)]
     private Collection $badges;
 
-    public function __construct()
+    public function __construct(User $owner, PetSkills $skills)
     {
         $rng = new Xoshiro();
 
+        $this->owner = $owner;
+        $this->skills = $skills;
         $this->birthDate = new \DateTimeImmutable();
         $this->lastInteracted = (new \DateTimeImmutable())->modify('-3 days');
         $this->locationMoveDate = new \DateTimeImmutable();
@@ -346,7 +348,7 @@ class Pet
         return $this->id;
     }
 
-    public function getOwner(): ?User
+    public function getOwner(): User
     {
         return $this->owner;
     }
@@ -869,7 +871,7 @@ class Pet
         return $this->getLastInteracted() > (new \DateTimeImmutable())->modify('-48 hours');
     }
 
-    public function getSkills(): ?PetSkills
+    public function getSkills(): PetSkills
     {
         return $this->skills;
     }
@@ -1597,10 +1599,6 @@ class Pet
     {
         if ($this->lunchboxItems->contains($lunchboxItem)) {
             $this->lunchboxItems->removeElement($lunchboxItem);
-            // set the owning side to null (unless already changed)
-            if ($lunchboxItem->getPet() === $this) {
-                $lunchboxItem->setPet(null);
-            }
         }
 
         return $this;

@@ -394,7 +394,7 @@ class ChocolateMansion
             }
 
             $activityLog
-                ->setEntry($activityLog->getEntry() . ' ' . $chemistryDescription)
+                ->appendEntry($chemistryDescription)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Physics' ]))
             ;
 
@@ -439,7 +439,7 @@ class ChocolateMansion
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::Stealth ], $activityLog);
             $pet->increaseEsteem(8);
 
-            $activityLog->setEntry($activityLog->getEntry() . ' While they were poking around, %pet:' . $pet->getId() . '.name% found a secret door with passages to the mansion\'s cellar and attic, and unlocked the doors to both before returning home!');
+            $activityLog->appendEntry('While they were poking around, %pet:' . $pet->getId() . '.name% found a secret door with passages to the mansion\'s cellar and attic, and unlocked the doors to both before returning home!');
 
             $quest->setValue(self::QuestValueFullAccess);
         }
@@ -509,7 +509,7 @@ class ChocolateMansion
                 $loot = 'Music Note';
             }
 
-            $activityLog->setEntry($activityLog->getEntry() . ' ' . $musicDescription);
+            $activityLog->appendEntry($musicDescription);
 
             if($loot)
                 $this->inventoryService->petCollectsItem($loot, $pet, $pet->getName() . ' created this while playing a piano in the parlor of le Manoir de Chocolat.', $activityLog);

@@ -51,6 +51,9 @@ final class UserMenuFunctions
         $userSortOrderEntity->setMenuOrder($order);
     }
 
+    /**
+     * @param UserMenuItem[] $menuItems
+     */
     private static function maybeAddMenuItem(array &$menuItems, string $name, User $user, array $userSortOrders, ?UnlockableFeatureEnum $feature): bool
     {
         if(!$feature)
@@ -70,6 +73,9 @@ final class UserMenuFunctions
         return true;
     }
 
+    /**
+     * @return array{items: UserMenuItem[], numberLocked: int}
+     */
     public static function getUserMenuItems(EntityManagerInterface $em, User $user): array
     {
         $userSortOrderEntity = $em->getRepository(UserMenuOrder::class)->findOneBy([ 'user' => $user ]);

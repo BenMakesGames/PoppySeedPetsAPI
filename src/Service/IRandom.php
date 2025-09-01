@@ -52,7 +52,7 @@ interface IRandom
     function rngNextFromArray(array $array);
 
     /**
-     * @param array $array The array to shuffle; shuffle is performed in place
+     * @param array<int, mixed> $array The array to shuffle; shuffle is performed in place
      */
     function rngNextShuffle(array &$array): void;
 

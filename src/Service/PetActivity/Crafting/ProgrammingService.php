@@ -587,7 +587,7 @@ class ProgrammingService
             if($isLucky)
             {
                 $activityLog
-                    ->setEntry($activityLog->getEntry() . ' (Lucky~!)')
+                    ->appendEntry('(Lucky~!)')
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Lucky~!' ]));
             }
 

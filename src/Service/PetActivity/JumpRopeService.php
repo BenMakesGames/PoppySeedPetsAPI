@@ -92,7 +92,7 @@ class JumpRopeService
 
         if($skillCheck < $difficulty)
         {
-            $log->setEntry($log->getEntry() . ' Unfortunately, the Jump Rope couldn\'t handle the stress, and fell apart!');
+            $log->appendEntry('Unfortunately, the Jump Rope couldn\'t handle the stress, and fell apart!');
 
             $pet = $petWithSkills->getPet();
             EquipmentFunctions::destroyPetTool($this->em, $pet);

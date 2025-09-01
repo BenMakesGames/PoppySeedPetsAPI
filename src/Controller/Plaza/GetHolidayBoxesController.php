@@ -18,7 +18,6 @@ use App\Enum\SerializationGroupEnum;
 use App\Model\AvailableHolidayBox;
 use App\Service\PlazaService;
 use App\Service\ResponseService;
-use App\Service\WeatherService;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;

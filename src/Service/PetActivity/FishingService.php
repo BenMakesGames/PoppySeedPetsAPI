@@ -194,7 +194,7 @@ class FishingService
         $hasNoReflection = $activityLog->getPet()->hasStatusEffect(StatusEffectEnum::Invisible) || $activityLog->getPet()->hasMerit(MeritEnum::NO_SHADOW_OR_REFLECTION);
 
         if($hasNoReflection && $this->rng->rngNextInt(1, 4) === 1)
-            $activityLog->setEntry($activityLog->getEntry() . ' (Having no reflection is pretty useful!)');
+            $activityLog->appendEntry('(Having no reflection is pretty useful!)');
     }
 
     private function nothingBiting(Pet $pet, int $percentChance, string $atLocationName): ?PetActivityLog

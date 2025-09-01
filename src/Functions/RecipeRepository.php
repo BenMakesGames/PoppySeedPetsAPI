@@ -15,6 +15,9 @@ namespace App\Functions;
 
 final class RecipeRepository
 {
+    /**
+     * @var array<int, array{name: string, ingredients: string, makes: string}>
+     */
     public const array Recipes = [
         [ 'name' => '"Chicken" Noodle Soup (with Fish)', 'ingredients' => '30:1,33:1,262:1', 'makes' => '323:2' ],
         [ 'name' => '"Chicken" Noodle Soup (with Tofu)', 'ingredients' => '30:1,262:1,494:1', 'makes' => '323:2' ],
@@ -777,21 +780,33 @@ final class RecipeRepository
         [ 'name' => 'Zongzi', 'ingredients' => '17:1,33:1,61:1,68:1,170:1,511:1,536:1', 'makes' => '709:5' ],
     ];
 
-    public static function findBy(callable $delegate)
+    /**
+     * @return array<int, array{name: string, ingredients: string, makes: string}>
+     */
+    public static function findBy(callable $delegate): array
     {
         return array_filter(self::Recipes, $delegate);
     }
 
-    public static function findOneBy(callable $delegate)
+    /**
+     * @return array{name: string, ingredients: string, makes: string}|null
+     */
+    public static function findOneBy(callable $delegate): ?array
     {
         return ArrayFunctions::find_one(self::Recipes, $delegate);
     }
 
+    /**
+     * @return array{name: string, ingredients: string, makes: string}|null
+     */
     public static function findOneByName(string $recipeName): ?array
     {
         return self::findOneBy(fn($recipe) => $recipe['name'] === $recipeName);
     }
 
+    /**
+     * @return array{name: string, ingredients: string, makes: string}|null
+     */
     public static function findOneByIngredients(string $serializedQuantities): ?array
     {
         return self::findOneBy(fn($recipe) => $recipe['ingredients'] === $serializedQuantities);

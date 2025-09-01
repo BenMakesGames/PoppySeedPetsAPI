@@ -64,9 +64,6 @@ class PetSkills
     #[ORM\Column(type: 'integer')]
     private int $science = 0;
 
-    #[ORM\OneToOne(targetEntity: Pet::class, mappedBy: 'skills')]
-    private ?Pet $pet = null;
-
     #[ORM\Column(type: 'datetime_immutable', nullable: true)]
     private ?\DateTimeImmutable $talent = null;
 
@@ -278,23 +275,6 @@ class PetSkills
     public function setCrafts(int $crafts): self
     {
         $this->crafts = $crafts;
-
-        return $this;
-    }
-
-    public function getPet(): ?Pet
-    {
-        return $this->pet;
-    }
-
-    public function setPet(Pet $pet): self
-    {
-        $this->pet = $pet;
-
-        // set the owning side of the relation if necessary
-        if ($this !== $pet->getSkills()) {
-            $pet->setSkills($this);
-        }
 
         return $this;
     }

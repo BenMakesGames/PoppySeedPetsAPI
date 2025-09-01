@@ -117,11 +117,11 @@ class LeonidsService
 
                 if($pet->getTool() && $pet->getTool()->getItem()->getTreasure() && $pet->getTool()->getItem()->getTreasure()->getSilver() > 0)
                 {
-                    $activityLog->setEntry($activityLog->getEntry() . ' (Even a silvery ' . $pet->getTool()->getFullItemName() . ' isn\'t going to keep away a whole pack of werecreatures!)');
+                    $activityLog->appendEntry('(Even a silvery ' . $pet->getTool()->getFullItemName() . ' isn\'t going to keep away a whole pack of werecreatures!)');
                 }
                 else if($pet->getHat() && $pet->getHat()->getItem()->getTreasure() && $pet->getHat()->getItem()->getTreasure()->getSilver() > 0)
                 {
-                    $activityLog->setEntry($activityLog->getEntry() . ' (Even a silvery ' . $pet->getHat()->getFullItemName() . ' isn\'t going to keep away a whole pack of werecreatures!)');
+                    $activityLog->appendEntry('(Even a silvery ' . $pet->getHat()->getFullItemName() . ' isn\'t going to keep away a whole pack of werecreatures!)');
                 }
 
                 $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::Arcana, PetSkillEnum::Stealth ], $activityLog);
