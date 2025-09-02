@@ -38,6 +38,7 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class TraderService
 {
+    /** @var string[]  */
     private const array TraderNames = [
         // Saffron
         'Azafrán', 'Zaeafran',
@@ -693,6 +694,7 @@ class TraderService
     }
 
     /**
+     * @param ItemQuantity[] $quantities
      * @return TraderOffer[]
      */
     private function getSpecialOffers(User $user, array $quantities): array
@@ -967,6 +969,9 @@ class TraderService
         return $offers;
     }
 
+    /**
+     * @return array{0: string, 1: int}
+     */
     public static function getCreepyMaskDayPayment(int $month): array
     {
         return match ($month)
@@ -1004,7 +1009,7 @@ class TraderService
             ->getSingleScalarResult()
         ;
 
-        $random = (($this->clock->now->format('Ymd') - 20040404) * 6737 + 76801) % ($count - $offers + 1);
+        $random = (((int)$this->clock->now->format('Ymd') - 20040404) * 6737 + 76801) % ($count - $offers + 1);
 
         return $this->em->getRepository(Item::class)->createQueryBuilder('i')
             ->andWhere('i.recycleValue > 0')
@@ -1020,6 +1025,7 @@ class TraderService
     }
 
     /**
+     * @param ItemQuantity[] $quantities
      * @return TraderOffer[]
      */
     private function getMetalOffers(User $user, array $quantities): array
@@ -1128,6 +1134,7 @@ class TraderService
     }
 
     /**
+     * @param ItemQuantity[] $quantities
      * @return TraderOffer[]
      */
     private function getUmbralThingsOffers(User $user, array $quantities): array
@@ -1203,6 +1210,7 @@ class TraderService
     }
 
     /**
+     * @param ItemQuantity[] $quantities
      * @return TraderOffer[]
      */
     private function getFoodsOffers(User $user, array $quantities): array
@@ -1279,6 +1287,7 @@ class TraderService
     }
 
     /**
+     * @param ItemQuantity[] $quantities
      * @return TraderOffer[]
      */
     private function getCuriositiesOffers(User $user, array $quantities): array
@@ -1378,6 +1387,7 @@ class TraderService
     }
 
     /**
+     * @param ItemQuantity[] $quantities
      * @return TraderOffer[]
      */
     private function getPlushyOffers(User $user, array $quantities): array

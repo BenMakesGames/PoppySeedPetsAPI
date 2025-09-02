@@ -125,6 +125,9 @@ final class ColorFunctions
         return \str_pad(\dechex(($r << 16) + ($g << 8) + $b), 6, '0', STR_PAD_LEFT);
     }
 
+    /**
+     * @return array{r: int, g: int, b: int}
+     */
     public static function Hex2RGB(string $color): array
     {
         $dec = hexdec($color);

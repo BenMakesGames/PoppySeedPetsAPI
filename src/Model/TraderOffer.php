@@ -40,6 +40,11 @@ class TraderOffer
     #[Groups(['traderOffer'])]
     public bool $lockedToAccount;
 
+    /**
+     * @param TraderOfferCostOrYield[] $cost
+     * @param TraderOfferCostOrYield[] $yield
+     * @param ItemQuantity[] $inventoryQuantitiesByNameAtLocation
+     */
     public static function createTradeOffer(
         array $cost, array $yield, string $comment, User $user, array $inventoryQuantitiesByNameAtLocation, bool $lockedToAccount = false
     ): TraderOffer
@@ -85,6 +90,10 @@ class TraderOffer
         return $maxQuantity;
     }
 
+    /**
+     * @param TraderOfferCostOrYield[] $cost
+     * @param TraderOfferCostOrYield[] $yield
+     */
     private static function generateID(array $cost, array $yield): string
     {
         $costsAndYields = array_merge($cost, $yield);

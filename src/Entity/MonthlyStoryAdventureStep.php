@@ -74,7 +74,7 @@ class MonthlyStoryAdventureStep
 
     #[Groups([ "starKindredStoryStepAvailable" ])]
     #[ORM\Column(type: 'string', length: 10, nullable: true)]
-    private string $pinOverride;
+    private ?string $pinOverride = null;
 
     public function __construct()
     {
@@ -85,7 +85,7 @@ class MonthlyStoryAdventureStep
         return $this->id;
     }
 
-    public function getAdventure(): ?MonthlyStoryAdventure
+    public function getAdventure(): MonthlyStoryAdventure
     {
         return $this->adventure;
     }
@@ -97,7 +97,7 @@ class MonthlyStoryAdventureStep
         return $this;
     }
 
-    public function getTitle(): ?string
+    public function getTitle(): string
     {
         return $this->title;
     }
@@ -169,7 +169,7 @@ class MonthlyStoryAdventureStep
         return $this;
     }
 
-    public function getMinPets(): ?int
+    public function getMinPets(): int
     {
         return $this->minPets;
     }
@@ -181,7 +181,7 @@ class MonthlyStoryAdventureStep
         return $this;
     }
 
-    public function getMaxPets(): ?int
+    public function getMaxPets(): int
     {
         return $this->maxPets;
     }
