@@ -615,7 +615,7 @@ class Inventory
             return 0;
     }
 
-    public function getFullItemName(): ?string
+    public function getFullItemName(): string
     {
         return $this->fullItemName;
     }

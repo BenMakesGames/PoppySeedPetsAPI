@@ -17,7 +17,6 @@ namespace App\Service;
 use App\Entity\PassphraseResetRequest;
 use App\Entity\User;
 use App\Functions\PlayerLogFactory;
-use App\Functions\StringFunctions;
 use App\Security\CryptographicFunctions;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Mailer\MailerInterface;

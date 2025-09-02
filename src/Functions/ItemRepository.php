@@ -11,7 +11,6 @@ declare(strict_types=1);
  * You should have received a copy of the GNU General Public License along with The Poppy Seed Pets API. If not, see <https://www.gnu.org/licenses/>.
  */
 
-
 namespace App\Functions;
 
 use App\Entity\Item;
@@ -20,6 +19,10 @@ use Doctrine\ORM\EntityManagerInterface;
 
 final class ItemRepository
 {
+    /**
+     * @param string[] $itemNames
+     * @return Item[]
+     */
     public static function findByNames(EntityManagerInterface $em, array $itemNames): array
     {
         return array_map(fn(string $itemName) => self::findOneByName($em, $itemName), $itemNames);

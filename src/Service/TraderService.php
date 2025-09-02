@@ -646,6 +646,9 @@ class TraderService
         ];
     }
 
+    /**
+     * @return array{item: Item, value: int}[]
+     */
     private function getSpecialOfferItemsAndPrices(int $offers): array
     {
         if($offers <= 0) return [];
@@ -657,6 +660,9 @@ class TraderService
         );
     }
 
+    /**
+     * @return array{item: Item, value: int}[]
+     */
     private function computeSpecialOfferItemsAndPrices(int $offers): array
     {
         $results = [];

@@ -124,6 +124,9 @@ class PetRelationshipService
         }
     }
 
+    /**
+     * @param string[] $groupTags
+     */
     public function seeAtGroupGathering(
         Pet $p1, Pet $p2, string $hangOutDescription, string $enemyDescription, string $meetSummary, string $meetActivityLogTemplate, array $groupTags, int $meetChance = 5
     ): void
@@ -344,6 +347,9 @@ class PetRelationshipService
         return $values[$targetRelationship] - $values[$initialRelationship];
     }
 
+    /**
+     * @param string[] $groupTags
+     */
     public function hangOutPublicly(
         PetRelationship $p1,
         PetRelationship $p2,

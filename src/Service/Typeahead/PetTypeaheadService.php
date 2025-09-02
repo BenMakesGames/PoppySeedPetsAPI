@@ -19,6 +19,9 @@ use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\QueryBuilder;
 
+/**
+ * @extends TypeaheadService<Pet>
+ */
 class PetTypeaheadService extends TypeaheadService
 {
     private ?User $user = null;

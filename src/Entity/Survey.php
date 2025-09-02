@@ -11,7 +11,6 @@ declare(strict_types=1);
  * You should have received a copy of the GNU General Public License along with The Poppy Seed Pets API. If not, see <https://www.gnu.org/licenses/>.
  */
 
-
 namespace App\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
@@ -30,14 +29,14 @@ class Survey
 
     #[Groups(["surveySummary"])]
     #[ORM\Column(type: 'string', length: 255)]
-    private $title;
+    private string $title;
 
     #[ORM\Column(type: 'datetime_immutable')]
-    private $startDate;
+    private \DateTimeImmutable $startDate;
 
     #[Groups(["surveySummary"])]
     #[ORM\Column(type: 'datetime_immutable')]
-    private $endDate;
+    private \DateTimeImmutable $endDate;
 
     #[ORM\OneToMany(targetEntity: SurveyQuestion::class, mappedBy: 'survey', orphanRemoval: true)]
     private $questions;

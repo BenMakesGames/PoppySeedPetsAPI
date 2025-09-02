@@ -90,7 +90,7 @@ class MonthlyStoryAdventureStep
         return $this->adventure;
     }
 
-    public function setAdventure(?MonthlyStoryAdventure $adventure): self
+    public function setAdventure(MonthlyStoryAdventure $adventure): self
     {
         $this->adventure = $adventure;
 

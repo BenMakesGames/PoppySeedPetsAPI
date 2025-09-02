@@ -105,7 +105,8 @@ class PetSpecies
     #[ORM\Column(type: 'string', length: 40)]
     private string $nameSort;
 
-    #[ORM\OneToMany(targetEntity: 'App\Entity\Pet', mappedBy: 'species')]
+    /** @var Collection<int, Pet> */
+    #[ORM\OneToMany(targetEntity: Pet::class, mappedBy: 'species')]
     private Collection $pets;
 
     #[Groups(["petEncyclopedia"])]
@@ -146,7 +147,7 @@ class PetSpecies
         return $this;
     }
 
-    public function getDescription(): ?string
+    public function getDescription(): string
     {
         return $this->description;
     }
