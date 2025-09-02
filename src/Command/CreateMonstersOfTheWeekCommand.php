@@ -153,6 +153,9 @@ class CreateMonstersOfTheWeekCommand extends Command
         return $this->selectPrizeItem(MonsterOfTheWeekHelpers::getHardPrizes($monsterType));
     }
 
+    /**
+     * @param string[] $possiblePrizes
+     */
     private function selectPrizeItem(array $possiblePrizes): Item
     {
         return $this->em->getRepository(Item::class)->findOneBy([

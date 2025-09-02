@@ -77,7 +77,7 @@ class GreenhousePlant
         return $this->id;
     }
 
-    public function getPlant(): ?Plant
+    public function getPlant(): Plant
     {
         return $this->plant;
     }
@@ -140,12 +140,12 @@ class GreenhousePlant
         return $this;
     }
 
-    public function getOwner(): ?User
+    public function getOwner(): User
     {
         return $this->owner;
     }
 
-    public function setOwner(?User $owner): self
+    public function setOwner(User $owner): self
     {
         $this->owner = $owner;
 

@@ -19,8 +19,14 @@ use App\Functions\StringFunctions;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\QueryBuilder;
 
+/**
+ * @template T
+ */
 abstract class TypeaheadService
 {
+    /**
+     * @param EntityRepository<T> $repository
+     */
     public function __construct(
         private readonly EntityRepository $repository
     )
@@ -29,6 +35,9 @@ abstract class TypeaheadService
 
     abstract public function addQueryBuilderConditions(QueryBuilder $qb): QueryBuilder;
 
+    /**
+     * @return T[]
+     */
     public function search(string $fieldToSearch, string $searchString, int $maxResults = 5): array
     {
         $search = mb_trim($searchString);

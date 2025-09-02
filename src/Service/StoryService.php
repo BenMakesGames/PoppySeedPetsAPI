@@ -50,7 +50,7 @@ class StoryService
     /**
      * @throws \Exception
      */
-    public function doStory(User $user, int $storyId, ParameterBag $request, Inventory $callingInventory = null): StoryStep
+    public function doStory(User $user, int $storyId, ParameterBag $request, Inventory $callingInventory): StoryStep
     {
         $story = $this->em->getRepository(Story::class)->find($storyId)
             ?? throw new PSPNotFoundException('That Story doesn\'t exist! (Uh oh! Is something broken? Maybe reload and try again?)');
@@ -241,10 +241,7 @@ class StoryService
                 break;
 
             case StoryActionTypeEnum::LoseCallingInventory:
-                if($state->callingInventory)
-                    $this->em->remove($state->callingInventory);
-                else
-                    throw new \InvalidArgumentException('Ben made a boo-boo: no calling inventory was set.');
+                $this->em->remove($state->callingInventory);
 
                 $this->responseService->setReloadInventory();
 

@@ -165,7 +165,7 @@ class Dragon
         return $this->name;
     }
 
-    public function setName(?string $name): self
+    public function setName(string $name): self
     {
         $this->name = $name;
 
@@ -192,7 +192,7 @@ class Dragon
         return $this;
     }
 
-    public function getColorA(): ?string
+    public function getColorA(): string
     {
         return $this->colorA;
     }
@@ -204,7 +204,7 @@ class Dragon
         return $this;
     }
 
-    public function getColorB(): ?string
+    public function getColorB(): string
     {
         return $this->colorB;
     }
@@ -299,7 +299,7 @@ class Dragon
         return $this;
     }
 
-    public function getAppearance(): ?int
+    public function getAppearance(): int
     {
         return $this->appearance;
     }
@@ -323,7 +323,7 @@ class Dragon
         return $this;
     }
 
-    public function getEarnings(): ?float
+    public function getEarnings(): float
     {
         return $this->earnings;
     }
@@ -335,7 +335,7 @@ class Dragon
         return $this;
     }
 
-    public function getByproductProgress(): ?float
+    public function getByproductProgress(): float
     {
         return $this->byproductProgress;
     }

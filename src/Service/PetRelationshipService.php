@@ -33,6 +33,9 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class PetRelationshipService
 {
+    /**
+     * @var array<string, int>
+     */
     public const array RelationshipCommitments = [
         RelationshipEnum::BrokeUp => -1,
         RelationshipEnum::Dislike => 0,
@@ -98,6 +101,7 @@ class PetRelationshipService
 
     /**
      * @param Collection<int, Pet>|Pet[] $pets
+     * @param string[] $groupTags
      */
     public function groupGathering(
         Collection|array $pets,
@@ -124,6 +128,9 @@ class PetRelationshipService
         }
     }
 
+    /**
+     * @param string[] $groupTags
+     */
     public function seeAtGroupGathering(
         Pet $p1, Pet $p2, string $hangOutDescription, string $enemyDescription, string $meetSummary, string $meetActivityLogTemplate, array $groupTags, int $meetChance = 5
     ): void
@@ -174,6 +181,7 @@ class PetRelationshipService
     }
 
     /**
+     * @param string[] $groupTags
      * @return PetRelationship[]
      */
     public function introducePets(Pet $pet, Pet $otherPet, string $howMetSummary, string $metActivityLogTemplate, array $groupTags): array
@@ -344,6 +352,9 @@ class PetRelationshipService
         return $values[$targetRelationship] - $values[$initialRelationship];
     }
 
+    /**
+     * @param string[] $groupTags
+     */
     public function hangOutPublicly(
         PetRelationship $p1,
         PetRelationship $p2,
@@ -686,12 +697,13 @@ class PetRelationshipService
     }
 
     /**
+     * @param string[] $possibleRelationships
      * @return PetRelationship[]
      */
     public function createRelationship(Pet $pet, string $howPetMetSummary, Pet $otherPet, string $howOtherPetMetSummary, string $initialRelationship, array $possibleRelationships): array
     {
         if($pet->hasMerit(MeritEnum::FRIEND_OF_THE_WORLD))
-            $petPossibleRelationships = array_filter($possibleRelationships, fn($r) => $r !== RelationshipEnum::Dislike);
+            $petPossibleRelationships = array_filter($possibleRelationships, fn(string $r) => $r !== RelationshipEnum::Dislike);
         else
             $petPossibleRelationships = $possibleRelationships;
 
@@ -712,7 +724,7 @@ class PetRelationshipService
 
         // other pet
         if($otherPet->hasMerit(MeritEnum::FRIEND_OF_THE_WORLD))
-            $otherPetPossibleRelationships = array_filter($possibleRelationships, fn($r) => $r !== RelationshipEnum::Dislike);
+            $otherPetPossibleRelationships = array_filter($possibleRelationships, fn(string $r) => $r !== RelationshipEnum::Dislike);
         else
             $otherPetPossibleRelationships = $possibleRelationships;
 

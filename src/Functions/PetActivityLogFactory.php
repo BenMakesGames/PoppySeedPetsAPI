@@ -25,9 +25,7 @@ final class PetActivityLogFactory
     {
         $log = self::createReadLog($em, $pet, $message);
 
-        $unreadLog = (new UnreadPetActivityLog())
-            ->setPet($pet)
-            ->setPetActivityLog($log);
+        $unreadLog = new UnreadPetActivityLog(pet: $pet, petActivityLog: $log);
 
         $em->persist($unreadLog);
 

@@ -11,7 +11,6 @@ declare(strict_types=1);
  * You should have received a copy of the GNU General Public License along with The Poppy Seed Pets API. If not, see <https://www.gnu.org/licenses/>.
  */
 
-
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -54,7 +53,7 @@ class ItemHat
         return $this->id;
     }
 
-    public function getHeadX(): ?float
+    public function getHeadX(): float
     {
         return $this->headX;
     }
@@ -66,7 +65,7 @@ class ItemHat
         return $this;
     }
 
-    public function getHeadY(): ?float
+    public function getHeadY(): float
     {
         return $this->headY;
     }
@@ -78,7 +77,7 @@ class ItemHat
         return $this;
     }
 
-    public function getHeadAngle(): ?float
+    public function getHeadAngle(): float
     {
         return $this->headAngle;
     }
@@ -90,7 +89,7 @@ class ItemHat
         return $this;
     }
 
-    public function getHeadScale(): ?float
+    public function getHeadScale(): float
     {
         return $this->headScale;
     }

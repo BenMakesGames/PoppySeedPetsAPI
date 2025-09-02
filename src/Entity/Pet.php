@@ -228,7 +228,7 @@ class Pet
 
     #[ORM\OneToOne(mappedBy: 'pet', targetEntity: GuildMembership::class, cascade: ['persist', 'remove'])]
     #[Groups(['petPublicProfile', 'guildMember'])]
-    private $guildMembership;
+    private ?GuildMembership $guildMembership = null;
 
     #[ORM\Column(type: 'integer')]
     private int $revealedFavoriteFlavor = 0;
@@ -236,9 +236,10 @@ class Pet
     #[ORM\Column(type: 'integer')]
     private int $affectionAdventures = 0;
 
+    /** @var Collection<int, LunchboxItem> */
     #[ORM\OneToMany(mappedBy: 'pet', targetEntity: LunchboxItem::class)]
     #[Groups(['myPet'])]
-    private $lunchboxItems;
+    private Collection $lunchboxItems;
 
     #[ORM\Column(type: 'smallint')]
     private int $bonusMaximumFriends;
@@ -292,10 +293,11 @@ class Pet
     #[ORM\OneToMany(mappedBy: 'pet', targetEntity: PetBadge::class, orphanRemoval: true)]
     private Collection $badges;
 
-    public function __construct(User $owner, PetSkills $skills)
+    public function __construct(PetSpecies $species, User $owner, PetSkills $skills)
     {
         $rng = new Xoshiro();
 
+        $this->species = $species;
         $this->owner = $owner;
         $this->skills = $skills;
         $this->birthDate = new \DateTimeImmutable();
@@ -653,16 +655,9 @@ class Pet
         return 16;
     }
 
-    public function getBirthDate(): ?\DateTimeImmutable
+    public function getBirthDate(): \DateTimeImmutable
     {
         return $this->birthDate;
-    }
-
-    public function setBirthDate(\DateTimeImmutable $birthDate): self
-    {
-        $this->birthDate = $birthDate;
-
-        return $this;
     }
 
     public function getFullnessPercent(): float
@@ -894,12 +889,12 @@ class Pet
         return ($this->getLevel() + 1) * 15;
     }
 
-    public function getSpecies(): ?PetSpecies
+    public function getSpecies(): PetSpecies
     {
         return $this->species;
     }
 
-    public function setSpecies(?PetSpecies $species): self
+    public function setSpecies(PetSpecies $species): self
     {
         $this->species = $species;
 

@@ -17,7 +17,7 @@ namespace App\Functions;
 use App\Entity\Pet;
 use App\Service\IRandom;
 
-class PetColorFunctions
+final class PetColorFunctions
 {
     /**
      * Favors value in 50-100%
@@ -91,6 +91,9 @@ class PetColorFunctions
         ;
     }
 
+    /**
+     * @return string[]
+     */
     public static function generateRandomPetColors(IRandom $rng, float $maxSaturation = 1): array
     {
         $h = $rng->rngNextInt(0, 1000) / 1000.0;

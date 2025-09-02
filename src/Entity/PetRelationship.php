@@ -119,7 +119,7 @@ class PetRelationship
         return $this;
     }
 
-    public function getMetDescription(): ?string
+    public function getMetDescription(): string
     {
         return $this->metDescription;
     }
@@ -172,12 +172,12 @@ class PetRelationship
         return $this;
     }
 
-    public function getTimeUntilChange(): ?int
+    public function getTimeUntilChange(): int
     {
         return $this->timeUntilChange;
     }
 
-    public function setTimeUntilChange()
+    public function setTimeUntilChange(): void
     {
         $this->timeUntilChange = random_int(random_int(20, 30), random_int(40, 50));
     }
@@ -227,7 +227,7 @@ class PetRelationship
         return $this;
     }
 
-    public function getCommitment(): ?int
+    public function getCommitment(): int
     {
         return $this->commitment;
     }
@@ -257,7 +257,7 @@ class PetRelationship
         );
     }
 
-    public function getRating(): ?int
+    public function getRating(): int
     {
         return $this->rating;
     }

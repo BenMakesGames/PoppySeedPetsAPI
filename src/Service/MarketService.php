@@ -38,6 +38,9 @@ class MarketService
     {
     }
 
+    /**
+     * @return array{itemName:string, hint:string}|null
+     */
     public function getItemToRaiseLimit(User $user): ?array
     {
         return match ($user->getMaxSellPrice())
@@ -58,7 +61,6 @@ class MarketService
             140 => [ 'itemName' => 'Lightning Sword', 'hint' => 'The components should be pretty obvious. As for where to get some lightning, the higher, the better.' ],
             default => null,
         };
-
     }
 
     public function updateLowestPriceForItem(Item $item): void

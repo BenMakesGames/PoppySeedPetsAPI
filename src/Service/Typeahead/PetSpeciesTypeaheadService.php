@@ -18,6 +18,9 @@ use App\Entity\PetSpecies;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\QueryBuilder;
 
+/**
+ * @extends TypeaheadService<PetSpecies>
+ */
 class PetSpeciesTypeaheadService extends TypeaheadService
 {
     public function __construct(EntityManagerInterface $em)

@@ -50,6 +50,7 @@ class OhGamesController
 
         $lucky = $rng->rngNextInt(1, 100) === 1;
 
+        /** @var string[] $loot */
         $loot = [
             'Rock', 'Rock', $lucky ? 'Meteorite' : 'Rock',
             $rng->rngNextFromArray($dyes),

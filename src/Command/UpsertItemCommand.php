@@ -90,7 +90,7 @@ class UpsertItemCommand extends PoppySeedPetsCommand
         return self::SUCCESS;
     }
 
-    private function askName(string $prompt, Item $item, string $name)
+    private function askName(string $prompt, Item $item, string $name): mixed
     {
         $question = new Question($prompt . ' (' . $name . ') ', $name);
         $question->setValidator(function($answer) use($item) {

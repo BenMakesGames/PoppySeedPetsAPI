@@ -143,6 +143,9 @@ final class DateFunctions
         }
     }
 
+    /**
+     * @return int[]
+     */
     public static function getFullExactMoonDays(int $year, int $month): array
     {
         $daysInMonth = cal_days_in_month(CAL_GREGORIAN, $month, $year);

@@ -63,9 +63,8 @@ class PetFactory
 
         $this->em->persist($petSkills);
 
-        $pet = (new Pet($owner, $petSkills))
+        $pet = (new Pet($species, $owner, $petSkills))
             ->setName($name)
-            ->setSpecies($species)
             ->setColorA($colorA)
             ->setColorB($colorB)
             ->setFavoriteFlavor($favoriteFlavor)
