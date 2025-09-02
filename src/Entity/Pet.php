@@ -228,7 +228,7 @@ class Pet
 
     #[ORM\OneToOne(mappedBy: 'pet', targetEntity: GuildMembership::class, cascade: ['persist', 'remove'])]
     #[Groups(['petPublicProfile', 'guildMember'])]
-    private $guildMembership;
+    private ?GuildMembership $guildMembership = null;
 
     #[ORM\Column(type: 'integer')]
     private int $revealedFavoriteFlavor = 0;
@@ -889,12 +889,12 @@ class Pet
         return ($this->getLevel() + 1) * 15;
     }
 
-    public function getSpecies(): ?PetSpecies
+    public function getSpecies(): PetSpecies
     {
         return $this->species;
     }
 
-    public function setSpecies(?PetSpecies $species): self
+    public function setSpecies(PetSpecies $species): self
     {
         $this->species = $species;
 

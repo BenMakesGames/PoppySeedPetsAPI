@@ -289,7 +289,7 @@ class Inventory
         return $this;
     }
 
-    public function getLockedToOwner(): ?bool
+    public function getLockedToOwner(): bool
     {
         return $this->lockedToOwner;
     }

@@ -77,7 +77,7 @@ class GreenhousePlant
         return $this->id;
     }
 
-    public function getPlant(): ?Plant
+    public function getPlant(): Plant
     {
         return $this->plant;
     }

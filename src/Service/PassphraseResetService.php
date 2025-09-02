@@ -60,11 +60,11 @@ class PassphraseResetService
         }
         else
         {
-            $passwordResetRequest = (new PassphraseResetRequest())
-                ->setUser($user)
-                ->setExpiresOn($now->modify('+8 hours'))
-                ->setCode(CryptographicFunctions::generateSecureRandomString(40))
-            ;
+            $passwordResetRequest = new PassphraseResetRequest(
+                user: $user,
+                code: CryptographicFunctions::generateSecureRandomString(40),
+                expiresOn: $now->modify('+8 hours')
+            );
 
             $this->em->persist($passwordResetRequest);
             $this->em->flush();
