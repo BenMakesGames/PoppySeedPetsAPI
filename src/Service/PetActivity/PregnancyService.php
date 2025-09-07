@@ -11,7 +11,6 @@ declare(strict_types=1);
  * You should have received a copy of the GNU General Public License along with The Poppy Seed Pets API. If not, see <https://www.gnu.org/licenses/>.
  */
 
-
 namespace App\Service\PetActivity;
 
 use App\Entity\Pet;
@@ -140,7 +139,8 @@ class PregnancyService
     public function giveBirth(Pet $pet): void
     {
         $user = $pet->getOwner();
-        $pregnancy = $pet->getPregnancy();
+        $pregnancy = $pet->getPregnancy()
+            ?? throw new \InvalidArgumentException($pet->getName() . ' is not pregnant!');
 
         if($pregnancy->getSpiritParent())
         {
@@ -270,13 +270,13 @@ class PregnancyService
         $pet->setPregnancy(null);
 
         // grandparents get cool stuff :P
-        if($pregnancy->getParent()->getMom()) $pregnancy->getParent()->getMom()->setIsGrandparent(true);
-        if($pregnancy->getParent()->getDad()) $pregnancy->getParent()->getDad()->setIsGrandparent(true);
+        $pregnancy->getParent()->getMom()?->setIsGrandparent(true);
+        $pregnancy->getParent()->getDad()?->setIsGrandparent(true);
 
         if($pregnancy->getOtherParent())
         {
-            if($pregnancy->getOtherParent()->getMom()) $pregnancy->getOtherParent()->getMom()->setIsGrandparent(true);
-            if($pregnancy->getOtherParent()->getDad()) $pregnancy->getOtherParent()->getDad()->setIsGrandparent(true);
+            $pregnancy->getOtherParent()->getMom()?->setIsGrandparent(true);
+            $pregnancy->getOtherParent()->getDad()?->setIsGrandparent(true);
         }
 
         $this->em->remove($pregnancy);
@@ -373,18 +373,9 @@ class PregnancyService
         return in_array($canonicalized, self::CanonicalizedForbiddenCombinedNames);
     }
 
-    /**
-     * @param Pet $baby
-     * @param Pet $mother
-     * @param Pet $father
-     */
     private function createParentalRelationships(Pet $baby, Pet $mother, ?Pet $father): void
     {
-        $petWithMother = (new PetRelationship())
-            ->setRelationship($mother)
-            ->setCurrentRelationship(RelationshipEnum::BFF)
-            ->setPet($baby)
-            ->setRelationshipGoal(RelationshipEnum::BFF)
+        $petWithMother = (new PetRelationship($baby, $mother, RelationshipEnum::BFF, RelationshipEnum::BFF))
             ->setMetDescription('%relationship.name% gave birth to %pet.name%!')
             ->setCommitment(90) // BFF + BFF
         ;
@@ -395,11 +386,7 @@ class PregnancyService
 
         if($father)
         {
-            $petWithFather = (new PetRelationship())
-                ->setRelationship($father)
-                ->setCurrentRelationship(RelationshipEnum::BFF)
-                ->setPet($baby)
-                ->setRelationshipGoal(RelationshipEnum::BFF)
+            $petWithFather = (new PetRelationship($baby, $father, RelationshipEnum::BFF, RelationshipEnum::BFF))
                 ->setMetDescription('%relationship.name% fathered %pet.name%!')
                 ->setCommitment(90) // BFF + BFF
             ;
@@ -409,11 +396,7 @@ class PregnancyService
             $this->em->persist($petWithFather);
         }
 
-        $motherWithBaby = (new PetRelationship())
-            ->setRelationship($baby)
-            ->setCurrentRelationship(RelationshipEnum::BFF)
-            ->setPet($mother)
-            ->setRelationshipGoal(RelationshipEnum::BFF)
+        $motherWithBaby = (new PetRelationship($mother, $baby, RelationshipEnum::BFF, RelationshipEnum::BFF))
             ->setMetDescription('%pet.name% gave birth to %relationship.name%!')
             ->setCommitment(90) // BFF + BFF
         ;
@@ -424,11 +407,7 @@ class PregnancyService
 
         if($father)
         {
-            $fatherWithBaby = (new PetRelationship())
-                ->setRelationship($baby)
-                ->setCurrentRelationship(RelationshipEnum::BFF)
-                ->setPet($father)
-                ->setRelationshipGoal(RelationshipEnum::BFF)
+            $fatherWithBaby = (new PetRelationship($father, $baby, RelationshipEnum::BFF, RelationshipEnum::BFF))
                 ->setMetDescription('%pet.name% fathered %relationship.name%!')
                 ->setCommitment(90) // BFF + BFF
             ;

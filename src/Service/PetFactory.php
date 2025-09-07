@@ -28,6 +28,9 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class PetFactory
 {
+    /**
+     * @var string[]
+     */
     private const array SentinelNames = [
         'Sentinel',
         'Homunculus',
@@ -63,9 +66,14 @@ class PetFactory
 
         $this->em->persist($petSkills);
 
-        $pet = (new Pet($name, $species, $owner, $petSkills))
-            ->setColorA($colorA)
-            ->setColorB($colorB)
+        $pet = (new Pet(
+            name: $name,
+            species: $species,
+            owner: $owner,
+            skills: $petSkills,
+            colorA: $colorA,
+            colorB: $colorB
+        ))
             ->setFavoriteFlavor($favoriteFlavor)
             ->addMerit($startingMerit)
         ;
@@ -86,7 +94,7 @@ class PetFactory
     {
         $now = new \DateTimeImmutable();
 
-        $petCount = $this->em->getRepository(Pet::class)->createQueryBuilder('p')
+        $petCount = (int)$this->em->getRepository(Pet::class)->createQueryBuilder('p')
             ->select('COUNT(p.id)')
             ->andWhere('p.birthDate<:today')
             ->setParameter('today', $now)

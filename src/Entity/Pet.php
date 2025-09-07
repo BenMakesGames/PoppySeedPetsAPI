@@ -11,7 +11,6 @@ declare(strict_types=1);
  * You should have received a copy of the GNU General Public License along with The Poppy Seed Pets API. If not, see <https://www.gnu.org/licenses/>.
  */
 
-
 namespace App\Entity;
 
 use App\Enum\ActivityPersonalityEnum;
@@ -293,7 +292,10 @@ class Pet
     #[ORM\OneToMany(mappedBy: 'pet', targetEntity: PetBadge::class, orphanRemoval: true)]
     private Collection $badges;
 
-    public function __construct(string $name, PetSpecies $species, User $owner, PetSkills $skills)
+    public function __construct(
+        string $name, PetSpecies $species, User $owner, PetSkills $skills,
+        string $colorA, string $colorB
+    )
     {
         $rng = new Xoshiro();
 
@@ -310,6 +312,8 @@ class Pet
         $this->extroverted = $rng->rngNextInt(-1, 1);
         $this->bonusMaximumFriends = $rng->rngNextInt(-2, 2);
         $this->wereform = $rng->rngNextInt(0, 5);
+        $this->colorA = $colorA;
+        $this->colorB = $colorB;
 
         if($rng->rngNextInt(1, 5) > 1)
             $this->sexDrive = 1; // 80% sexual
@@ -583,7 +587,7 @@ class Pet
             return $this->getColorB();
     }
 
-    public function getColorA(): ?string
+    public function getColorA(): string
     {
         return $this->colorA;
     }
@@ -595,7 +599,7 @@ class Pet
         return $this;
     }
 
-    public function getColorB(): ?string
+    public function getColorB(): string
     {
         return $this->colorB;
     }
