@@ -522,8 +522,12 @@ class Music
         // Hybrid
         'A hybrid of hundreds of troubles... people felt us connect, and ran for shelter...',
         'I\'ll learn to forgeeet the criiime, if I surviiiiive. But I swear you\'re going down if I surviiiiiiiiiiiiiiiiive!',
+        'It\'s drifting in and ouuuuuut iiiiin waaaaves... we\'re living in the straaaaangeeeeeeest daaaze...',
 
         // Want It, by Pola & Bryson & IYAMAH
         'It\'s insightful how I break the cycle. Now this is final. I\'mma take this like a test; brush you off with the cobwebs.',
+
+        // Yakusoku wa Iranai (Escaflowne theme)
+        'Kimi wo, kimi wo, shiiiinjiteru samui yoru moooooo... \*random bagpipe\*',
     ];
 }
