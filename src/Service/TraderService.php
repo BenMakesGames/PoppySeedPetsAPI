@@ -999,7 +999,7 @@ class TraderService
      */
     public function findItemsForDailySpecialOffers(int $offers): array
     {
-        $count = $this->em->getRepository(Item::class)->createQueryBuilder('i')
+        $count = (int)$this->em->getRepository(Item::class)->createQueryBuilder('i')
             ->select('COUNT(i)')
             ->andWhere('i.recycleValue > 0')
             ->andWhere('i.treasure IS NULL')

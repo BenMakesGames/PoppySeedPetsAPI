@@ -64,7 +64,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'datetime_immutable')]
     private \DateTimeImmutable $lastActivity;
 
-    /** @var Collection<Pet> */
+    /** @var Collection<int, Pet> */
     #[ORM\OneToMany(targetEntity: Pet::class, mappedBy: 'owner', fetch: 'EXTRA_LAZY')]
     private Collection $pets;
 
@@ -87,15 +87,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'integer')]
     private int $maxPets = 2;
 
-    /** @var Collection<UserFollowing> */
+    /** @var Collection<int, UserFollowing> */
     #[ORM\OneToMany(targetEntity: UserFollowing::class, mappedBy: 'user', orphanRemoval: true, fetch: 'EXTRA_LAZY')]
     private Collection $following;
 
-    /** @var Collection<UserFollowing> */
+    /** @var Collection<int, UserFollowing> */
     #[ORM\OneToMany(targetEntity: UserFollowing::class, mappedBy: 'following', orphanRemoval: true, fetch: 'EXTRA_LAZY')]
     private Collection $followedBy;
 
-    /** @var Collection<UserStats> */
+    /** @var Collection<int, UserStats> */
     #[ORM\OneToMany(targetEntity: UserStats::class, mappedBy: 'user', orphanRemoval: true, fetch: 'EXTRA_LAZY')]
     private Collection $stats;
 
@@ -107,14 +107,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'integer')]
     private int $maxSellPrice = 10;
 
-    #[ORM\OneToOne(targetEntity: 'App\Entity\PassphraseResetRequest', mappedBy: 'user', cascade: ['persist', 'remove'], fetch: 'EXTRA_LAZY')]
-    private $passphraseResetRequest;
+    #[ORM\OneToOne(targetEntity: PassphraseResetRequest::class, mappedBy: 'user', cascade: ['persist', 'remove'], fetch: 'EXTRA_LAZY')]
+    private ?PassphraseResetRequest $passphraseResetRequest = null;
 
-    /** @var Collection<GreenhousePlant> */
+    /** @var Collection<int, GreenhousePlant> */
     #[ORM\OneToMany(targetEntity: GreenhousePlant::class, mappedBy: 'owner', orphanRemoval: true, fetch: 'EXTRA_LAZY')]
     private Collection $greenhousePlants;
 
-    /** @var Collection<UserSession> */
+    /** @var Collection<int, UserSession> */
     #[ORM\OneToMany(targetEntity: UserSession::class, mappedBy: 'user', orphanRemoval: true)]
     private Collection $userSessions;
 
@@ -309,12 +309,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->pets;
     }
 
-    public function getRegisteredOn(): ?\DateTimeImmutable
+    public function getRegisteredOn(): \DateTimeImmutable
     {
         return $this->registeredOn;
     }
 
-    public function getLastAllowanceCollected(): ?\DateTimeImmutable
+    public function getLastAllowanceCollected(): \DateTimeImmutable
     {
         return $this->lastAllowanceCollected;
     }
@@ -326,7 +326,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getIsLocked(): ?bool
+    public function getIsLocked(): bool
     {
         return $this->isLocked;
     }
@@ -413,7 +413,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getMaxSellPrice(): ?int
+    public function getMaxSellPrice(): int
     {
         return $this->maxSellPrice;
     }

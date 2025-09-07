@@ -56,10 +56,11 @@ class PetAssistantService
     {
         self::assertOwnership($user, $pet);
 
-        if(!$user->hasUnlockedFeature(UnlockableFeatureEnum::Beehive) || !$user->getBeehive())
+        if(!$user->hasUnlockedFeature(UnlockableFeatureEnum::Beehive))
             throw new PSPNotUnlockedException('Beehive');
 
-        $beehive = $user->getBeehive();
+        $beehive = $user->getBeehive()
+            ?? throw new PSPNotUnlockedException('Beehive');
 
         if($beehive->getWorkers() < 2000)
             throw new PSPNotUnlockedException('Beehive Helpers');
@@ -80,12 +81,13 @@ class PetAssistantService
     {
         self::assertOwnership($user, $pet);
 
-        if(!$user->hasUnlockedFeature(UnlockableFeatureEnum::Greenhouse) || !$user->getGreenhouse())
+        if(!$user->hasUnlockedFeature(UnlockableFeatureEnum::Greenhouse))
             throw new PSPNotUnlockedException('Greenhouse');
 
         self::assertCanAssignHelpers($user);
 
-        $greenhouse = $user->getGreenhouse();
+        $greenhouse = $user->getGreenhouse()
+            ?? throw new PSPNotUnlockedException('Greenhouse');
 
         if($greenhouse->getHelper())
             throw new PSPInvalidOperationException('Your Greenhouse already has a helper! ' . $greenhouse->getHelper()->getName() . '!');
@@ -99,13 +101,10 @@ class PetAssistantService
     public function helpFireplace(User $user, Pet $pet): void
     {
         self::assertOwnership($user, $pet);
-
-        if(!$user->getFireplace())
-            throw new PSPNotUnlockedException('Fireplace');
-
         self::assertCanAssignHelpers($user);
 
-        $fireplace = $user->getFireplace();
+        $fireplace = $user->getFireplace()
+            ?? throw new PSPNotUnlockedException('Fireplace');
 
         if($fireplace->getHelper())
             throw new PSPInvalidOperationException('Your Fireplace already has a helper! ' . $fireplace->getHelper()->getName() . '!');
@@ -125,10 +124,8 @@ class PetAssistantService
     {
         self::assertOwnership($user, $pet);
 
-        $dragon = DragonHelpers::getAdultDragon($this->em, $user);
-
-        if(!$dragon)
-            throw new PSPNotUnlockedException('Dragon Den');
+        $dragon = DragonHelpers::getAdultDragon($this->em, $user)
+            ?? throw new PSPNotUnlockedException('Dragon Den');
 
         self::assertCanAssignHelpers($user);
 

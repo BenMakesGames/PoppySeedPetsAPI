@@ -24,6 +24,9 @@ class PetQuestRepository
     {
     }
 
+    /**
+     * @var array<string, PetQuest>
+     */
     private array $petQuestPerRequestCache = [];
 
     public function findOrCreate(Pet $pet, string $name, $default): PetQuest

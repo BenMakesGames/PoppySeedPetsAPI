@@ -24,10 +24,8 @@ use Doctrine\ORM\QueryBuilder;
  */
 abstract class TypeaheadService
 {
-    /**
-     * @param EntityRepository<T> $repository
-     */
     public function __construct(
+        /** @var EntityRepository<T> */
         private readonly EntityRepository $repository
     )
     {

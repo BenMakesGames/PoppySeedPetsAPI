@@ -293,10 +293,11 @@ class Pet
     #[ORM\OneToMany(mappedBy: 'pet', targetEntity: PetBadge::class, orphanRemoval: true)]
     private Collection $badges;
 
-    public function __construct(PetSpecies $species, User $owner, PetSkills $skills)
+    public function __construct(string $name, PetSpecies $species, User $owner, PetSkills $skills)
     {
         $rng = new Xoshiro();
 
+        $this->name = $name;
         $this->species = $species;
         $this->owner = $owner;
         $this->skills = $skills;
@@ -369,7 +370,7 @@ class Pet
         return $this;
     }
 
-    public function getName(): ?string
+    public function getName(): string
     {
         return $this->name;
     }
@@ -1066,6 +1067,12 @@ class Pet
         return ArrayFunctions::find_one($this->getPetRelationships(), fn(PetRelationship $r) =>
             $r->getRelationship()->getId() === $otherPet->getId()
         );
+    }
+
+    public function getRelationshipWithOrThrow(Pet $otherPet): PetRelationship
+    {
+        return $this->getRelationshipWith($otherPet)
+            ?? throw new \InvalidArgumentException('No relationship found with pet ID ' . $otherPet->getId());
     }
 
     public function getRelationshipCount(): int

@@ -178,8 +178,8 @@ class JoustingService implements ParkEventInterface
         $team1Relationship = $team1->rider->getRelationshipWith($team1->mount);
         $team2Relationship = $team2->rider->getRelationshipWith($team2->mount);
 
-        $team1CurrentRelationship = $team1Relationship === null ? null : $team1Relationship->getCurrentRelationship();
-        $team2CurrentRelationship = $team2Relationship === null ? null : $team2Relationship->getCurrentRelationship();
+        $team1CurrentRelationship = $team1Relationship?->getCurrentRelationship();
+        $team2CurrentRelationship = $team2Relationship?->getCurrentRelationship();
 
         $team1WontWorkTogether = $team1CurrentRelationship === RelationshipEnum::Dislike || $team1CurrentRelationship === RelationshipEnum::BrokeUp;
         $team2WontWorkTogether = $team2CurrentRelationship === RelationshipEnum::Dislike || $team2CurrentRelationship === RelationshipEnum::BrokeUp;

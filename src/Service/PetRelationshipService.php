@@ -143,7 +143,7 @@ class PetRelationshipService
         $p1Relationships = $p1->getRelationshipWith($p2);
 
         if($p1Relationships)
-            $this->hangOutPublicly($p1Relationships, $p2->getRelationshipWith($p1), $hangOutDescription, $enemyDescription, $groupTags);
+            $this->hangOutPublicly($p1Relationships, $p2->getRelationshipWithOrThrow($p1), $hangOutDescription, $enemyDescription, $groupTags);
         else if($this->rng->rngNextInt(1, 100) <= $meetChance)
             $this->introducePets($p1, $p2, $meetSummary, $meetActivityLogTemplate, $groupTags);
     }
