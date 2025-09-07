@@ -81,7 +81,7 @@ class SelfReflectionController
                     'pet' => $r->getRelationship(),
                     'possibleRelationships' => PetRelationshipService::getRelationshipsBetween(
                         PetRelationshipService::max(RelationshipEnum::Friend, $r->getRelationshipGoal()),
-                        PetRelationshipService::max(RelationshipEnum::Friend, $r->getRelationship()->getRelationshipWith($r->getPet())->getRelationshipGoal())
+                        PetRelationshipService::max(RelationshipEnum::Friend, $r->getRelationship()->getRelationshipWithOrThrow($r->getPet())->getRelationshipGoal())
                     )
                 ],
                 $relationships
@@ -272,8 +272,8 @@ class SelfReflectionController
 
         $suggestions = array_map(function(Pet $otherPet) use($pet) {
             $possibleRelationships = PetRelationshipService::getRelationshipsBetween(
-                PetRelationshipService::max(RelationshipEnum::Friend, $otherPet->getRelationshipWith($pet)->getRelationshipGoal()),
-                PetRelationshipService::max(RelationshipEnum::Friend, $pet->getRelationshipWith($otherPet)->getRelationshipGoal())
+                PetRelationshipService::max(RelationshipEnum::Friend, $otherPet->getRelationshipWithOrThrow($pet)->getRelationshipGoal()),
+                PetRelationshipService::max(RelationshipEnum::Friend, $pet->getRelationshipWithOrThrow($otherPet)->getRelationshipGoal())
             );
 
             return [

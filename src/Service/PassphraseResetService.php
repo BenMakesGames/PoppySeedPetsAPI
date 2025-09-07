@@ -17,7 +17,6 @@ namespace App\Service;
 use App\Entity\PassphraseResetRequest;
 use App\Entity\User;
 use App\Functions\PlayerLogFactory;
-use App\Functions\StringFunctions;
 use App\Security\CryptographicFunctions;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Mailer\MailerInterface;
@@ -61,11 +60,11 @@ class PassphraseResetService
         }
         else
         {
-            $passwordResetRequest = (new PassphraseResetRequest())
-                ->setUser($user)
-                ->setExpiresOn($now->modify('+8 hours'))
-                ->setCode(CryptographicFunctions::generateSecureRandomString(40))
-            ;
+            $passwordResetRequest = new PassphraseResetRequest(
+                user: $user,
+                code: CryptographicFunctions::generateSecureRandomString(40),
+                expiresOn: $now->modify('+8 hours')
+            );
 
             $this->em->persist($passwordResetRequest);
             $this->em->flush();

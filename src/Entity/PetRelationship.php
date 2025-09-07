@@ -11,7 +11,6 @@ declare(strict_types=1);
  * You should have received a copy of the GNU General Public License along with The Poppy Seed Pets API. If not, see <https://www.gnu.org/licenses/>.
  */
 
-
 namespace App\Entity;
 
 use App\Enum\EnumInvalidValueException;
@@ -33,9 +32,6 @@ class PetRelationship
     /** @phpstan-ignore property.unusedType */
     private ?int $id = null;
 
-    /**
-     * @var Pet
-     */
     #[ORM\ManyToOne(targetEntity: Pet::class, inversedBy: 'petRelationships')]
     #[ORM\JoinColumn(nullable: false)]
     private Pet $pet;
@@ -53,11 +49,11 @@ class PetRelationship
     private \DateTimeImmutable $metOn;
 
     #[Groups(["petFriend"])]
-    #[ORM\Column(type: 'string', length: 40)]
-    private string $currentRelationship;
+    #[ORM\Column(type: 'string', length: 40, enumType: RelationshipEnum::class)]
+    private RelationshipEnum $currentRelationship;
 
-    #[ORM\Column(type: 'string', length: 40)]
-    private string $relationshipGoal;
+    #[ORM\Column(type: 'string', length: 40, enumType: RelationshipEnum::class)]
+    private RelationshipEnum $relationshipGoal;
 
     #[ORM\Column(type: 'integer')]
     private int $timeUntilChange;
@@ -74,11 +70,16 @@ class PetRelationship
     #[ORM\Column(type: 'smallint')]
     private int $rating = 0;
 
-    public function __construct()
+    public function __construct(Pet $pet, Pet $otherPet, RelationshipEnum $currentRelationship, RelationshipEnum $relationshipGoal)
     {
         $this->metOn = new \DateTimeImmutable();
         $this->lastMet = new \DateTimeImmutable();
         $this->timeUntilChange = random_int(random_int(20, 30), random_int(50, 80));
+
+        $this->pet = $pet;
+        $this->relationship = $otherPet;
+        $this->currentRelationship = $currentRelationship;
+        $this->relationshipGoal = $relationshipGoal;
     }
 
     public function getId(): ?int
@@ -87,7 +88,7 @@ class PetRelationship
     }
 
     #[Groups(["petFriend"])]
-    public function getRelationshipWanted(): ?string
+    public function getRelationshipWanted(): ?RelationshipEnum
     {
         if($this->pet->hasMerit(MeritEnum::INTROSPECTIVE))
             return $this->relationshipGoal;
@@ -119,7 +120,7 @@ class PetRelationship
         return $this;
     }
 
-    public function getMetDescription(): ?string
+    public function getMetDescription(): string
     {
         return $this->metDescription;
     }
@@ -136,48 +137,36 @@ class PetRelationship
         return $this->metOn;
     }
 
-    public function getCurrentRelationship(): string
+    public function getCurrentRelationship(): RelationshipEnum
     {
         return $this->currentRelationship;
     }
 
-    /**
-     * @throws EnumInvalidValueException
-     */
-    public function setCurrentRelationship(string $currentRelationship): self
+    public function setCurrentRelationship(RelationshipEnum $currentRelationship): self
     {
-        if(!RelationshipEnum::isAValue($currentRelationship))
-            throw new EnumInvalidValueException(RelationshipEnum::class, $currentRelationship);
-
         $this->currentRelationship = $currentRelationship;
 
         return $this;
     }
 
-    public function getRelationshipGoal(): string
+    public function getRelationshipGoal(): RelationshipEnum
     {
         return $this->relationshipGoal;
     }
 
-    /**
-     * @throws EnumInvalidValueException
-     */
-    public function setRelationshipGoal(string $relationshipGoal): self
+    public function setRelationshipGoal(RelationshipEnum $relationshipGoal): self
     {
-        if(!RelationshipEnum::isAValue($relationshipGoal))
-            throw new EnumInvalidValueException(RelationshipEnum::class, $relationshipGoal);
-
         $this->relationshipGoal = $relationshipGoal;
 
         return $this;
     }
 
-    public function getTimeUntilChange(): ?int
+    public function getTimeUntilChange(): int
     {
         return $this->timeUntilChange;
     }
 
-    public function setTimeUntilChange()
+    public function setTimeUntilChange(): void
     {
         $this->timeUntilChange = random_int(random_int(20, 30), random_int(40, 50));
     }
@@ -227,7 +216,7 @@ class PetRelationship
         return $this;
     }
 
-    public function getCommitment(): ?int
+    public function getCommitment(): int
     {
         return $this->commitment;
     }
@@ -248,7 +237,7 @@ class PetRelationship
 
     #[Groups(['petFriend'])]
     #[SerializedName('metDescription')]
-    public function getFormattedMetDescription()
+    public function getFormattedMetDescription(): string
     {
         return str_replace(
             [ '%pet.name%', '%relationship.name%' ],
@@ -257,7 +246,7 @@ class PetRelationship
         );
     }
 
-    public function getRating(): ?int
+    public function getRating(): int
     {
         return $this->rating;
     }

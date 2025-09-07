@@ -77,6 +77,9 @@ final class BadgeHelpers
         });
     }
 
+    /**
+     * @return array{badge: string, progress: array{target: int, current: int}, done:bool, reward: TraderOfferCostOrYield}
+     */
     public static function getBadgeProgress(string $badge, User $user, EntityManagerInterface $em, InMemoryCache $cache): array
     {
         switch($badge)

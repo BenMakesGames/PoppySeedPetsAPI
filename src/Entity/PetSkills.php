@@ -291,7 +291,7 @@ class PetSkills
         return $this;
     }
 
-    public function getMusic(): ?int
+    public function getMusic(): int
     {
         return $this->music;
     }

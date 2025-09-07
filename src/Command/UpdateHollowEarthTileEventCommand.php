@@ -115,7 +115,7 @@ class UpdateHollowEarthTileEventCommand extends PoppySeedPetsCommand
         }
     }
 
-    private function createBasicEvent(array &$event)
+    private function createBasicEvent(array &$event): void
     {
         $description = $this->askString('Description', null);
 

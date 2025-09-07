@@ -18,6 +18,9 @@ use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\QueryBuilder;
 
+/**
+ * @extends TypeaheadService<User>
+ */
 class UserTypeaheadService extends TypeaheadService
 {
     public function __construct(EntityManagerInterface $em)

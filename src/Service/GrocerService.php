@@ -62,6 +62,9 @@ class GrocerService
         [ 'Yaki Onigiri', 11 ],
     ];
 
+    /**
+     * @return array{0: string, 1: int}[]
+     */
     private static function getItems(bool $isCornMoon): array
     {
         return [
@@ -82,6 +85,9 @@ class GrocerService
         ];
     }
 
+    /**
+     * @return array{0: string, 1: int}
+     */
     private static function getWheatFlourOrCorn(bool $isCornMoon): array
     {
         if($isCornMoon)

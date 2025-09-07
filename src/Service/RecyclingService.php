@@ -64,7 +64,11 @@ class RecyclingService
             throw new \Exception('The "Giving Tree" NPC does not exist in the database!');
 
         $givingTreeHoliday = CalendarFunctions::isValentinesOrAdjacent($this->clock->now) || CalendarFunctions::isWhiteDay($this->clock->now);
+
+        /** @var string[] $questItems */
         $questItems = [];
+
+        /** @var int[] $idsNotRecycled */
         $idsNotRecycled = [];
 
         $totalItemsRecycled = 0;

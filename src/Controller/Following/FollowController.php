@@ -61,9 +61,7 @@ class FollowController
         if($alreadyFollowing)
             throw new PSPInvalidOperationException('You\'re already following that person.');
 
-        $newFriend = (new UserFollowing())
-            ->setUser($user)
-            ->setFollowing($following)
+        $newFriend = (new UserFollowing(user: $user, following: $following))
             ->setNote($note)
         ;
 

@@ -11,11 +11,13 @@ declare(strict_types=1);
  * You should have received a copy of the GNU General Public License along with The Poppy Seed Pets API. If not, see <https://www.gnu.org/licenses/>.
  */
 
-
 namespace App\Model;
 
 class Music
 {
+    /**
+     * @var string[]
+     */
     const array Lyrics = [
         // U Can't Touch This
         'Go with the flow; it is said: that if you can\'t groove to this then you are probably dead!',
@@ -529,5 +531,8 @@ class Music
 
         // Yakusoku wa Iranai (Escaflowne theme)
         'Kimi wo, kimi wo, shiiiinjiteru samui yoru moooooo... \*random bagpipe\*',
+
+        // R U Guna Move
+        'If you say sooo... iiit\'s irrelevaaant. (Are you gonna move? Are you gonna-- are you gonna-- are you gonna move?)',
     ];
 }

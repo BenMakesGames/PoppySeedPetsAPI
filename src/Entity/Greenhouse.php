@@ -145,7 +145,7 @@ class Greenhouse
         return $this;
     }
 
-    public function getMaxWaterPlants(): ?int
+    public function getMaxWaterPlants(): int
     {
         return $this->maxWaterPlants;
     }
@@ -157,7 +157,7 @@ class Greenhouse
         return $this;
     }
 
-    public function getMaxDarkPlants(): ?int
+    public function getMaxDarkPlants(): int
     {
         return $this->maxDarkPlants;
     }
@@ -169,7 +169,7 @@ class Greenhouse
         return $this;
     }
 
-    public function getHasComposter(): ?bool
+    public function getHasComposter(): bool
     {
         return $this->hasComposter;
     }
@@ -181,7 +181,7 @@ class Greenhouse
         return $this;
     }
 
-    public function getComposterFood(): ?int
+    public function getComposterFood(): int
     {
         return $this->composterFood;
     }
@@ -193,7 +193,7 @@ class Greenhouse
         return $this;
     }
 
-    public function getComposterBonusCountdown(): ?int
+    public function getComposterBonusCountdown(): int
     {
         return $this->composterBonusCountdown;
     }
@@ -225,7 +225,7 @@ class Greenhouse
         return $this;
     }
 
-    public function getButterfliesDismissedOn(): ?\DateTimeImmutable
+    public function getButterfliesDismissedOn(): \DateTimeImmutable
     {
         return $this->butterfliesDismissedOn;
     }
@@ -237,7 +237,7 @@ class Greenhouse
         return $this;
     }
 
-    public function getBeesDismissedOn(): ?\DateTimeImmutable
+    public function getBeesDismissedOn(): \DateTimeImmutable
     {
         return $this->beesDismissedOn;
     }
@@ -249,7 +249,7 @@ class Greenhouse
         return $this;
     }
 
-    public function getBees2DismissedOn(): ?\DateTimeImmutable
+    public function getBees2DismissedOn(): \DateTimeImmutable
     {
         return $this->bees2DismissedOn;
     }

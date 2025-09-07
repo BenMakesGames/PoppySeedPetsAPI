@@ -236,7 +236,7 @@ class LoveService
         return $ancestorIds;
     }
 
-    public function sexyTimeChances(Pet $p1, Pet $p2, string $relationshipType): int
+    public function sexyTimeChances(Pet $p1, Pet $p2, RelationshipEnum $relationshipType): int
     {
         // parent-child are implemented as BFFs, which have a tiny chance of sexy times that
         // I don't think we need in this game >_>

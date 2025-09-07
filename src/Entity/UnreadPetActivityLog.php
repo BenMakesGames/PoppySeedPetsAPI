@@ -27,18 +27,24 @@ class UnreadPetActivityLog
 
     #[ORM\ManyToOne(targetEntity: Pet::class)]
     #[ORM\JoinColumn(nullable: false)]
-    private $pet;
+    private Pet $pet;
 
     #[ORM\OneToOne(targetEntity: PetActivityLog::class)]
     #[ORM\JoinColumn(nullable: false)]
-    private $petActivityLog;
+    private PetActivityLog $petActivityLog;
+
+    public function __construct(Pet $pet, PetActivityLog $petActivityLog)
+    {
+        $this->pet = $pet;
+        $this->petActivityLog = $petActivityLog;
+    }
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getPet(): ?Pet
+    public function getPet(): Pet
     {
         return $this->pet;
     }
@@ -50,7 +56,7 @@ class UnreadPetActivityLog
         return $this;
     }
 
-    public function getPetActivityLog(): ?PetActivityLog
+    public function getPetActivityLog(): PetActivityLog
     {
         return $this->petActivityLog;
     }

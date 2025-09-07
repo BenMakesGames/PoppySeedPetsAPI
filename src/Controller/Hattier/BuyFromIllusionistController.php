@@ -33,6 +33,9 @@ use App\Service\UserAccessor;
 #[Route("/illusionist")]
 class BuyFromIllusionistController
 {
+    /**
+     * @var array<string, array{moneys: int, recyclingPoints: int, bloodWine: int}>
+     */
     private const array Inventory = [
         'Scroll of Illusions' => [ 'moneys' => 200, 'recyclingPoints' => 100, 'bloodWine' => 2 ],
         'Blush of Life' => [ 'moneys' => 200, 'recyclingPoints' => 100, 'bloodWine' => 2 ],
@@ -53,8 +56,8 @@ class BuyFromIllusionistController
     {
         $user = $userAccessor->getUserOrThrow();
 
-        $item = $request->request->get('item');
-        $payWith = $request->request->get('payWith');
+        $item = $request->request->getString('item');
+        $payWith = $request->request->getString('payWith');
 
         if($payWith !== 'moneys' && $payWith !== 'recyclingPoints' && $payWith !== 'bloodWine')
             throw new PSPFormValidationException('You must choose whether to pay with moneys, recycling points, or Blood Wine.');

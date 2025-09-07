@@ -43,7 +43,7 @@ class InventoryModifierFunctions
         $em->remove($spice);
     }
 
-    public static function getNameWithModifiers(Inventory $item): ?string
+    public static function getNameWithModifiers(Inventory $item): string
     {
         if(!$item->getEnchantment() && !$item->getSpice())
             return $item->getItem()->getName();

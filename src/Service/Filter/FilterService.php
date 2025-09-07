@@ -27,6 +27,10 @@ interface FilterServiceInterface
     public function addRequiredFilter(string $key, mixed $value): void;
     public function createQueryBuilder(): QueryBuilder;
     public function applyResultCache(Query $qb, string $cacheKey): AbstractQuery;
+
+    /**
+     * @return int[]
+     */
     public function allowedPageSizes(): array;
 }
 

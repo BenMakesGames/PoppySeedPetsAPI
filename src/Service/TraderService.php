@@ -38,6 +38,7 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class TraderService
 {
+    /** @var string[]  */
     private const array TraderNames = [
         // Saffron
         'Azafrán', 'Zaeafran',
@@ -646,6 +647,9 @@ class TraderService
         ];
     }
 
+    /**
+     * @return array{item: Item, value: int}[]
+     */
     private function getSpecialOfferItemsAndPrices(int $offers): array
     {
         if($offers <= 0) return [];
@@ -657,6 +661,9 @@ class TraderService
         );
     }
 
+    /**
+     * @return array{item: Item, value: int}[]
+     */
     private function computeSpecialOfferItemsAndPrices(int $offers): array
     {
         $results = [];
@@ -687,6 +694,7 @@ class TraderService
     }
 
     /**
+     * @param ItemQuantity[] $quantities
      * @return TraderOffer[]
      */
     private function getSpecialOffers(User $user, array $quantities): array
@@ -961,6 +969,9 @@ class TraderService
         return $offers;
     }
 
+    /**
+     * @return array{0: string, 1: int}
+     */
     public static function getCreepyMaskDayPayment(int $month): array
     {
         return match ($month)
@@ -988,7 +999,7 @@ class TraderService
      */
     public function findItemsForDailySpecialOffers(int $offers): array
     {
-        $count = $this->em->getRepository(Item::class)->createQueryBuilder('i')
+        $count = (int)$this->em->getRepository(Item::class)->createQueryBuilder('i')
             ->select('COUNT(i)')
             ->andWhere('i.recycleValue > 0')
             ->andWhere('i.treasure IS NULL')
@@ -998,7 +1009,7 @@ class TraderService
             ->getSingleScalarResult()
         ;
 
-        $random = (($this->clock->now->format('Ymd') - 20040404) * 6737 + 76801) % ($count - $offers + 1);
+        $random = (((int)$this->clock->now->format('Ymd') - 20040404) * 6737 + 76801) % ($count - $offers + 1);
 
         return $this->em->getRepository(Item::class)->createQueryBuilder('i')
             ->andWhere('i.recycleValue > 0')
@@ -1014,6 +1025,7 @@ class TraderService
     }
 
     /**
+     * @param ItemQuantity[] $quantities
      * @return TraderOffer[]
      */
     private function getMetalOffers(User $user, array $quantities): array
@@ -1122,6 +1134,7 @@ class TraderService
     }
 
     /**
+     * @param ItemQuantity[] $quantities
      * @return TraderOffer[]
      */
     private function getUmbralThingsOffers(User $user, array $quantities): array
@@ -1197,6 +1210,7 @@ class TraderService
     }
 
     /**
+     * @param ItemQuantity[] $quantities
      * @return TraderOffer[]
      */
     private function getFoodsOffers(User $user, array $quantities): array
@@ -1273,6 +1287,7 @@ class TraderService
     }
 
     /**
+     * @param ItemQuantity[] $quantities
      * @return TraderOffer[]
      */
     private function getCuriositiesOffers(User $user, array $quantities): array
@@ -1372,6 +1387,7 @@ class TraderService
     }
 
     /**
+     * @param ItemQuantity[] $quantities
      * @return TraderOffer[]
      */
     private function getPlushyOffers(User $user, array $quantities): array

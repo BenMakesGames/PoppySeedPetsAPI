@@ -29,11 +29,11 @@ class UserFollowing
     #[Groups(["myFollowers"])]
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'following')]
     #[ORM\JoinColumn(nullable: false)]
-    private $user;
+    private User $user;
 
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'followedBy')]
     #[ORM\JoinColumn(nullable: false)]
-    private $following;
+    private User $following;
 
     #[ORM\Column(type: 'datetime_immutable')]
     private \DateTimeImmutable $dateAdded;
@@ -41,7 +41,7 @@ class UserFollowing
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $note = null;
 
-    public function __construct()
+    public function __construct(User $user, User $following)
     {
         $this->dateAdded = new \DateTimeImmutable();
     }

@@ -289,7 +289,7 @@ class Inventory
         return $this;
     }
 
-    public function getLockedToOwner(): ?bool
+    public function getLockedToOwner(): bool
     {
         return $this->lockedToOwner;
     }
@@ -615,7 +615,7 @@ class Inventory
             return 0;
     }
 
-    public function getFullItemName(): ?string
+    public function getFullItemName(): string
     {
         return $this->fullItemName;
     }

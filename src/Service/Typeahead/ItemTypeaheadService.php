@@ -18,6 +18,9 @@ use App\Entity\Item;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\QueryBuilder;
 
+/**
+ * @extends TypeaheadService<Item>
+ */
 class ItemTypeaheadService extends TypeaheadService
 {
     public function __construct(EntityManagerInterface $em)
