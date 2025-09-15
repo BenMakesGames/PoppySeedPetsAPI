@@ -16,8 +16,8 @@ namespace App\Controller\Item\Book;
 
 use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
-use App\Functions\RecipeRepository;
 use App\Service\CookingService;
+use App\Service\RecipeRepository;
 use App\Service\ResponseService;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
@@ -62,13 +62,13 @@ class Cooking101Controller
     #[Route("/{inventory}/read", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function read(
-        Inventory $inventory, ResponseService $responseService,
-        UserAccessor $userAccessor
+        Inventory $inventory, ResponseService $responseService, UserAccessor $userAccessor,
+        RecipeRepository $recipeRepository
     ): JsonResponse
     {
         ItemControllerHelpers::validateInventory($userAccessor->getUserOrThrow(), $inventory, 'cooking101/#/read');
 
-        $recipeCount = count(RecipeRepository::Recipes);
+        $recipeCount = count($recipeRepository->recipes);
 
         return $responseService->itemActionSuccess('# Cooking 101
 

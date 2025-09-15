@@ -23,9 +23,9 @@ use App\Enum\EnumInvalidValueException;
 use App\Enum\UserStat;
 use App\Functions\ArrayFunctions;
 use App\Functions\NumberFunctions;
-use App\Functions\RecipeRepository;
 use App\Model\ItemQuantity;
 use App\Model\PrepareRecipeResults;
+use App\Model\Recipe;
 use Doctrine\ORM\EntityManagerInterface;
 
 class CookingService
@@ -34,7 +34,8 @@ class CookingService
         private readonly InventoryService $inventoryService,
         private readonly EntityManagerInterface $em,
         private readonly UserStatsService $userStatsRepository,
-        private readonly IRandom $rng
+        private readonly IRandom $rng,
+        private readonly RecipeRepository $recipeRepository,
     )
     {
     }
@@ -42,9 +43,9 @@ class CookingService
     /**
      * @param ItemQuantity[] $quantities
      */
-    public function findRecipeFromQuantities(array $quantities): ?array
+    public function findRecipeFromQuantities(array $quantities): ?Recipe
     {
-        return RecipeRepository::findOneByIngredients(InventoryService::serializeItemList($quantities));
+        return $this->recipeRepository->findOneByIngredients(InventoryService::serializeItemList($quantities));
     }
 
     /**
@@ -106,9 +107,8 @@ class CookingService
 
     /**
      * @param Inventory[] $inventory
-     * @param ItemQuantity[] $recipe
      */
-    public function prepareRecipeWithCookingBuddy(User $inventoryOwner, array $inventory, array $recipe, int $batchSize): ?PrepareRecipeResults
+    public function prepareRecipeWithCookingBuddy(User $inventoryOwner, array $inventory, Recipe $recipe, int $batchSize): ?PrepareRecipeResults
     {
         $quantities = CookingService::buildQuantitiesFromInventory($inventory);
 
@@ -119,7 +119,7 @@ class CookingService
 
         $matchedRecipe = $this->findRecipeFromQuantities($batchQuantities);
 
-        if(!$matchedRecipe || $matchedRecipe['name'] != $recipe['name'])
+        if(!$matchedRecipe || $matchedRecipe->name != $recipe->name)
             throw new \InvalidArgumentException("Given inventory does not match recipe and batchSize");
 
         return $this->prepareRecipe($inventory, $recipe, $batchSize, $inventoryOwner, $inventoryOwner);
@@ -187,7 +187,7 @@ class CookingService
         $results = $this->prepareRecipe($inventory, $recipe, $multiple, $inventoryOwner, $preparer);
 
         if($inventoryOwner->getCookingBuddy())
-            $this->learnRecipe($inventoryOwner, $recipe['name']);
+            $this->learnRecipe($inventoryOwner, $recipe->name);
 
         return $results;
     }
@@ -202,7 +202,7 @@ class CookingService
         if($alreadyKnownRecipe)
             return false;
 
-        if(!ArrayFunctions::any(RecipeRepository::Recipes, fn($recipe) => $recipe['name'] === $recipeName))
+        if(!ArrayFunctions::any($this->recipeRepository->recipes, fn(Recipe $recipe) => $recipe->name === $recipeName))
             throw new \Exception('Cannot learn recipe "' . $recipeName . '" - it doesn\'t exist!');
 
         $knownRecipe = new KnownRecipes(
@@ -217,6 +217,9 @@ class CookingService
         return true;
     }
 
+    /**
+     * @param string[] $recipeNames
+     */
     public function showRecipeNamesToCookingBuddy(User $user, array $recipeNames): string
     {
         if(!$user->getCookingBuddy())
@@ -234,7 +237,7 @@ class CookingService
         return 'Your Cooking Buddy learned ' . $countLearnedRecipes . ' new recipe' . ($countLearnedRecipes === 1 ? '' : 's') . '.';
     }
 
-    private function prepareRecipe(array $inventory, ?array $recipe, int $multiple, User $inventoryOwner, User $preparer): PrepareRecipeResults
+    private function prepareRecipe(array $inventory, Recipe $recipe, int $multiple, User $inventoryOwner, User $preparer): PrepareRecipeResults
     {
         /** @var Spice[] $spices */
         $spices = [];
@@ -252,7 +255,7 @@ class CookingService
 
         $locationOfFirstItem = $inventory[0]->getLocation();
 
-        $makes = InventoryService::deserializeItemList($this->em, $recipe['makes']);
+        $makes = InventoryService::deserializeItemList($this->em, $recipe->makes);
 
         foreach($makes as $m)
             $m->quantity *= $multiple;

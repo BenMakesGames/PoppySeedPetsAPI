@@ -21,9 +21,9 @@ use App\Enum\SerializationGroupEnum;
 use App\Enum\UserStat;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotFoundException;
-use App\Functions\RecipeRepository;
 use App\Service\CookingService;
 use App\Service\InventoryService;
+use App\Service\RecipeRepository;
 use App\Service\ResponseService;
 use App\Service\UserAccessor;
 use App\Service\UserStatsService;
@@ -46,6 +46,7 @@ class PrepareRecipeFromMemory
     #[Route("/prepare/{knownRecipe}/{quantity}", methods: ["POST"], requirements: ["quantity" => "\d+"])]
     public function prepareRecipeFromMemory(
         KnownRecipes $knownRecipe, ResponseService $responseService, EntityManagerInterface $em,
+        RecipeRepository $recipeRepository,
         UserStatsService $userStatsRepository, CookingService $cookingService, Request $request,
         UserAccessor $userAccessor, int $quantity = 1,
     ): JsonResponse
@@ -59,9 +60,9 @@ class PrepareRecipeFromMemory
             throw new PSPNotFoundException('Unknown recipe? Weird. Reload and try again.');
 
         $recipeName = $knownRecipe->getRecipe();
-        $recipe = RecipeRepository::findOneByName($recipeName);
+        $recipe = $recipeRepository->findOneByName($recipeName);
 
-        $ingredients = InventoryService::deserializeItemList($em, $recipe['ingredients']);
+        $ingredients = InventoryService::deserializeItemList($em, $recipe->ingredients);
 
         $location = $request->request->getInt('location');
 
@@ -83,7 +84,7 @@ class PrepareRecipeFromMemory
             );
 
             if(count($inventory) !== $ingredient->quantity * $quantity)
-                throw new PSPInvalidOperationException('You do not have enough ' . $ingredient->item->getName() . ' to make ' . $recipe['name'] . '.');
+                throw new PSPInvalidOperationException('You do not have enough ' . $ingredient->item->getName() . ' to make ' . $recipe->name . '.');
 
             $inventoryToUse = array_merge($inventoryToUse, $inventory);
         }

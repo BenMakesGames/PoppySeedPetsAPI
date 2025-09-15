@@ -11,15 +11,15 @@ declare(strict_types=1);
  * You should have received a copy of the GNU General Public License along with The Poppy Seed Pets API. If not, see <https://www.gnu.org/licenses/>.
  */
 
-
 namespace App\Controller\Item\Book;
 
 use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
-use App\Functions\RecipeRepository;
 use App\Model\ItemQuantity;
+use App\Model\Recipe;
 use App\Service\CookingService;
 use App\Service\InventoryService;
+use App\Service\RecipeRepository;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -30,23 +30,26 @@ use App\Service\UserAccessor;
 #[Route("/item/melt")]
 class MeltController
 {
-    private function getRecipes(): array
+    /**
+     * @return Recipe[]
+     */
+    private function getRecipes(RecipeRepository $recipeRepository): array
     {
-        return RecipeRepository::findBy(fn($recipe) => str_starts_with($recipe['name'], 'Melt'));
+        return $recipeRepository->findBy(fn(Recipe $recipe) => str_starts_with($recipe->name, 'Melt'));
     }
 
     #[Route("/{inventory}/upload", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function upload(
         Inventory $inventory, ResponseService $responseService, CookingService $cookingService,
-        UserAccessor $userAccessor
+        UserAccessor $userAccessor, RecipeRepository $recipeRepository
     ): JsonResponse
     {
         $user = $userAccessor->getUserOrThrow();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'melt/#/upload');
 
-        $recipeNames = array_map(fn(array $recipe) => $recipe['name'], $this->getRecipes());
+        $recipeNames = array_map(fn(Recipe $recipe) => $recipe->name, $this->getRecipes($recipeRepository));
 
         $message = $cookingService->showRecipeNamesToCookingBuddy($user, $recipeNames);
 
@@ -57,26 +60,24 @@ class MeltController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function read(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em,
-        UserAccessor $userAccessor
+        UserAccessor $userAccessor, RecipeRepository $recipeRepository
     ): JsonResponse
     {
         ItemControllerHelpers::validateInventory($userAccessor->getUserOrThrow(), $inventory, 'melt/#/read');
 
-        $recipes = $this->getRecipes();
+        $recipes = $this->getRecipes($recipeRepository);
 
         $recipeTexts = [
             '# Melt',
-            'Many items can be melted down through the use of Liquid-hot Magma. If you have too many Pokers, or Silver Keys, then Liquid-hot Magma may become your best friend!',
-            'Combine any of the following with Liquid-hot Magma to melt them down:'
+            'Many items can be melted down through the application of HEAT. If you have too many Pokers, or Silver Keys, get yourself a Forge - it may become your best friend!',
+            'Using the heat provided by your forge, you can melt these down:'
         ];
 
         $items = [];
 
         foreach($recipes as $recipe)
         {
-            $ingredients = InventoryService::deserializeItemList($em, $recipe['ingredients']);
-
-            $ingredients = array_values(array_filter($ingredients, fn(ItemQuantity $q) => $q->item->getName() !== 'Liquid-hot Magma'));
+            $ingredients = InventoryService::deserializeItemList($em, $recipe->ingredients);
 
             if(count($ingredients) > 1)
                 continue;

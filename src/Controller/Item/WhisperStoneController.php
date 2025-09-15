@@ -11,17 +11,17 @@ declare(strict_types=1);
  * You should have received a copy of the GNU General Public License along with The Poppy Seed Pets API. If not, see <https://www.gnu.org/licenses/>.
  */
 
-
 namespace App\Controller\Item;
 
 use App\Entity\Inventory;
 use App\Functions\ArrayFunctions;
 use App\Functions\ItemRepository;
-use App\Functions\RecipeRepository;
 use App\Model\ItemQuantity;
+use App\Model\Recipe;
 use App\Service\CookingService;
 use App\Service\InventoryService;
 use App\Service\IRandom;
+use App\Service\RecipeRepository;
 use App\Service\ResponseService;
 use App\Service\UserStatsService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -37,8 +37,8 @@ class WhisperStoneController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function read(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, IRandom $rng,
-        UserStatsService $userStatsRepository, CookingService $cookingService,
-        UserAccessor $userAccessor
+        UserStatsService $userStatsRepository, CookingService $cookingService, UserAccessor $userAccessor,
+        RecipeRepository $recipeRepository
     ): JsonResponse
     {
         $user = $userAccessor->getUserOrThrow();
@@ -47,7 +47,7 @@ class WhisperStoneController
 
         $inventory->changeItem(ItemRepository::findOneByName($em, 'Striped Microcline'));
 
-        $complexRecipes = RecipeRepository::findBy(fn($recipe) => mb_substr_count($recipe['ingredients'], ',') >= 2);
+        $complexRecipes = $recipeRepository->findBy(fn(Recipe $recipe) => mb_substr_count($recipe->ingredients, ',') >= 2);
 
         $recipes = $rng->rngNextSubsetFromArray($complexRecipes, 2);
 
@@ -61,21 +61,21 @@ class WhisperStoneController
                         return $q->item->getName();
                     else
                         return $q->quantity . '× ' . $q->item->getName();
-                }, InventoryService::deserializeItemList($em, $recipe['ingredients']))
+                }, InventoryService::deserializeItemList($em, $recipe->ingredients))
             );
         }
 
         $message =
-            "The stone whispers:\n\n\"To make " . $recipes[0]['name'] . ', combine ' . $ingredients[0] . '. ' .
-            'To make ' . $recipes[1]['name'] . ', combine ' . $ingredients[1] . ".\"\n\n"
+            "The stone whispers:\n\n\"To make " . $recipes[0]->name . ', combine ' . $ingredients[0] . '. ' .
+            'To make ' . $recipes[1]->name . ', combine ' . $ingredients[1] . ".\"\n\n"
         ;
 
         $stat = $userStatsRepository->incrementStat($user, 'Listened to a Whisper Stone');
 
         if($user->getCookingBuddy())
         {
-            $learnedSomethingNew = $cookingService->learnRecipe($user, $recipes[0]['name']);
-            $learnedSomethingNew = $cookingService->learnRecipe($user, $recipes[1]['name']) || $learnedSomethingNew;
+            $learnedSomethingNew = $cookingService->learnRecipe($user, $recipes[0]->name);
+            $learnedSomethingNew = $cookingService->learnRecipe($user, $recipes[1]->name) || $learnedSomethingNew;
 
             if($learnedSomethingNew)
                 $message .= "\"I heard that,\" your Cooking Buddy whispers back. (It seems like it learned something new!";

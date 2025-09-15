@@ -16,10 +16,11 @@ namespace App\Controller\Item\Book;
 
 use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
-use App\Functions\RecipeRepository;
 use App\Model\ItemQuantity;
+use App\Model\Recipe;
 use App\Service\CookingService;
 use App\Service\InventoryService;
+use App\Service\RecipeRepository;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -30,23 +31,23 @@ use App\Service\UserAccessor;
 #[Route("/item/leChocolat")]
 class LeChocolatController
 {
-    private function getRecipes(): array
+    private function getRecipes(RecipeRepository $recipeRepository): array
     {
-        return RecipeRepository::findBy(fn($recipe) => mb_strpos(mb_strtolower($recipe['name']), 'chocolat') !== false);
+        return $recipeRepository->findBy(fn(Recipe $recipe) => mb_strpos(mb_strtolower($recipe->name), 'chocolat') !== false);
     }
 
     #[Route("/{inventory}/upload", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function upload(
         Inventory $inventory, ResponseService $responseService, CookingService $cookingService,
-        UserAccessor $userAccessor
+        UserAccessor $userAccessor, RecipeRepository $recipeRepository
     ): JsonResponse
     {
         $user = $userAccessor->getUserOrThrow();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'leChocolat/#/upload');
 
-        $recipeNames = array_map(fn(array $recipe) => $recipe['name'], $this->getRecipes());
+        $recipeNames = array_map(fn(Recipe $recipe) => $recipe->name, $this->getRecipes($recipeRepository));
 
         $message = $cookingService->showRecipeNamesToCookingBuddy($user, $recipeNames);
 
@@ -57,12 +58,12 @@ class LeChocolatController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function read(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em,
-        UserAccessor $userAccessor
+        UserAccessor $userAccessor, RecipeRepository $recipeRepository
     ): JsonResponse
     {
         ItemControllerHelpers::validateInventory($userAccessor->getUserOrThrow(), $inventory, 'leChocolat/#/read');
 
-        $recipes = $this->getRecipes();
+        $recipes = $this->getRecipes($recipeRepository);
 
         $recipeTexts = [
             '# Chocolate',
@@ -70,12 +71,12 @@ class LeChocolatController
         ];
 
         $recipeTexts[] = implode("\r\n", array_map(function($recipe) {
-            return '* ' . $recipe['name'];
+            return '* ' . $recipe->name;
         }, $recipes));
 
         foreach($recipes as $recipe)
         {
-            $ingredients = InventoryService::deserializeItemList($em, $recipe['ingredients']);
+            $ingredients = InventoryService::deserializeItemList($em, $recipe->ingredients);
 
             usort($ingredients, fn($a, $b) => $a->item->getName() <=> $b->item->getName());
 
@@ -86,7 +87,7 @@ class LeChocolatController
                     return '* ' . $q->item->getName();
             }, $ingredients);
 
-            $recipeTexts[] = '### ' . $recipe['name'] . "\r\n" . implode("\r\n", $items);
+            $recipeTexts[] = '### ' . $recipe->name . "\r\n" . implode("\r\n", $items);
         }
 
         return $responseService->itemActionSuccess(implode("\r\n\r\n", $recipeTexts));
