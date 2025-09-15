@@ -70,7 +70,7 @@ class MeltController
         $recipeTexts = [
             '# Melt',
             'Many items can be melted down through the application of HEAT. If you have too many Pokers, or Silver Keys, get yourself a Forge - it may become your best friend!',
-            'Using the heat provided by your forge, you can melt these down:'
+            'Using the heat provided by your Forge, you can melt these down:'
         ];
 
         $items = [];
