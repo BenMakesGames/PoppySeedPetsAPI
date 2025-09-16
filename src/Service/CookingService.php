@@ -21,6 +21,8 @@ use App\Entity\Spice;
 use App\Entity\User;
 use App\Enum\EnumInvalidValueException;
 use App\Enum\UserStat;
+use App\Exceptions\PSPInvalidOperationException;
+use App\Exceptions\PSPNotUnlockedException;
 use App\Functions\ArrayFunctions;
 use App\Functions\NumberFunctions;
 use App\Model\ItemQuantity;
@@ -242,6 +244,22 @@ class CookingService
         /** @var Spice[] $spices */
         $spices = [];
         $allLockedToOwner = true;
+
+        if($recipe->requiredHeat > 0)
+        {
+            if(!$preparer->getFireplace())
+                throw new PSPNotUnlockedException('Fireplace');
+
+            if(!$preparer->getFireplace()->getHasForge())
+                throw new PSPInvalidOperationException('You need HEAT to prepare this recipe; you don\'t seem to have a suitable source...');
+
+            $requiredHeat = $recipe->requiredHeat * $multiple;
+
+            if($preparer->getFireplace()->getHeat() < $requiredHeat)
+                throw new PSPInvalidOperationException('You need more HEAT in your Fireplace - get burnin\'!');
+
+            $preparer->getFireplace()->removeHeat($requiredHeat);
+        }
 
         foreach($inventory as $i)
         {

@@ -27,12 +27,11 @@ final class Version20250916000904 extends AbstractMigration
     {
         $this->addSql(<<<'EOSQL'
         -- the item itself!
-        INSERT INTO item (`id`, `name`, `description`, `image`, `use_actions`, `tool_id`, `food_id`, `fertilizer`, `plant_id`, `hat_id`, `fuel`, `recycle_value`, `enchants_id`, `spice_id`, `treasure_id`, `is_bug`, `hollow_earth_tile_card_id`, `cannot_be_thrown_out`, `museum_points`) VALUES (1483,"Forge Blueprint","This blueprint shows you and your pets how to build a functioning forge from nothing more than a piece of Iron and a Heavy Hammer! (Apparently that\'s all you need!)","note/blueprint-forge","[[\"Read\",\"forgeBlueprint\",\"page\"]]",NULL,NULL,0,NULL,NULL,90,0,NULL,NULL,NULL,0,NULL,0,1) ON DUPLICATE KEY UPDATE `id` = `id`;
+        INSERT INTO item (`id`, `name`, `description`, `image`, `use_actions`, `tool_id`, `food_id`, `fertilizer`, `plant_id`, `hat_id`, `fuel`, `recycle_value`, `enchants_id`, `spice_id`, `treasure_id`, `is_bug`, `hollow_earth_tile_card_id`, `cannot_be_thrown_out`, `museum_points`) VALUES (1483,"Forge Blueprint","With nothing more than a piece of Iron and a Heavy Hammer, it's apparently possible to build a fully-functioning, HEAT-channeling Forge. Why, with such incredible HEAT, you could probably make and melt all kinds of things...","note/blueprint-forge","[[\"Read\",\"forgeBlueprint\",\"page\"]]",NULL,NULL,0,NULL,NULL,90,0,NULL,NULL,NULL,0,NULL,0,1) ON DUPLICATE KEY UPDATE `id` = `id`;
         
         -- grammar
         INSERT INTO item_grammar (`id`, `item_id`, `article`) VALUES (1567,1483,"a") ON DUPLICATE KEY UPDATE `id` = `id`;
         EOSQL);
-
     }
 
     public function down(Schema $schema): void

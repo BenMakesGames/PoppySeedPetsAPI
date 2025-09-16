@@ -31,7 +31,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[Route("/item")]
 class ForgeBlueprintController
 {
-    #[Route("/forgetBlueprint/{inventory}", methods: ["POST"])]
+    #[Route("/forgeBlueprint/{inventory}", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function buildForge(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
@@ -46,7 +46,7 @@ class ForgeBlueprintController
         if(!$user->hasUnlockedFeature(UnlockableFeatureEnum::Fireplace))
             return $responseService->error(400, [ 'You need a Fireplace to build a Forge!' ]);
 
-        if($user->getFireplace()->hasForge())
+        if($user->getFireplace()->getHasForge())
             return $responseService->error(200, [ 'Your Fireplace already has a Forge!' ]);
 
         $pet = BlueprintHelpers::getPet($em, $user, $request);

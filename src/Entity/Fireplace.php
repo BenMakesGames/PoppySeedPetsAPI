@@ -156,6 +156,19 @@ class Fireplace
         return $this;
     }
 
+    public function removeHeat(int $heat): self
+    {
+        if($heat <= 0)
+            throw new \InvalidArgumentException('Heat to remove must be positive!');
+
+        if($heat > $this->heat)
+            throw new \InvalidArgumentException('Cannot remove more heat than is present!');
+
+        $this->heat -= $heat;
+
+        return $this;
+    }
+
     #[Groups(["myFireplace"])]
     #[SerializedName('heat')]
     public function getHeatPercent(): int
@@ -362,7 +375,8 @@ class Fireplace
         return $this;
     }
 
-    public function hasForge(): bool
+    #[Groups(["myFireplace"])]
+    public function getHasForge(): bool
     {
         return $this->hasForge;
     }
