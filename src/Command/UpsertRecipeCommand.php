@@ -83,16 +83,18 @@ class UpsertRecipeCommand extends PoppySeedPetsCommand
         else
         {
             $this->output->writeln('Creating "' . $name . '"');
-            $recipe = [
-                'name' => $name,
-                'ingredients' => '',
-                'makes' => ''
-            ];
+            $recipe = new Recipe(
+                $name,
+                '',
+                '',
+                0
+            );
         }
 
         $recipe = $this->name($recipe, $name);
         $recipe = $this->ingredients($recipe);
         $recipe = $this->makes($recipe);
+        $recipe = $this->requiredHeat($recipe);
 
         $this->em->flush();
 
@@ -121,7 +123,7 @@ class UpsertRecipeCommand extends PoppySeedPetsCommand
         $this->output->writeln('');
         $this->output->writeln('PHP:');
         $escapedName = str_replace("'", "\\'", $name);
-        $this->output->writeln("[ 'name' => '$escapedName', 'ingredients' => '{$recipe->ingredients}', 'makes' => '{$recipe->makes}' ],");
+        $this->output->writeln("new Recipe('$escapedName', '$recipe->ingredients', '$recipe->makes', $recipe->requiredHeat),");
 
         return self::SUCCESS;
     }
@@ -178,6 +180,16 @@ class UpsertRecipeCommand extends PoppySeedPetsCommand
             $recipe->ingredients,
             InventoryService::serializeItemList($makes),
             $recipe->requiredHeat
+        );
+    }
+
+    private function requiredHeat(Recipe $recipe): Recipe
+    {
+        return new Recipe(
+            $recipe->name,
+            $recipe->ingredients,
+            $recipe->makes,
+            $this->askInt('How much heat? (360 for melt; 300 for crafts)', $recipe->requiredHeat),
         );
     }
 
