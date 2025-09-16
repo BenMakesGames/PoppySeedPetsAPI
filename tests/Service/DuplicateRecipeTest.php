@@ -14,7 +14,7 @@ declare(strict_types=1);
 
 namespace Service;
 
-use App\Functions\RecipeRepository;
+use App\Service\RecipeRepository;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 /**
@@ -29,13 +29,14 @@ class DuplicateRecipeTest extends KernelTestCase
     public function testDuplicateRecipesDoNotExist(): void
     {
         $seenIngredients = [];
+        $recipeRepository = new RecipeRepository();
 
-        foreach(RecipeRepository::Recipes as $recipe)
+        foreach($recipeRepository->recipes as $recipe)
         {
-            if(array_key_exists($recipe['ingredients'], $seenIngredients))
-                $this->fail("Duplicate recipes found: \"{$recipe['name']}\" and \"{$seenIngredients[$recipe['ingredients']]}\".");
+            if(array_key_exists($recipe->ingredients, $seenIngredients))
+                $this->fail("Duplicate recipes found: \"{$recipe->name}\" and \"{$seenIngredients[$recipe->ingredients]}\".");
             else
-                $seenIngredients[$recipe['ingredients']] = $recipe['name'];
+                $seenIngredients[$recipe->ingredients] = $recipe->name;
         }
     }
 }

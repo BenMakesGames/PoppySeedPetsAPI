@@ -1,5 +1,5 @@
 <?php
-declare(strict_types=1);
+declare(strict_types = 1);
 
 /**
  * This file is part of the Poppy Seed Pets API.
@@ -11,20 +11,16 @@ declare(strict_types=1);
  * You should have received a copy of the GNU General Public License along with The Poppy Seed Pets API. If not, see <https://www.gnu.org/licenses/>.
  */
 
-
 namespace App\Model;
 
-use App\Entity\Inventory;
-
-final class PrepareRecipeResults
+final class Recipe
 {
-    /** @var Inventory[] */
-    public array $inventory;
-
-    /** @var ItemQuantity[] */
-    public array $quantities;
-
-    public Recipe $recipe;
-
-    public int $location;
+    public function __construct(
+        public readonly string $name,
+        public readonly string $ingredients,
+        public readonly string $makes,
+        public readonly int $requiredHeat,
+    )
+    {
+    }
 }

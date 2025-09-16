@@ -16,10 +16,11 @@ namespace App\Controller\Item\Book;
 
 use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
-use App\Functions\RecipeRepository;
 use App\Model\ItemQuantity;
+use App\Model\Recipe;
 use App\Service\CookingService;
 use App\Service\InventoryService;
+use App\Service\RecipeRepository;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -30,23 +31,23 @@ use App\Service\UserAccessor;
 #[Route("/item/mikroniumRecipes")]
 class MikroniumRecipesController
 {
-    private function getRecipes(): array
+    private function getRecipes(RecipeRepository $recipeRepository): array
     {
-        return RecipeRepository::findBy(fn($recipe) => preg_match('/(^|,)1129:/', $recipe['ingredients']));
+        return $recipeRepository->findBy(fn(Recipe $recipe) => preg_match('/(^|,)1129:/', $recipe->ingredients) === 1);
     }
 
     #[Route("/{inventory}/upload", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function upload(
         Inventory $inventory, ResponseService $responseService, CookingService $cookingService,
-        UserAccessor $userAccessor
+        UserAccessor $userAccessor, RecipeRepository $recipeRepository
     ): JsonResponse
     {
         $user = $userAccessor->getUserOrThrow();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'mikroniumRecipes/#/upload');
 
-        $recipeNames = array_map(fn(array $recipe) => $recipe['name'], $this->getRecipes());
+        $recipeNames = array_map(fn(Recipe $recipe) => $recipe->name, $this->getRecipes($recipeRepository));
 
         $message = $cookingService->showRecipeNamesToCookingBuddy($user, $recipeNames);
 
@@ -57,12 +58,12 @@ class MikroniumRecipesController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function read(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em,
-        UserAccessor $userAccessor
+        UserAccessor $userAccessor, RecipeRepository $recipeRepository
     ): JsonResponse
     {
         ItemControllerHelpers::validateInventory($userAccessor->getUserOrThrow(), $inventory, 'mikroniumRecipes/#/read');
 
-        $recipes = $this->getRecipes();
+        $recipes = $this->getRecipes($recipeRepository);
 
         $recipeTexts = [
             '# The Science of Ensmallening',
@@ -74,7 +75,7 @@ class MikroniumRecipesController
 
         foreach($recipes as $recipe)
         {
-            $ingredients = InventoryService::deserializeItemList($em, $recipe['ingredients']);
+            $ingredients = InventoryService::deserializeItemList($em, $recipe->ingredients);
 
             $ingredients = array_values(array_filter($ingredients, fn(ItemQuantity $q) => $q->item->getName() !== 'Mikronium'));
 
