@@ -39,6 +39,9 @@ class UserActivityLog
     #[ORM\Column(type: 'datetime_immutable')]
     private \DateTimeImmutable $createdOn;
 
+    /**
+     * @var Collection<int, UserActivityLogTag>
+     */
     #[Groups(["userActivityLogs"])]
     #[ORM\ManyToMany(targetEntity: UserActivityLogTag::class)]
     private Collection $tags;

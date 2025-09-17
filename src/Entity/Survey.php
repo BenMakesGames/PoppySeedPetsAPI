@@ -38,15 +38,18 @@ class Survey
     #[ORM\Column(type: 'datetime_immutable')]
     private \DateTimeImmutable $endDate;
 
+    /**
+     * @var Collection<int, SurveyQuestion>
+     */
     #[ORM\OneToMany(targetEntity: SurveyQuestion::class, mappedBy: 'survey', orphanRemoval: true)]
-    private $questions;
+    private Collection $questions;
 
     #[ORM\Column(type: 'guid', unique: true)]
-    private $guid;
+    private string $guid;
 
     #[Groups(["surveySummary"])]
     #[ORM\Column(type: 'text')]
-    private $description;
+    private string $description;
 
     public function __construct()
     {
@@ -58,7 +61,7 @@ class Survey
         return $this->id;
     }
 
-    public function getTitle(): ?string
+    public function getTitle(): string
     {
         return $this->title;
     }
@@ -70,7 +73,7 @@ class Survey
         return $this;
     }
 
-    public function getStartDate(): ?\DateTimeImmutable
+    public function getStartDate(): \DateTimeImmutable
     {
         return $this->startDate;
     }
@@ -82,7 +85,7 @@ class Survey
         return $this;
     }
 
-    public function getEndDate(): ?\DateTimeImmutable
+    public function getEndDate(): \DateTimeImmutable
     {
         return $this->endDate;
     }
@@ -124,7 +127,7 @@ class Survey
         return $this;
     }
 
-    public function getGuid(): ?string
+    public function getGuid(): string
     {
         return $this->guid;
     }
@@ -136,7 +139,7 @@ class Survey
         return $this;
     }
 
-    public function getDescription(): ?string
+    public function getDescription(): string
     {
         return $this->description;
     }
