@@ -72,10 +72,10 @@ class DragonTongueController
         if(count($greetings) != 2 || count($thanks) != 2)
             throw new PSPFormValidationException('You must provide two greetings and two thanks.');
 
-        $greeting1 = trim($greetings[0]);
-        $greeting2 = trim($greetings[1]);
-        $thanks1 = trim($thanks[0]);
-        $thanks2 = trim($thanks[1]);
+        $greeting1 = mb_trim($greetings[0]);
+        $greeting2 = mb_trim($greetings[1]);
+        $thanks1 = mb_trim($thanks[0]);
+        $thanks2 = mb_trim($thanks[1]);
 
         if(!$greeting1 || !$greeting2 || !$thanks1 || !$thanks2)
             throw new PSPFormValidationException('You must provide two greetings and two thanks.');

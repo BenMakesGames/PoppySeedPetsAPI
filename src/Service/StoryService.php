@@ -71,7 +71,7 @@ class StoryService
 
         if($request->has('choice'))
         {
-            $choice = trim($request->getString('choice'));
+            $choice = mb_trim($request->getString('choice'));
 
             if($choice === '')
                 throw new PSPFormValidationException('You didn\'t choose a choice!');

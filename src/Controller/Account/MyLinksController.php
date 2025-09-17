@@ -76,9 +76,9 @@ class MyLinksController
     {
         $user = $userAccessor->getUserOrThrow();
 
-        $websiteName = trim($request->request->getString('website'));
-        $nameOrId = trim($request->request->get('nameOrId'));
-        $visibilityName = trim($request->request->get('visibility'));
+        $websiteName = mb_trim($request->request->getString('website'));
+        $nameOrId = mb_trim($request->request->getString('nameOrId'));
+        $visibilityName = mb_trim($request->request->getString('visibility'));
 
         $website = UserLinkWebsiteEnum::tryFrom($websiteName)
             ?? throw new PSPFormValidationException('Please select a website.');

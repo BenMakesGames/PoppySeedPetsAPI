@@ -40,7 +40,7 @@ class TypeaheadController
         if($request->query->has('speciesId'))
             $petTypeaheadService->setSpeciesId($request->query->getInt('speciesId'));
 
-        $suggestions = $petTypeaheadService->search('name', $request->query->get('search', ''));
+        $suggestions = $petTypeaheadService->search('name', $request->query->getString('search'));
 
         return $responseService->success($suggestions, [ SerializationGroupEnum::MY_PET, SerializationGroupEnum::MY_PET_LOCATION ]);
     }

@@ -50,7 +50,7 @@ class SecurityController
         if(!$passwordEncoder->isPasswordValid($user, $request->request->getString('confirmPassphrase')))
             throw new AccessDeniedHttpException('Passphrase is not correct.');
 
-        $newEmail = trim($request->request->getString('newEmail'));
+        $newEmail = mb_trim($request->request->getString('newEmail'));
 
         if($newEmail === '' || !filter_var($newEmail, FILTER_VALIDATE_EMAIL))
             throw new PSPFormValidationException('Email address is not valid.');
@@ -123,7 +123,7 @@ class SecurityController
         PassphraseResetService $passphraseResetService
     ): JsonResponse
     {
-        $email = trim($request->request->getString('email'));
+        $email = mb_trim($request->request->getString('email'));
 
         if($email === '')
             throw new PSPFormValidationException('E-mail address is required.');

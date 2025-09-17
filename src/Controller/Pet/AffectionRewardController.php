@@ -135,7 +135,7 @@ class AffectionRewardController
         if($pet->getAffectionRewardsClaimed() >= $pet->getAffectionLevel())
             throw new PSPInvalidOperationException('You\'ll have to raise ' . $pet->getName() . '\'s affection, first.');
 
-        $skillName = $request->request->get('skill');
+        $skillName = $request->request->getString('skill');
 
         if(!PetSkillEnum::isAValue($skillName))
             throw new PSPFormValidationException('"' . $skillName . '" is not a skill!');

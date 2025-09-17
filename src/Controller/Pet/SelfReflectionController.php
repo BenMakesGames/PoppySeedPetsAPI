@@ -205,10 +205,10 @@ class SelfReflectionController
         $minimumCommitment = PetRelationshipService::generateInitialCommitment($rng, $newRelationship, $newRelationship);
 
         $relationshipDescriptions = [
-            RelationshipEnum::Friend => 'friends',
-            RelationshipEnum::BFF => 'BFFs',
-            RelationshipEnum::FWB => 'FWBs',
-            RelationshipEnum::Mate => 'dating'
+            RelationshipEnum::Friend->value => 'friends',
+            RelationshipEnum::BFF->value => 'BFFs',
+            RelationshipEnum::FWB->value => 'FWBs',
+            RelationshipEnum::Mate->value => 'dating'
         ];
 
         $relationship
@@ -217,7 +217,7 @@ class SelfReflectionController
             ->setCommitment(max($relationship->getCommitment(), $minimumCommitment))
         ;
 
-        PetActivityLogFactory::createUnreadLog($em, $pet, $pet->getName() . ' and ' . $friend->getName() . ' talked and made up! They are now ' . $relationshipDescriptions[$newRelationship ] . '!')
+        PetActivityLogFactory::createUnreadLog($em, $pet, $pet->getName() . ' and ' . $friend->getName() . ' talked and made up! They are now ' . $relationshipDescriptions[$newRelationship->value] . '!')
             ->setIcon('icons/activity-logs/friend')
             ->addInterestingness(PetActivityLogInterestingness::PlayerActionResponse)
         ;
@@ -228,7 +228,7 @@ class SelfReflectionController
             ->setCommitment(max($otherSide->getCommitment(), $minimumCommitment))
         ;
 
-        $makeUpMessage = $pet->getName() . ' came over; they talked with ' . $friend->getName() . ', and the two made up! They are now ' . $relationshipDescriptions[$newRelationship ] . '!';
+        $makeUpMessage = $pet->getName() . ' came over; they talked with ' . $friend->getName() . ', and the two made up! They are now ' . $relationshipDescriptions[$newRelationship->value] . '!';
 
         $friendActivityLog = $pet->getOwner()->getId() === $friend->getOwner()->getId()
             ? PetActivityLogFactory::createReadLog($em, $friend, $makeUpMessage)
@@ -280,7 +280,7 @@ class SelfReflectionController
                 'pet' => $otherPet,
                 'possibleRelationships' => $possibleRelationships
             ];
-        }, $petRelationshipTypeaheadService->search('name', $request->query->get('search', '')));
+        }, $petRelationshipTypeaheadService->search('name', $request->query->getString('search')));
 
         return $responseService->success($suggestions, [ SerializationGroupEnum::PET_PUBLIC_PROFILE ]);
     }
