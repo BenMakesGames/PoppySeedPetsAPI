@@ -147,7 +147,7 @@ class CookAndCombineController
 
         if($totalQuantity < 4)
             $exclaim = '.';
-        else if($totalQuantity < 10 || strpos($results->recipe['ingredients'], ',') === false)
+        else if($totalQuantity < 10 || strpos($results->recipe->ingredients, ',') === false)
             $exclaim = '!';
         else
             $exclaim = '! (' . $rng->rngNextFromArray([ 'Dang!', 'Wow!', 'Incredible...', 'So cook! Very meal!', 'A veritable feast!', 'Such skill!' ]) . ')';
