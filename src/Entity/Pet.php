@@ -11,7 +11,6 @@ declare(strict_types=1);
  * You should have received a copy of the GNU General Public License along with The Poppy Seed Pets API. If not, see <https://www.gnu.org/licenses/>.
  */
 
-
 namespace App\Entity;
 
 use App\Enum\ActivityPersonalityEnum;
@@ -228,7 +227,7 @@ class Pet
 
     #[ORM\OneToOne(mappedBy: 'pet', targetEntity: GuildMembership::class, cascade: ['persist', 'remove'])]
     #[Groups(['petPublicProfile', 'guildMember'])]
-    private $guildMembership;
+    private ?GuildMembership $guildMembership = null;
 
     #[ORM\Column(type: 'integer')]
     private int $revealedFavoriteFlavor = 0;
@@ -236,9 +235,10 @@ class Pet
     #[ORM\Column(type: 'integer')]
     private int $affectionAdventures = 0;
 
+    /** @var Collection<int, LunchboxItem> */
     #[ORM\OneToMany(mappedBy: 'pet', targetEntity: LunchboxItem::class)]
     #[Groups(['myPet'])]
-    private $lunchboxItems;
+    private Collection $lunchboxItems;
 
     #[ORM\Column(type: 'smallint')]
     private int $bonusMaximumFriends;
@@ -292,10 +292,15 @@ class Pet
     #[ORM\OneToMany(mappedBy: 'pet', targetEntity: PetBadge::class, orphanRemoval: true)]
     private Collection $badges;
 
-    public function __construct(User $owner, PetSkills $skills)
+    public function __construct(
+        string $name, PetSpecies $species, User $owner, PetSkills $skills,
+        string $colorA, string $colorB
+    )
     {
         $rng = new Xoshiro();
 
+        $this->name = $name;
+        $this->species = $species;
         $this->owner = $owner;
         $this->skills = $skills;
         $this->birthDate = new \DateTimeImmutable();
@@ -307,6 +312,8 @@ class Pet
         $this->extroverted = $rng->rngNextInt(-1, 1);
         $this->bonusMaximumFriends = $rng->rngNextInt(-2, 2);
         $this->wereform = $rng->rngNextInt(0, 5);
+        $this->colorA = $colorA;
+        $this->colorB = $colorB;
 
         if($rng->rngNextInt(1, 5) > 1)
             $this->sexDrive = 1; // 80% sexual
@@ -367,7 +374,7 @@ class Pet
         return $this;
     }
 
-    public function getName(): ?string
+    public function getName(): string
     {
         return $this->name;
     }
@@ -580,7 +587,7 @@ class Pet
             return $this->getColorB();
     }
 
-    public function getColorA(): ?string
+    public function getColorA(): string
     {
         return $this->colorA;
     }
@@ -592,7 +599,7 @@ class Pet
         return $this;
     }
 
-    public function getColorB(): ?string
+    public function getColorB(): string
     {
         return $this->colorB;
     }
@@ -653,16 +660,9 @@ class Pet
         return 16;
     }
 
-    public function getBirthDate(): ?\DateTimeImmutable
+    public function getBirthDate(): \DateTimeImmutable
     {
         return $this->birthDate;
-    }
-
-    public function setBirthDate(\DateTimeImmutable $birthDate): self
-    {
-        $this->birthDate = $birthDate;
-
-        return $this;
     }
 
     public function getFullnessPercent(): float
@@ -894,12 +894,12 @@ class Pet
         return ($this->getLevel() + 1) * 15;
     }
 
-    public function getSpecies(): ?PetSpecies
+    public function getSpecies(): PetSpecies
     {
         return $this->species;
     }
 
-    public function setSpecies(?PetSpecies $species): self
+    public function setSpecies(PetSpecies $species): self
     {
         $this->species = $species;
 
@@ -1071,6 +1071,12 @@ class Pet
         return ArrayFunctions::find_one($this->getPetRelationships(), fn(PetRelationship $r) =>
             $r->getRelationship()->getId() === $otherPet->getId()
         );
+    }
+
+    public function getRelationshipWithOrThrow(Pet $otherPet): PetRelationship
+    {
+        return $this->getRelationshipWith($otherPet)
+            ?? throw new \InvalidArgumentException('No relationship found with pet ID ' . $otherPet->getId());
     }
 
     public function getRelationshipCount(): int

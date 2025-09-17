@@ -26,7 +26,11 @@ class Filterer
     private array $filterMap;
     private array $filterWithoutCallbackMap;
     private int $pageSize;
+
+    /** @var array<string, mixed> */
     private array $defaultFilters = [];
+
+    /** @var array<string, mixed> */
     private array $requiredFilters = [];
 
     public function __construct(int $defaultPageSize, array $orderByMap, array $filterCallbacks, array $filtersWithoutCallbacks = [])

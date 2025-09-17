@@ -16,6 +16,12 @@ namespace App\Functions;
 
 final class ArrayFunctions
 {
+    /**
+     * @template T
+     * @param iterable<T> $array
+     * @param callable(T): bool $delegate
+     * @return bool
+     */
     public static function any(iterable $array, callable $delegate): bool
     {
         foreach($array as $item)
@@ -27,6 +33,11 @@ final class ArrayFunctions
         return false;
     }
 
+    /**
+     * @template T
+     * @param iterable<T> $array
+     * @param callable(T): bool $delegate
+     */
     public static function count(iterable $array, callable $delegate): int
     {
         $count = 0;
@@ -40,6 +51,11 @@ final class ArrayFunctions
         return $count;
     }
 
+    /**
+     * @template T
+     * @param iterable<T> $array
+     * @param callable(T): bool $delegate
+     */
     public static function all(iterable $array, callable $delegate): bool
     {
         foreach($array as $item)
@@ -51,6 +67,12 @@ final class ArrayFunctions
         return true;
     }
 
+    /**
+     * @template T
+     * @param iterable<T> $array
+     * @param callable(T): bool $delegate
+     * @return T[]
+     */
     public static function unique(iterable $array, callable $delegate): array
     {
         $result = [];
@@ -67,7 +89,10 @@ final class ArrayFunctions
     }
 
     /**
-     * @return mixed|null
+     * @template T
+     * @param iterable<T> $array
+     * @param callable(T): bool $delegate
+     * @return T|null
      */
     public static function find_one(iterable $array, callable $delegate): mixed
     {
@@ -80,6 +105,12 @@ final class ArrayFunctions
         return null;
     }
 
+    /**
+     * @template T
+     * @param iterable<T> $array
+     * @param callable(T): bool $delegate
+     * @return T[]
+     */
     public static function find_n(iterable $array, callable $delegate, int $quantity): array
     {
         $results = [];
@@ -131,6 +162,9 @@ final class ArrayFunctions
         throw new \Exception('This should not be possible.');
     }
 
+    /**
+     * @param array<string, int> $quantities
+     */
     public static function list_nice_quantities(array $quantities, string $separator = ', ', string $lastSeparator = ', and '): string
     {
         $list = [];
@@ -185,6 +219,11 @@ final class ArrayFunctions
         return $list;
     }
 
+    /**
+     * @template T
+     * @param T[] $values
+     * @param callable(T): mixed $getter
+     */
     public static function sum(array $values, callable $getter): mixed
     {
         return array_reduce(
@@ -201,8 +240,12 @@ final class ArrayFunctions
 
     /**
      * Return one of the items from the array of $values which has the LARGEST value, as returned by the $getter
+     * @template T
+     * @param iterable<T> $values
+     * @param callable(T): mixed $getter
+     * @return T|null
      */
-    public static function max(iterable $values, callable $getter)
+    public static function max(iterable $values, callable $getter): mixed
     {
         $max = null;
         $maxValue = null;
@@ -223,8 +266,12 @@ final class ArrayFunctions
 
     /**
      * Return one of the items from the array of $values which has the SMALLEST value, as returned by the $getter
+     * @template T
+     * @param iterable<T> $values
+     * @param callable(T): mixed $getter
+     * @return T|null
      */
-    public static function min(iterable $values, callable $getter)
+    public static function min(iterable $values, callable $getter): mixed
     {
         $min = null;
         $minValue = null;

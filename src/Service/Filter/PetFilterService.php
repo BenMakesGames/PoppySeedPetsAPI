@@ -15,7 +15,6 @@ declare(strict_types=1);
 namespace App\Service\Filter;
 
 use App\Entity\Pet;
-use App\Enum\PetBadgeEnum;
 use App\Functions\StringFunctions;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
@@ -28,6 +27,7 @@ class PetFilterService implements FilterServiceInterface
 
     public const int PageSize = 12;
 
+    /** @var ObjectRepository<Pet>  */
     private readonly ObjectRepository $repository;
 
     public function __construct(ManagerRegistry $doctrine)

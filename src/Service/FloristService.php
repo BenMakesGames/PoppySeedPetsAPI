@@ -29,6 +29,9 @@ class FloristService
     {
     }
 
+    /**
+     * @return array<int, array{item: array{name: string, image: string}, cost: int}>
+     */
     public function getInventory(User $user): array
     {
         $flowerbomb = ItemRepository::findOneByName($this->em, 'Flowerbomb');

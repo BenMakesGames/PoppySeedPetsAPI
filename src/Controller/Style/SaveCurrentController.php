@@ -47,7 +47,7 @@ class SaveCurrentController
 
         foreach(UserStyle::Properties as $property)
         {
-            $color = $request->request->get($property);
+            $color = $request->request->getString($property);
 
             if(!preg_match('/^#?[0-9a-fA-F]{6}$/', $color))
                 continue;

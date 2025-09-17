@@ -18,6 +18,10 @@ use App\Service\IRandom;
 
 class GroupNameGenerator
 {
+    /**
+     * @param string[] $patterns
+     * @param array<string, string[]> $dictionary
+     */
     public static function generateName(IRandom $rng, array $patterns, array $dictionary, int $maxLength): string
     {
         $pattern = $rng->rngNextFromArray($patterns);
@@ -26,6 +30,9 @@ class GroupNameGenerator
         return GroupNameGenerator::generateNameFromParts($rng, $parts, $dictionary, $maxLength);
     }
 
+    /**
+     * @return string[]
+     */
     private static function getPatternParts(IRandom $rng, string $pattern): array
     {
         $parts = explode(' ', $pattern);

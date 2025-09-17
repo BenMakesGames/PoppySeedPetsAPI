@@ -60,7 +60,7 @@ class ReleaseController
         if($petCount === 1)
             throw new PSPInvalidOperationException('You can\'t release your very last pet! That would be FOOLISH!');
 
-        if(!$passwordEncoder->isPasswordValid($user, $request->request->get('confirmPassphrase')))
+        if(!$passwordEncoder->isPasswordValid($user, $request->request->getString('confirmPassphrase')))
             throw new AccessDeniedHttpException('Passphrase is not correct.');
 
         $state = new PetChanges($pet);

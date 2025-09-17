@@ -57,7 +57,10 @@ class FieldGuideService
     public function hasUnlocked(User $user, string|FieldGuideEntry $entry): bool
     {
         if(is_string($entry))
-            $entry = $this->em->getRepository(FieldGuideEntry::class)->findOneBy([ 'name' => $entry ]);
+        {
+            $entry = $this->em->getRepository(FieldGuideEntry::class)->findOneBy([ 'name' => $entry ])
+                ?? throw new \InvalidArgumentException('There is no such Field Guide Entry.');
+        }
 
         return $this->doesExist($user, $entry);
     }

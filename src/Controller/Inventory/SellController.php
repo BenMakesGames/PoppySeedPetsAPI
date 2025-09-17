@@ -50,7 +50,7 @@ class SellController
         if(count($itemIds) === 0)
             throw new PSPFormValidationException('You must select at least one item!');
 
-        $price = (int)($request->request->get('price') ?? 0);
+        $price = $request->request->getInt('price');
 
         if($price > $user->getMaxSellPrice())
             throw new PSPInvalidOperationException('You cannot list items for more than ' . $user->getMaxSellPrice() . ' moneys. See the Market Manager to see if you can increase this limit!');

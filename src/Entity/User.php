@@ -64,6 +64,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'datetime_immutable')]
     private \DateTimeImmutable $lastActivity;
 
+    /** @var Collection<int, Pet> */
     #[ORM\OneToMany(targetEntity: Pet::class, mappedBy: 'owner', fetch: 'EXTRA_LAZY')]
     private Collection $pets;
 
@@ -86,13 +87,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'integer')]
     private int $maxPets = 2;
 
+    /** @var Collection<int, UserFollowing> */
     #[ORM\OneToMany(targetEntity: UserFollowing::class, mappedBy: 'user', orphanRemoval: true, fetch: 'EXTRA_LAZY')]
     private Collection $following;
 
+    /** @var Collection<int, UserFollowing> */
     #[ORM\OneToMany(targetEntity: UserFollowing::class, mappedBy: 'following', orphanRemoval: true, fetch: 'EXTRA_LAZY')]
     private Collection $followedBy;
 
-    #[ORM\OneToMany(targetEntity: 'App\Entity\UserStats', mappedBy: 'user', orphanRemoval: true, fetch: 'EXTRA_LAZY')]
+    /** @var Collection<int, UserStats> */
+    #[ORM\OneToMany(targetEntity: UserStats::class, mappedBy: 'user', orphanRemoval: true, fetch: 'EXTRA_LAZY')]
     private Collection $stats;
 
     #[Groups(["myAccount"])]
@@ -103,25 +107,27 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'integer')]
     private int $maxSellPrice = 10;
 
-    #[ORM\OneToOne(targetEntity: 'App\Entity\PassphraseResetRequest', mappedBy: 'user', cascade: ['persist', 'remove'], fetch: 'EXTRA_LAZY')]
-    private $passphraseResetRequest;
+    #[ORM\OneToOne(targetEntity: PassphraseResetRequest::class, mappedBy: 'user', cascade: ['persist', 'remove'], fetch: 'EXTRA_LAZY')]
+    private ?PassphraseResetRequest $passphraseResetRequest = null;
 
-    #[ORM\OneToMany(targetEntity: 'App\Entity\GreenhousePlant', mappedBy: 'owner', orphanRemoval: true, fetch: 'EXTRA_LAZY')]
+    /** @var Collection<int, GreenhousePlant> */
+    #[ORM\OneToMany(targetEntity: GreenhousePlant::class, mappedBy: 'owner', orphanRemoval: true, fetch: 'EXTRA_LAZY')]
     private Collection $greenhousePlants;
 
+    /** @var Collection<int, UserSession> */
     #[ORM\OneToMany(targetEntity: UserSession::class, mappedBy: 'user', orphanRemoval: true)]
     private Collection $userSessions;
 
-    #[ORM\OneToOne(targetEntity: 'App\Entity\HollowEarthPlayer', mappedBy: 'user', cascade: ['persist', 'remove'], fetch: 'EXTRA_LAZY')]
+    #[ORM\OneToOne(targetEntity: HollowEarthPlayer::class, mappedBy: 'user', cascade: ['persist', 'remove'], fetch: 'EXTRA_LAZY')]
     private ?HollowEarthPlayer $hollowEarthPlayer = null;
 
-    #[ORM\OneToOne(targetEntity: 'App\Entity\Fireplace', mappedBy: 'user', cascade: ['persist', 'remove'], fetch: 'EXTRA_LAZY')]
+    #[ORM\OneToOne(targetEntity: Fireplace::class, mappedBy: 'user', cascade: ['persist', 'remove'], fetch: 'EXTRA_LAZY')]
     private ?Fireplace $fireplace = null;
 
-    #[ORM\OneToOne(targetEntity: 'App\Entity\Beehive', mappedBy: 'user', cascade: ['persist', 'remove'])]
+    #[ORM\OneToOne(targetEntity: Beehive::class, mappedBy: 'user', cascade: ['persist', 'remove'])]
     private ?Beehive $beehive = null;
 
-    #[ORM\OneToOne(targetEntity: 'App\Entity\Greenhouse', mappedBy: 'owner', cascade: ['persist', 'remove'])]
+    #[ORM\OneToOne(targetEntity: Greenhouse::class, mappedBy: 'owner', cascade: ['persist', 'remove'])]
     private ?Greenhouse $greenhouse = null;
 
     #[Groups(["myAccount"])]
@@ -143,6 +149,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToOne(targetEntity: UserMenuOrder::class, mappedBy: 'user', cascade: ['persist', 'remove'])]
     private $menuOrder;
 
+    /** @var Collection<int, UserUnlockedAura>  */
     #[ORM\OneToMany(targetEntity: UserUnlockedAura::class, mappedBy: 'user', orphanRemoval: true)]
     private Collection $unlockedAuras;
 
@@ -159,10 +166,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'integer')]
     private int $fate;
 
+    /** @var Collection<int, UserUnlockedFeature>  */
     #[Groups(["myAccount"])]
     #[ORM\OneToMany(targetEntity: UserUnlockedFeature::class, mappedBy: 'user', orphanRemoval: true)]
     private Collection $unlockedFeatures;
 
+    /** @var Collection<int, UserBadge>  */
     #[ORM\OneToMany(targetEntity: UserBadge::class, mappedBy: 'user', orphanRemoval: true)]
     private Collection $badges;
 
@@ -170,6 +179,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToOne(targetEntity: UserSubscription::class, mappedBy: 'user', cascade: ['persist', 'remove'])]
     private $subscription;
 
+    /** @var Collection<int, UserFieldGuideEntry>  */
     #[ORM\OneToMany(targetEntity: UserFieldGuideEntry::class, mappedBy: 'user', orphanRemoval: true)]
     private Collection $fieldGuideEntries;
 
@@ -299,12 +309,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->pets;
     }
 
-    public function getRegisteredOn(): ?\DateTimeImmutable
+    public function getRegisteredOn(): \DateTimeImmutable
     {
         return $this->registeredOn;
     }
 
-    public function getLastAllowanceCollected(): ?\DateTimeImmutable
+    public function getLastAllowanceCollected(): \DateTimeImmutable
     {
         return $this->lastAllowanceCollected;
     }
@@ -316,7 +326,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getIsLocked(): ?bool
+    public function getIsLocked(): bool
     {
         return $this->isLocked;
     }
@@ -403,7 +413,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getMaxSellPrice(): ?int
+    public function getMaxSellPrice(): int
     {
         return $this->maxSellPrice;
     }
@@ -651,7 +661,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getCanAssignHelpers(): ?bool
+    public function getCanAssignHelpers(): bool
     {
         return $this->canAssignHelpers;
     }

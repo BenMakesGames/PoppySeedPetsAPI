@@ -31,7 +31,7 @@ class ItemTypeaheadController
         Request $request, ResponseService $responseService, ItemTypeaheadService $itemTypeaheadService
     ): JsonResponse
     {
-        $suggestions = $itemTypeaheadService->search('name', $request->query->get('search', ''), 5);
+        $suggestions = $itemTypeaheadService->search('name', $request->query->getString('search'), 5);
 
         return $responseService->success($suggestions, [ SerializationGroupEnum::ITEM_TYPEAHEAD ]);
     }

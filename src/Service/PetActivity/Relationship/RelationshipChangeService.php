@@ -11,7 +11,6 @@ declare(strict_types=1);
  * You should have received a copy of the GNU General Public License along with The Poppy Seed Pets API. If not, see <https://www.gnu.org/licenses/>.
  */
 
-
 namespace App\Service\PetActivity\Relationship;
 
 use App\Entity\Pet;
@@ -65,7 +64,7 @@ class RelationshipChangeService
                 break;
 
             default:
-                throw new \Exception('Current relationship is of an unexpected type, "' . $p1->getCurrentRelationship() . '"');
+                throw new \Exception('Current relationship is of an unexpected type, "' . $p1->getCurrentRelationship()->value . '"');
         }
 
         $p1->setTimeUntilChange();
@@ -104,7 +103,6 @@ class RelationshipChangeService
 
     /**
      * @return PetActivityLog[]
-     * @throws EnumInvalidValueException
      */
     private function hangOutPrivatelySuggestingRelationshipChangeAsFriendlyRival(PetRelationship $p1, PetRelationship $p2): array
     {
@@ -201,7 +199,7 @@ class RelationshipChangeService
                     return $this->hangOutPrivatelyFromFriendsToBFFs($p1, $p2);
 
             default:
-                throw new \InvalidArgumentException('p1 relationship goal is of an unexpected type, "' . $p1->getRelationshipGoal() . '"');
+                throw new \InvalidArgumentException('p1 relationship goal is of an unexpected type, "' . $p1->getRelationshipGoal()->value . '"');
         }
     }
 
@@ -246,7 +244,7 @@ class RelationshipChangeService
                 return $this->hangOutPrivatelyFromBFFsToMates($p2, $p1);
 
             default:
-                throw new \InvalidArgumentException('p2 relationship goal is of an unexpected type, "' . $p2->getRelationshipGoal() . '"');
+                throw new \InvalidArgumentException('p2 relationship goal is of an unexpected type, "' . $p2->getRelationshipGoal()->value . '"');
         }
     }
 
@@ -294,7 +292,7 @@ class RelationshipChangeService
                 return $this->hangOutPrivatelySuggestingRelationshipUpgradeWithChanceForDrama($p1, $p2, 65, 25);
 
             default:
-                throw new \InvalidArgumentException('p2 relationship goal is of an unexpected type, "' . $p2->getRelationshipGoal() . '"');
+                throw new \InvalidArgumentException('p2 relationship goal is of an unexpected type, "' . $p2->getRelationshipGoal()->value . '"');
         }
     }
 
@@ -357,7 +355,7 @@ class RelationshipChangeService
                 );
 
             default:
-                throw new \InvalidArgumentException('p2 relationship goal is of an unexpected type, "' . $p2->getRelationshipGoal() . '"');
+                throw new \InvalidArgumentException('p2 relationship goal is of an unexpected type, "' . $p2->getRelationshipGoal()->value . '"');
         }
     }
 
@@ -396,7 +394,7 @@ class RelationshipChangeService
                 );
 
             default:
-                throw new \InvalidArgumentException('p2 relationship goal is of an unexpected type, "' . $p2->getRelationshipGoal() . '"');
+                throw new \InvalidArgumentException('p2 relationship goal is of an unexpected type, "' . $p2->getRelationshipGoal()->value . '"');
         }
     }
 
@@ -410,12 +408,12 @@ class RelationshipChangeService
     ): array
     {
         $downgradeDescription = [
-            RelationshipEnum::Dislike => 'break up entirely',
-            RelationshipEnum::Friend => 'just be friends',
-            RelationshipEnum::BFF => 'just be BFFs',
-            RelationshipEnum::FWB => 'just be friends, but maybe still, you know, _do stuff_',
-            RelationshipEnum::FriendlyRival => 'just be friendly rivals',
-            RelationshipEnum::Mate => 'date',
+            RelationshipEnum::Dislike->value => 'break up entirely',
+            RelationshipEnum::Friend->value => 'just be friends',
+            RelationshipEnum::BFF->value => 'just be BFFs',
+            RelationshipEnum::FWB->value => 'just be friends, but maybe still, you know, _do stuff_',
+            RelationshipEnum::FriendlyRival->value => 'just be friendly rivals',
+            RelationshipEnum::Mate->value => 'date',
         ];
 
         $p1IsFriendOfTheWorld = $p1->getPet()->hasMerit(MeritEnum::FRIEND_OF_THE_WORLD);
@@ -436,9 +434,9 @@ class RelationshipChangeService
                 $p1->setRelationshipGoal($p2->getRelationshipGoal());
 
             if($p1IsFriendOfTheWorld)
-                $message = $p1->getPet()->getName() . ' wanted to ' . $downgradeDescription[$originalGoal] . ', but ' . $p2->getPet()->getName() . ' asked to ' . $downgradeDescription[$p2->getCurrentRelationship()] . ', instead. ' . $p1->getPet()->getName() . ' agreed immediately!';
+                $message = $p1->getPet()->getName() . ' wanted to ' . $downgradeDescription[$originalGoal->value] . ', but ' . $p2->getPet()->getName() . ' asked to ' . $downgradeDescription[$p2->getCurrentRelationship()->value] . ', instead. ' . $p1->getPet()->getName() . ' agreed immediately!';
             else
-                $message = $p1->getPet()->getName() . ' wanted to ' . $downgradeDescription[$originalGoal] . ', but ' . $p2->getPet()->getName() . ' was upset, and asked to ' . $downgradeDescription[$p2->getCurrentRelationship()] . '. After talking for a while, ' . $p1->getPet()->getName() . ' agreed...';
+                $message = $p1->getPet()->getName() . ' wanted to ' . $downgradeDescription[$originalGoal->value] . ', but ' . $p2->getPet()->getName() . ' was upset, and asked to ' . $downgradeDescription[$p2->getCurrentRelationship()->value] . '. After talking for a while, ' . $p1->getPet()->getName() . ' agreed...';
         }
         else if($p2ChangesMind)
         {
@@ -449,13 +447,13 @@ class RelationshipChangeService
                 $p2->setRelationshipGoal($p1->getRelationshipGoal());
 
             if($p2IsFriendOfTheWorld)
-                $message = $p1->getPet()->getName() . ' wanted to ' . $downgradeDescription[$p1->getRelationshipGoal()] . '. ' . $p2->getPet()->getName() . ' agreed immediately!';
+                $message = $p1->getPet()->getName() . ' wanted to ' . $downgradeDescription[$p1->getRelationshipGoal()->value] . '. ' . $p2->getPet()->getName() . ' agreed immediately!';
             else
-                $message = $p1->getPet()->getName() . ' wanted to ' . $downgradeDescription[$p1->getRelationshipGoal()] . '. ' . $p2->getPet()->getName() . ' was upset, but after talking for a while said that it would be okay...';
+                $message = $p1->getPet()->getName() . ' wanted to ' . $downgradeDescription[$p1->getRelationshipGoal()->value] . '. ' . $p2->getPet()->getName() . ' was upset, but after talking for a while said that it would be okay...';
         }
         else // break up
         {
-            $message = $p1->getPet()->getName() . ' wanted to ' . $downgradeDescription[$p1->getRelationshipGoal()] . '; ' . $p2->getPet()->getName() . ' was really upset! After arguing for a while, the two broke up entirely! :(';
+            $message = $p1->getPet()->getName() . ' wanted to ' . $downgradeDescription[$p1->getRelationshipGoal()->value] . '; ' . $p2->getPet()->getName() . ' was really upset! After arguing for a while, the two broke up entirely! :(';
             $tags[] = 'Break-up';
 
             $p1->setCurrentRelationship(RelationshipEnum::BrokeUp);
@@ -523,30 +521,30 @@ class RelationshipChangeService
     ): array
     {
         $upgradeDescription = [
-            RelationshipEnum::Dislike => 'break up',
-            RelationshipEnum::FriendlyRival => 'be friendly rivals',
-            RelationshipEnum::Friend => 'be friends',
-            RelationshipEnum::BFF => 'be BFFs',
-            RelationshipEnum::FWB => 'be FWBs',
-            RelationshipEnum::Mate => 'date',
+            RelationshipEnum::Dislike->value => 'break up',
+            RelationshipEnum::FriendlyRival->value => 'be friendly rivals',
+            RelationshipEnum::Friend->value => 'be friends',
+            RelationshipEnum::BFF->value => 'be BFFs',
+            RelationshipEnum::FWB->value => 'be FWBs',
+            RelationshipEnum::Mate->value => 'date',
         ];
 
         $downgradeDescription = [
-            RelationshipEnum::Dislike => 'break up entirely',
-            RelationshipEnum::FriendlyRival => 'just be friendly rivals',
-            RelationshipEnum::Friend => 'just be friends',
-            RelationshipEnum::BFF => 'just be BFFs',
-            RelationshipEnum::FWB => 'just be friends, but maybe still, you know, _do stuff_',
-            RelationshipEnum::Mate => 'date',
+            RelationshipEnum::Dislike->value => 'break up entirely',
+            RelationshipEnum::FriendlyRival->value => 'just be friendly rivals',
+            RelationshipEnum::Friend->value => 'just be friends',
+            RelationshipEnum::BFF->value => 'just be BFFs',
+            RelationshipEnum::FWB->value => 'just be friends, but maybe still, you know, _do stuff_',
+            RelationshipEnum::Mate->value => 'date',
         ];
 
         $descriptioning = [
-            RelationshipEnum::Dislike => 'breaking up entirely',
-            RelationshipEnum::FriendlyRival => 'being friendly rivals',
-            RelationshipEnum::Friend => 'being friends',
-            RelationshipEnum::BFF => 'being BFFs',
-            RelationshipEnum::FWB => 'being FWBs',
-            RelationshipEnum::Mate => 'dating',
+            RelationshipEnum::Dislike->value => 'breaking up entirely',
+            RelationshipEnum::FriendlyRival->value => 'being friendly rivals',
+            RelationshipEnum::Friend->value => 'being friends',
+            RelationshipEnum::BFF->value => 'being BFFs',
+            RelationshipEnum::FWB->value => 'being FWBs',
+            RelationshipEnum::Mate->value => 'dating',
         ];
 
         $p1IsFriendOfTheWorld = $p1->getPet()->hasMerit(MeritEnum::FRIEND_OF_THE_WORLD);
@@ -560,9 +558,9 @@ class RelationshipChangeService
         if($p1ChangesMind)
         {
             if($p1IsFriendOfTheWorld)
-                $message = $p1->getPet()->getName() . ' wanted to ' . $upgradeDescription[$p1->getRelationshipGoal()] . ', but ' . $p2->getPet()->getName() . ' wants to ' . $downgradeDescription[$p2->getRelationshipGoal()] . '. ' . $p1->getPet()->getName() . ' immediately agreed to ' . $upgradeDescription[$p2->getRelationshipGoal()] . '!';
+                $message = $p1->getPet()->getName() . ' wanted to ' . $upgradeDescription[$p1->getRelationshipGoal()->value] . ', but ' . $p2->getPet()->getName() . ' wants to ' . $downgradeDescription[$p2->getRelationshipGoal()->value] . '. ' . $p1->getPet()->getName() . ' immediately agreed to ' . $upgradeDescription[$p2->getRelationshipGoal()->value] . '!';
             else
-                $message = $p1->getPet()->getName() . ' wanted to ' . $upgradeDescription[$p1->getRelationshipGoal()] . ', but ' . $p2->getPet()->getName() . ' wants to ' . $downgradeDescription[$p2->getRelationshipGoal()] . '. ' . $p1->getPet()->getName() . ' thought for a bit, and agreed to try ' . $descriptioning[$p2->getRelationshipGoal()] . '!';
+                $message = $p1->getPet()->getName() . ' wanted to ' . $upgradeDescription[$p1->getRelationshipGoal()->value] . ', but ' . $p2->getPet()->getName() . ' wants to ' . $downgradeDescription[$p2->getRelationshipGoal()->value] . '. ' . $p1->getPet()->getName() . ' thought for a bit, and agreed to try ' . $descriptioning[$p2->getRelationshipGoal()->value] . '!';
 
             $p1->setCurrentRelationship($p2->getRelationshipGoal());
             $p2->setCurrentRelationship($p2->getRelationshipGoal());
@@ -573,9 +571,9 @@ class RelationshipChangeService
         else if($p2ChangesMind)
         {
             if($p2IsFriendOfTheWorld)
-                $message = $p1->getPet()->getName() . ' wanted to ' . $upgradeDescription[$p1->getRelationshipGoal()] . '. ' . $p2->getPet()->getName() . ' agreed immediately!';
+                $message = $p1->getPet()->getName() . ' wanted to ' . $upgradeDescription[$p1->getRelationshipGoal()->value] . '. ' . $p2->getPet()->getName() . ' agreed immediately!';
             else
-                $message = $p1->getPet()->getName() . ' wanted to ' . $upgradeDescription[$p1->getRelationshipGoal()] . ', but ' . $p2->getPet()->getName() . ' wants to ' . $downgradeDescription[$p2->getRelationshipGoal()] . '. ' . $p2->getPet()->getName() . ' thought for a bit, and agreed to try ' . $descriptioning[$p1->getRelationshipGoal()] . '!';
+                $message = $p1->getPet()->getName() . ' wanted to ' . $upgradeDescription[$p1->getRelationshipGoal()->value] . ', but ' . $p2->getPet()->getName() . ' wants to ' . $downgradeDescription[$p2->getRelationshipGoal()->value] . '. ' . $p2->getPet()->getName() . ' thought for a bit, and agreed to try ' . $descriptioning[$p1->getRelationshipGoal()->value] . '!';
 
             $p1->setCurrentRelationship($p1->getRelationshipGoal());
             $p2->setCurrentRelationship($p1->getRelationshipGoal());
@@ -585,7 +583,7 @@ class RelationshipChangeService
         }
         else // break up
         {
-            $message = $p1->getPet()->getName() . ' wanted to ' . $upgradeDescription[$p1->getRelationshipGoal()] . ', but ' . $p2->getPet()->getName() . ' doesn\'t want that. After arguing for a while, the two broke up entirely! :\'(';
+            $message = $p1->getPet()->getName() . ' wanted to ' . $upgradeDescription[$p1->getRelationshipGoal()->value] . ', but ' . $p2->getPet()->getName() . ' doesn\'t want that. After arguing for a while, the two broke up entirely! :\'(';
             $tags[] = 'Break-up';
             $icon = 'icons/activity-logs/breakup';
 
@@ -668,7 +666,7 @@ class RelationshipChangeService
                 );
 
             default:
-                throw new \InvalidArgumentException('p2 relationship goal is of an unexpected type, "' . $p2->getRelationshipGoal() . '"');
+                throw new \InvalidArgumentException('p2 relationship goal is of an unexpected type, "' . $p2->getRelationshipGoal()->value . '"');
         }
     }
 
@@ -715,7 +713,7 @@ class RelationshipChangeService
                 return $this->hangOutPrivatelySuggestingRelationshipDowngradeWithChanceForDrama($p1, $p2, 20, 0);
 
             default:
-                throw new \InvalidArgumentException('p2 relationship goal is of an unexpected type, "' . $p2->getRelationshipGoal() . '"');
+                throw new \InvalidArgumentException('p2 relationship goal is of an unexpected type, "' . $p2->getRelationshipGoal()->value . '"');
         }
     }
 
@@ -743,7 +741,7 @@ class RelationshipChangeService
                 return $this->hangOutPrivatelyFromBFFsToMates($p1, $p2);
 
             default:
-                throw new \InvalidArgumentException('p1 relationship goal is of an unexpected type, "' . $p1->getRelationshipGoal() . '"');
+                throw new \InvalidArgumentException('p1 relationship goal is of an unexpected type, "' . $p1->getRelationshipGoal()->value . '"');
         }
     }
 
@@ -794,7 +792,7 @@ class RelationshipChangeService
                 return $this->hangOutPrivatelySuggestingRelationshipDowngradeWithChanceForDrama($p1, $p2, 10, 50);
 
             default:
-                throw new \InvalidArgumentException('p2 relationship goal is of an unexpected type, "' . $p2->getRelationshipGoal() . '"');
+                throw new \InvalidArgumentException('p2 relationship goal is of an unexpected type, "' . $p2->getRelationshipGoal()->value . '"');
         }
     }
 
@@ -846,7 +844,7 @@ class RelationshipChangeService
                 return $this->hangOutPrivatelySuggestingRelationshipDowngradeWithChanceForDrama($p1, $p2, 20, 5);
 
             default:
-                throw new \InvalidArgumentException('p2 relationship goal is of an unexpected type, "' . $p2->getRelationshipGoal() . '"');
+                throw new \InvalidArgumentException('p2 relationship goal is of an unexpected type, "' . $p2->getRelationshipGoal()->value . '"');
         }
     }
 
@@ -893,7 +891,7 @@ class RelationshipChangeService
                 return $this->hangOutPrivatelySuggestingRelationshipUpgradeWithChanceForDrama($p1, $p2, 50, 45);
 
             default:
-                throw new \InvalidArgumentException('p2 relationship goal is of an unexpected type, "' . $p2->getRelationshipGoal() . '"');
+                throw new \InvalidArgumentException('p2 relationship goal is of an unexpected type, "' . $p2->getRelationshipGoal()->value . '"');
         }
     }
 
@@ -973,7 +971,7 @@ class RelationshipChangeService
                 );
 
             default:
-                throw new \InvalidArgumentException('p2 relationship goal is of an unexpected type, "' . $p2->getRelationshipGoal() . '"');
+                throw new \InvalidArgumentException('p2 relationship goal is of an unexpected type, "' . $p2->getRelationshipGoal()->value . '"');
         }
     }
 
@@ -1004,7 +1002,7 @@ class RelationshipChangeService
                 return $this->hangOutPrivatelyFromFWBsToMates($p1, $p2);
 
             default:
-                throw new \InvalidArgumentException('p1 relationship goal is of an unexpected type, "' . $p1->getRelationshipGoal() . '"');
+                throw new \InvalidArgumentException('p1 relationship goal is of an unexpected type, "' . $p1->getRelationshipGoal()->value . '"');
         }
     }
 
@@ -1041,7 +1039,7 @@ class RelationshipChangeService
                 );
 
             default:
-                throw new \InvalidArgumentException('p2 relationship goal is of an unexpected type, "' . $p2->getRelationshipGoal() . '"');
+                throw new \InvalidArgumentException('p2 relationship goal is of an unexpected type, "' . $p2->getRelationshipGoal()->value . '"');
         }
     }
 
@@ -1095,7 +1093,7 @@ class RelationshipChangeService
                 return $this->hangOutPrivatelySuggestingRelationshipDowngradeWithChanceForDrama($p1, $p2, 35, 35);
 
             default:
-                throw new \InvalidArgumentException('p2 relationship goal is of an unexpected type, "' . $p2->getRelationshipGoal() . '"');
+                throw new \InvalidArgumentException('p2 relationship goal is of an unexpected type, "' . $p2->getRelationshipGoal()->value . '"');
         }
     }
 
@@ -1148,7 +1146,7 @@ class RelationshipChangeService
                 return $this->hangOutPrivatelySuggestingRelationshipDowngradeWithChanceForDrama($p1, $p2, 30, 15);
 
             default:
-                throw new \InvalidArgumentException('p2 relationship goal is of an unexpected type, "' . $p2->getRelationshipGoal() . '"');
+                throw new \InvalidArgumentException('p2 relationship goal is of an unexpected type, "' . $p2->getRelationshipGoal()->value . '"');
         }
     }
 
@@ -1202,7 +1200,7 @@ class RelationshipChangeService
                 return $this->hangOutPrivatelySuggestingRelationshipDowngradeWithChanceForDrama($p1, $p2, 20, 5);
 
             default:
-                throw new \InvalidArgumentException('p2 relationship goal is of an unexpected type, "' . $p2->getRelationshipGoal() . '"');
+                throw new \InvalidArgumentException('p2 relationship goal is of an unexpected type, "' . $p2->getRelationshipGoal()->value . '"');
         }
     }
 
@@ -1258,7 +1256,7 @@ class RelationshipChangeService
                 );
 
             default:
-                throw new \InvalidArgumentException('p2 relationship goal is of an unexpected type, "' . $p2->getRelationshipGoal() . '"');
+                throw new \InvalidArgumentException('p2 relationship goal is of an unexpected type, "' . $p2->getRelationshipGoal()->value . '"');
         }
     }
 
@@ -1289,7 +1287,7 @@ class RelationshipChangeService
                 return $this->hangOutPrivatelyFromMatesToFWBs($p1, $p2);
 
             default:
-                throw new \InvalidArgumentException('p1 relationship goal is of an unexpected type, "' . $p1->getRelationshipGoal() . '"');
+                throw new \InvalidArgumentException('p1 relationship goal is of an unexpected type, "' . $p1->getRelationshipGoal()->value . '"');
         }
     }
 
@@ -1343,7 +1341,7 @@ class RelationshipChangeService
                 return $this->hangOutPrivatelySuggestingRelationshipDowngradeWithChanceForDrama($p1, $p2, 20, 5);
 
             default:
-                throw new \InvalidArgumentException('p2 relationship goal is of an unexpected type, "' . $p2->getRelationshipGoal() . '"');
+                throw new \InvalidArgumentException('p2 relationship goal is of an unexpected type, "' . $p2->getRelationshipGoal()->value . '"');
         }
     }
 
@@ -1398,7 +1396,7 @@ class RelationshipChangeService
                 return $this->hangOutPrivatelySuggestingRelationshipDowngradeWithChanceForDrama($p1, $p2, 35, 35);
 
             default:
-                throw new \InvalidArgumentException('p2 relationship goal is of an unexpected type, "' . $p2->getRelationshipGoal() . '"');
+                throw new \InvalidArgumentException('p2 relationship goal is of an unexpected type, "' . $p2->getRelationshipGoal()->value . '"');
         }
     }
 
@@ -1452,7 +1450,7 @@ class RelationshipChangeService
                 return $this->hangOutPrivatelySuggestingRelationshipDowngradeWithChanceForDrama($p1, $p2, 35, 35);
 
             default:
-                throw new \InvalidArgumentException('p2 relationship goal is of an unexpected type, "' . $p2->getRelationshipGoal() . '"');
+                throw new \InvalidArgumentException('p2 relationship goal is of an unexpected type, "' . $p2->getRelationshipGoal()->value . '"');
         }
     }
 
@@ -1502,7 +1500,7 @@ class RelationshipChangeService
                 return $this->hangOutPrivatelySuggestingRelationshipDowngradeWithChanceForDrama($p1, $p2, 15, 60);
 
             default:
-                throw new \InvalidArgumentException('p2 relationship goal is of an unexpected type, "' . $p2->getRelationshipGoal() . '"');
+                throw new \InvalidArgumentException('p2 relationship goal is of an unexpected type, "' . $p2->getRelationshipGoal()->value . '"');
         }
     }
 
@@ -1551,7 +1549,7 @@ class RelationshipChangeService
                 return $this->hangOutPrivatelySuggestingRelationshipDowngradeWithChanceForDrama($p1, $p2, 20, 0);
 
             default:
-                throw new \InvalidArgumentException('p2 relationship goal is of an unexpected type, "' . $p2->getRelationshipGoal() . '"');
+                throw new \InvalidArgumentException('p2 relationship goal is of an unexpected type, "' . $p2->getRelationshipGoal()->value . '"');
         }
     }
 }

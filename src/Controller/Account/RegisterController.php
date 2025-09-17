@@ -49,8 +49,8 @@ class RegisterController
         $theme = $request->request->all('theme');
         $petName = ProfanityFilterFunctions::filter(trim($request->request->getString('petName')));
         $petImage = $request->request->getString('petImage');
-        $petColorA = $request->request->get('petColorA');
-        $petColorB = $request->request->get('petColorB');
+        $petColorA = $request->request->getString('petColorA');
+        $petColorB = $request->request->getString('petColorB');
 
         $name = ProfanityFilterFunctions::filter(trim($request->request->getString('playerName')));
         $email = $request->request->getString('playerEmail');

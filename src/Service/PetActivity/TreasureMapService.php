@@ -173,14 +173,15 @@ class TreasureMapService
     {
         $pet = $petWithSkills->getPet();
 
+        $keybladeName = $pet->getTool()?->getItem()->getName()
+            ?? throw new \InvalidArgumentException('Pet does not have a keyblade equipped!');
+
         $changes = new PetChanges($pet);
 
         $skill = 2 * ($petWithSkills->getBrawl()->getTotal() * 2 + $petWithSkills->getStamina()->getTotal() * 2 + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getStrength()->getTotal() + $pet->getLevel());
 
         $floor = $this->rng->rngNextInt(max(1, (int)ceil($skill / 2)), 20 + $skill);
         $floor = NumberFunctions::clamp($floor, 1, 100);
-
-        $keybladeName = $pet->getTool()->getItem()->getName();
 
         if($floor === 1)
         {
@@ -255,10 +256,12 @@ class TreasureMapService
     public function doLeprechaun(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
+        $tool = $pet->getTool()
+            ?? throw new \InvalidArgumentException('Pet does not have a tool equipped!');
 
-        if($pet->getTool()->isGrayscaling() || $pet->hasStatusEffect(StatusEffectEnum::BittenByAVampire))
+        if($tool->isGrayscaling() || $pet->hasStatusEffect(StatusEffectEnum::BittenByAVampire))
         {
-            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, 'While %pet:' . $pet->getId() . '.name% was thinking about what to do, a Leprechaun approached them... but upon seeing %pet:' . $pet->getId() . '.name%\'s pale visage, fled screaming into the woods! (Oops!) %pet:' . $pet->getId() . '.name% put their ' . $pet->getTool()->getFullItemName() . ' down...')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, 'While %pet:' . $pet->getId() . '.name% was thinking about what to do, a Leprechaun approached them... but upon seeing %pet:' . $pet->getId() . '.name%\'s pale visage, fled screaming into the woods! (Oops!) %pet:' . $pet->getId() . '.name% put their ' . $tool->getFullItemName() . ' down...')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Fae-kind', PetActivityLogTagEnum::Adventure ]))
             ;
 
@@ -274,11 +277,11 @@ class TreasureMapService
             'Pot of Gold', 'Green Scroll'
         ]));
 
-        $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, 'While %pet:' . $pet->getId() . '.name% was thinking about what to do, a Leprechaun approached them, and, without a word, exchanged %pet:' . $pet->getId() . '.name%\'s ' . $pet->getTool()->getFullItemName() . ' for ' . $loot->getNameWithArticle() . '!')
+        $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, 'While %pet:' . $pet->getId() . '.name% was thinking about what to do, a Leprechaun approached them, and, without a word, exchanged %pet:' . $pet->getId() . '.name%\'s ' . $tool->getFullItemName() . ' for ' . $loot->getNameWithArticle() . '!')
             ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Fae-kind', PetActivityLogTagEnum::Adventure ]))
         ;
 
-        $newInventory = $this->inventoryService->receiveItem($loot, $pet->getOwner(), $pet->getOwner(), 'Given to ' . $pet->getName() . ' by a Leprechaun.', LocationEnum::Wardrobe, $pet->getTool()->getLockedToOwner());
+        $newInventory = $this->inventoryService->receiveItem($loot, $pet->getOwner(), $pet->getOwner(), 'Given to ' . $pet->getName() . ' by a Leprechaun.', LocationEnum::Wardrobe, $tool->getLockedToOwner());
 
         EquipmentFunctions::destroyPetTool($this->em, $pet);
 
