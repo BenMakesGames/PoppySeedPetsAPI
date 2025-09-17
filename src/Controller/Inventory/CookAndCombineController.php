@@ -150,7 +150,7 @@ class CookAndCombineController
         else if($totalQuantity < 10 || strpos($results->recipe->ingredients, ',') === false)
             $exclaim = '!';
         else
-            $exclaim = '! (' . $rng->rngNextFromArray([ 'Dang!', 'Wow!', 'Incredible...', 'So cook! Very meal!', 'A veritable feast!', 'Such skill!' ]) . ')';
+            $exclaim = '! (' . $rng->rngNextFromArray([ 'Dang!', 'Wow!', 'Wowie-zowie!', 'Incredible...', 'So cook! Very meal!', 'A veritable feast!', 'Such skill! Such panache!', 'When did you become so powerful?!' ]) . ')';
 
         $responseService->addFlashMessage('You prepared ' . ArrayFunctions::list_nice_quantities($qList) . $exclaim);
 
