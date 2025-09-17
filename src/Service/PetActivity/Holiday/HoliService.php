@@ -119,7 +119,7 @@ class HoliService
         $this->petExperienceService->spendSocialEnergy($pet, PetExperienceService::SocialEnergyPerHangOut);
 
         $otherPet = $relationshipToReconcile->getRelationship();
-        $relationshipOtherSide = $otherPet->getRelationshipWith($pet);
+        $relationshipOtherSide = $otherPet->getRelationshipWithOrThrow($pet);
 
         // set current relationship to "Friend"
         $relationshipToReconcile->setCurrentRelationship(RelationshipEnum::Friend);

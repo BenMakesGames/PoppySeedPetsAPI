@@ -50,7 +50,14 @@ class TriDChessService implements ParkEventInterface
     /** @var TriDChessParticipant[] */
     private array $winners;
 
+    /**
+     * @var array<int, int>
+     */
     private array $wins = [];
+
+    /**
+     * @var array<int, Pet>
+     */
     private array $defeatedBy = [];
 
     private string $results = '';

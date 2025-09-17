@@ -46,7 +46,7 @@ class UserLetter
 
     #[Groups(["myLetters"])]
     #[ORM\Column(type: 'boolean')]
-    private $isRead = false;
+    private bool $isRead = false;
 
     public function __construct(User $user, Letter $letter, string $comment)
     {

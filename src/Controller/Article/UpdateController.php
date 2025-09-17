@@ -41,9 +41,9 @@ class UpdateController
     {
         AdminOnly::adminIPsOnly($parameterBag, $request);
 
-        $title = trim($request->request->getString('title'));
-        $body = trim($request->request->getString('body'));
-        $imageUrl = trim($request->request->getString('imageUrl'));
+        $title = mb_trim($request->request->getString('title'));
+        $body = mb_trim($request->request->getString('body'));
+        $imageUrl = mb_trim($request->request->getString('imageUrl'));
 
         if($title === '' || $body === '')
             throw new PSPFormValidationException('title and body are both required.');

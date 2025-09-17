@@ -302,10 +302,12 @@ class InventoryService
                 }
             }
 
+            $enchantment = $pet->getTool()->getEnchantment();
+
             // bonus gather from equipment enchantment effects
-            if($pet->getTool()->getEnchantment())
+            if($enchantment)
             {
-                $bonusEffects = $pet->getTool()->getEnchantment()->getEffects();
+                $bonusEffects = $enchantment->getEffects();
 
                 if($bonusEffects->getWhenGather() && $item->getName() === $bonusEffects->getWhenGather()->getName())
                 {
@@ -318,7 +320,7 @@ class InventoryService
                     if($bonusEffects->getWhenGatherAlsoGather())
                     {
                         $extraItemItem = $this->getItemWithChanceForLuckyTransformation(
-                            $pet->getTool()->getEnchantment()->getEffects()->getWhenGatherAlsoGather()
+                            $enchantment->getEffects()->getWhenGatherAlsoGather()
                         );
 
                         $extraItem = (new Inventory(owner: $pet->getOwner(), item: $extraItemItem))

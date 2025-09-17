@@ -153,26 +153,4 @@ class MonthlyStoryAdventure
     {
         return $this->steps;
     }
-
-    public function addStep(MonthlyStoryAdventureStep $step): self
-    {
-        if (!$this->steps->contains($step)) {
-            $this->steps[] = $step;
-            $step->setAdventure($this);
-        }
-
-        return $this;
-    }
-
-    public function removeStep(MonthlyStoryAdventureStep $step): self
-    {
-        if ($this->steps->removeElement($step)) {
-            // set the owning side to null (unless already changed)
-            if ($step->getAdventure() === $this) {
-                $step->setAdventure(null);
-            }
-        }
-
-        return $this;
-    }
 }

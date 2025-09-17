@@ -36,7 +36,7 @@ class SignUpPetController
         UserAccessor $userAccessor
     ): JsonResponse
     {
-        $parkEventType = trim($request->request->getString('parkEventType'));
+        $parkEventType = mb_trim($request->request->getString('parkEventType'));
 
         if($parkEventType === '') $parkEventType = null;
 

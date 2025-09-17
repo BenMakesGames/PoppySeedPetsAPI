@@ -89,6 +89,7 @@ class PetSocialActivityService
         if($pet->getFood() > 0 && $weather->isHoliday(HolidayEnum::AwaOdori) && $this->awaOdoriService->adventure($pet))
             return true;
 
+        /** @var PetGroup[] $availableGroups */
         $availableGroups = [];
 
         $wants = [
@@ -312,6 +313,9 @@ class PetSocialActivityService
 
     private function hangOutWithSpiritCompanion(Pet $pet): void
     {
+        $companion = $pet->getSpiritCompanion()
+            ?? throw new \InvalidArgumentException('Pet does not have a spirit companion.');
+
         $teachingStat = null;
         $activityTags = [ 'Spirit Companion' ];
         $activityInterestingness = PetActivityLogInterestingness::ActivityUsingMerit;
@@ -319,8 +323,6 @@ class PetSocialActivityService
         $changes = new PetChanges($pet);
 
         $this->petExperienceService->spendSocialEnergy($pet, PetExperienceService::SocialEnergyPerHangOut);
-
-        $companion = $pet->getSpiritCompanion();
 
         $companion->setLastHangOut();
 

@@ -46,7 +46,7 @@ class SearchController
         Request $request, ResponseService $responseService, UserTypeaheadService $userTypeaheadService
     ): JsonResponse
     {
-        $suggestions = $userTypeaheadService->search('name', $request->query->get('search', ''), 5);
+        $suggestions = $userTypeaheadService->search('name', $request->query->getString('search', ''), 5);
 
         return $responseService->success($suggestions, [ SerializationGroupEnum::USER_TYPEAHEAD ]);
     }

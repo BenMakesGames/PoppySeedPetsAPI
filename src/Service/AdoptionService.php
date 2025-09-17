@@ -73,6 +73,9 @@ class AdoptionService
         return 4 + $extra + $bonus;
     }
 
+    /**
+     * @return array{0: PetShelterPet[], 1: string}
+     */
     public function getDailyPets(User $user): array
     {
         $nowString = $this->clock->now->format('Y-m-d');
@@ -104,6 +107,8 @@ class AdoptionService
         $fullMoonName = DateFunctions::getFullMoonName($this->clock->now);
         $isBlueMoon = $fullMoonName === 'Blue';
         $isPinkMoon = $fullMoonName === 'Pink';
+
+        /** @var PetShelterPet[] $pets */
         $pets = [];
 
         $allSpecies = $this->em->getRepository(PetSpecies::class)->findBy([ 'availableFromPetShelter' => true ]);
@@ -259,6 +264,9 @@ class AdoptionService
         return count(self::getRarePetIndices($dt)) > 0;
     }
 
+    /**
+     * @return int[]
+     */
     public static function getRarePetIndices(\DateTimeImmutable $dt): array
     {
         $rarePetDayOfMonth = self::getRarePetDayForMonth($dt);
@@ -316,6 +324,9 @@ class AdoptionService
         return 0;
     }
 
+    /**
+     * @return string[]
+     */
     public function getSeasonalNames(): array
     {
         $monthDay = $this->clock->getMonthAndDay();

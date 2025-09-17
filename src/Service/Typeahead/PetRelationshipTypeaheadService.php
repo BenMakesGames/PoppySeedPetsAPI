@@ -18,6 +18,9 @@ use App\Entity\Pet;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\QueryBuilder;
 
+/**
+ * @extends TypeaheadService<Pet>
+ */
 class PetRelationshipTypeaheadService extends TypeaheadService
 {
     private Pet $pet;
@@ -28,6 +31,9 @@ class PetRelationshipTypeaheadService extends TypeaheadService
         parent::__construct($em->getRepository(Pet::class));
     }
 
+    /**
+     * @param string[] $relationships
+     */
     public function setParameters(Pet $pet, array $relationships): void
     {
         $this->pet = $pet;

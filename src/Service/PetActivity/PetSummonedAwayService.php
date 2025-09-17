@@ -255,6 +255,9 @@ class PetSummonedAwayService
         return $activityLog;
     }
 
+    /**
+     * @return array{0: string, 1: string, 2: string}
+     */
     private function getMiningDescriptionAndLoot(): array
     {
         $r = $this->rng->rngNextInt(1, 10);

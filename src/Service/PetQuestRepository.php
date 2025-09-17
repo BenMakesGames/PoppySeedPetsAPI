@@ -24,9 +24,12 @@ class PetQuestRepository
     {
     }
 
+    /**
+     * @var array<string, PetQuest>
+     */
     private array $petQuestPerRequestCache = [];
 
-    public function findOrCreate(Pet $pet, string $name, $default): PetQuest
+    public function findOrCreate(Pet $pet, string $name, mixed $default): PetQuest
     {
         $cacheKey = $pet->getId() . '-' . $name;
 

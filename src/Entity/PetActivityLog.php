@@ -59,12 +59,18 @@ class PetActivityLog
 
     #[Groups(["petActivityLogAndPublicPet"])]
     #[ORM\ManyToOne(targetEntity: Item::class)]
-    private ?Item $equippedItem = null;
+    private ?Item $equippedItem;
 
+    /**
+     * @var Collection<int, PetActivityLogTag>
+     */
     #[Groups(["petActivityLogs", "petActivityLogAndPublicPet"])]
     #[ORM\ManyToMany(targetEntity: PetActivityLogTag::class)]
     private Collection $tags;
 
+    /**
+     * @var Collection<int, PetActivityLogItem>
+     */
     #[Groups(["petActivityLogAndPublicPet"])]
     #[ORM\OneToMany(mappedBy: 'log', targetEntity: PetActivityLogItem::class, orphanRemoval: true, cascade: ['persist'])]
     private Collection $createdItems;
@@ -76,6 +82,7 @@ class PetActivityLog
         $this->createdOn = new \DateTimeImmutable();
         $this->tags = new ArrayCollection();
         $this->createdItems = new ArrayCollection();
+        $this->equippedItem = $pet->getTool()?->getItem();
     }
 
     public function getId(): ?int
@@ -83,22 +90,12 @@ class PetActivityLog
         return $this->id;
     }
 
-    public function getPet(): ?Pet
+    public function getPet(): Pet
     {
         return $this->pet;
     }
 
-    public function setPet(?Pet $pet): self
-    {
-        $this->pet = $pet;
-
-        if($pet && $pet->getTool())
-            $this->equippedItem = $pet->getTool()->getItem();
-
-        return $this;
-    }
-
-    public function getEntry(): ?string
+    public function getEntry(): string
     {
         return $this->entry;
     }
@@ -152,7 +149,7 @@ class PetActivityLog
         return $this;
     }
 
-    public function getInterestingness(): ?int
+    public function getInterestingness(): int
     {
         return $this->interestingness;
     }
@@ -168,19 +165,6 @@ class PetActivityLog
     public function getEquippedItem(): ?Item
     {
         return $this->equippedItem;
-    }
-
-    public function setEquippedItem(?Item $equippedItem): self
-    {
-        $this->equippedItem = $equippedItem;
-
-        return $this;
-    }
-
-    #[Groups(["petActivityLogs"])]
-    public function getIsPetActivity(): bool
-    {
-        return $this->pet !== null;
     }
 
     /**

@@ -66,8 +66,8 @@ class DeleteDuplicateRelationshipsCommand extends Command
 
                 echo '#' . ($i + 1) . "\n";
                 echo '  ' . $r->getMetOn()->format('Y-m-d H:i:s') . ': ' . $r->getMetDescription() . "\n";
-                echo '  Currently: ' . $r->getCurrentRelationship() . "\n";
-                echo '  Goal: ' . $r->getRelationshipGoal() . "\n";
+                echo '  Currently: ' . $r->getCurrentRelationship()->value . "\n";
+                echo '  Goal: ' . $r->getRelationshipGoal()->value . "\n";
 
                 echo "\n";
             }

@@ -65,9 +65,9 @@ class WunderbussController
         if($usedAWunderbuss->getValue())
             throw new PSPInvalidOperationException('You\'ve already wished for something from the Wunderbuss. (You only get one wish, unfortunately...)');
 
-        $searchForId = $request->request->get('itemId');
+        $searchForId = $request->request->getInt('itemId');
 
-        if(!$searchForId)
+        if($searchForId <= 0)
             throw new PSPFormValidationException('An item to search for must be selected!');
 
         $itemToFind = ItemRepository::findOneById($em, $searchForId);

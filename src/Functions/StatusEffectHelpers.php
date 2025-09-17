@@ -77,6 +77,9 @@ final class StatusEffectHelpers
 
         if($status === StatusEffectEnum::Wereform)
         {
+            /**
+             * @var string[] $itemsDropped
+             */
             $itemsDropped = [];
 
             if(

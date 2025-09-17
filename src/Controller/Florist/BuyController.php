@@ -50,7 +50,7 @@ class BuyController
             throw new PSPNotUnlockedException('Florist');
 
         $offers = $floristService->getInventory($user);
-        $userPickName = $request->request->get('item');
+        $userPickName = $request->request->getString('item');
 
         $userPick = ArrayFunctions::find_one($offers, fn($o) => $o['item']['name'] === $userPickName);
 

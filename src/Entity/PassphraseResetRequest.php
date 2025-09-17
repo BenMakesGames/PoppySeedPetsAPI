@@ -27,20 +27,27 @@ class PassphraseResetRequest
 
     #[ORM\OneToOne(targetEntity: User::class, inversedBy: 'passphraseResetRequest', cascade: ['persist'])]
     #[ORM\JoinColumn(nullable: false)]
-    private $user;
+    private User $user;
 
     #[ORM\Column(type: 'string', length: 40, unique: true)]
-    private $code;
+    private string $code;
 
     #[ORM\Column(type: 'datetime_immutable')]
-    private $expiresOn;
+    private \DateTimeImmutable $expiresOn;
+
+    public function __construct(User $user, string $code, \DateTimeImmutable $expiresOn)
+    {
+        $this->user = $user;
+        $this->code = $code;
+        $this->expiresOn = $expiresOn;
+    }
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getUser(): ?User
+    public function getUser(): User
     {
         return $this->user;
     }
@@ -52,7 +59,7 @@ class PassphraseResetRequest
         return $this;
     }
 
-    public function getCode(): ?string
+    public function getCode(): string
     {
         return $this->code;
     }
@@ -64,7 +71,7 @@ class PassphraseResetRequest
         return $this;
     }
 
-    public function getExpiresOn(): ?\DateTimeImmutable
+    public function getExpiresOn(): \DateTimeImmutable
     {
         return $this->expiresOn;
     }

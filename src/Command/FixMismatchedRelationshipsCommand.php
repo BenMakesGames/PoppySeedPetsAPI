@@ -78,8 +78,8 @@ class FixMismatchedRelationshipsCommand extends Command
 
                 echo '#' . ($i + 1) . "\n";
                 echo '  ' . $r->getPet()->getName() . ': ' . $r->getMetDescription() . "\n";
-                echo '  Currently: ' . $r->getCurrentRelationship() . "\n";
-                echo '  Goal: ' . $r->getRelationshipGoal() . "\n";
+                echo '  Currently: ' . $r->getCurrentRelationship()->value . "\n";
+                echo '  Goal: ' . $r->getRelationshipGoal()->value . "\n";
 
                 echo "\n";
             }
@@ -96,7 +96,7 @@ class FixMismatchedRelationshipsCommand extends Command
 
             $wrongRelationship->setCurrentRelationship($correctRelationship->getCurrentRelationship());
 
-            echo '"' . $wrongRelationship->getPet()->getName() . ': ' . $wrongRelationship->getMetDescription() . '" will be set to "' . $wrongRelationship->getCurrentRelationship() . '".' . "\n";
+            echo '"' . $wrongRelationship->getPet()->getName() . ': ' . $wrongRelationship->getMetDescription()->value . '" will be set to "' . $wrongRelationship->getCurrentRelationship()->value . '".' . "\n";
 
             $updating++;
         }

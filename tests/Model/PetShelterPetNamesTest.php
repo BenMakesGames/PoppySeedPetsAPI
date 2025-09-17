@@ -35,7 +35,8 @@ class PetShelterPetNamesTest extends TestCase
 
     public function testPetNamesAreInAlphabeticalOrder(): void
     {
-        $collator = \Collator::create('en_US');
+        $collator = \Collator::create('en_US')
+            ?? throw new \Exception('Failed to create Collator instance for en_US locale.');
 
         for($i = 0; $i < count(PetShelterPet::PetNames) - 1; $i++)
         {

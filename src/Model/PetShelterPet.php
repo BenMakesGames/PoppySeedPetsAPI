@@ -19,6 +19,7 @@ use Symfony\Component\Serializer\Attribute\Groups;
 
 final class PetShelterPet
 {
+    /** @var string[] */
     public const array PetNames = [
         'Aalina', 'Aaron', 'Abrahil', 'Addy', 'Aedoc', 'Aelfric', 'Aimery', 'Alain', 'Alcubierre', 'Alda', 'Aldreda',
         'Aldus', 'Alienora', 'Aliette', 'Amée', 'Amis', 'Amphelise', 'Arlotto', 'Artaca', 'Auberi', 'Aureliana',
@@ -106,51 +107,62 @@ final class PetShelterPet
     }
 
 
+    /** @var string[] */
     public const array PetHalloweenNames = [
         'Pumpkin', 'Luna', 'Magic', 'Bones', 'Haunt', 'Spirit', 'Cauldron', 'Werewolf', 'Vampire',
     ];
 
+    /** @var string[] */
     public const array PetChristmasNames = [
         'Holly', 'Cocoa', 'Evergreen', 'Santa', 'Dasher', 'Dancer', 'Prancer', 'Vixen', 'Comet', 'Cupid', 'Donner',
         'Blitzen', 'Rudolph', 'Olive', 'Spirit', 'Mint', 'Sol Invictus',
     ];
 
+    /** @var string[] */
     public const array PetBlackFridayNames = [
         'Madness', 'Despair', 'Desperation', 'Depravity', 'Turpitude', 'Darkness', 'Terror', 'Recoil',
         'Deals', '50% Off', 'Bedlam', 'Chaos', 'Breakdown', 'Spoils',
     ];
 
+    /** @var string[] */
     public const array PetCyberMondayNames = [
         'DLC', '50% Off', 'Meta Tag', 'Redirect', '302', 'robots.txt', 'Heatmap', 'Tracking Cookie', 'SEO', 'CPC',
         'CTR', 'Demographic', 'Lead Magnet', 'Remarketing', 'CTA', 'Bounce Rate', 'Open Rate', 'CPA',
         'Conversion Rate',
     ];
 
+    /** @var string[] */
     public const array PetThanksgivingNames = [
         'Gobbles', 'Pumpkin', 'Cranberry', 'Turkey', 'Stuffing', 'Mashed Potatoes', 'Gravy', 'Marshmallow',
         'Light Meat', 'Dark Meat', 'Crispy Onion', 'Sweet Potato', 'Brown Sugar', 'Pecan Pie',
     ];
 
+    /** @var string[] */
     public const array PetHanukkahNames = [
         'Dreidel', 'Olive Oil', 'Potato', 'Pancake', 'Gelt', 'Maccabee', 'Pączki', 'Buñuelo', 'Sufganiyah',
     ];
 
+    /** @var string[] */
     public const array PetEasterNames = [
         'Osterbaum', 'Bunny', 'Rabbit', 'Daffodil', 'Lamb', 'Pastel',
     ];
 
+    /** @var string[] */
     public const array PetWinterSolsticeNames = [
         'Solstice', 'Midwinter', 'Makara', 'Yaldā', 'Yule', 'Dongzhi',
     ];
 
+    /** @var string[] */
     public const array PetValentinesNames = [
         'Isabeau', 'Margery', 'Lace', 'Coupon', 'Cariño',
     ];
 
+    /** @var string[] */
     public const array PetWhiteDayNames = [
         'Marshmallow', 'Trắng', 'Cake', 'Cookie', 'Doki-doki', 'Lace',
     ];
 
+    /** @var array<string, string[]> */
     public const array PetChineseZodiacNames = [
         '鼠' => [ 'Rat', 'Shǔ' ],
         '牛' => [ 'Ox', 'Niú' ],

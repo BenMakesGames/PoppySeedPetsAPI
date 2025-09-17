@@ -30,7 +30,7 @@ class TypeaheadController
         Request $request, ResponseService $responseService, PetSpeciesTypeaheadService $petSpeciesTypeaheadService
     ): JsonResponse
     {
-        $suggestions = $petSpeciesTypeaheadService->search('name', $request->query->get('search', ''));
+        $suggestions = $petSpeciesTypeaheadService->search('name', $request->query->getString('search'));
 
         return $responseService->success($suggestions, [ "typeahead" ]);
     }

@@ -538,11 +538,8 @@ class PetActivityService
         if($this->discoverNewFeature($pet))
             return;
 
-        if($pet->getTool())
-        {
-            if($this->considerToolsWhichLeadToAdventure($petWithSkills))
-                return;
-        }
+        if($this->considerToolsWhichLeadToAdventure($petWithSkills))
+            return;
 
         if($this->rng->rngNextInt(1, $hasEventPersonality ? 48 : 50) === 1)
         {
@@ -653,8 +650,12 @@ class PetActivityService
     private function considerToolsWhichLeadToAdventure(ComputedPetSkills $petWithSkills): bool
     {
         $pet = $petWithSkills->getPet();
+        $tool = $pet->getTool();
 
-        switch($pet->getTool()->getItem()->getName())
+        if(!$tool)
+            return false;
+
+        switch($tool->getItem()->getName())
         {
             case '"Gold" Idol':
                 $this->treasureMapService->doGoldIdol($pet);
@@ -821,9 +822,9 @@ class PetActivityService
                 break;
         }
 
-        if($pet->getTool()->getEnchantment())
+        if($tool->getEnchantment())
         {
-            switch($pet->getTool()->getEnchantment()->getName())
+            switch($tool->getEnchantment()->getName())
             {
                 case 'Searing':
                     if($this->rng->rngNextInt(1, 20) == 1)

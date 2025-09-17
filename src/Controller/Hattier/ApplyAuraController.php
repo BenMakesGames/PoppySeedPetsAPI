@@ -45,10 +45,10 @@ class ApplyAuraController
     {
         $payWith = strtolower($request->request->getAlpha('payWith', 'moneys'));
 
-        $petId = $request->request->get('pet');
-        $auraId = $request->request->get('aura');
+        $petId = $request->request->getInt('pet');
+        $auraId = $request->request->getInt('aura');
 
-        if(!$petId || !$auraId)
+        if($petId <= 0 || $auraId <= 0)
             throw new PSPInvalidOperationException('A pet and style must be selected.');
 
         $user = $userAccessor->getUserOrThrow();

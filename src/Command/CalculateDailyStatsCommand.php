@@ -119,6 +119,9 @@ class CalculateDailyStatsCommand extends Command
         return self::SUCCESS;
     }
 
+    /**
+     * @return array{new_users: int}
+     */
     public function getNewPlayerCount(string $firstDate): array
     {
         return $this->em->getConnection()
@@ -131,6 +134,9 @@ class CalculateDailyStatsCommand extends Command
         ;
     }
 
+    /**
+     * @return array{total_users: int, total_moneys: int}
+     */
     public function getAverages(string $firstDate): array
     {
         return $this->em->getConnection()
@@ -173,6 +179,9 @@ class CalculateDailyStatsCommand extends Command
         ;
     }
 
+    /**
+     * @return array{total_users: int, total_moneys: int}
+     */
     public function getLifeTime(): array
     {
         return $this->em->getConnection()

@@ -45,7 +45,7 @@ class RenameController
         if($theme->getName() === UserStyle::Current)
             throw new PSPInvalidOperationException('That theme cannot be renamed!');
 
-        $name = mb_trim($request->request->get('name'));
+        $name = mb_trim($request->request->getString('name'));
 
         if(strlen($name) < 1 || strlen($name) > 15)
             throw new PSPFormValidationException('Name must be between 1 and 15 characters.');

@@ -32,10 +32,10 @@ class ConnectAccountController
         Request $request, EntityManagerInterface $em
     ): RedirectResponse
     {
-        $code = $request->query->get('code');
-        $userId = $request->query->get('state');
+        $code = $request->query->getString('code');
+        $userId = $request->query->getInt('state');
 
-        if(!$code || !$userId)
+        if(!$code || $userId <= 0)
             throw new PSPFormValidationException('Code and state are required.');
 
         $user = $em->getRepository(User::class)->find($userId);

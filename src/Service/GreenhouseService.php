@@ -175,17 +175,19 @@ class GreenhouseService
 
     public function maybeAssignPollinators(User $user): void
     {
+        $greenhouse = $user->getGreenhouse() ?? throw new \InvalidArgumentException('User has no greenhouse!');
+
         $twoHoursAgo = $this->clock->now->sub(\DateInterval::createFromDateString('2 hours'));
 
-        if($user->getGreenhouse()->getButterfliesDismissedOn() <= $twoHoursAgo)
+        if($greenhouse->getButterfliesDismissedOn() <= $twoHoursAgo)
             $this->maybeAssignPollinator($user, PollinatorEnum::Butterflies);
 
         if($user->hasUnlockedFeature(UnlockableFeatureEnum::Beehive))
         {
-            if($user->getGreenhouse()->getBeesDismissedOn() <= $twoHoursAgo)
+            if($greenhouse->getBeesDismissedOn() <= $twoHoursAgo)
                 $this->maybeAssignPollinator($user, PollinatorEnum::Bees1);
 
-            if($user->getBeehive() && $user->getBeehive()->getWorkers() >= 500 && $user->getGreenhouse()->getBees2DismissedOn() <= $twoHoursAgo)
+            if($user->getBeehive() && $user->getBeehive()->getWorkers() >= 500 && $greenhouse->getBees2DismissedOn() <= $twoHoursAgo)
                 $this->maybeAssignPollinator($user, PollinatorEnum::Bees2);
         }
     }
@@ -216,6 +218,9 @@ class GreenhouseService
         return true;
     }
 
+    /**
+     * @return array{greenhouse: Greenhouse, weeds: string|null, plants: GreenhousePlant[], fertilizer: array}
+     */
     public function getGreenhouseResponseData(User $user): array
     {
         $fertilizers = $this->findFertilizers($user);

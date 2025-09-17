@@ -11,7 +11,6 @@ declare(strict_types=1);
  * You should have received a copy of the GNU General Public License along with The Poppy Seed Pets API. If not, see <https://www.gnu.org/licenses/>.
  */
 
-
 namespace App\Service;
 
 use App\Entity\Dragon;
@@ -38,6 +37,9 @@ use Doctrine\ORM\EntityManagerInterface;
 class DragonService
 {
     // currently sums to 75
+    /**
+     * @var array{weight:int,item:string}[]
+     */
     private const array SilverGoodies = [
         [ 'weight' => 30, 'item' => 'Liquid-hot Magma' ], // 40%
         [ 'weight' => 15, 'item' => 'Quintessence' ], // 20%
@@ -50,6 +52,9 @@ class DragonService
     ];
 
     // currently sums to 100 - handy!
+    /**
+     * @var array{weight:int,item:string}[]
+     */
     private const array GoldGoodies = [
         [ 'weight' => 20, 'item' => 'Liquid-hot Magma' ], // 20%
         [ 'weight' => 20, 'item' => 'Tiny Scroll of Resources' ],
@@ -65,6 +70,9 @@ class DragonService
     ];
 
     // currently sums to 75
+    /**
+     * @var array{weight:int,item:string}[]
+     */
     private const array GemGoodies = [
         [ 'weight' => 25, 'item' => 'Scroll of Resources' ], // 33%
         [ 'weight' => 15, 'item' => 'Liquid-hot Magma' ], // 20%

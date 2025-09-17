@@ -43,7 +43,7 @@ class ItemGrammar
         return $this->id;
     }
 
-    public function getItem(): ?Item
+    public function getItem(): Item
     {
         return $this->item;
     }

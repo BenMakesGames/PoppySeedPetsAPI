@@ -33,6 +33,9 @@ class BookstoreService
 {
     const string BOOKSTORE_QUEST_NAME = 'Items Given to Bookstore';
 
+    /**
+     * @var array<int, array{askingFor: string[], dialog: string}>
+     */
     const array QUEST_STEPS = [
         [
             'askingFor' => [ 'Moth' ],
@@ -132,6 +135,10 @@ class BookstoreService
     {
     }
 
+    /**
+     * @param int $step
+     * @return array{askingFor: string[], dialog: string}|null
+     */
     public static function getBookstoreQuestStep(int $step): ?array
     {
         if($step < count(self::QUEST_STEPS))
@@ -391,7 +398,7 @@ class BookstoreService
     }
 
     /**
-     * @return array|array[]
+     * @return array{item: \App\Entity\Item, price: int}[]
      */
     public function getBooks(User $user): array
     {
@@ -401,7 +408,7 @@ class BookstoreService
     }
 
     /**
-     * @return array|array[]
+     * @return array{item: \App\Entity\Item, price: int}[]
      */
     private function serializeShopInventory(array $inventory): array
     {

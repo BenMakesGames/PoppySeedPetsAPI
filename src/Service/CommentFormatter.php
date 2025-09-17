@@ -36,6 +36,9 @@ class CommentFormatter
     {
     }
 
+    /**
+     * @return string[]
+     */
     public function getUserIds(string $text): array
     {
         preg_match_all('/%user:([0-9]+)\\.[A-Za-z\']+%/', $text, $matches);

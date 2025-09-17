@@ -24,6 +24,9 @@ class UserStyle
 {
     public const string Current = 'Current';
 
+    /**
+     * @var string[]
+     */
     const array Properties = [
         'backgroundColor',
         'speechBubbleBackgroundColor',

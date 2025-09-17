@@ -58,6 +58,9 @@ class HattierService
         return $this->userAurasPerRequestCache[$cacheKey] !== null;
     }
 
+    /**
+     * @return array{id: int|null, unlockedOn: \DateTimeImmutable|null, comment: string|null, name: string, aura: Enchantment|null}[]
+     */
     public function getAurasAvailable(User $user): array
     {
         $allAuras = $this->em->getRepository(Enchantment::class)->createQueryBuilder('e')

@@ -42,7 +42,12 @@ class Enchantment
 
     #[Groups(["myInventory", "myPet", "itemEncyclopedia", "marketItem", "myAura", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails"])]
     #[ORM\ManyToOne(targetEntity: Aura::class)]
-    private $aura;
+    private ?Aura $aura;
+
+    public function __construct(ItemTool $effects)
+    {
+        $this->effects = $effects;
+    }
 
     public function getId(): ?int
     {
@@ -73,7 +78,7 @@ class Enchantment
         return $this;
     }
 
-    public function getEffects(): ?ItemTool
+    public function getEffects(): ItemTool
     {
         return $this->effects;
     }

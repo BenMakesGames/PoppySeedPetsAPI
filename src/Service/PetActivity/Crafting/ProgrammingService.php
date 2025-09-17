@@ -28,7 +28,6 @@ use App\Enum\PetLocationEnum;
 use App\Enum\PetSkillEnum;
 use App\Enum\PetSpeciesName;
 use App\Enum\RelationshipEnum;
-use App\Enum\StatusEffectEnum;
 use App\Functions\ActivityHelpers;
 use App\Functions\ArrayFunctions;
 use App\Functions\EnchantmentRepository;
@@ -38,7 +37,6 @@ use App\Functions\PetActivityLogTagHelpers;
 use App\Functions\PetBadgeHelpers;
 use App\Functions\PetColorFunctions;
 use App\Functions\PetSpeciesRepository;
-use App\Functions\StatusEffectHelpers;
 use App\Model\ActivityCallback;
 use App\Model\ComputedPetSkills;
 use App\Model\IActivityCallback;
@@ -673,21 +671,13 @@ class ProgrammingService
 
         $this->em->persist($newPet);
 
-        $petWithCaptor = (new PetRelationship())
-            ->setRelationship($captor)
-            ->setCurrentRelationship(RelationshipEnum::Dislike)
-            ->setPet($newPet)
-            ->setRelationshipGoal(RelationshipEnum::Dislike)
+        $petWithCaptor = (new PetRelationship($newPet, $captor, RelationshipEnum::Dislike, RelationshipEnum::Dislike))
             ->setMetDescription('%relationship.name% pulled %pet.name% out of the imaginary plane, trapping them here!')
         ;
 
         $newPet->addPetRelationship($petWithCaptor);
 
-        $captorWithPet = (new PetRelationship())
-            ->setRelationship($newPet)
-            ->setCurrentRelationship(RelationshipEnum::Dislike)
-            ->setPet($captor)
-            ->setRelationshipGoal(RelationshipEnum::Dislike)
+        $captorWithPet = (new PetRelationship($captor, $newPet, RelationshipEnum::Dislike, RelationshipEnum::Dislike))
             ->setMetDescription('%pet.name% pulled %relationship.name% out of the imaginary plane, trapping them here!')
         ;
 

@@ -83,6 +83,9 @@ class HollowEarthService
         $user->setHollowEarthPlayer($hollowEarthPlayer);
     }
 
+    /**
+     * @return int[]
+     */
     public function getAllCardIdsOnMap(User $player): array
     {
         $map = $this->em->getRepository(HollowEarthTile::class)->findAll();

@@ -16,7 +16,6 @@ namespace App\Service\Filter;
 
 use App\Entity\MonthlyStoryAdventure;
 use App\Entity\User;
-use App\Entity\UserMonthlyStoryAdventureStepCompleted;
 use App\Service\StarKindred\StarKindredAdventureService;
 use App\Service\UserAccessor;
 use Doctrine\ORM\EntityManagerInterface;

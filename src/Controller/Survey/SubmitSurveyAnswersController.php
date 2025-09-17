@@ -46,7 +46,7 @@ class SubmitSurveyAnswersController
 
         foreach($questions as $question)
         {
-            $answer = trim($request->request->getString("{$question->getId()}"));
+            $answer = mb_trim($request->request->getString("{$question->getId()}"));
 
             if($answer)
                 $surveyService->upsertAnswer($question, $user, $answer);

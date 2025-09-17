@@ -33,14 +33,17 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class PetRelationshipService
 {
+    /**
+     * @var array<string, int>
+     */
     public const array RelationshipCommitments = [
-        RelationshipEnum::BrokeUp => -1,
-        RelationshipEnum::Dislike => 0,
-        RelationshipEnum::FriendlyRival => 1,
-        RelationshipEnum::Friend => 2,
-        RelationshipEnum::BFF => 3,
-        RelationshipEnum::FWB => 4,
-        RelationshipEnum::Mate => 5,
+        RelationshipEnum::BrokeUp->value => -1,
+        RelationshipEnum::Dislike->value => 0,
+        RelationshipEnum::FriendlyRival->value => 1,
+        RelationshipEnum::Friend->value => 2,
+        RelationshipEnum::BFF->value => 3,
+        RelationshipEnum::FWB->value => 4,
+        RelationshipEnum::Mate->value => 5,
     ];
 
     public function __construct(
@@ -54,20 +57,20 @@ class PetRelationshipService
     {
     }
 
-    public static function min(string $relationship1, string $relationship2): string
+    public static function min(RelationshipEnum $relationship1, RelationshipEnum $relationship2): RelationshipEnum
     {
-        $r1Commitment = self::RelationshipCommitments[$relationship1];
-        $r2Commitment = self::RelationshipCommitments[$relationship2];
+        $r1Commitment = self::RelationshipCommitments[$relationship1->value];
+        $r2Commitment = self::RelationshipCommitments[$relationship2->value];
 
         $min = min($r1Commitment, $r2Commitment);
 
         return $min === $r1Commitment ? $relationship1 : $relationship2;
     }
 
-    public static function max(string $relationship1, string $relationship2): string
+    public static function max(RelationshipEnum $relationship1, RelationshipEnum $relationship2): RelationshipEnum
     {
-        $r1Commitment = self::RelationshipCommitments[$relationship1];
-        $r2Commitment = self::RelationshipCommitments[$relationship2];
+        $r1Commitment = self::RelationshipCommitments[$relationship1->value];
+        $r2Commitment = self::RelationshipCommitments[$relationship2->value];
 
         $max = max($r1Commitment, $r2Commitment);
 
@@ -75,12 +78,12 @@ class PetRelationshipService
     }
 
     /**
-     * @return string[]
+     * @return RelationshipEnum[]
      */
-    public static function getRelationshipsBetween(string $relationship1, string $relationship2): array
+    public static function getRelationshipsBetween(RelationshipEnum $relationship1, RelationshipEnum $relationship2): array
     {
-        $r1Commitment = self::RelationshipCommitments[$relationship1];
-        $r2Commitment = self::RelationshipCommitments[$relationship2];
+        $r1Commitment = self::RelationshipCommitments[$relationship1->value];
+        $r2Commitment = self::RelationshipCommitments[$relationship2->value];
 
         $minCommitment = min($r1Commitment, $r2Commitment);
         $maxCommitment = max($r1Commitment, $r2Commitment);
@@ -90,7 +93,7 @@ class PetRelationshipService
         foreach(self::RelationshipCommitments as $relationship=>$commitment)
         {
             if($commitment >= $minCommitment && $commitment <= $maxCommitment)
-                $between[] = $relationship;
+                $between[] = RelationshipEnum::from($relationship);
         }
 
         return $between;
@@ -98,6 +101,7 @@ class PetRelationshipService
 
     /**
      * @param Collection<int, Pet>|Pet[] $pets
+     * @param string[] $groupTags
      */
     public function groupGathering(
         Collection|array $pets,
@@ -124,6 +128,9 @@ class PetRelationshipService
         }
     }
 
+    /**
+     * @param string[] $groupTags
+     */
     public function seeAtGroupGathering(
         Pet $p1, Pet $p2, string $hangOutDescription, string $enemyDescription, string $meetSummary, string $meetActivityLogTemplate, array $groupTags, int $meetChance = 5
     ): void
@@ -136,7 +143,7 @@ class PetRelationshipService
         $p1Relationships = $p1->getRelationshipWith($p2);
 
         if($p1Relationships)
-            $this->hangOutPublicly($p1Relationships, $p2->getRelationshipWith($p1), $hangOutDescription, $enemyDescription, $groupTags);
+            $this->hangOutPublicly($p1Relationships, $p2->getRelationshipWithOrThrow($p1), $hangOutDescription, $enemyDescription, $groupTags);
         else if($this->rng->rngNextInt(1, 100) <= $meetChance)
             $this->introducePets($p1, $p2, $meetSummary, $meetActivityLogTemplate, $groupTags);
     }
@@ -174,6 +181,7 @@ class PetRelationshipService
     }
 
     /**
+     * @param string[] $groupTags
      * @return PetRelationship[]
      */
     public function introducePets(Pet $pet, Pet $otherPet, string $howMetSummary, string $metActivityLogTemplate, array $groupTags): array
@@ -302,7 +310,7 @@ class PetRelationshipService
         return [ $petRelationship, $otherPetRelationship ];
     }
 
-    public static function generateInitialCommitment(IRandom $rng, string $startingRelationship, string $relationshipGoal): int
+    public static function generateInitialCommitment(IRandom $rng, RelationshipEnum $startingRelationship, RelationshipEnum $relationshipGoal): int
     {
         $commitment = $rng->rngNextInt(0, 30);
 
@@ -329,21 +337,24 @@ class PetRelationshipService
         return $commitment;
     }
 
-    public static function calculateRelationshipDistance(string $initialRelationship, string $targetRelationship): int
+    public static function calculateRelationshipDistance(RelationshipEnum $initialRelationship, RelationshipEnum $targetRelationship): int
     {
         $values = [
-            RelationshipEnum::BrokeUp => -2,
-            RelationshipEnum::Dislike => 0,
-            RelationshipEnum::FriendlyRival => 2,
-            RelationshipEnum::Friend => 3,
-            RelationshipEnum::BFF => 6,
-            RelationshipEnum::FWB => 8,
-            RelationshipEnum::Mate => 10,
+            RelationshipEnum::BrokeUp->value => -2,
+            RelationshipEnum::Dislike->value => 0,
+            RelationshipEnum::FriendlyRival->value => 2,
+            RelationshipEnum::Friend->value => 3,
+            RelationshipEnum::BFF->value => 6,
+            RelationshipEnum::FWB->value => 8,
+            RelationshipEnum::Mate->value => 10,
         ];
 
-        return $values[$targetRelationship] - $values[$initialRelationship];
+        return $values[$targetRelationship->value] - $values[$initialRelationship->value];
     }
 
+    /**
+     * @param string[] $groupTags
+     */
     public function hangOutPublicly(
         PetRelationship $p1,
         PetRelationship $p2,
@@ -448,7 +459,7 @@ class PetRelationshipService
                     return $this->hangOutPrivatelyAsMates($p1, $p2);
 
                 default:
-                    throw new \InvalidArgumentException('p1 relationship goal is of an unexpected type, "' . $p1->getRelationshipGoal() . '"');
+                    throw new \InvalidArgumentException('p1 relationship goal is of an unexpected type, "' . $p1->getRelationshipGoal()->value . '"');
             }
         }
     }
@@ -686,23 +697,20 @@ class PetRelationshipService
     }
 
     /**
+     * @param RelationshipEnum[] $possibleRelationships
      * @return PetRelationship[]
      */
-    public function createRelationship(Pet $pet, string $howPetMetSummary, Pet $otherPet, string $howOtherPetMetSummary, string $initialRelationship, array $possibleRelationships): array
+    public function createRelationship(Pet $pet, string $howPetMetSummary, Pet $otherPet, string $howOtherPetMetSummary, RelationshipEnum $initialRelationship, array $possibleRelationships): array
     {
         if($pet->hasMerit(MeritEnum::FRIEND_OF_THE_WORLD))
-            $petPossibleRelationships = array_filter($possibleRelationships, fn($r) => $r !== RelationshipEnum::Dislike);
+            $petPossibleRelationships = array_filter($possibleRelationships, fn(RelationshipEnum $r) => $r !== RelationshipEnum::Dislike);
         else
             $petPossibleRelationships = $possibleRelationships;
 
         $relationshipGoal = $this->rng->rngNextFromArray($petPossibleRelationships);
 
-        $petRelationship = (new PetRelationship())
-            ->setRelationship($otherPet)
+        $petRelationship = (new PetRelationship($pet, $otherPet, $initialRelationship, $relationshipGoal))
             ->setMetDescription($howPetMetSummary)
-            ->setCurrentRelationship($initialRelationship)
-            ->setPet($pet)
-            ->setRelationshipGoal($relationshipGoal)
             ->setCommitment(self::generateInitialCommitment($this->rng, $initialRelationship, $relationshipGoal))
         ;
 
@@ -712,18 +720,14 @@ class PetRelationshipService
 
         // other pet
         if($otherPet->hasMerit(MeritEnum::FRIEND_OF_THE_WORLD))
-            $otherPetPossibleRelationships = array_filter($possibleRelationships, fn($r) => $r !== RelationshipEnum::Dislike);
+            $otherPetPossibleRelationships = array_filter($possibleRelationships, fn(RelationshipEnum $r) => $r !== RelationshipEnum::Dislike);
         else
             $otherPetPossibleRelationships = $possibleRelationships;
 
         $relationshipGoal = $this->rng->rngNextFromArray($otherPetPossibleRelationships);
 
-        $otherPetRelationship = (new PetRelationship())
-            ->setRelationship($pet)
+        $otherPetRelationship = (new PetRelationship($pet, $otherPet, $initialRelationship, $relationshipGoal))
             ->setMetDescription($howOtherPetMetSummary)
-            ->setCurrentRelationship($initialRelationship)
-            ->setPet($otherPet)
-            ->setRelationshipGoal($relationshipGoal)
             ->setCommitment(self::generateInitialCommitment($this->rng, $initialRelationship, $relationshipGoal))
         ;
 

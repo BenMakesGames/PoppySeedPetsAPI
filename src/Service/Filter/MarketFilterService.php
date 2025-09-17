@@ -33,6 +33,7 @@ class MarketFilterService implements FilterServiceInterface
 
     private ?User $user = null;
 
+    /** @var ObjectRepository<MarketListing>  */
     private ObjectRepository $repository;
 
     public function __construct(ManagerRegistry $doctrine)

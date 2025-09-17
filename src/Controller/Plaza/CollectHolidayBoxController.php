@@ -47,7 +47,7 @@ class CollectHolidayBoxController
         $user = $userAccessor->getUserOrThrow();
 
         $availableBoxes = $plazaService->getAvailableHolidayBoxes($user);
-        $requestedBox = $request->request->get('box');
+        $requestedBox = $request->request->getString('box');
 
         /** @var AvailableHolidayBox|null $box */
         $box = ArrayFunctions::find_one($availableBoxes, fn(AvailableHolidayBox $box) => $box->nameWithQuantity === $requestedBox);

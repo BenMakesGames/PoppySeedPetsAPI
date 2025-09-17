@@ -14,15 +14,13 @@ declare(strict_types=1);
 
 namespace App\Enum;
 
-final class RelationshipEnum
+enum RelationshipEnum: string
 {
-    use FakeEnum;
-
-    public const string BrokeUp = 'broke up';
-    public const string Dislike = 'dislike';
-    public const string FriendlyRival = 'friendly rival';
-    public const string Friend = 'friend';
-    public const string BFF = 'bff';
-    public const string FWB = 'fwb';
-    public const string Mate = 'mate';
+    case BrokeUp = 'broke up';
+    case Dislike = 'dislike';
+    case FriendlyRival = 'friendly rival';
+    case Friend = 'friend';
+    case BFF = 'bff';
+    case FWB = 'fwb';
+    case Mate = 'mate';
 }
