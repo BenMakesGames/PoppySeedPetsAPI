@@ -2817,7 +2817,7 @@ class MagicBindingService
             $this->houseSimService->getState()->loseItem('Sidereal Leaf Spear', 1);
             $pet->increaseEsteem(3);
 
-            $makes = $this->rng->rngNextFromArray([' Midnight', 'Sunrise' ]);
+            $makes = $this->rng->rngNextFromArray([ 'Midnight', 'Sunrise' ]);
 
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% enchanted a Sidereal Spear, creating ' . $makes . '!', '')
                 ->addInterestingness(PetActivityLogInterestingness::HoHum + 18)
