@@ -323,7 +323,10 @@ class BookstoreService
             $bookPrices['The Science of Embiggening'] = 100;
 
         if($user->hasUnlockedFeature(UnlockableFeatureEnum::Fireplace))
+        {
             $bookPrices['Melt'] = 25;
+            $bookPrices['Forge Blueprint'] = 500;
+        }
 
         if(
             $user->getGreenhouse() &&

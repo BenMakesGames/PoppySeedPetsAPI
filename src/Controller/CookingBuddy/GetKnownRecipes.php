@@ -19,10 +19,11 @@ use App\Enum\LocationEnum;
 use App\Enum\SerializationGroupEnum;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotFoundException;
-use App\Functions\RecipeRepository;
 use App\Functions\StringFunctions;
 use App\Model\ItemQuantity;
+use App\Model\Recipe;
 use App\Service\InventoryService;
+use App\Service\RecipeRepository;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -44,7 +45,7 @@ class GetKnownRecipes
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function getKnownRecipes(
         EntityManagerInterface $em, Request $request, ResponseService $responseService,
-        InventoryService $inventoryService, UserAccessor $userAccessor
+        InventoryService $inventoryService, UserAccessor $userAccessor, RecipeRepository $recipeRepository
     ): JsonResponse
     {
         $user = $userAccessor->getUserOrThrow();
@@ -87,12 +88,15 @@ class GetKnownRecipes
         $knownRecipeNames = array_map(fn(KnownRecipes $knownRecipe) => $knownRecipe->getRecipe(), $knownRecipes);
 
         // build up a dictionary in advance, for fast lookup
+        /**
+         * @var array<string, Recipe> $knownRecipeRecipes
+         */
         $knownRecipeRecipes = [];
 
-        foreach(RecipeRepository::Recipes as $recipe)
+        foreach($recipeRepository->recipes as $recipe)
         {
-            if(in_array($recipe['name'], $knownRecipeNames))
-                $knownRecipeRecipes[$recipe['name']] = $recipe;
+            if(in_array($recipe->name, $knownRecipeNames))
+                $knownRecipeRecipes[$recipe->name] = $recipe;
         }
 
         foreach($knownRecipes as $knownRecipe)
@@ -101,8 +105,8 @@ class GetKnownRecipes
                 throw new \Exception('Recipe not found: ' . $knownRecipe->getRecipe() . '.');
 
             $recipe = $knownRecipeRecipes[$knownRecipe->getRecipe()];
-            $ingredients = InventoryService::deserializeItemList($em, $recipe['ingredients']);
-            $makes = InventoryService::deserializeItemList($em, $recipe['makes']);
+            $ingredients = InventoryService::deserializeItemList($em, $recipe->ingredients);
+            $makes = InventoryService::deserializeItemList($em, $recipe->makes);
             $hasAllIngredients = true;
 
             $ingredients = array_map(function(ItemQuantity $itemQuantity) use($quantities, &$hasAllIngredients) {
@@ -122,7 +126,7 @@ class GetKnownRecipes
 
             $recipes[] = [
                 'id' => $knownRecipe->getId(),
-                'name' => $recipe['name'],
+                'name' => $recipe->name,
                 'ingredients' => $ingredients,
                 'makes' => $makes,
                 'canPrepare' => $hasAllIngredients,

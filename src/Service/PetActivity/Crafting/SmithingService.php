@@ -732,18 +732,10 @@ class SmithingService
             {
                 $this->houseSimService->getState()->loseItem('Limestone', 1);
 
-                if($this->rng->rngNextInt(1, 3) === 1)
-                {
-                    $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% melted Silica Grounds and Limestone into TWO Glass!')
-                        ->setIcon('items/mineral/silica-glass');
+                $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% melted Silica Grounds and Limestone into TWO Glass!')
+                    ->setIcon('items/mineral/silica-glass');
 
-                    $this->inventoryService->petCollectsItem('Glass', $pet, $pet->getName() . ' created this from Silica Grounds and Limestone.', $activityLog);
-                }
-                else
-                {
-                    $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% melted Silica Grounds and Limestone into Glass.')
-                        ->setIcon('items/mineral/silica-glass');
-                }
+                $this->inventoryService->petCollectsItem('Glass', $pet, $pet->getName() . ' created this from Silica Grounds and Limestone.', $activityLog);
             }
             else
             {

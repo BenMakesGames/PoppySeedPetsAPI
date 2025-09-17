@@ -17,9 +17,10 @@ namespace App\Command;
 use App\Command\Traits\AskItemTrait;
 use App\Entity\ItemFood;
 use App\Functions\ArrayFunctions;
-use App\Functions\RecipeRepository;
 use App\Model\ItemQuantity;
+use App\Model\Recipe;
 use App\Service\InventoryService;
+use App\Service\RecipeRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Question\Question;
@@ -29,7 +30,8 @@ class UpsertRecipeCommand extends PoppySeedPetsCommand
     use AskItemTrait;
 
     public function __construct(
-        private readonly EntityManagerInterface $em
+        private readonly EntityManagerInterface $em,
+        private readonly RecipeRepository $recipeRepository
     )
     {
         parent::__construct();
@@ -74,30 +76,32 @@ class UpsertRecipeCommand extends PoppySeedPetsCommand
             throw new \Exception('Can only be run in dev environments.');
 
         $name = $this->input->getArgument('recipe');
-        $recipe = RecipeRepository::findOneByName($name);
+        $recipe = $this->recipeRepository->findOneByName($name);
 
         if($recipe)
             $this->output->writeln('Updating "' . $name . '"');
         else
         {
             $this->output->writeln('Creating "' . $name . '"');
-            $recipe = [
-                'name' => $name,
-                'ingredients' => '',
-                'makes' => ''
-            ];
+            $recipe = new Recipe(
+                $name,
+                '',
+                '',
+                0
+            );
         }
 
-        $this->name($recipe, $name);
-        $this->ingredients($recipe);
-        $this->makes($recipe);
+        $recipe = $this->name($recipe, $name);
+        $recipe = $this->ingredients($recipe);
+        $recipe = $this->makes($recipe);
+        $recipe = $this->requiredHeat($recipe);
 
         $this->em->flush();
 
-        $ingredientFood = self::totalFood(InventoryService::deserializeItemList($this->em, $recipe['ingredients']));
-        $ingredientFertilizer = self::totalFertilizer(InventoryService::deserializeItemList($this->em, $recipe['ingredients']));
-        $makesFood = self::totalFood(InventoryService::deserializeItemList($this->em, $recipe['makes']));
-        $makesFertilizer = self::totalFertilizer(InventoryService::deserializeItemList($this->em, $recipe['makes']));
+        $ingredientFood = self::totalFood(InventoryService::deserializeItemList($this->em, $recipe->ingredients));
+        $ingredientFertilizer = self::totalFertilizer(InventoryService::deserializeItemList($this->em, $recipe->ingredients));
+        $makesFood = self::totalFood(InventoryService::deserializeItemList($this->em, $recipe->makes));
+        $makesFertilizer = self::totalFertilizer(InventoryService::deserializeItemList($this->em, $recipe->makes));
 
         $this->output->writeln('Ingredient food value totals:');
         $this->output->writeln('  Fertilizer: ' . $ingredientFertilizer);
@@ -119,20 +123,20 @@ class UpsertRecipeCommand extends PoppySeedPetsCommand
         $this->output->writeln('');
         $this->output->writeln('PHP:');
         $escapedName = str_replace("'", "\\'", $name);
-        $this->output->writeln("[ 'name' => '$escapedName', 'ingredients' => '{$recipe['ingredients']}', 'makes' => '{$recipe['makes']}' ],");
+        $this->output->writeln("new Recipe('$escapedName', '$recipe->ingredients', '$recipe->makes', $recipe->requiredHeat),");
 
         return self::SUCCESS;
     }
 
-    private function askName(string $prompt, array $recipe, string $name): string
+    private function askName(string $prompt, Recipe $recipe, string $name): string
     {
         $question = new Question($prompt . ' (' . $name . ') ', $name);
         $question->setValidator(function($answer) use($recipe) {
             $answer = trim($answer);
 
-            $existing = RecipeRepository::findOneByName($answer);
+            $existing = $this->recipeRepository->findOneByName($answer);
 
-            if($existing && $existing['ingredients'] !== $recipe['ingredients'])
+            if($existing && $existing->ingredients !== $recipe->ingredients)
                 throw new \RuntimeException('There\'s already a Recipe with that name.');
 
             return $answer;
@@ -141,27 +145,52 @@ class UpsertRecipeCommand extends PoppySeedPetsCommand
         return $this->ask($question);
     }
 
-    private function name(array &$recipe, string $name): void
+    private function name(Recipe $recipe, string $name): Recipe
     {
-        $recipe['name'] = $this->askName('What is it called?', $recipe, $name);
+        return new Recipe(
+            $this->askName('What is it called?', $recipe, $name),
+            $recipe->ingredients,
+            $recipe->makes,
+            $recipe->requiredHeat
+        );
     }
 
-    private function ingredients(array &$recipe): void
+    private function ingredients(Recipe $recipe): Recipe
     {
-        $ingredients = InventoryService::deserializeItemList($this->em, $recipe['ingredients']);
+        $ingredients = InventoryService::deserializeItemList($this->em, $recipe->ingredients);
 
         $ingredients = $this->editItemList($ingredients, 'ingredients');
 
-        $recipe['ingredients'] = InventoryService::serializeItemList($ingredients);
+        return new Recipe(
+            $recipe->name,
+            InventoryService::serializeItemList($ingredients),
+            $recipe->makes,
+            $recipe->requiredHeat
+        );
     }
 
-    private function makes(array &$recipe): void
+    private function makes(Recipe $recipe): Recipe
     {
-        $makes = InventoryService::deserializeItemList($this->em, $recipe['makes']);
+        $makes = InventoryService::deserializeItemList($this->em, $recipe->makes);
 
         $makes = $this->editItemList($makes, 'products');
 
-        $recipe['makes'] = InventoryService::serializeItemList($makes);
+        return new Recipe(
+            $recipe->name,
+            $recipe->ingredients,
+            InventoryService::serializeItemList($makes),
+            $recipe->requiredHeat
+        );
+    }
+
+    private function requiredHeat(Recipe $recipe): Recipe
+    {
+        return new Recipe(
+            $recipe->name,
+            $recipe->ingredients,
+            $recipe->makes,
+            $this->askInt('How much heat? (360 for melt; 300 for crafts)', $recipe->requiredHeat),
+        );
     }
 
     /**

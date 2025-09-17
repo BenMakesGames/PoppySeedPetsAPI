@@ -11,7 +11,6 @@ declare(strict_types=1);
  * You should have received a copy of the GNU General Public License along with The Poppy Seed Pets API. If not, see <https://www.gnu.org/licenses/>.
  */
 
-
 namespace App\Controller\Item\Blueprint;
 
 use App\Controller\Item\ItemControllerHelpers;
@@ -170,13 +169,8 @@ class HouseFairyController
 
         UserUnlockedFeatureHelpers::create($em, $user, UnlockableFeatureEnum::Fireplace);
 
-        $stockingColors = PetColorFunctions::generateRandomPetColors($rng);
 
-        $fireplace = (new Fireplace(user: $user))
-            ->setStockingAppearance($rng->rngNextFromArray(Fireplace::StockingAppearances))
-            ->setStockingColorA($stockingColors[0])
-            ->setStockingColorB($stockingColors[1])
-        ;
+        $fireplace = new Fireplace(user: $user, rng: $rng);
 
         if($userStatsRepository->getStatValue($user, UserStat::ItemsDonatedToMuseum) >= 400)
             $fireplace->setMantleSize(24);

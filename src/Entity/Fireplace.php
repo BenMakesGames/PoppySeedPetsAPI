@@ -11,11 +11,12 @@ declare(strict_types=1);
  * You should have received a copy of the GNU General Public License along with The Poppy Seed Pets API. If not, see <https://www.gnu.org/licenses/>.
  */
 
-
 namespace App\Entity;
 
 use App\Functions\ArrayFunctions;
 use App\Functions\GrammarFunctions;
+use App\Functions\PetColorFunctions;
+use App\Service\IRandom;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Serializer\Attribute\SerializedName;
@@ -68,13 +69,13 @@ class Fireplace
     private int $mantleSize = 12;
 
     #[ORM\Column(type: 'string', length: 20)]
-    private $stockingAppearance;
+    private string $stockingAppearance;
 
     #[ORM\Column(type: 'string', length: 6)]
-    private $stockingColorA;
+    private string $stockingColorA;
 
     #[ORM\Column(type: 'string', length: 6)]
-    private $stockingColorB;
+    private string $stockingColorB;
 
     #[Groups(["helperPet"])]
     #[ORM\OneToOne(targetEntity: Pet::class, cascade: ['persist', 'remove'])]
@@ -95,9 +96,19 @@ class Fireplace
     /** @phpstan-ignore property.unused */
     private int $version;
 
-    public function __construct(User $user)
+    #[ORM\Column]
+    private bool $hasForge = false;
+
+    public function __construct(User $user, IRandom $rng)
     {
         $this->user = $user;
+
+        $this->stockingAppearance = $rng->rngNextFromArray(Fireplace::StockingAppearances);
+
+        $stockingColors = PetColorFunctions::generateRandomPetColors($rng);
+
+        $this->stockingColorA = $stockingColors[0];
+        $this->stockingColorB = $stockingColors[1];
     }
 
     public function getId(): ?int
@@ -141,6 +152,19 @@ class Fireplace
 
         if($this->getHelper())
             $this->soot += $heatToAdd;
+
+        return $this;
+    }
+
+    public function removeHeat(int $heat): self
+    {
+        if($heat <= 0)
+            throw new \InvalidArgumentException('Heat to remove must be positive!');
+
+        if($heat > $this->heat)
+            throw new \InvalidArgumentException('Cannot remove more heat than is present!');
+
+        $this->heat -= $heat;
 
         return $this;
     }
@@ -347,6 +371,19 @@ class Fireplace
     public function setGnomePoints(int $gnomePoints): self
     {
         $this->gnomePoints = $gnomePoints;
+
+        return $this;
+    }
+
+    #[Groups(["myFireplace"])]
+    public function getHasForge(): bool
+    {
+        return $this->hasForge;
+    }
+
+    public function setHasForge(bool $hasForge): static
+    {
+        $this->hasForge = $hasForge;
 
         return $this;
     }

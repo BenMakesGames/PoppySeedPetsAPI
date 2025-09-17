@@ -11,20 +11,25 @@ declare(strict_types=1);
  * You should have received a copy of the GNU General Public License along with The Poppy Seed Pets API. If not, see <https://www.gnu.org/licenses/>.
  */
 
+namespace DoctrineMigrations;
 
-namespace App\Model;
+use Doctrine\DBAL\Schema\Schema;
+use Doctrine\Migrations\AbstractMigration;
 
-use App\Entity\Inventory;
-
-final class PrepareRecipeResults
+final class Version20250915221447 extends AbstractMigration
 {
-    /** @var Inventory[] */
-    public array $inventory;
+    public function getDescription(): string
+    {
+        return '';
+    }
 
-    /** @var ItemQuantity[] */
-    public array $quantities;
+    public function up(Schema $schema): void
+    {
+        $this->addSql('ALTER TABLE fireplace ADD has_forge TINYINT(1) NOT NULL');
+    }
 
-    public Recipe $recipe;
-
-    public int $location;
+    public function down(Schema $schema): void
+    {
+        $this->addSql('ALTER TABLE fireplace DROP has_forge');
+    }
 }
