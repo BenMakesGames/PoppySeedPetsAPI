@@ -76,7 +76,7 @@ class EvilFeatherDuster
                 'their Fireplace',
                 'You dust the Fireplace until you and the Evil Feather Duster are so completely soot-ridden, you have no choice but to take a shower and throw the duster out.',
                 [
-                    'Charcoal', 'Cobweb', 'Fluff', 'Brick',
+                    'Charcoal', 'Cobweb', 'Fluff', 'Clay Brick',
                 ]
             );
         }

@@ -30,6 +30,9 @@ class Fireplace
 {
     public const int MaxHeat = 3 * 24 * 60; // 3 days
 
+    /**
+     * @var string[]
+     */
     public const array StockingAppearances = [
         'fluffed',
         'tasseled',
@@ -45,6 +48,12 @@ class Fireplace
     #[ORM\Column(type: 'integer')]
     /** @phpstan-ignore property.unusedType */
     private ?int $id = null;
+
+    /** @noinspection PhpUnusedPrivateFieldInspection */
+    #[ORM\Version]
+    #[ORM\Column(type: 'integer')]
+    /** @phpstan-ignore property.unused */
+    private int $version;
 
     #[ORM\OneToOne(targetEntity: User::class, inversedBy: 'fireplace')]
     #[ORM\JoinColumn(nullable: false)]
@@ -90,14 +99,11 @@ class Fireplace
     #[ORM\Column(type: 'integer')]
     private int $gnomePoints = 0;
 
-    /** @noinspection PhpUnusedPrivateFieldInspection */
-    #[ORM\Version]
-    #[ORM\Column(type: 'integer')]
-    /** @phpstan-ignore property.unused */
-    private int $version;
-
     #[ORM\Column]
     private bool $hasForge = false;
+
+    #[ORM\Column]
+    private int $bricks = 0;
 
     public function __construct(User $user, IRandom $rng)
     {
@@ -384,6 +390,19 @@ class Fireplace
     public function setHasForge(bool $hasForge): static
     {
         $this->hasForge = $hasForge;
+
+        return $this;
+    }
+
+    #[Groups(["myFireplace"])]
+    public function getBricks(): int
+    {
+        return $this->bricks;
+    }
+
+    public function addBrick(): static
+    {
+        $this->bricks++;
 
         return $this;
     }
