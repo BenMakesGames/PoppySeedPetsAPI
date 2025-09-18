@@ -11,9 +11,7 @@ declare(strict_types=1);
  * You should have received a copy of the GNU General Public License along with The Poppy Seed Pets API. If not, see <https://www.gnu.org/licenses/>.
  */
 
-
 namespace App\Controller\Item;
-
 
 use App\Entity\Inventory;
 use App\Enum\UnlockableFeatureEnum;
@@ -21,6 +19,7 @@ use App\Functions\ArrayFunctions;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\ResponseService;
+use App\Service\UserStatsService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
@@ -34,7 +33,8 @@ class EvilFeatherDuster
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function dust(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em,
-        UserAccessor $userAccessor, IRandom $rng, InventoryService $inventoryService
+        UserAccessor $userAccessor, IRandom $rng, InventoryService $inventoryService,
+        UserStatsService $userStatsService
     ): JsonResponse
     {
         ItemControllerHelpers::validateInventory($userAccessor->getUserOrThrow(), $inventory, 'evilFeatherDuster/#/dust');
@@ -257,9 +257,13 @@ class EvilFeatherDuster
 
         $em->remove($inventory);
 
+        $userStatsService->incrementStat($user, $location->statName);
+
         $em->flush();
 
-        return $responseService->itemActionSuccess($message);
+        $responseService->setReloadInventory();
+
+        return $responseService->itemActionSuccess($message, [ 'itemDeleted' => true ]);
     }
 }
 
