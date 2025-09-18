@@ -713,7 +713,7 @@ class BoxController
         }
         else if($a >= 9 && $a <= 11)
         {
-            $extraItem = [ 'name' => 'Plastic Idol', 'description' => 'a plastic figurine of some kind' ];
+            $extraItem = [ 'name' => 'Clay Brick', 'description' => 'a Clay Brick' ];
             $sand--;
         }
         else if($a === 12)

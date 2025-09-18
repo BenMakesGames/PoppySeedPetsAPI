@@ -46,7 +46,7 @@ class DreamingServiceTest extends KernelTestCase
         $dummyItem = new Item();
         $dummyItem->setName('Dummy Item');
 
-        $dummyDreamer = new Pet('any name', new PetSpecies(), new User('any name', 'any@email.com'), new PetSkills());
+        $dummyDreamer = new Pet('any name', new PetSpecies(), new User('any name', 'any@email.com'), new PetSkills(), '#000000', '#ffffff');
         $dummyDreamer->setName('Dreamer');
 
         $dummySpecies = new PetSpecies();
