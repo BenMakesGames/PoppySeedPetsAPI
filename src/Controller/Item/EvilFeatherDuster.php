@@ -162,7 +162,7 @@ class EvilFeatherDuster
             $possibleLocations[] = new DustingLocation(
                 'the Trader',
                 'Dusted the Trader',
-                'You dust around at the Trader\'s so fervently that you catch the fish merchant\'s attention. You eventually receive an offer so tempting, not even the Evil Feather Duster\'s influence can stop you from accepting it.',
+                'You dust around at the Trader\'s so fervently that you catch the fish merchant\'s attention, curiosity, and, finally, legendary Tell Samarzhoustian desire to _purchase_. You receive an offer so tempting that it overpowers the Evil Feather Duster\'s influence - you accept the trade, and return home.',
                 [
                     'Major Scroll of Riches',
                 ]
