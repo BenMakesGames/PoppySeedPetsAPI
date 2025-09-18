@@ -222,7 +222,7 @@ class EvilFeatherDuster
             $possibleLocations[] = new DustingLocation(
                 'the Zoologist',
                 'Dusted the Zoologist',
-                'You begin dusting the Zoologist\'s, but it seems Rue is familiar with the Evil Feather Duster\'s powers: before you can react she snatches it from you and snaps it in two. You thank her, and share a pot of tea before heading home.',
+                'You begin dusting the Zoologist\'s, but it seems Rue is familiar with the Evil Feather Duster\'s powers: before you can react she snatches it from you and snaps it in two. You thank her, and share a couple pots of tea before heading home! (How nice!)',
                 [
                     'Tremendous Tea', 'Totally Tea', 'Tiny Tea',
                 ]
