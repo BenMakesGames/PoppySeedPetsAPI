@@ -44,6 +44,8 @@ class UserFollowing
     public function __construct(User $user, User $following)
     {
         $this->dateAdded = new \DateTimeImmutable();
+        $this->user = $user;
+        $this->following = $following;
     }
 
     public function getId(): ?int
