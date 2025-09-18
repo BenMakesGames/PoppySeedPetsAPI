@@ -186,7 +186,7 @@ class EvilFeatherDuster
             $possibleLocations[] = new DustingLocation(
                 'the Museum',
                 'Dusted the Museum',
-                'You dust several rooms of the Museum before accidentally dropped the duster in an exhibit. You very nearly jump in after it, but perhaps because you\'re no longer under the duster\'s influence, you think better of it, and simply return home.',
+                'You dust several rooms of the Museum before accidentally dropping the duster in an exhibit. You very nearly jump in after it, but perhaps because you\'re no longer under the duster\'s influence, you think better of it, and simply return home.',
                 [
                     'Fluff', 'Cobweb', 'Fish Bones', 'Aging Powder',
                 ]
@@ -247,7 +247,7 @@ class EvilFeatherDuster
 
         $message =
             'You begin dusting, as if possessed (which, of course, you are - that\'s the evil!) ' .
-            $location->description .
+            $location->description . ' ' .
             $rng->rngNextFromArray([ 'Well, at least you got ', 'So hey: you got ', 'All that for ' ]) .
             ArrayFunctions::list_nice($location->loot) . '!'
         ;
