@@ -100,7 +100,7 @@ class EvilFeatherDuster
                 'Dusted the Mailbox',
                 'You dust the Mailbox, but the Evil Feather Duster becomes so enraged by all the junk mail that it eventually gives up on life. (It turns out feather dusters are more like people than might be guessed.)',
                 [
-                    'Paper', 'Dust', 'Cobweb', 'Missing Mail',
+                    'Paper', 'Fluff', 'Cobweb', 'Missing Mail',
                 ]
             );
         }
@@ -176,7 +176,7 @@ class EvilFeatherDuster
                 'Dusted the Bookstore',
                 'You dust as many bookshelves of the Bookstore as you can before accumulating so many papercuts that the pain breaks the spell... and the dusting end of the duster. (And now that you think about it, you\'re not actually sure which event _actually_ broke the spell - a worrying thought!)',
                 [
-                    'Paper', 'Paper', 'Dust', 'Dust',
+                    'Paper', 'Paper', 'Fluff', 'Fluff',
                 ]
             );
         }
