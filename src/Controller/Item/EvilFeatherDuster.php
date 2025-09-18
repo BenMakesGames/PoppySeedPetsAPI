@@ -241,6 +241,8 @@ class EvilFeatherDuster
             );
         }
 
+        $hasAllPossibleLocations = count($possibleLocations) >= 17;
+
         $location = $rng->rngNextFromArray($possibleLocations);
 
         $message =
@@ -251,7 +253,7 @@ class EvilFeatherDuster
         ;
 
         foreach($location->loot as $itemName)
-            $inventoryService->receiveItem($itemName, $user, $user, $user->getName() . ' got this from dusting ' . $location->locationName . ' with an Evil Feather Duster.', $inventory->getLocation(), $inventory->getLockedToOwner());
+            $inventoryService->receiveItem($itemName, $user, $user, $user->getName() . ' got this from dusting ' . $location->locationName . ' with an Evil Feather Duster.', $inventory->getLocation(), !$hasAllPossibleLocations);
 
         $em->remove($inventory);
 
