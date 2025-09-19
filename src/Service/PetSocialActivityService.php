@@ -276,7 +276,7 @@ class PetSocialActivityService
         $relationships = array_filter($relationships, function(PetRelationship $r) use($friendRelationshipsByFriendId) {
             // sanity check (the game isn't always sane...)
             if(!array_key_exists($r->getRelationship()->getId(), $friendRelationshipsByFriendId))
-                throw new \Exception($r->getPet()->getName() . ' (#' . $r->getPet()->getId() . ') knows ' . $r->getRelationship()->getName() . ' (#' . $r->getRelationship()->getId() . '), but not the other way around! This is a bug, and should never happen! Make Ben fix it!');
+                return false;
 
             if($r->getRelationship()->getHouseTime()->getSocialEnergy() >= PetExperienceService::SocialEnergyPerHangOut * 2)
                 return true;
