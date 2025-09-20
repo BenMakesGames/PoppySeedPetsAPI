@@ -23,11 +23,7 @@ if ($trustedHosts = $_SERVER['TRUSTED_HOSTS'] ?? false) {
     Request::setTrustedHosts([$trustedHosts]);
 }
 
-// Only apply maintenance mode if not requesting /about
-if (
-    array_key_exists('APP_MAINTENANCE', $_SERVER) && $_SERVER['APP_MAINTENANCE'] &&
-    (!isset($_SERVER['REQUEST_URI']) || $_SERVER['REQUEST_URI'] !== '/about')
-)
+if(array_key_exists('APP_MAINTENANCE', $_SERVER) && $_SERVER['APP_MAINTENANCE'])
 {
     header('Access-Control-Allow-Origin: https://poppyseedpets.com');
     header('Content-Type: application/json');
