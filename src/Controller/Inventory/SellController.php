@@ -11,7 +11,6 @@ declare(strict_types=1);
  * You should have received a copy of the GNU General Public License along with The Poppy Seed Pets API. If not, see <https://www.gnu.org/licenses/>.
  */
 
-
 namespace App\Controller\Inventory;
 
 use App\Entity\Inventory;
@@ -25,7 +24,7 @@ use App\Service\MarketService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use App\Service\UserAccessor;
@@ -36,8 +35,11 @@ class SellController
     #[Route("/sell", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function setSellPrice(
-        ResponseService $responseService, Request $request, EntityManagerInterface $em, MarketService $marketService,
-        UserAccessor $userAccessor
+        ResponseService $responseService, EntityManagerInterface $em, MarketService $marketService,
+        UserAccessor $userAccessor,
+
+        #[MapRequestPayload]
+        SetSellPriceRequest $request
     ): JsonResponse
     {
         $user = $userAccessor->getUserOrThrow();
@@ -45,14 +47,10 @@ class SellController
         if(!$user->hasUnlockedFeature(UnlockableFeatureEnum::Market))
             throw new PSPNotUnlockedException('Market');
 
-        $itemIds = $request->request->all('items');
-
-        if(count($itemIds) === 0)
+        if(count($request->items) === 0)
             throw new PSPFormValidationException('You must select at least one item!');
 
-        $price = $request->request->getInt('price');
-
-        if($price > $user->getMaxSellPrice())
+        if($request->price > $user->getMaxSellPrice())
             throw new PSPInvalidOperationException('You cannot list items for more than ' . $user->getMaxSellPrice() . ' moneys. See the Market Manager to see if you can increase this limit!');
 
         /** @var Inventory[] $inventory */
@@ -67,19 +65,19 @@ class SellController
             ->andWhere('wearer IS NULL')
             ->andWhere('lunchboxItem IS NULL')
             ->setParameter('user', $user->getId())
-            ->setParameter('itemIds', $itemIds)
+            ->setParameter('itemIds', $request->items)
             ->getQuery()
             ->execute()
         ;
 
-        if(count($inventory) !== count($itemIds))
+        if(count($inventory) !== count($request->items))
             throw new PSPNotFoundException('One or more of the selected items do not exist! Maybe reload and try again??');
 
         /** @var Item[] $inventoryToUpdateMinimumPriceFor */
         $inventoryToUpdateMinimumPriceFor = [];
 
         // if you're UNlisting items... EASY: do that:
-        if($price <= 0)
+        if($request->price <= 0)
         {
             foreach($inventory as $i)
             {
@@ -98,7 +96,7 @@ class SellController
 
             foreach($inventory as $i)
             {
-                $soldToBidder = $marketService->sell($i, $price);
+                $soldToBidder = $marketService->sell($i, $request->price);
 
                 if($soldToBidder)
                 {
@@ -124,4 +122,11 @@ class SellController
 
         return $responseService->success();
     }
+}
+
+class SetSellPriceRequest
+{
+    /** @var int[] */
+    public array $items = [];
+    public ?int $price = null;
 }
