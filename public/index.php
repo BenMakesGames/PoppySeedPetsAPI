@@ -25,7 +25,7 @@ if ($trustedHosts = $_SERVER['TRUSTED_HOSTS'] ?? false) {
 
 if(array_key_exists('APP_MAINTENANCE', $_SERVER) && $_SERVER['APP_MAINTENANCE'])
 {
-    header('Access-Control-Allow-Origin: *');
+    header('Access-Control-Allow-Origin: https://poppyseedpets.com');
     echo json_encode([
         'success' => false,
         'errors' => [ 'Poppy Seed Pets is getting a little software upgrade. It\'ll be back in just a feeewwww minutes!' ]
