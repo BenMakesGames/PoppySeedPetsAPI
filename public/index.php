@@ -23,6 +23,15 @@ if ($trustedHosts = $_SERVER['TRUSTED_HOSTS'] ?? false) {
     Request::setTrustedHosts([$trustedHosts]);
 }
 
+if (
+    isset($_SERVER['REQUEST_URI']) && $_SERVER['REQUEST_URI'] === '/heartbeat' &&
+    isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'GET'
+) {
+    header('Content-Type: text/plain; charset=UTF-8');
+    echo 'ドキドキ';
+    exit;
+}
+
 if(array_key_exists('APP_MAINTENANCE', $_SERVER) && $_SERVER['APP_MAINTENANCE'])
 {
     header('Access-Control-Allow-Origin: https://poppyseedpets.com');
