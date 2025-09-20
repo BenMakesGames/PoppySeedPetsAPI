@@ -23,9 +23,16 @@ if ($trustedHosts = $_SERVER['TRUSTED_HOSTS'] ?? false) {
     Request::setTrustedHosts([$trustedHosts]);
 }
 
-if(array_key_exists('APP_MAINTENANCE', $_SERVER) && $_SERVER['APP_MAINTENANCE'])
+// Only apply maintenance mode if not requesting /about
+if (
+    array_key_exists('APP_MAINTENANCE', $_SERVER) && $_SERVER['APP_MAINTENANCE'] &&
+    (!isset($_SERVER['REQUEST_URI']) || $_SERVER['REQUEST_URI'] !== '/about')
+)
 {
     header('Access-Control-Allow-Origin: https://poppyseedpets.com');
+    header('Content-Type: application/json');
+    header('HTTP/1.1 503 Service Unavailable');
+    header('Retry-After: 60'); // 1 minute
     echo json_encode([
         'success' => false,
         'errors' => [ 'Poppy Seed Pets is getting a little software upgrade. It\'ll be back in just a feeewwww minutes!' ]
