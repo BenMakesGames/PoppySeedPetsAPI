@@ -36,8 +36,7 @@ if(array_key_exists('APP_MAINTENANCE', $_SERVER) && $_SERVER['APP_MAINTENANCE'])
 {
     header('Access-Control-Allow-Origin: https://poppyseedpets.com');
     header('Content-Type: application/json');
-    header('HTTP/1.1 503 Service Unavailable');
-    header('Retry-After: 60'); // 1 minute
+    header('HTTP/1.1 200');
     echo json_encode([
         'success' => false,
         'errors' => [ 'Poppy Seed Pets is getting a little software upgrade. It\'ll be back in just a feeewwww minutes!' ]
