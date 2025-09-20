@@ -52,14 +52,6 @@ class ExceptionEventSubscriber implements EventSubscriberInterface
         ];
     }
 
-    private function getGenericErrorCodeString(HttpException $exception): string
-    {
-        $errorString = (string)$exception->getStatusCode();
-        $lastChar = substr($errorString, -1);
-
-        return 'Generic ' . $errorString . str_repeat($lastChar, mt_rand(6, 10)) . '!!1!';
-    }
-
     public function onKernelException(ExceptionEvent $event): void
     {
         $e = $event->getThrowable();
