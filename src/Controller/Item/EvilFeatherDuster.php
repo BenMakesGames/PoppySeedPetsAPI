@@ -133,9 +133,9 @@ class EvilFeatherDuster
         $possibleLocations[] = new DustingLocation(
             'the Plaza',
             'Dusted the Plaza',
-            'You dust the Plaza so recklessly that you try dusting the Evil Feather Duster. Apparently these things are, I dunno, hydromisic or hydronemetic or something, because the moment it touches water, the duster crumples up so powerfully that it turns into a Tiny Blackhole!',
+            'You dust the Plaza so recklessly that you try dusting the Evil Feather Duster. Apparently these things are, I dunno, hydromisic or hydronemetic or something, because the moment it touches water, the duster crumples up so powerfully that it turns into a Tiny Black Hole!',
             [
-                'Tiny Blackhole'
+                'Tiny Black Hole'
             ]
         );
 
