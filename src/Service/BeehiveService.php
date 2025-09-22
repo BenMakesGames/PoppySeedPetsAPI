@@ -15,43 +15,13 @@ declare(strict_types=1);
 namespace App\Service;
 
 use App\Entity\Beehive;
+use App\Entity\Inventory;
 use App\Entity\User;
-use App\Functions\CalendarFunctions;
-use App\Functions\ItemRepository;
+use App\Enum\LocationEnum;
 use Doctrine\ORM\EntityManagerInterface;
 
 class BeehiveService
 {
-    public const array DesiredItems = [
-        'Red Clover' => 18,
-        'Wheat Flower' => 18,
-        'Orange' => 12,
-        'Apricot' => 24,
-        'Red' => 12,
-        'Naner' => 16,
-        'Witch-hazel' => 18,
-        'Narcissus' => 8,
-        'Honeydont' => 36,
-        'Sunflower' => 12,
-        'Bean Milk' => 24,
-        'Creamy Milk' => 12,
-    ];
-
-    public const array AlternateDesiredItems = [
-        'Slice of Bread' => 8,
-        'Really Big Leaf' => 16,
-        'Corn' => 10,
-        'Meringue' => 12,
-        'Onion' => 8,
-        'Music Note' => 16,
-        'Sweet Roll' => 20,
-        'Chanterelle' => 8,
-        'Large Bag of Fertilizer' => 40,
-        'Sweet Beet' => 12,
-        'Smallish Pumpkin' => 24,
-        'Potato' => 10,
-    ];
-
     public function __construct(
         private readonly EntityManagerInterface $em,
         private readonly IRandom $rng
@@ -67,8 +37,6 @@ class BeehiveService
         $beehive = new Beehive(
             user: $user,
             name: $this->rng->rngNextFromArray(self::QueenNames),
-            requestedItem: ItemRepository::findOneByName($this->em, array_rand(self::DesiredItems)),
-            alternateRequestedItem: ItemRepository::findOneByName($this->em, array_rand(self::AlternateDesiredItems))
         );
 
         $this->em->persist($beehive);
@@ -76,44 +44,58 @@ class BeehiveService
         $user->setBeehive($beehive);
     }
 
-    public function fedRequestedItem(Beehive $beehive, bool $feedAlternate): void
+    /**
+     * @return Inventory[]
+     */
+    public function findFlowers(User $user, ?array $inventoryIds = null): array
     {
-        if($feedAlternate)
+        $qb = $this->em->createQueryBuilder();
+
+        $qb
+            ->select('i')->from(Inventory::class, 'i')
+            ->andWhere('i.owner=:owner')
+            ->andWhere('i.location IN (:home)')
+            ->leftJoin('i.item', 'item')
+            ->leftJoin('item.food', 'food')
+            ->andWhere($qb->expr()->orX(
+                'food.floral>0',
+                'food.fruity>0',
+                'food.planty>0'
+            ))
+            ->addOrderBy('item.name', 'ASC')
+            ->setParameter('owner', $user->getId())
+            ->setParameter('home', LocationEnum::Home)
+        ;
+
+        if($inventoryIds)
         {
-            $item = $beehive->getAlternateRequestedItem();
-            $power = self::AlternateDesiredItems[$item->getName()];
-        }
-        else
-        {
-            $item = $beehive->getRequestedItem();
-            $power = self::DesiredItems[$item->getName()];
+            $qb
+                ->andWhere('i.id IN (:inventoryIds)')
+                ->setParameter('inventoryIds', $inventoryIds)
+            ;
         }
 
-        $beehive->setFlowerPower($power);
-
-        $this->rerollRequest($beehive);
+        return $qb
+            ->getQuery()
+            ->getResult()
+        ;
     }
 
-    public function reRollRequest(Beehive $beehive): void
+    public static function computeFlowerPower(Inventory $i): int
     {
-        // get the current items
-        $requestedItem = $beehive->getRequestedItem()->getName();
-        $altRequestedItem = $beehive->getAlternateRequestedItem()->getName();
-
-        // remove the current item from the list of possibilities
-        $possibleItems = self::DesiredItems;
-        unset($possibleItems[$requestedItem]);
-
-        $possibleAltItems = self::AlternateDesiredItems;
-        unset($possibleAltItems[$altRequestedItem]);
-
-        if(CalendarFunctions::isApricotFestival(new \DateTimeImmutable()))
-            $possibleItems = [ 'Apricot' => 1 ];
-
-        // pick a new requested item
-        $beehive
-            ->setRequestedItem(ItemRepository::findOneByName($this->em, array_rand($possibleItems)))
-            ->setAlternateRequestedItem(ItemRepository::findOneByName($this->em, array_rand($possibleAltItems)))
+        return
+            $i->getItem()->getFood()->getFloral() * 8 +
+            $i->getItem()->getFood()->getPlanty() * 4 +
+            $i->getItem()->getFood()->getFruity() * 4 +
+            $i->getItem()->getFood()->getLove() * 2 +
+            (
+                $i->getSpice()?->getEffects() === null ? 0 : (
+                    $i->getSpice()->getEffects()->getFloral() * 8 +
+                    $i->getSpice()->getEffects()->getPlanty() * 4 +
+                    $i->getSpice()->getEffects()->getFruity() * 4 +
+                    $i->getSpice()->getEffects()->getLove() * 2
+                )
+            )
         ;
     }
 

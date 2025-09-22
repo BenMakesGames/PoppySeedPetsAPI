@@ -14,6 +14,8 @@ declare(strict_types=1);
 
 namespace App\Controller\Beehive;
 
+use App\Entity\Beehive;
+use App\Entity\Fireplace;
 use App\Enum\LocationEnum;
 use App\Enum\SerializationGroupEnum;
 use App\Enum\UnlockableFeatureEnum;
@@ -21,6 +23,10 @@ use App\Enum\UserStat;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotFoundException;
 use App\Exceptions\PSPNotUnlockedException;
+use App\Functions\ArrayFunctions;
+use App\Functions\ItemRepository;
+use App\Functions\PlayerLogFactory;
+use App\Functions\RequestFunctions;
 use App\Service\BeehiveService;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
@@ -45,37 +51,58 @@ class FeedController
     {
         $user = $userAccessor->getUserOrThrow();
 
-        if(!$user->hasUnlockedFeature(UnlockableFeatureEnum::Beehive) || !$user->getBeehive())
-            throw new PSPNotUnlockedException('Beehive');
+        if(!$user->hasUnlockedFeature(UnlockableFeatureEnum::Fireplace) || !$user->getBeehive())
+            throw new PSPNotUnlockedException('Fireplace');
+
+        $itemIds = RequestFunctions::getUniqueIdsOrThrow($request, 'flowers', 'No items were selected???');
+
+        $items = $beehiveService->findFlowers($user, $itemIds);
+
+        if(count($items) < count($itemIds))
+            throw new PSPNotFoundException('Some of the items selected could not be found. That shouldn\'t happen. Reload and try again, maybe?');
 
         $beehive = $user->getBeehive();
 
-        if($beehive->getFlowerPower() > 0)
-            throw new PSPInvalidOperationException('The colony is still working on the last item you gave them.');
+        $itemsNotUsed = [];
+        $itemsUsed = [];
 
-        $alternate = $request->request->getBoolean('alternate');
-
-        $itemToFeed = $alternate
-            ? $beehive->getAlternateRequestedItem()
-            : $beehive->getRequestedItem()
-        ;
-
-        if($inventoryService->loseItem($user, $itemToFeed->getId(), LocationEnum::Home, 1) === 0)
+        foreach($items as $item)
         {
-            if($inventoryService->loseItem($user, $itemToFeed->getId(), LocationEnum::Basement, 1) === 0)
-                throw new PSPNotFoundException('You do not have ' . $itemToFeed->getNameWithArticle() . ' in your house, or your basement!');
+            $flowerPower = BeehiveService::computeFlowerPower($item);
+
+            // don't feed an item if doing so would waste more than half the item's fuel
+            if($beehive->getFlowerPower() + $flowerPower / 2 <= Beehive::MaxFlowerPower)
+            {
+                $beehive->addFlowerPower($flowerPower);
+                $em->remove($item);
+                $itemsUsed[] = $item->getFullItemName();
+            }
             else
-                $responseService->addFlashMessage('You give the queen ' . $itemToFeed->getNameWithArticle() . ' from your basement. Her bees immediately whisk it away into the hive!');
+            {
+                $itemsNotUsed[] = $item->getFullItemName();
+            }
         }
-        else
-            $responseService->addFlashMessage('You give the queen ' . $itemToFeed->getNameWithArticle() . ' from your house. Her bees immediately whisk it away into the hive!');
 
-        $beehiveService->fedRequestedItem($beehive, $alternate);
-        $beehive->setInteractionPower();
+        if(count($itemsUsed) > 0)
+        {
+            $entry = count($itemsUsed) == 1
+                ? 'You gave ' . $itemsUsed[0] . ' to your Beehive.'
+                : 'You gave the following items to your Beehive: ' . ArrayFunctions::list_nice($itemsUsed) . '.';
 
-        $userStatsRepository->incrementStat($user, UserStat::FedTheBeehive);
+            PlayerLogFactory::create($em, $user, $entry, [ 'Beehive' ]);
+
+            $userStatsRepository->incrementStat($user, UserStat::FedTheBeehive, count($itemsUsed));
+        }
 
         $em->flush();
+
+        if(count($itemsNotUsed) > 0)
+        {
+            $responseService->addFlashMessage(
+                'The bees can only handle so much! Giving them the ' . ArrayFunctions::list_nice($itemsNotUsed) .
+                ' would be wasteful at this point, so you held on to ' . (count($itemsNotUsed) == 1 ? 'it' : 'them') . ' for now.'
+            );
+        }
 
         return $responseService->success($beehive, [ SerializationGroupEnum::MY_BEEHIVE, SerializationGroupEnum::HELPER_PET ]);
     }
