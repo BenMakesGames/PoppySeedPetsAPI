@@ -133,7 +133,7 @@ class PetBaby
         return $this;
     }
 
-    public function getColorA(): ?string
+    public function getColorA(): string
     {
         return $this->colorA;
     }
@@ -145,7 +145,7 @@ class PetBaby
         return $this;
     }
 
-    public function getColorB(): ?string
+    public function getColorB(): string
     {
         return $this->colorB;
     }

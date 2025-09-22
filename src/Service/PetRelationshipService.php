@@ -726,7 +726,7 @@ class PetRelationshipService
 
         $relationshipGoal = $this->rng->rngNextFromArray($otherPetPossibleRelationships);
 
-        $otherPetRelationship = (new PetRelationship($pet, $otherPet, $initialRelationship, $relationshipGoal))
+        $otherPetRelationship = (new PetRelationship($otherPet, $pet, $initialRelationship, $relationshipGoal))
             ->setMetDescription($howOtherPetMetSummary)
             ->setCommitment(self::generateInitialCommitment($this->rng, $initialRelationship, $relationshipGoal))
         ;

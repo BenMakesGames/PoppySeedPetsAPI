@@ -1651,7 +1651,7 @@ class Pet
         return $this;
     }
 
-    public function getScale(): ?int
+    public function getScale(): int
     {
         return $this->scale;
     }

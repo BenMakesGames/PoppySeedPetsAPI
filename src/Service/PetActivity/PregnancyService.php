@@ -36,6 +36,7 @@ use App\Model\PetShelterPet;
 use App\Service\IRandom;
 use App\Service\PetExperienceService;
 use App\Service\PetFactory;
+use App\Service\PetRelationshipService;
 use App\Service\ResponseService;
 use App\Service\UserStatsService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -48,7 +49,8 @@ class PregnancyService
         private readonly PetExperienceService $petExperienceService,
         private readonly UserStatsService $userStatsRepository,
         private readonly PetFactory $petFactory,
-        private readonly IRandom $rng
+        private readonly IRandom $rng,
+        private readonly PetRelationshipService $petRelationshipService
     )
     {
     }
@@ -375,46 +377,25 @@ class PregnancyService
 
     private function createParentalRelationships(Pet $baby, Pet $mother, ?Pet $father): void
     {
-        $petWithMother = (new PetRelationship($baby, $mother, RelationshipEnum::BFF, RelationshipEnum::BFF))
-            ->setMetDescription('%relationship.name% gave birth to %pet.name%!')
-            ->setCommitment(90) // BFF + BFF
-        ;
-
-        $baby->addPetRelationship($petWithMother);
-
-        $this->em->persist($petWithMother);
-
-        if($father)
-        {
-            $petWithFather = (new PetRelationship($baby, $father, RelationshipEnum::BFF, RelationshipEnum::BFF))
-                ->setMetDescription('%relationship.name% fathered %pet.name%!')
-                ->setCommitment(90) // BFF + BFF
-            ;
-
-            $baby->addPetRelationship($petWithFather);
-
-            $this->em->persist($petWithFather);
-        }
-
-        $motherWithBaby = (new PetRelationship($mother, $baby, RelationshipEnum::BFF, RelationshipEnum::BFF))
-            ->setMetDescription('%pet.name% gave birth to %relationship.name%!')
-            ->setCommitment(90) // BFF + BFF
-        ;
-
-        $mother->addPetRelationship($motherWithBaby);
-
-        $this->em->persist($motherWithBaby);
+        $this->petRelationshipService->createRelationship(
+            $baby,
+            '%relationship.name% is %pet.name%\'s mother!',
+            $mother,
+            '%pet.name% gave birth to %relationship.name%!',
+            RelationshipEnum::BFF,
+            [ RelationshipEnum::BFF ]
+        );
 
         if($father)
         {
-            $fatherWithBaby = (new PetRelationship($father, $baby, RelationshipEnum::BFF, RelationshipEnum::BFF))
-                ->setMetDescription('%pet.name% fathered %relationship.name%!')
-                ->setCommitment(90) // BFF + BFF
-            ;
-
-            $father->addPetRelationship($fatherWithBaby);
-
-            $this->em->persist($fatherWithBaby);
+            $this->petRelationshipService->createRelationship(
+                $baby,
+                '%relationship.name% fathered %pet.name%!',
+                $father,
+                '%pet.name% fathered %relationship.name%!',
+                RelationshipEnum::BFF,
+                [ RelationshipEnum::BFF ]
+            );
         }
     }
 }
