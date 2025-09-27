@@ -185,12 +185,10 @@ class HarvestController
             }
         }
 
-        $user->getBeehive()->setInteractionPower();
-
         $em->flush();
 
         $responseService->addFlashMessage('You received ' . ArrayFunctions::list_nice($itemNames) . '.');
 
-        return $responseService->success($user->getBeehive(), [ SerializationGroupEnum::MY_BEEHIVE, SerializationGroupEnum::HELPER_PET ]);
+        return $responseService->success($beehive, [ SerializationGroupEnum::MY_BEEHIVE, SerializationGroupEnum::HELPER_PET ]);
     }
 }

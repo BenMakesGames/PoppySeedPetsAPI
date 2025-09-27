@@ -11,11 +11,9 @@ declare(strict_types=1);
  * You should have received a copy of the GNU General Public License along with The Poppy Seed Pets API. If not, see <https://www.gnu.org/licenses/>.
  */
 
-
 namespace App\Controller\Item;
 
 use App\Entity\Inventory;
-use App\Entity\PetSpecies;
 use App\Enum\FlavorEnum;
 use App\Enum\PetLocationEnum;
 use App\Enum\PetSpeciesName;
@@ -123,8 +121,7 @@ class BeeLarvaController
 
         $user->getBeehive()
             ->addWorkers(1)
-            ->setFlowerPower(36)
-            ->setInteractionPower()
+            ->addFlowerPower(36)
         ;
 
         $em->remove($inventory);

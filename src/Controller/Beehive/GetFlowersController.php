@@ -11,7 +11,6 @@ declare(strict_types=1);
  * You should have received a copy of the GNU General Public License along with The Poppy Seed Pets API. If not, see <https://www.gnu.org/licenses/>.
  */
 
-
 namespace App\Controller\Beehive;
 
 use App\Entity\Inventory;
@@ -46,6 +45,9 @@ class GetFlowersController
         return $responseService->success($response);
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     private static function mapFlower(Inventory $i): array
     {
         return [
@@ -57,6 +59,10 @@ class GetFlowersController
             'spice' => !$i->getSpice() ? null : [
                 'name' => $i->getSpice()->getName(),
                 'isSuffix' => $i->getSpice()->getIsSuffix()
+            ],
+            'illusion' => !$i->getIllusion() ? null : [
+                'name' => $i->getIllusion()->getName(),
+                'image' => $i->getIllusion()->getImage()
             ],
             'flowerPower' => BeehiveService::computeFlowerPower($i)
         ];
