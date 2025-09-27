@@ -11,7 +11,6 @@ declare(strict_types=1);
  * You should have received a copy of the GNU General Public License along with The Poppy Seed Pets API. If not, see <https://www.gnu.org/licenses/>.
  */
 
-
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -23,8 +22,6 @@ use Symfony\Component\Serializer\Attribute\Groups;
 #[ORM\Entity]
 class Beehive
 {
-    public const int MaxFlowerPower = 48;
-
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
@@ -113,6 +110,11 @@ class Beehive
         return $this;
     }
 
+    public function getMaxFlowerPower(): float
+    {
+        return log($this->getWorkers()) * 50;
+    }
+
     public function getFlowerPower(): float
     {
         return $this->flowerPower;
@@ -120,9 +122,27 @@ class Beehive
 
     public function addFlowerPower(float $amount): self
     {
-        $this->flowerPower = min(self::MaxFlowerPower, $this->flowerPower + $amount);
+        $this->flowerPower = min($this->getMaxFlowerPower(), $this->flowerPower + $amount);
 
         return $this;
+    }
+
+    #[Groups(["myBeehive"])]
+    public function getFlowerPowerPercent(): float
+    {
+        return min(1, round($this->flowerPower / $this->getMaxFlowerPower(), 2));
+    }
+
+    #[Groups(["myBeehive"])]
+    public function getFlowerPowerIsMaxed(): bool
+    {
+        return $this->flowerPower >= $this->getMaxFlowerPower();
+    }
+
+    #[Groups(["myBeehive"])]
+    public function getIsWorking(): bool
+    {
+        return $this->flowerPower >= log($this->getWorkers());
     }
 
     public function getRoyalJellyProgress(): int

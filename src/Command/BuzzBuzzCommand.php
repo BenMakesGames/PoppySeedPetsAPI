@@ -53,13 +53,17 @@ class BuzzBuzzCommand extends Command
         $this->em->getConnection()->executeQuery('
             UPDATE beehive
             SET
+                honeycomb_progress = honeycomb_progress + LOG(workers) * 2,
+                misc_progress = misc_progress + LOG(workers) * 5;
+
+            UPDATE beehive
+            SET
                 royal_jelly_progress = royal_jelly_progress + LOG(workers) * 2,
                 honeycomb_progress = honeycomb_progress + LOG(workers) * 3,
-                honeycomb_progress = honeycomb_progress + LOG(workers) * 4,
-                misc_progress = misc_progress + LOG(workers) * 10,
-                flower_power = flower_power - LOG(workers) / 5
+                misc_progress = misc_progress + LOG(workers) * 5,
+                flower_power = flower_power - LOG(workers)
             WHERE
-                flower_power >= LOG(workers)
+                flower_power >= LOG(workers);
         ');
 
         return self::SUCCESS;

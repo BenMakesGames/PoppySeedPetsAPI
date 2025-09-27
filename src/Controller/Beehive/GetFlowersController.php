@@ -39,6 +39,7 @@ class GetFlowersController
             throw new PSPNotUnlockedException('Beehive');
 
         $flowers = $beehiveService->findFlowers($user);
+        usort($flowers, fn(Inventory $a, Inventory $b) => BeehiveService::computeFlowerPower($b) <=> BeehiveService::computeFlowerPower($a));
 
         $response = array_map(self::mapFlower(...), $flowers);
 
@@ -64,7 +65,7 @@ class GetFlowersController
                 'name' => $i->getIllusion()->getName(),
                 'image' => $i->getIllusion()->getImage()
             ],
-            'flowerPower' => BeehiveService::computeFlowerPower($i)
+            'flowerPower' => BeehiveService::mapFlowerPowerToRating(BeehiveService::computeFlowerPower($i))
         ];
     }
 }

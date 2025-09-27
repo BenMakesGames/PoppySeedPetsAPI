@@ -71,7 +71,7 @@ class FeedController
             $flowerPower = BeehiveService::computeFlowerPower($item);
 
             // don't feed an item if doing so would waste more than half the item's fuel
-            if($beehive->getFlowerPower() + $flowerPower / 2 <= Beehive::MaxFlowerPower)
+            if($beehive->getFlowerPower() + $flowerPower / 2 <= $beehive->getMaxFlowerPower())
             {
                 $beehive->addFlowerPower($flowerPower);
                 $em->remove($item);

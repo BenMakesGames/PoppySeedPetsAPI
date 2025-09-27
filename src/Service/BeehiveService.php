@@ -99,6 +99,22 @@ class BeehiveService
         ;
     }
 
+    public static function mapFlowerPowerToRating(int $flowerPower): string
+    {
+        return match(true) {
+            $flowerPower >= 45 => 'Wow!',
+            $flowerPower >= 40 => 'S++',
+            $flowerPower >= 35 => 'S+',
+            $flowerPower >= 30 => 'S',
+            $flowerPower >= 25 => 'A+',
+            $flowerPower >= 20 => 'A',
+            $flowerPower >= 15 => 'B',
+            $flowerPower >= 10 => 'C',
+            $flowerPower >= 5 => 'D',
+            default => 'F',
+        };
+    }
+
     // a couple of these are princesses; sorry about the non-semantic variable name:
     public const array QueenNames = [
         'Acropolitissa', 'Adelaide', 'Adélina', 'Adosinda', 'Ædgyth', 'Ælfthryth', 'Aénor', 'Afzan', 'Agafiya',
