@@ -113,12 +113,12 @@ class Beehive
         return $this;
     }
 
-    public function getFlowerPower(): int
+    public function getFlowerPower(): float
     {
         return $this->flowerPower;
     }
 
-    public function addFlowerPower(int $amount): self
+    public function addFlowerPower(float $amount): self
     {
         $this->flowerPower = min(self::MaxFlowerPower, $this->flowerPower + $amount);
 
