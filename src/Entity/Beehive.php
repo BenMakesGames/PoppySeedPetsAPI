@@ -11,7 +11,6 @@ declare(strict_types=1);
  * You should have received a copy of the GNU General Public License along with The Poppy Seed Pets API. If not, see <https://www.gnu.org/licenses/>.
  */
 
-
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -42,30 +41,17 @@ class Beehive
     private string $queenName;
 
     #[Groups(["myBeehive"])]
-    #[ORM\Column(type: 'integer')]
-    private int $flowerPower = 0;
+    #[ORM\Column(type: 'float')]
+    private float $flowerPower = 48;
 
-    #[ORM\Column(type: 'integer')]
-    private int $royalJellyProgress = 0;
+    #[ORM\Column(type: 'float')]
+    private float $royalJellyProgress = 0;
 
-    #[ORM\Column(type: 'integer')]
-    private int $honeycombProgress = 0;
+    #[ORM\Column(type: 'float')]
+    private float $honeycombProgress = 0;
 
-    #[ORM\Column(type: 'integer')]
-    private int $miscProgress = 0;
-
-    #[ORM\Column(type: 'integer')]
-    private int $interactionPower = 48;
-
-    #[Groups(['myBeehive'])]
-    #[ORM\ManyToOne(targetEntity: Item::class)]
-    #[ORM\JoinColumn(nullable: false)]
-    private Item $requestedItem;
-
-    #[Groups(['myBeehive'])]
-    #[ORM\ManyToOne(targetEntity: Item::class)]
-    #[ORM\JoinColumn(nullable: false)]
-    private Item $alternateRequestedItem;
+    #[ORM\Column(type: 'float')]
+    private float $miscProgress = 0;
 
     #[Groups(["helperPet"])]
     #[ORM\OneToOne(targetEntity: Pet::class, cascade: ['persist', 'remove'])]
@@ -77,12 +63,10 @@ class Beehive
     /** @phpstan-ignore property.unused */
     private int $version;
 
-    public function __construct(User $user, string $name, Item $requestedItem, Item $alternateRequestedItem)
+    public function __construct(User $user, string $name)
     {
         $this->user = $user;
         $this->queenName = $name;
-        $this->requestedItem = $requestedItem;
-        $this->alternateRequestedItem = $alternateRequestedItem;
     }
 
     public function getId(): ?int
@@ -126,16 +110,39 @@ class Beehive
         return $this;
     }
 
-    public function getFlowerPower(): int
+    public function getMaxFlowerPower(): float
+    {
+        return log($this->getWorkers()) * 50;
+    }
+
+    public function getFlowerPower(): float
     {
         return $this->flowerPower;
     }
 
-    public function setFlowerPower(int $flowerPower): self
+    public function addFlowerPower(float $amount): self
     {
-        $this->flowerPower = $flowerPower;
+        $this->flowerPower = min($this->getMaxFlowerPower(), $this->flowerPower + $amount);
 
         return $this;
+    }
+
+    #[Groups(["myBeehive"])]
+    public function getFlowerPowerPercent(): float
+    {
+        return min(1, round($this->flowerPower / $this->getMaxFlowerPower(), 2));
+    }
+
+    #[Groups(["myBeehive"])]
+    public function getFlowerPowerIsMaxed(): bool
+    {
+        return $this->flowerPower >= $this->getMaxFlowerPower();
+    }
+
+    #[Groups(["myBeehive"])]
+    public function getIsWorking(): bool
+    {
+        return $this->flowerPower >= log($this->getWorkers());
     }
 
     public function getRoyalJellyProgress(): int
@@ -174,30 +181,6 @@ class Beehive
         return $this;
     }
 
-    public function getInteractionPower(): int
-    {
-        return $this->interactionPower;
-    }
-
-    public function setInteractionPower(): self
-    {
-        $this->interactionPower = max(36, $this->interactionPower);
-
-        return $this;
-    }
-
-    public function getRequestedItem(): Item
-    {
-        return $this->requestedItem;
-    }
-
-    public function setRequestedItem(Item $requestedItem): self
-    {
-        $this->requestedItem = $requestedItem;
-
-        return $this;
-    }
-
     #[Groups(["myBeehive"])]
     public function getRoyalJellyPercent(): float
     {
@@ -214,18 +197,6 @@ class Beehive
     public function getMiscPercent(): float
     {
         return min(1, round($this->miscProgress / 2000, 2));
-    }
-
-    public function getAlternateRequestedItem(): Item
-    {
-        return $this->alternateRequestedItem;
-    }
-
-    public function setAlternateRequestedItem(Item $alternateRequestedItem): self
-    {
-        $this->alternateRequestedItem = $alternateRequestedItem;
-
-        return $this;
     }
 
     public function getHelper(): ?Pet

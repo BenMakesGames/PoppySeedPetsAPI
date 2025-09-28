@@ -11,33 +11,25 @@ declare(strict_types=1);
  * You should have received a copy of the GNU General Public License along with The Poppy Seed Pets API. If not, see <https://www.gnu.org/licenses/>.
  */
 
-
 namespace App\Controller\Beehive;
 
 use App\Entity\Inventory;
-use App\Enum\SerializationGroupEnum;
 use App\Enum\UnlockableFeatureEnum;
-use App\Exceptions\PSPFormValidationException;
-use App\Exceptions\PSPInvalidOperationException;
-use App\Exceptions\PSPNotFoundException;
 use App\Exceptions\PSPNotUnlockedException;
 use App\Service\BeehiveService;
-use App\Service\HollowEarthService;
 use App\Service\ResponseService;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use App\Service\UserAccessor;
 
 #[Route("/beehive")]
-class ReRollRequestController
+class GetFlowersController
 {
-    #[Route("/reRoll", methods: ["POST"])]
+    #[Route("/flowers", methods: ["GET"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
-    public function reRollRequest(
-        Request $request, ResponseService $responseService, EntityManagerInterface $em, BeehiveService $beehiveService,
+    public function getBeehiveFlowers(
+        BeehiveService $beehiveService, ResponseService $responseService,
         UserAccessor $userAccessor
     ): JsonResponse
     {
@@ -46,27 +38,34 @@ class ReRollRequestController
         if(!$user->hasUnlockedFeature(UnlockableFeatureEnum::Beehive) || !$user->getBeehive())
             throw new PSPNotUnlockedException('Beehive');
 
-        $itemId = $request->request->getInt('die', 0);
+        $flowers = $beehiveService->findFlowers($user);
+        usort($flowers, fn(Inventory $a, Inventory $b) => BeehiveService::computeFlowerPower($b) <=> BeehiveService::computeFlowerPower($a));
 
-        if($itemId < 1)
-            throw new PSPFormValidationException('A die must be selected!');
+        $response = array_map(self::mapFlower(...), $flowers);
 
-        $item = $em->getRepository(Inventory::class)->find($itemId);
+        return $responseService->success($response);
+    }
 
-        if(!$item || $item->getOwner()->getId() !== $user->getId())
-            throw new PSPNotFoundException('The selected item does not exist! (Reload and try again?)');
-
-        if(!array_key_exists($item->getItem()->getName(), HollowEarthService::DICE_ITEMS))
-            throw new PSPInvalidOperationException('The selected item is not a die!? (Weird! Reload and try again??)');
-
-        $em->remove($item);
-
-        $beehiveService->reRollRequest($user->getBeehive());
-
-        $user->getBeehive()->setInteractionPower();
-
-        $em->flush();
-
-        return $responseService->success($user->getBeehive(), [ SerializationGroupEnum::MY_BEEHIVE, SerializationGroupEnum::HELPER_PET ]);
+    /**
+     * @return array<string, mixed>
+     */
+    private static function mapFlower(Inventory $i): array
+    {
+        return [
+            'id' => $i->getId(),
+            'item' => [
+                'name' => $i->getItem()->getName(),
+                'image' => $i->getItem()->getImage(),
+            ],
+            'spice' => !$i->getSpice() ? null : [
+                'name' => $i->getSpice()->getName(),
+                'isSuffix' => $i->getSpice()->getIsSuffix()
+            ],
+            'illusion' => !$i->getIllusion() ? null : [
+                'name' => $i->getIllusion()->getName(),
+                'image' => $i->getIllusion()->getImage()
+            ],
+            'flowerPower' => BeehiveService::mapFlowerPowerToRating(BeehiveService::computeFlowerPower($i))
+        ];
     }
 }

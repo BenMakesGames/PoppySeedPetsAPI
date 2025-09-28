@@ -43,36 +43,27 @@ class BuzzBuzzCommand extends Command
         // population increase
         $this->em->getConnection()->executeQuery('
             UPDATE beehive
-            SET workers=workers+1
-            WHERE workers < 100000 AND interaction_power > 0
-        ');
-
-        // population increase
-        $this->em->getConnection()->executeQuery('
-            UPDATE beehive
-            SET workers=workers+1
-            WHERE workers < 100000 AND flower_power > 0
+            SET
+                workers = workers + 1,
+                flower_power = flower_power - 5
+            WHERE workers < 1000000 AND flower_power >= 20
         ');
 
         // flower power
         $this->em->getConnection()->executeQuery('
             UPDATE beehive
             SET
-                royal_jelly_progress = royal_jelly_progress + LOG(workers) * 4,
-                honeycomb_progress = honeycomb_progress + LOG(workers) * 4,
-                flower_power = flower_power - 1
-            WHERE flower_power > 0
-        ');
+                honeycomb_progress = honeycomb_progress + LOG(workers) * 2,
+                misc_progress = misc_progress + LOG(workers) * 5;
 
-        // regardless of flower power
-        $this->em->getConnection()->executeQuery('
             UPDATE beehive
             SET
-                honeycomb_progress = honeycomb_progress + LOG(workers) * 4,
-                misc_progress = misc_progress + LOG(workers) * 10,
-                interaction_power = interaction_power - 1
+                royal_jelly_progress = royal_jelly_progress + LOG(workers) * 2,
+                honeycomb_progress = honeycomb_progress + LOG(workers) * 3,
+                misc_progress = misc_progress + LOG(workers) * 5,
+                flower_power = flower_power - LOG(workers)
             WHERE
-                interaction_power > 0
+                flower_power >= LOG(workers);
         ');
 
         return self::SUCCESS;
