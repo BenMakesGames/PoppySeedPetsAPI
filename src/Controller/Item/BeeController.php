@@ -41,8 +41,7 @@ class BeeController
 
         $user->getBeehive()
             ->addWorkers(1)
-            ->setFlowerPower(36)
-            ->setInteractionPower()
+            ->addFlowerPower(36)
         ;
 
         $em->remove($inventory);
