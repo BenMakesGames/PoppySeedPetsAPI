@@ -654,6 +654,9 @@ class BoxController
             'location' => PetLocationEnum::HOME
         ]);
 
+        if(count($pets) === 0)
+            return $responseService->itemActionSuccess('For maximum effect, the Jukebox should be played with pets around to hear it!');
+
         $petNames = [];
 
         foreach($pets as $pet)
