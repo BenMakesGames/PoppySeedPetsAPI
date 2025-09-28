@@ -47,7 +47,7 @@ class MegaliumRecipesController
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'megaliumRecipes/#/upload');
 
-        $recipeNames = array_map(fn(array $recipe) => $recipe->name, $this->getRecipes($recipeRepository));
+        $recipeNames = array_map(fn(Recipe $recipe) => $recipe->name, $this->getRecipes($recipeRepository));
 
         $message = $cookingService->showRecipeNamesToCookingBuddy($user, $recipeNames);
 
