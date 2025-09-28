@@ -45,19 +45,16 @@ class SummoningController
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'summoningScroll/#/unfriendly');
 
-        $em->remove($inventory);
-
         $petsAtHome = $em->getRepository(Pet::class)->findBy([
             'owner' => $user,
             'location' => PetLocationEnum::HOME
         ]);
 
         if(count($petsAtHome) === 0)
-        {
             return $responseService->itemActionSuccess('Summoning something so terrifying on your own would be... _unwise_. (You need some pets at home to help!)');
-        }
 
-        /** @var SummoningScrollMonster $monster */
+        $em->remove($inventory);
+
         $monster = $rng->rngNextFromArray([
             SummoningScrollMonster::CreateDragon(),
             SummoningScrollMonster::CreateBalrog(),
@@ -87,19 +84,16 @@ class SummoningController
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'summoningScroll/#/unfriendly2');
 
-        $em->remove($inventory);
-
         $petsAtHome = $em->getRepository(Pet::class)->findBy([
             'owner' => $user,
             'location' => PetLocationEnum::HOME
         ]);
 
         if(count($petsAtHome) === 0)
-        {
             return $responseService->itemActionSuccess('Summoning something so terrifying on your own would be... _unwise_. (You need some pets at home to help!)');
-        }
 
-        /** @var SummoningScrollMonster $monster */
+        $em->remove($inventory);
+
         $monster = $rng->rngNextFromArray([
             SummoningScrollMonster::CreateCrystallineEntity(),
             SummoningScrollMonster::CreateBivusRelease(),
