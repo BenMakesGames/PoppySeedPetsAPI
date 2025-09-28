@@ -17,6 +17,7 @@ namespace App\Controller\Item\Blueprint;
 use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
 use App\Enum\UnlockableFeatureEnum;
+use App\Exceptions\PSPInvalidOperationException;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -44,14 +45,17 @@ class ComposterBlueprintController
         if(!$user->hasUnlockedFeature(UnlockableFeatureEnum::Greenhouse))
             return $responseService->error(400, [ 'You need a Greenhouse to install a Composter!' ]);
 
-        if($user->getGreenhouse()->getHasComposter())
+        $greenhouse = $user->getGreenhouse()
+            ?? throw new PSPInvalidOperationException("You don't have a Greenhouse!");
+
+        if($greenhouse->getHasComposter())
             return $responseService->error(200, [ 'Your Greenhouse already has a Composter!' ]);
 
         $pet = BlueprintHelpers::getPet($em, $user, $request);
 
         $em->remove($inventory);
 
-        $user->getGreenhouse()->setHasComposter(true);
+        $greenhouse->setHasComposter(true);
 
         $flashMessage = 'You install the Composter with ' . $pet->getName() . '!';
 

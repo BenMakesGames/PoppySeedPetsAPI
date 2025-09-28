@@ -18,6 +18,7 @@ use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
 use App\Enum\PetSkillEnum;
 use App\Enum\UnlockableFeatureEnum;
+use App\Exceptions\PSPInvalidOperationException;
 use App\Functions\InventoryHelpers;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
@@ -46,7 +47,10 @@ class ForgeBlueprintController
         if(!$user->hasUnlockedFeature(UnlockableFeatureEnum::Fireplace))
             return $responseService->error(400, [ 'You need a Fireplace to build a Forge!' ]);
 
-        if($user->getFireplace()->getHasForge())
+        $fireplace = $user->getFireplace()
+            ?? throw new PSPInvalidOperationException("You don't have a Greenhouse!");
+
+        if($fireplace->getHasForge())
             return $responseService->error(200, [ 'Your Fireplace already has a Forge!' ]);
 
         $pet = BlueprintHelpers::getPet($em, $user, $request);
@@ -61,7 +65,7 @@ class ForgeBlueprintController
         $em->remove($heavyHammer);
         $em->remove($inventory);
 
-        $user->getFireplace()->setHasForge(true);
+        $fireplace->setHasForge(true);
 
         $flashMessage = 'You build a Forge with ' . $pet->getName() . '!';
 

@@ -19,6 +19,7 @@ use App\Entity\Inventory;
 use App\Enum\LocationEnum;
 use App\Enum\PetSkillEnum;
 use App\Enum\UnlockableFeatureEnum;
+use App\Exceptions\PSPInvalidOperationException;
 use App\Functions\InventoryHelpers;
 use App\Functions\ItemRepository;
 use App\Service\InventoryService;
@@ -49,7 +50,10 @@ class FishStatueBlueprintController
         if(!$user->hasUnlockedFeature(UnlockableFeatureEnum::Greenhouse))
             return $responseService->error(400, [ 'You need a Greenhouse to install a Fish Statue!' ]);
 
-        if($user->getGreenhouse()->isHasFishStatue())
+        $greenhouse = $user->getGreenhouse()
+            ?? throw new PSPInvalidOperationException("You don't have a Greenhouse!");
+
+        if($greenhouse->isHasFishStatue())
             return $responseService->error(200, [ 'Your Greenhouse already has a Fish State!' ]);
 
         $pet = BlueprintHelpers::getPet($em, $user, $request);
@@ -67,7 +71,7 @@ class FishStatueBlueprintController
         $em->remove($plastic);
         $em->remove($inventory);
 
-        $user->getGreenhouse()->setHasFishStatue(true);
+        $greenhouse->setHasFishStatue(true);
 
         $flashMessage = 'You install a Fish Statue with ' . $pet->getName() . '!';
 

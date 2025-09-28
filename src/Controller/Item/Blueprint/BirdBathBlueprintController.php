@@ -18,6 +18,7 @@ use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
 use App\Enum\PetSkillEnum;
 use App\Enum\UnlockableFeatureEnum;
+use App\Exceptions\PSPInvalidOperationException;
 use App\Functions\InventoryHelpers;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
@@ -46,7 +47,10 @@ class BirdBathBlueprintController
         if(!$user->hasUnlockedFeature(UnlockableFeatureEnum::Greenhouse))
             return $responseService->error(400, [ 'You need a Greenhouse to build a Bird Bath!' ]);
 
-        if($user->getGreenhouse()->getHasBirdBath())
+        $greenhouse = $user->getGreenhouse()
+            ?? throw new PSPInvalidOperationException("You don't have a Greenhouse!");
+
+        if($greenhouse->getHasBirdBath())
             return $responseService->error(200, [ 'Your Greenhouse already has a Bird Bath!' ]);
 
         $pet = BlueprintHelpers::getPet($em, $user, $request);
@@ -59,7 +63,7 @@ class BirdBathBlueprintController
         $em->remove($ironBar);
         $em->remove($inventory);
 
-        $user->getGreenhouse()->setHasBirdBath(true);
+        $greenhouse->setHasBirdBath(true);
 
         $flashMessage = 'You build a Bird Bath with ' . $pet->getName() . '!';
 

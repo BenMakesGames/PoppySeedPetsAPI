@@ -44,14 +44,13 @@ class RollDieController
     ): JsonResponse
     {
         $user = $userAccessor->getUserOrThrow();
-        $player = $user->getHollowEarthPlayer();
         $now = new \DateTimeImmutable();
 
-        if($player === null)
-            throw new PSPInvalidOperationException('You gotta\' visit the Hollow Earth page at least once before taking this kind of action.');
+        $player = $user->getHollowEarthPlayer()
+            ?? throw new PSPInvalidOperationException('You gotta\' visit the Hollow Earth page at least once before taking this kind of action.');
 
-        if($player->getChosenPet() === null)
-            throw new PSPInvalidOperationException('You must choose a pet to lead the group.');
+        $chosenPet = $player->getChosenPet()
+            ?? throw new PSPInvalidOperationException('You must choose a pet to lead the adventure.');
 
         if($player->getCurrentAction() !== null || $player->getMovesRemaining() > 0)
             throw new PSPInvalidOperationException('Cannot roll a die at this time...');
@@ -89,7 +88,7 @@ class RollDieController
             else
                 $loot = 'Blue Plastic Egg';
 
-            $inventoryService->receiveItem($loot, $user, $user, $user->getName() . ' spotted this while traveling with ' . $player->getChosenPet()->getName() . ' through the Hollow Earth!', LocationEnum::Home)
+            $inventoryService->receiveItem($loot, $user, $user, $user->getName() . ' spotted this while traveling with ' . $chosenPet->getName() . ' through the Hollow Earth!', LocationEnum::Home)
                 ->setLockedToOwner($loot !== 'Blue Plastic Egg')
             ;
 

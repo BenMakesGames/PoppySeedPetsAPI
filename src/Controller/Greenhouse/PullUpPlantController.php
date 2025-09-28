@@ -11,12 +11,12 @@ declare(strict_types=1);
  * You should have received a copy of the GNU General Public License along with The Poppy Seed Pets API. If not, see <https://www.gnu.org/licenses/>.
  */
 
-
 namespace App\Controller\Greenhouse;
 
 use App\Entity\GreenhousePlant;
 use App\Enum\LocationEnum;
 use App\Enum\PollinatorEnum;
+use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotFoundException;
 use App\Functions\PlayerLogFactory;
 use App\Service\InventoryService;
@@ -40,6 +40,9 @@ class PullUpPlantController
     ): JsonResponse
     {
         $user = $userAccessor->getUserOrThrow();
+
+        $greenhouse = $user->getGreenhouse()
+            ?? throw new PSPInvalidOperationException("You don't have a Greenhouse!");
 
         if($plant->getOwner()->getId() !== $user->getId())
             throw new PSPNotFoundException('That plant does not exist.');
@@ -78,11 +81,11 @@ class PullUpPlantController
         $pollinators = $plant->getPollinators();
 
         if($pollinators === PollinatorEnum::Butterflies)
-            $user->getGreenhouse()->setButterfliesDismissedOn(new \DateTimeImmutable());
+            $greenhouse->setButterfliesDismissedOn(new \DateTimeImmutable());
         if($pollinators === PollinatorEnum::Bees1)
-            $user->getGreenhouse()->setBeesDismissedOn(new \DateTimeImmutable());
+            $greenhouse->setBeesDismissedOn(new \DateTimeImmutable());
         if($pollinators === PollinatorEnum::Bees2)
-            $user->getGreenhouse()->setBees2DismissedOn(new \DateTimeImmutable());
+            $greenhouse->setBees2DismissedOn(new \DateTimeImmutable());
 
         $em->remove($plant);
         $em->flush();
