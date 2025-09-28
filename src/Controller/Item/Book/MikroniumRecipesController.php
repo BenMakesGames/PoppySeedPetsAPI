@@ -31,6 +31,9 @@ use App\Service\UserAccessor;
 #[Route("/item/mikroniumRecipes")]
 class MikroniumRecipesController
 {
+    /**
+     * @return Recipe[]
+     */
     private function getRecipes(RecipeRepository $recipeRepository): array
     {
         return $recipeRepository->findBy(fn(Recipe $recipe) => preg_match('/(^|,)1129:/', $recipe->ingredients) === 1);

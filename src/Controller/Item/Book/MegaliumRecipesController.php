@@ -31,6 +31,9 @@ use App\Service\UserAccessor;
 #[Route("/item/megaliumRecipes")]
 class MegaliumRecipesController
 {
+    /**
+     * @return Recipe[]
+     */
     private function getRecipes(RecipeRepository $recipeRepository): array
     {
         return $recipeRepository->findBy(fn(Recipe $recipe) => preg_match('/(^|,)1130:/', $recipe->ingredients) === 1);
