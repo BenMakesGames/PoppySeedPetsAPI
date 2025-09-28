@@ -34,9 +34,9 @@ class StatusEffect
     #[ORM\JoinColumn(nullable: false)]
     private ?Pet $pet;
 
-    #[ORM\Column(type: 'string', length: 40)]
+    #[ORM\Column(type: 'string', length: 40, enumType: StatusEffectEnum::class)]
     #[Groups(['myPet'])]
-    private string $status;
+    private StatusEffectEnum $status;
 
     #[ORM\Column(type: 'integer')]
     private int $totalDuration = 0;
@@ -68,16 +68,13 @@ class StatusEffect
         return $this;
     }
 
-    public function getStatus(): string
+    public function getStatus(): StatusEffectEnum
     {
         return $this->status;
     }
 
-    public function setStatus(string $status): self
+    public function setStatus(StatusEffectEnum $status): self
     {
-        if(!StatusEffectEnum::isAValue($status))
-            throw new EnumInvalidValueException(StatusEffectEnum::class, $status);
-
         $this->status = $status;
 
         return $this;

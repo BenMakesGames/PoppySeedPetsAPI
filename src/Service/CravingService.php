@@ -131,7 +131,7 @@ class CravingService
 
         StatusEffectHelpers::applyStatusEffect($this->em, $pet, $statusEffect, 8 * 60);
 
-        $log = PetActivityLogFactory::createUnreadLog($this->em, $pet, 'The ' . $food->getName() . ' that ' . ActivityHelpers::PetName($pet) . ' ate satisfied their craving! They\'re feeling ' . $statusEffect . '!')
+        $log = PetActivityLogFactory::createUnreadLog($this->em, $pet, 'The ' . $food->getName() . ' that ' . ActivityHelpers::PetName($pet) . ' ate satisfied their craving! They\'re feeling ' . $statusEffect->value . '!')
             ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ PetActivityLogTagEnum::Eating ]))
             ->setIcon('icons/status-effect/craving');
 

@@ -354,13 +354,13 @@ class EatingService
             if($isThirsty && $gotAColdDrink)
             {
                 $statusEffect = $this->satisfiedCravingStatusEffect($pet, StatusEffectEnum::Thirsty);
-                $message .= ' The ' . $gotAColdDrink->getName() . ' satisfied their Thirst! They\'re feeling ' . $statusEffect . '!';
+                $message .= ' The ' . $gotAColdDrink->getName() . ' satisfied their Thirst! They\'re feeling ' . $statusEffect->value . '!';
             }
 
             if($isJaune && $gotButter)
             {
                 $statusEffect = $this->satisfiedCravingStatusEffect($pet, StatusEffectEnum::Jaune);
-                $message .= ' The ' . $gotButter->getName() . ' satisfied their desire to eat Butter! They\'re feeling ' . $statusEffect . '!';
+                $message .= ' The ' . $gotButter->getName() . ' satisfied their desire to eat Butter! They\'re feeling ' . $statusEffect->value . '!';
             }
 
             if($ateAFortuneCookie)
@@ -387,20 +387,20 @@ class EatingService
         {
             if(count($tooPoisonous) > 0)
             {
-                return PetActivityLogFactory::createUnreadLog($this->em, $pet, '%user:' . $pet->getOwner()->getId() . '.Name% tried to feed ' . '%pet:' . $pet->getId() . '.name%, but ' . $this->rng->rngNextFromArray($tooPoisonous) . ' really isn\'t appealing right now.')
+                return PetActivityLogFactory::createUnreadLog($this->em, $pet, '%user:' . $pet->getOwner()->getId() . '.Name% tried to feed %pet:' . $pet->getId() . '.name%, but ' . $this->rng->rngNextFromArray($tooPoisonous) . ' really isn\'t appealing right now.')
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Eating' ]))
                 ;
             }
             else
             {
-                return PetActivityLogFactory::createUnreadLog($this->em, $pet, '%user:' . $pet->getOwner()->getId() . '.Name% tried to feed ' . '%pet:' . $pet->getId() . '.name%, but they\'re too full to eat anymore.')
+                return PetActivityLogFactory::createUnreadLog($this->em, $pet, '%user:' . $pet->getOwner()->getId() . '.Name% tried to feed %pet:' . $pet->getId() . '.name%, but they\'re too full to eat anymore.')
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Eating' ]))
                 ;
             }
         }
     }
 
-    private function satisfiedCravingStatusEffect(Pet $pet, string $cravingStatusEffect): string
+    private function satisfiedCravingStatusEffect(Pet $pet, StatusEffectEnum $cravingStatusEffect): StatusEffectEnum
     {
         $pet->removeStatusEffect($pet->getStatusEffect($cravingStatusEffect));
 
