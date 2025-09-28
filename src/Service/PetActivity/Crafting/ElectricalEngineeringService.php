@@ -131,7 +131,6 @@ class ElectricalEngineeringService
 
         $pet = $petWithSkills->getPet();
 
-        /** @var IActivityCallback $method */
         $method = $this->rng->rngNextFromArray($possibilities);
 
         $changes = new PetChanges($pet);
