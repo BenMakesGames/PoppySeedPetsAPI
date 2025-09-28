@@ -20,7 +20,7 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class EnchantmentRepository
 {
-    public static function findOneByName(EntityManagerInterface $em, string $name): ?Enchantment
+    public static function findOneByName(EntityManagerInterface $em, string $name): Enchantment
     {
         $enchantment = $em->getRepository(Enchantment::class)->createQueryBuilder('e')
             ->where('e.name=:name')
