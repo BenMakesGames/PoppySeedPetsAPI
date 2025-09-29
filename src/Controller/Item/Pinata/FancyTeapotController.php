@@ -68,7 +68,6 @@ class FancyTeapotController
 
         $teaSpices = [
             '5-Spice\'d',
-            'Autumnal',
             'Cosmic',
             'Nutmeg-laden',
             'Rain-scented',
