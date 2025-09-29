@@ -75,6 +75,22 @@ class IcyMoonService
             default => throw new \Exception('Unexpected roll in Icy Moon adventure.'),
         };
 
+        if($this->rng->rngNextInt(1, 100) === 1)
+        {
+            $activityLog->appendEntry('(Also, on the way back home they noticed a Fancy Teapot drifting through space! How\'d that get there??');
+
+            $this->inventoryService->petCollectsItem('Fancy Teapot', $pet, $pet->getName() . ' found this floating in space near an Icy Moon.', $activityLog);
+        }
+        else if($pet->hasMerit(MeritEnum::LUCKY) && $this->rng->rngNextInt(1, 100) === 1)
+        {
+            $activityLog
+                ->appendEntry('(Also, on the way back home they noticed a Fancy Teapot drifting through space! How\'d that get there?? Lucky~!')
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ PetActivityLogTagEnum::Lucky ]))
+            ;
+
+            $this->inventoryService->petCollectsItem('Fancy Teapot', $pet, $pet->getName() . ' found this floating in space near an Icy Moon.', $activityLog);
+        }
+
         $activityLog->setChanges($changes->compare($pet));
 
         PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::ExploredAnIcyMoon, $activityLog);

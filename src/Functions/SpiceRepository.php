@@ -20,7 +20,7 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class SpiceRepository
 {
-    public static function findOneByName(EntityManagerInterface $em, string $spiceName): ?Spice
+    public static function findOneByName(EntityManagerInterface $em, string $spiceName): Spice
     {
         $spice = $em->getRepository(Spice::class)->createQueryBuilder('s')
             ->where('s.name=:name')

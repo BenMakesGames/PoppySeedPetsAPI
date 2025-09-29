@@ -35,7 +35,7 @@ final class Version20250929220351 extends AbstractMigration
         -- the item itself!
         INSERT INTO item (`id`, `name`, `description`, `image`, `use_actions`, `tool_id`, `food_id`, `fertilizer`, `plant_id`, `hat_id`, `fuel`, `recycle_value`, `enchants_id`, `spice_id`, `treasure_id`, `is_bug`, `hollow_earth_tile_card_id`, `cannot_be_thrown_out`, `museum_points`) VALUES (1486,"Fancy Teapot","Some people have wondered if there\'s a teapot, too small to be seen by telescopes, orbiting the Sun somewhere in space between the Earth and Mars. Others have wondered if there\'s an optimal number of teapots to have in a room.
         
-        It seems teapots are the source of many questions, both philosophical and practical.","tool/teapot","[[\"Smash\",\"teapot\\/#\\/smash\"]]",520,NULL,0,NULL,300,0,0,NULL,NULL,NULL,0,NULL,0,1) ON DUPLICATE KEY UPDATE `id` = `id`;
+        It seems teapots are the source of many questions, both philosophical and practical.","tool/teapot","[[\"Smash\",\"fancyTeapot\\/#\\/smash\"]]",520,NULL,0,NULL,300,0,0,NULL,NULL,NULL,0,NULL,0,1) ON DUPLICATE KEY UPDATE `id` = `id`;
         
         -- grammar
         INSERT INTO item_grammar (`id`, `item_id`, `article`) VALUES (1570,1486,"a") ON DUPLICATE KEY UPDATE `id` = `id`;
