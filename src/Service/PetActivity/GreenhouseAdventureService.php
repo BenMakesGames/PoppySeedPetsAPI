@@ -21,6 +21,7 @@ use App\Enum\StatusEffectEnum;
 use App\Functions\ActivityHelpers;
 use App\Functions\EnchantmentRepository;
 use App\Functions\NumberFunctions;
+use App\Functions\PetActivityLogFactory;
 use App\Functions\PetActivityLogTagHelpers;
 use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
@@ -28,13 +29,11 @@ use App\Service\HattierService;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\PetExperienceService;
-use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 
 class GreenhouseAdventureService
 {
     function __construct(
-        private readonly ResponseService $responseService,
         private readonly InventoryService $inventoryService,
         private readonly IRandom $rng,
         private readonly PetExperienceService $petExperienceService,
@@ -66,30 +65,31 @@ class GreenhouseAdventureService
 
         if($roll <= 8)
         {
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% had ' . $fun . ' helping %user:' . $pet->getOwner()->getId() . '.name% ' . $harvestOrReplant . ' the ' . $plant->getPlant()->getName() . '.', 'ui/affection');
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% had ' . $fun . ' helping %user:' . $pet->getOwner()->getId() . '.name% ' . $harvestOrReplant . ' the ' . $plant->getPlant()->getName() . '.');
         }
         else if($roll <= 10)
         {
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% had ' . $fun . ' helping %user:' . $pet->getOwner()->getId() . '.name% ' . $harvestOrReplant . ' the ' . $plant->getPlant()->getName() . ', and found a Crooked Stick!', 'ui/affection');
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% had ' . $fun . ' helping %user:' . $pet->getOwner()->getId() . '.name% ' . $harvestOrReplant . ' the ' . $plant->getPlant()->getName() . ', and found a Crooked Stick!');
             $this->inventoryService->petCollectsItem('Crooked Stick', $pet, $pet->getName() . ' found this while helping ' . $pet->getOwner()->getName() . ' ' . $harvestOrReplant . ' the ' . $plant->getPlant()->getName() . '.', $activityLog);
         }
         else if($roll <= 12)
         {
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% had ' . $fun . ' helping %user:' . $pet->getOwner()->getId() . '.name% ' . $harvestOrReplant . ' the ' . $plant->getPlant()->getName() . ', and found a Chanterelle!', 'ui/affection');
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% had ' . $fun . ' helping %user:' . $pet->getOwner()->getId() . '.name% ' . $harvestOrReplant . ' the ' . $plant->getPlant()->getName() . ', and found a Chanterelle!');
             $this->inventoryService->petCollectsItem('Chanterelle', $pet, $pet->getName() . ' found this while helping ' . $pet->getOwner()->getName() . ' ' . $harvestOrReplant . ' the ' . $plant->getPlant()->getName() . '.', $activityLog);
         }
         else if($roll <= 13)
         {
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% had ' . $fun . ' helping %user:' . $pet->getOwner()->getId() . '.name% ' . $harvestOrReplant . ' the ' . $plant->getPlant()->getName() . ', and found some Witch-hazel!', 'ui/affection');
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% had ' . $fun . ' helping %user:' . $pet->getOwner()->getId() . '.name% ' . $harvestOrReplant . ' the ' . $plant->getPlant()->getName() . ', and found some Witch-hazel!');
             $this->inventoryService->petCollectsItem('Witch-hazel', $pet, $pet->getName() . ' found this while helping ' . $pet->getOwner()->getName() . ' ' . $harvestOrReplant . ' the ' . $plant->getPlant()->getName() . '.', $activityLog);
         }
         else //if($roll <= 15)
         {
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% had ' . $fun . ' helping %user:' . $pet->getOwner()->getId() . '.name% ' . $harvestOrReplant . ' the ' . $plant->getPlant()->getName() . ', and found a Weird Beetle!', 'ui/affection');
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% had ' . $fun . ' helping %user:' . $pet->getOwner()->getId() . '.name% ' . $harvestOrReplant . ' the ' . $plant->getPlant()->getName() . ', and found a Weird Beetle!');
             $this->inventoryService->petCollectsItem('Weird Beetle', $pet, $pet->getName() . ' found this while helping ' . $pet->getOwner()->getName() . ' ' . $harvestOrReplant . ' the ' . $plant->getPlant()->getName() . '.', $activityLog);
         }
 
         $activityLog
+            ->setIcon('ui/affection')
             ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Greenhouse' ]))
             ->setChanges($changes->compare($pet))
         ;

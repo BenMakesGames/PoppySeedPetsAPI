@@ -15,7 +15,6 @@ namespace App\Service;
 
 use App\Entity\Item;
 use App\Entity\Pet;
-use App\Entity\PetActivityLog;
 use App\Entity\PetActivityLogItem;
 use App\Entity\PetActivityLogTag;
 use App\Entity\UnreadPetActivityLog;
@@ -23,7 +22,6 @@ use App\Entity\User;
 use App\Enum\PetActivityLogInterestingness;
 use App\Enum\SerializationGroupEnum;
 use App\Functions\ArrayFunctions;
-use App\Functions\PetActivityLogFactory;
 use App\Functions\UserMenuFunctions;
 use App\Model\PetChangesSummary;
 use Doctrine\ORM\EntityManagerInterface;
@@ -188,17 +186,6 @@ class ResponseService
             $responseData['user'] = $this->normalizer->normalize($user, null, [ 'groups' => [ SerializationGroupEnum::MY_ACCOUNT ] ]);
             $responseData['user']['menu'] = $this->normalizer->normalize(UserMenuFunctions::getUserMenuItems($this->em, $user), null, [ 'groups' => [ SerializationGroupEnum::MY_MENU ] ]);
         }
-    }
-
-    /**
-     * @deprecated Use {@see PetActivityLogFactory::createLog}, instead
-     */
-    public function createActivityLog(Pet $pet, string $entry, string $icon, ?PetChangesSummary $changes = null): PetActivityLog
-    {
-        return PetActivityLogFactory::createUnreadLog($this->em, $pet, $entry)
-            ->setChanges($changes)
-            ->setIcon($icon)
-        ;
     }
 
     public function setReloadPets(bool $reload = true): self

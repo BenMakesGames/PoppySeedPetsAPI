@@ -11,13 +11,11 @@ declare(strict_types=1);
  * You should have received a copy of the GNU General Public License along with The Poppy Seed Pets API. If not, see <https://www.gnu.org/licenses/>.
  */
 
-
 namespace App\Service\PetActivity\Crafting;
 
 use App\Entity\Pet;
 use App\Entity\PetActivityLog;
 use App\Entity\PetRelationship;
-use App\Entity\PetSpecies;
 use App\Enum\FlavorEnum;
 use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingness;
@@ -48,13 +46,12 @@ use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\PetExperienceService;
 use App\Service\PetFactory;
-use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 
 class ProgrammingService
 {
     public function __construct(
-        private readonly ResponseService $responseService, private readonly InventoryService $inventoryService,
+        private readonly InventoryService $inventoryService,
         private readonly IRandom $rng, private readonly PetExperienceService $petExperienceService,
         private readonly HouseSimService $houseSimService, private readonly HattierService $hattierService,
         private readonly FieldGuideService $fieldGuideService, private readonly PetFactory $petFactory,
@@ -188,7 +185,8 @@ class ProgrammingService
         {
             $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::PROGRAM, false);
             $this->houseSimService->getState()->loseItem('Pointer', 1);
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to dereference a String from a Pointer, but encountered a null exception :(', 'icons/activity-logs/null')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to dereference a String from a Pointer, but encountered a null exception :(')
+                ->setIcon('icons/activity-logs/null')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Programming' ]))
             ;
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::Science ], $activityLog);
@@ -305,7 +303,8 @@ class ProgrammingService
         if($roll <= 2)
         {
             $this->houseSimService->getState()->loseItem('String', 1);
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to bootstrap a Compiler, but accidentally de-allocated a String, leaving a useless Pointer behind :(', 'icons/activity-logs/null')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to bootstrap a Compiler, but accidentally de-allocated a String, leaving a useless Pointer behind :(')
+                ->setIcon('icons/activity-logs/null')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Programming' ]))
             ;
             $this->inventoryService->petCollectsItem('Pointer', $pet, $pet->getName() . ' accidentally de-allocated a String; all that remains is this Pointer.', $activityLog);
@@ -631,7 +630,9 @@ class ProgrammingService
             }
         }
 
-        $activityLog = $this->responseService->createActivityLog($pet, $impDiscovery . ' %pet:' . $pet->getId() . '.name% ran away until the imp finally gave up and returned to the strange dimension from whence it came.', 'icons/activity-logs/confused');
+        $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, $impDiscovery . ' %pet:' . $pet->getId() . '.name% ran away until the imp finally gave up and returned to the strange dimension from whence it came.')
+            ->setIcon('icons/activity-logs/confused')
+        ;
 
         PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::WrangledWithInfinities, $activityLog);
 

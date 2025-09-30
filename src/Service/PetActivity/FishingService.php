@@ -11,7 +11,6 @@ declare(strict_types=1);
  * You should have received a copy of the GNU General Public License along with The Poppy Seed Pets API. If not, see <https://www.gnu.org/licenses/>.
  */
 
-
 namespace App\Service\PetActivity;
 
 use App\Entity\Pet;
@@ -26,7 +25,6 @@ use App\Enum\PetSkillEnum;
 use App\Enum\StatusEffectEnum;
 use App\Functions\ActivityHelpers;
 use App\Functions\AdventureMath;
-use App\Functions\ItemRepository;
 use App\Functions\NumberFunctions;
 use App\Functions\PetActivityLogFactory;
 use App\Functions\PetActivityLogTagHelpers;
@@ -38,7 +36,6 @@ use App\Service\FieldGuideService;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\PetExperienceService;
-use App\Service\ResponseService;
 use App\Service\TransactionService;
 use App\Service\WeatherService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -46,7 +43,6 @@ use Doctrine\ORM\EntityManagerInterface;
 class FishingService
 {
     public function __construct(
-        private readonly ResponseService $responseService,
         private readonly InventoryService $inventoryService,
         private readonly PetExperienceService $petExperienceService,
         private readonly TransactionService $transactionService,
@@ -169,7 +165,8 @@ class FishingService
                 ->increaseEsteem($this->rng->rngNextInt(1, 2))
             ;
 
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% couldn\'t find anything to fish, so watched some small birds play in the Greenhouse Bird Bath, instead.', 'icons/activity-logs/birb')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% couldn\'t find anything to fish, so watched some small birds play in the Greenhouse Bird Bath, instead.')
+                ->setIcon('icons/activity-logs/birb')
                 ->addInterestingness(PetActivityLogInterestingness::UncommonActivity)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Fishing', 'Greenhouse' ]))
             ;
@@ -531,7 +528,8 @@ class FishingService
             {
                 $gotMusic = $this->rng->rngNextInt(1, 20 + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getMusic()->getTotal()) >= 10;
 
-                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% went fishing at a Roadside Creek, and caught a Singing Fish!', $gotMusic ? 'items/music/note' : 'items/tool/fishing-rod/crooked')
+                $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% went fishing at a Roadside Creek, and caught a Singing Fish!')
+                    ->setIcon($gotMusic ? 'items/music/note' : 'items/tool/fishing-rod/crooked')
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                         PetActivityLogTagEnum::Fishing,
                         //PetActivityLogTagEnum::Location_Roadside_Creek,
@@ -709,7 +707,8 @@ class FishingService
         if($pet->hasMerit(MeritEnum::LUCKY) && $this->rng->rngNextInt(1, 7) === 1)
         {
             $moneys = $this->rng->rngNextInt(10, 15) + $bonusMoney;
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% fished around in the Plaza fountain while no one was looking, and grabbed ' . $moneys . ' moneys! Lucky~!', 'icons/activity-logs/moneys')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% fished around in the Plaza fountain while no one was looking, and grabbed ' . $moneys . ' moneys! Lucky~!')
+                ->setIcon('icons/activity-logs/moneys')
                 ->addInterestingness(PetActivityLogInterestingness::ActivityUsingMerit)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Fishing', 'Stealth', 'Moneys', 'Lucky~!' ]))
             ;
@@ -717,7 +716,8 @@ class FishingService
         else
         {
             $moneys = $this->rng->rngNextInt(2, 9) + $bonusMoney;
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% fished around in the Plaza fountain while no one was looking, and grabbed ' . $moneys . ' moneys.', 'icons/activity-logs/moneys')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% fished around in the Plaza fountain while no one was looking, and grabbed ' . $moneys . ' moneys.')
+                ->setIcon('icons/activity-logs/moneys')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Fishing', 'Stealth', 'Moneys' ]))
             ;
         }
@@ -742,7 +742,8 @@ class FishingService
 
         $moneys = $this->rng->rngNextInt(2, 9) + $bonusMoney;
 
-        $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% started fishing around in the Plaza fountain, and got ambushed by a Thieving Magpie! They fought the creature off, and took its ' . $moneys . ' moneys.', 'icons/activity-logs/moneys')
+        $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% started fishing around in the Plaza fountain, and got ambushed by a Thieving Magpie! They fought the creature off, and took its ' . $moneys . ' moneys.')
+            ->setIcon('icons/activity-logs/moneys')
             ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Fishing', 'Fighting', 'Moneys' ]))
         ;
 
@@ -802,9 +803,9 @@ class FishingService
             if($foundRice)
             {
                 if($foundNonLa)
-                    $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% went fishing at a Flooded Paddy Field, caught a Crawfish, picked some Rice, and found a Nón Lá!', 'items/tool/fishing-rod/crooked');
+                    $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% went fishing at a Flooded Paddy Field, caught a Crawfish, picked some Rice, and found a Nón Lá!');
                 else
-                    $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% went fishing at a Flooded Paddy Field, caught a Crawfish, and picked some Rice!', 'items/tool/fishing-rod/crooked');
+                    $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% went fishing at a Flooded Paddy Field, caught a Crawfish, and picked some Rice!');
 
                 $activityLog->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Fishing', 'Gathering' ]));
             }
@@ -1075,9 +1076,9 @@ class FishingService
         else
         {
             if($this->rng->rngNextInt(1, 2) === 1)
-                $activityLog = $this->responseService->createActivityLog($pet, $discoveryText . ', but there were a bunch of Hammerheads around.', '');
+                $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, $discoveryText . ', but there were a bunch of Hammerheads around.');
             else
-                $activityLog = $this->responseService->createActivityLog($pet, $discoveryText . ', but there were a bunch of Jellyfish around.', '');
+                $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, $discoveryText . ', but there were a bunch of Jellyfish around.');
 
             $activityLog->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Fishing' ]));
 
