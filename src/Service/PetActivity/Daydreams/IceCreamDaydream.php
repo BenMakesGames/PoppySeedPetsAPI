@@ -182,23 +182,26 @@ class IceCreamDaydream
     {
         $pet = $petWithSkills->getPet();
 
+        /**
+         * @var array{effect: StatusEffectEnum, description: string}[] $possibleFates
+         */
         $possibleFates = [
-            StatusEffectEnum::FatedDeliciously => 'unavoidable deliciousness',
-            StatusEffectEnum::FatedSoakedly => 'a watery grave',
-            StatusEffectEnum::FatedLunarly => 'the lunar surface',
+            [ 'effect' => StatusEffectEnum::FatedDeliciously, 'description' => 'unavoidable deliciousness' ],
+            [ 'effect' => StatusEffectEnum::FatedSoakedly, 'description' => 'a watery grave' ],
+            [ 'effect' => StatusEffectEnum::FatedLunarly, 'description' => 'the lunar surface' ],
         ];
 
-        $fate = $this->rng->rngNextFromArray(array_keys($possibleFates));
+        $fate = $this->rng->rngNextFromArray($possibleFates);
 
         $log = PetActivityLogFactory::createUnreadLog(
             $this->em,
             $petWithSkills->getPet(),
-            ActivityHelpers::PetName($pet) . ' daydreamed they met an enchanted ice cream vendor who could foresee the future in swirls of gelato. "I see ' . $possibleFates[$fate] . ' in your future," they said in a raspy voice before ' . ActivityHelpers::PetName($pet) . ' snapped back to reality.'
+            ActivityHelpers::PetName($pet) . ' daydreamed they met an enchanted ice cream vendor who could foresee the future in swirls of gelato. "I see ' . $fate['description'] . ' in your future," they said in a raspy voice before ' . ActivityHelpers::PetName($pet) . ' snapped back to reality.'
         );
 
         $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::Arcana ], $log);
 
-        StatusEffectHelpers::applyStatusEffect($this->em, $pet, $fate, 1);
+        StatusEffectHelpers::applyStatusEffect($this->em, $pet, $fate['effect'], 1);
 
         return $log;
     }

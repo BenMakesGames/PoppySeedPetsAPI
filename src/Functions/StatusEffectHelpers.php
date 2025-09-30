@@ -27,7 +27,7 @@ final class StatusEffectHelpers
         StatusEffectEnum::BittenByAWerecreature
     ];
 
-    public static function isImmuneToStatusEffect(Pet $pet, string $status): bool
+    public static function isImmuneToStatusEffect(Pet $pet, StatusEffectEnum $status): bool
     {
         $hasSilverblood = $pet->hasMerit(MeritEnum::SILVERBLOOD);
         $hasVampireBite = $pet->hasStatusEffect(StatusEffectEnum::BittenByAVampire);
@@ -49,7 +49,7 @@ final class StatusEffectHelpers
         return false;
     }
 
-    public static function applyStatusEffect(EntityManagerInterface $em, Pet $pet, string $status, int $durationInMinutes): void
+    public static function applyStatusEffect(EntityManagerInterface $em, Pet $pet, StatusEffectEnum $status, int $durationInMinutes): void
     {
         if(self::isImmuneToStatusEffect($pet, $status))
             return;
@@ -107,20 +107,20 @@ final class StatusEffectHelpers
             else
                 PetActivityLogFactory::createUnreadLog($em, $pet, '%pet:' . $pet->getId() . '.name% turned into a Werecreature!');
         }
-        else if(str_starts_with($status, 'Focused ('))
+        else if(str_starts_with($status->value, 'Focused ('))
         {
             // the "Focused" family of status effects are mutually exclusive
             $statusEffectsToRemove = array_merge(
                 $statusEffectsToRemove,
-                array_filter($pet->getStatusEffects()->toArray(), fn(StatusEffect $se) => str_starts_with($se->getStatus(), 'Focused (') && $se->getStatus() !== $status)
+                array_filter($pet->getStatusEffects()->toArray(), fn(StatusEffect $se) => str_starts_with($se->getStatus()->value, 'Focused (') && $se->getStatus() !== $status)
             );
         }
-        else if(str_starts_with($status, 'Fated ('))
+        else if(str_starts_with($status->value, 'Fated ('))
         {
             // the "Fated" family of status effects are mutually exclusive
             $statusEffectsToRemove = array_merge(
                 $statusEffectsToRemove,
-                array_filter($pet->getStatusEffects()->toArray(), fn(StatusEffect $se) => str_starts_with($se->getStatus(), 'Fated (') && $se->getStatus() !== $status)
+                array_filter($pet->getStatusEffects()->toArray(), fn(StatusEffect $se) => str_starts_with($se->getStatus()->value, 'Fated (') && $se->getStatus() !== $status)
             );
         }
 
@@ -128,7 +128,7 @@ final class StatusEffectHelpers
             $pet->removeStatusEffect($statusEffect);
     }
 
-    public static function getStatusEffectMaxDuration(string $status): int
+    public static function getStatusEffectMaxDuration(StatusEffectEnum $status): int
     {
         return match ($status)
         {
