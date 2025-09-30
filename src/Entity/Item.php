@@ -11,7 +11,6 @@ declare(strict_types=1);
  * You should have received a copy of the GNU General Public License along with The Poppy Seed Pets API. If not, see <https://www.gnu.org/licenses/>.
  */
 
-
 namespace App\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
@@ -62,9 +61,15 @@ class Item
     #[ORM\ManyToOne(targetEntity: Plant::class, inversedBy: 'item', cascade: ['persist', 'remove'])]
     private ?Plant $plant = null;
 
+    /**
+     * @var Collection<int, MuseumItem>
+     */
     #[ORM\OneToMany(targetEntity: MuseumItem::class, mappedBy: 'item', fetch: 'EXTRA_LAZY')]
     private Collection $museumDonations;
 
+    /**
+     * @var Collection<int, Inventory>
+     */
     #[ORM\OneToMany(targetEntity: Inventory::class, mappedBy: 'item', fetch: 'EXTRA_LAZY')]
     private Collection $inventory;
 
@@ -101,6 +106,9 @@ class Item
     #[ORM\ManyToOne(targetEntity: HollowEarthTileCard::class)]
     private ?HollowEarthTileCard $hollowEarthTileCard = null;
 
+    /**
+     * @var Collection<int, ItemGroup>
+     */
     #[Groups(["itemEncyclopedia", "myInventory"])]
     #[ORM\ManyToMany(targetEntity: ItemGroup::class, mappedBy: 'items')]
     private Collection $itemGroups;

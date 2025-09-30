@@ -11,7 +11,6 @@ declare(strict_types=1);
  * You should have received a copy of the GNU General Public License along with The Poppy Seed Pets API. If not, see <https://www.gnu.org/licenses/>.
  */
 
-
 namespace App\Service\PetActivity;
 
 use App\Entity\Item;
@@ -24,19 +23,18 @@ use App\Enum\PetActivityStatEnum;
 use App\Enum\PetBadgeEnum;
 use App\Functions\GrammarFunctions;
 use App\Functions\ItemRepository;
+use App\Functions\PetActivityLogFactory;
 use App\Functions\PetActivityLogTagHelpers;
 use App\Functions\PetBadgeHelpers;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\PetExperienceService;
-use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 
 class DreamingService
 {
     public function __construct(
         private readonly InventoryService $inventoryService,
-        private readonly ResponseService $responseService,
         private readonly PetExperienceService $petExperienceService,
         private readonly IRandom $rng,
         private readonly EntityManagerInterface $em
@@ -149,7 +147,7 @@ class DreamingService
 
         $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::OTHER, null);
 
-        $log = $this->responseService->createActivityLog($pet, $eventDescription, '')
+        $log = PetActivityLogFactory::createUnreadLog($this->em, $pet, $eventDescription)
             ->addInterestingness(PetActivityLogInterestingness::ActivityUsingMerit)
             ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Dream' ]))
         ;

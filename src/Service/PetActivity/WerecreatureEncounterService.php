@@ -20,6 +20,7 @@ use App\Enum\PetBadgeEnum;
 use App\Enum\PetSkillEnum;
 use App\Enum\StatusEffectEnum;
 use App\Functions\ItemRepository;
+use App\Functions\PetActivityLogFactory;
 use App\Functions\PetActivityLogTagHelpers;
 use App\Functions\PetBadgeHelpers;
 use App\Functions\StatusEffectHelpers;
@@ -27,7 +28,6 @@ use App\Model\ComputedPetSkills;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\PetExperienceService;
-use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 
 class WerecreatureEncounterService
@@ -35,7 +35,6 @@ class WerecreatureEncounterService
     public function __construct(
         private readonly PetExperienceService $petExperienceService,
         private readonly IRandom $rng,
-        private readonly ResponseService $responseService,
         private readonly InventoryService $inventoryService,
         private readonly EntityManagerInterface $em
     )
@@ -69,7 +68,7 @@ class WerecreatureEncounterService
 
                 $message .= 'However, upon seeing %pet:' . $pet->getId() . '.name%\'s silver ' . $hat->getItem()->getName() . ', the creature ran off, dropping ' . $lootItem->getNameWithArticle() . ' as it went!';
 
-                $activityLog = $this->responseService->createActivityLog($pet, $message, '')
+                $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, $message)
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, array_merge($tags, [ 'Werecreature', 'Fighting' ])))
                 ;
 
@@ -103,7 +102,7 @@ class WerecreatureEncounterService
 
                 $message .= '%pet:' . $pet->getId() . '.name% brandished their silver ' . $tool->getItem()->getName() . '; the creature ran off at the sight of it, dropping ' . $lootItem->getNameWithArticle() . ' as it went!';
 
-                $activityLog = $this->responseService->createActivityLog($pet, $message, '')
+                $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, $message)
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, array_merge($tags, [ 'Werecreature', 'Fighting' ])))
                 ;
 
@@ -140,7 +139,7 @@ class WerecreatureEncounterService
             else
                 $message .= '%pet:' . $pet->getId() . '.name% beat the creature back, and received ' . $lootItem->getNameWithArticle() . ', but also received a bite during the encounter... (Uh oh...)';
 
-            $activityLog = $this->responseService->createActivityLog($pet, $message, '')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, $message)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, array_merge($tags, [ 'Werecreature', 'Fighting' ])))
             ;
 
@@ -162,7 +161,7 @@ class WerecreatureEncounterService
 
             $message .= '%pet:' . $pet->getId() . '.name% eventually escaped the creature, but not before being scratched and bitten! (Uh oh!)';
 
-            $activityLog = $this->responseService->createActivityLog($pet, $message, '')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, $message)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, array_merge($tags, [ 'Werecreature', 'Fighting' ])))
             ;
 
