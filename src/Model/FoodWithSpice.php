@@ -34,7 +34,7 @@ class FoodWithSpice
     public int $containsTentacles;
     /** @var BonusItemChance[] */ public array $bonusItems = [];
     public array $grantedSkills = [];
-    public array $grantedStatusEffects = [];
+    /** @var array{effect: string, duration: int}[] */ public array $grantedStatusEffects = [];
     public bool $grantsSelfReflection = false;
     public int $earthy;
     public int $fruity;

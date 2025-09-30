@@ -16,6 +16,7 @@ namespace App\Entity;
 
 use App\Enum\FlavorEnum;
 use App\Enum\PetSkillEnum;
+use App\Enum\StatusEffectEnum;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Attribute\Groups;
 use Symfony\Component\Serializer\Attribute\SerializedName;
@@ -98,8 +99,8 @@ class ItemFood
     #[ORM\Column(type: 'boolean')]
     private bool $containsTentacles = false;
 
-    #[ORM\Column(type: 'string', length: 40, nullable: true)]
-    private ?string $grantedStatusEffect = null;
+    #[ORM\Column(type: 'string', length: 40, nullable: true, enumType: StatusEffectEnum::class)]
+    private ?StatusEffectEnum $grantedStatusEffect = null;
 
     #[ORM\Column(type: 'integer', nullable: true)]
     private ?int $grantedStatusEffectDuration = null;
@@ -511,12 +512,12 @@ class ItemFood
     }
 
     #[Groups(["myInventory", "itemEncyclopedia"])]
-    public function getGrantedStatusEffect(): ?string
+    public function getGrantedStatusEffect(): ?StatusEffectEnum
     {
         return $this->grantedStatusEffect;
     }
 
-    public function setGrantedStatusEffect(?string $grantedStatusEffect): self
+    public function setGrantedStatusEffect(?StatusEffectEnum $grantedStatusEffect): self
     {
         $this->grantedStatusEffect = $grantedStatusEffect;
 
