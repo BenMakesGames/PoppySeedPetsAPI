@@ -21,6 +21,7 @@ use App\Enum\PetSkillEnum;
 use App\Exceptions\UnreachableException;
 use App\Functions\DateFunctions;
 use App\Functions\ItemRepository;
+use App\Functions\PetActivityLogFactory;
 use App\Functions\PetActivityLogTagHelpers;
 use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
@@ -28,13 +29,11 @@ use App\Service\Clock;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\PetExperienceService;
-use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 
 class PetSummonedAwayService
 {
     public function __construct(
-        private readonly ResponseService $responseService,
         private readonly InventoryService $inventoryService,
         private readonly IRandom $rng,
         private readonly PetExperienceService $petExperienceService,
@@ -96,7 +95,8 @@ class PetSummonedAwayService
             ;
         }
 
-        $activityLog = $this->responseService->createActivityLog($pet, $message, 'icons/activity-logs/summoned')
+        $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, $message)
+            ->setIcon('icons/activity-logs/summoned')
             ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Fighting' ]))
         ;
 
@@ -150,7 +150,8 @@ class PetSummonedAwayService
         $lootItem = ItemRepository::findOneByName($this->em, $loot);
         $message = 'While ' . $pet->getName() . ' was thinking about what to do, they were magically summoned! The wizard that summoned them made them ' . $activity . '. Once the task was completed, ' . $pet->getName() . ' returned home, still holding ' . $lootItem->getNameWithArticle() . '!';
 
-        $activityLog = $this->responseService->createActivityLog($pet, $message, 'icons/activity-logs/summoned')
+        $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, $message)
+            ->setIcon('icons/activity-logs/summoned')
             ->addTags(PetActivityLogTagHelpers::findByNames($this->em, $tags))
         ;
 
@@ -210,7 +211,8 @@ class PetSummonedAwayService
 
         $message = 'While ' . $pet->getName() . ' was thinking about what to do, they were magically summoned! The wizard that summoned them made them ' . $activity . '. Once the task was completed, ' . $pet->getName() . ' returned home!';
 
-        $activityLog = $this->responseService->createActivityLog($pet, $message, 'icons/activity-logs/summoned')
+        $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, $message)
+            ->setIcon('icons/activity-logs/summoned')
             ->addTags(PetActivityLogTagHelpers::findByNames($this->em, $tags))
         ;
 
@@ -246,7 +248,8 @@ class PetSummonedAwayService
 
         $message = 'While ' . $pet->getName() . ' was thinking about what to do, they were magically summoned to ' . $location . '. The wizard that summoned them made them ' . $description . ' until the spell ended, and they were returned home! (At least they managed to pocket some ' . $loot . ' before the spell ended!)';
 
-        $activityLog = $this->responseService->createActivityLog($pet, $message, 'icons/activity-logs/summoned')
+        $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, $message)
+            ->setIcon('icons/activity-logs/summoned')
             ->addTags(PetActivityLogTagHelpers::findByNames($this->em, $tags))
         ;
 

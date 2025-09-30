@@ -11,7 +11,6 @@ declare(strict_types=1);
  * You should have received a copy of the GNU General Public License along with The Poppy Seed Pets API. If not, see <https://www.gnu.org/licenses/>.
  */
 
-
 namespace App\Service\PetActivity\Crafting;
 
 use App\Entity\PetActivityLog;
@@ -19,6 +18,7 @@ use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
 use App\Functions\CalendarFunctions;
 use App\Functions\ItemRepository;
+use App\Functions\PetActivityLogFactory;
 use App\Functions\PetActivityLogTagHelpers;
 use App\Model\ActivityCallback;
 use App\Model\ComputedPetSkills;
@@ -29,14 +29,12 @@ use App\Service\HouseSimService;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\PetExperienceService;
-use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 
 class EventLanternService
 {
     public function __construct(
         private readonly InventoryService $inventoryService,
-        private readonly ResponseService $responseService,
         private readonly PetExperienceService $petExperienceService,
         private readonly EntityManagerInterface $em,
         private readonly IRandom $rng,
@@ -107,7 +105,8 @@ class EventLanternService
 
         if($roll < 15)
         {
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make a seasonal lantern, but couldn\'t come up with a fitting design...', 'icons/activity-logs/confused')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to make a seasonal lantern, but couldn\'t come up with a fitting design...')
+                ->setIcon('icons/activity-logs/confused')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Crafting', 'Special Event', $activityTag ]))
             ;
 
@@ -121,7 +120,7 @@ class EventLanternService
             $this->houseSimService->getState()->loseItem('Paper', 1);
             $this->houseSimService->getState()->loseOneOf($this->rng, [ 'Jar of Fireflies', 'Candle' ]);
 
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% created a ' . $lanternName . ' out of a Crooked Fishing Rod!', '')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% created a ' . $lanternName . ' out of a Crooked Fishing Rod!')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Crafting', 'Special Event', $activityTag ]))
             ;
 
