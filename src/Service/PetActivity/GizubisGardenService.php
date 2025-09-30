@@ -11,7 +11,6 @@ declare(strict_types=1);
  * You should have received a copy of the GNU General Public License along with The Poppy Seed Pets API. If not, see <https://www.gnu.org/licenses/>.
  */
 
-
 namespace App\Service\PetActivity;
 
 use App\Entity\PetActivityLog;
@@ -19,18 +18,17 @@ use App\Enum\EnumInvalidValueException;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
 use App\Functions\ItemRepository;
+use App\Functions\PetActivityLogFactory;
 use App\Model\ComputedPetSkills;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\PetExperienceService;
-use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 
 class GizubisGardenService
 {
     public function __construct(
         private readonly PetExperienceService $petExperienceService,
-        private readonly ResponseService $responseService,
         private readonly InventoryService $inventoryService,
         private readonly EntityManagerInterface $em,
         private readonly IRandom $rng
@@ -79,7 +77,7 @@ class GizubisGardenService
 
         $member->increaseReputation();
 
-        $activityLog = $this->responseService->createActivityLog($pet, $message, '');
+        $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, $message);
 
         $this->petExperienceService->gainExp($pet, 1, [ $skill ], $activityLog);
         $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::PROTOCOL_7, true);
@@ -94,7 +92,7 @@ class GizubisGardenService
 
         if($roll === 1)
         {
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% went to water the Tree of Life for Gizubi\'s Garden, but tripped and spilled the sacred water!', '');
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% went to water the Tree of Life for Gizubi\'s Garden, but tripped and spilled the sacred water!');
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::Nature ], $activityLog);
             $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::GATHER, false);
@@ -108,7 +106,7 @@ class GizubisGardenService
                 'Red', 'Crooked Stick', 'Apricot', 'Orange', 'Naner', 'Pamplemousse', 'Avocado'
             ]));
 
-            $activityLog = $this->responseService->createActivityLog($pet, 'While watering the Tree of Life for Gizubi\'s Garden, ' . '%pet:' . $pet->getId() . '.name% found ' . $loot->getNameWithArticle() . '.', '');
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, 'While watering the Tree of Life for Gizubi\'s Garden, ' . '%pet:' . $pet->getId() . '.name% found ' . $loot->getNameWithArticle() . '.');
 
             $this->inventoryService->petCollectsItem($loot, $pet, $pet->getName() . ' found this while watering the Tree of Life for Gizubi\'s Garden.', $activityLog);
 
@@ -119,7 +117,7 @@ class GizubisGardenService
         }
         else
         {
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% watered the Tree of Life for Gizubi\'s Garden.', '');
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% watered the Tree of Life for Gizubi\'s Garden.');
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::Nature ], $activityLog);
             $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::GATHER, false);
@@ -164,7 +162,7 @@ class GizubisGardenService
 
         if($roll <= 2)
         {
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to help ' . $cook . ' for a feast for Gizubi\'s Garden, but ' . $howRuined . ' the ' . $loot . '! :(', '');
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to help ' . $cook . ' for a feast for Gizubi\'s Garden, but ' . $howRuined . ' the ' . $loot . '! :(');
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::Crafts ], $activityLog);
             $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::CRAFT, false);
@@ -174,7 +172,7 @@ class GizubisGardenService
         }
         else if($roll >= 14)
         {
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% helped ' . $cook . ' for a feast for Gizubi\'s Garden. They made ' . $loot . '; everyone liked it, and there was enough left over that ' . $pet->getName() . ' got to take some home!', '');
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% helped ' . $cook . ' for a feast for Gizubi\'s Garden. They made ' . $loot . '; everyone liked it, and there was enough left over that ' . $pet->getName() . ' got to take some home!');
 
             $pet->increaseEsteem($this->rng->rngNextInt(2, 4));
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::Crafts ], $activityLog);
@@ -186,7 +184,7 @@ class GizubisGardenService
         }
         else
         {
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% helped ' . $cook . ' for a feast for Gizubi\'s Garden. They made ' . $loot . '; everyone liked it!', '');
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% helped ' . $cook . ' for a feast for Gizubi\'s Garden. They made ' . $loot . '; everyone liked it!');
 
             $pet->increaseEsteem($this->rng->rngNextInt(2, 4));
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::Crafts ], $activityLog);

@@ -15,7 +15,6 @@ namespace App\Service\PetActivity;
 
 use App\Entity\Pet;
 use App\Entity\PetBaby;
-use App\Entity\PetRelationship;
 use App\Entity\PetSpecies;
 use App\Enum\FlavorEnum;
 use App\Enum\MeritEnum;
@@ -27,6 +26,7 @@ use App\Enum\PetPregnancyStyleEnum;
 use App\Enum\RelationshipEnum;
 use App\Enum\UserStat;
 use App\Functions\MeritRepository;
+use App\Functions\PetActivityLogFactory;
 use App\Functions\PetActivityLogTagHelpers;
 use App\Functions\PetBadgeHelpers;
 use App\Functions\PetColorFunctions;
@@ -37,7 +37,6 @@ use App\Service\IRandom;
 use App\Service\PetExperienceService;
 use App\Service\PetFactory;
 use App\Service\PetRelationshipService;
-use App\Service\ResponseService;
 use App\Service\UserStatsService;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -45,7 +44,6 @@ class PregnancyService
 {
     public function __construct(
         private readonly EntityManagerInterface $em,
-        private readonly ResponseService $responseService,
         private readonly PetExperienceService $petExperienceService,
         private readonly UserStatsService $userStatsRepository,
         private readonly PetFactory $petFactory,
@@ -252,14 +250,14 @@ class PregnancyService
 
             $pet->setLocation(PetLocationEnum::DAYCARE);
 
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% gave birth to ' . $describeBabies . '! (There wasn\'t enough room at Home, so the birth took place at the Pet Shelter.)', '');
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% gave birth to ' . $describeBabies . '! (There wasn\'t enough room at Home, so the birth took place at the Pet Shelter.)');
         }
         else
         {
             if($increasedPetLimit)
-                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% gave birth to ' . $describeBabies . '! (Congrats on your first pet birth! The maximum amount of pets you can have at home has been permanently increased by one!)', '');
+                $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% gave birth to ' . $describeBabies . '! (Congrats on your first pet birth! The maximum amount of pets you can have at home has been permanently increased by one!)');
             else
-                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% gave birth to ' . $describeBabies . '!', '');
+                $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% gave birth to ' . $describeBabies . '!');
         }
 
         PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::HadABaby, $activityLog);

@@ -11,7 +11,6 @@ declare(strict_types=1);
  * You should have received a copy of the GNU General Public License along with The Poppy Seed Pets API. If not, see <https://www.gnu.org/licenses/>.
  */
 
-
 namespace App\Service\PetActivity\Crafting\Helpers;
 
 use App\Entity\PetActivityLog;
@@ -28,7 +27,6 @@ use App\Service\HouseSimService;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\PetExperienceService;
-use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 
 class StickCraftingService
@@ -36,7 +34,6 @@ class StickCraftingService
     public function __construct(
         private readonly PetExperienceService $petExperienceService,
         private readonly InventoryService $inventoryService,
-        private readonly ResponseService $responseService,
         private readonly IRandom $rng,
         private readonly HouseSimService $houseSimService,
         private readonly EntityManagerInterface $em,
@@ -56,7 +53,7 @@ class StickCraftingService
             $this->houseSimService->getState()->loseItem('String', 1);
             $this->houseSimService->getState()->loseItem('Crooked Stick', 1);
             $pet->increaseEsteem(2);
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% created a Crooked Fishing Rod.', '')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% created a Crooked Fishing Rod.')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Crafting,
                     PetActivityLogTagEnum::Location_At_Home,
@@ -70,7 +67,8 @@ class StickCraftingService
         }
         else
         {
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make a Crooked Fishing Rod, but couldn\'t figure it out.', 'icons/activity-logs/confused')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to make a Crooked Fishing Rod, but couldn\'t figure it out.')
+                ->setIcon('icons/activity-logs/confused')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ PetActivityLogTagEnum::Crafting, PetActivityLogTagEnum::Location_At_Home ]))
             ;
 
@@ -129,7 +127,7 @@ class StickCraftingService
             $this->houseSimService->getState()->loseItem('Sunflower', 1);
             $this->houseSimService->getState()->loseItem('Crooked Stick', 1);
             $pet->increaseEsteem(2);
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% created a Sunflower Stick.', '')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% created a Sunflower Stick.')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Crafting,
                     PetActivityLogTagEnum::Location_At_Home,
@@ -143,7 +141,8 @@ class StickCraftingService
         }
         else
         {
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% wanted to make something out of a Sunflower, but couldn\'t come up with anything...', 'icons/activity-logs/confused')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% wanted to make something out of a Sunflower, but couldn\'t come up with anything...')
+                ->setIcon('icons/activity-logs/confused')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ PetActivityLogTagEnum::Crafting, PetActivityLogTagEnum::Location_At_Home ]))
             ;
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::Crafts, PetSkillEnum::Nature ], $activityLog);
@@ -166,7 +165,7 @@ class StickCraftingService
             $this->houseSimService->getState()->loseItem('White Cloth', 1);
             $this->houseSimService->getState()->loseItem('Crooked Stick', 1);
             $pet->increaseEsteem(2);
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% created ' . $making->getNameWithArticle() . '.', '')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% created ' . $making->getNameWithArticle() . '.')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Crafting,
                     PetActivityLogTagEnum::Location_At_Home,
@@ -181,7 +180,8 @@ class StickCraftingService
         }
         else
         {
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make ' . $making->getNameWithArticle() . ', but couldn\'t figure it out.', 'icons/activity-logs/confused')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to make ' . $making->getNameWithArticle() . ', but couldn\'t figure it out.')
+                ->setIcon('icons/activity-logs/confused')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ PetActivityLogTagEnum::Crafting, PetActivityLogTagEnum::Location_At_Home ]))
             ;
 
@@ -204,7 +204,7 @@ class StickCraftingService
             $this->houseSimService->getState()->loseItem('Crooked Stick', 1);
             $this->houseSimService->getState()->loseItem('Talon', 1);
             $pet->increaseEsteem(2);
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% created a Hunting Spear.', '')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% created a Hunting Spear.')
                 ->addInterestingness(PetActivityLogInterestingness::HoHum + 13)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Crafting,
@@ -219,7 +219,8 @@ class StickCraftingService
         }
         else
         {
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make a Hunting Spear, but couldn\'t quite figure it out.', 'icons/activity-logs/confused')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to make a Hunting Spear, but couldn\'t quite figure it out.')
+                ->setIcon('icons/activity-logs/confused')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ PetActivityLogTagEnum::Crafting, PetActivityLogTagEnum::Location_At_Home ]))
             ;
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::Crafts, PetSkillEnum::Brawl ], $activityLog);
@@ -238,7 +239,8 @@ class StickCraftingService
         {
             $this->houseSimService->getState()->loseItem('Red', 1);
             $pet->increaseFood(3);
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make a Red Flail, but ate the Red...', 'icons/activity-logs/broke-string')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to make a Red Flail, but ate the Red...')
+                ->setIcon('icons/activity-logs/broke-string')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ PetActivityLogTagEnum::Crafting, PetActivityLogTagEnum::Location_At_Home, 'Eating' ]))
             ;
 
@@ -252,7 +254,7 @@ class StickCraftingService
             $this->houseSimService->getState()->loseItem('Crooked Stick', 1);
             $this->houseSimService->getState()->loseItem('Red', 1);
             $pet->increaseEsteem(2);
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% created a Red Flail.', '')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% created a Red Flail.')
                 ->addInterestingness(PetActivityLogInterestingness::HoHum + 13)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Crafting,
@@ -267,7 +269,8 @@ class StickCraftingService
         }
         else
         {
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make a Red Flail, but couldn\'t quite figure it out.', 'icons/activity-logs/confused')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to make a Red Flail, but couldn\'t quite figure it out.')
+                ->setIcon('icons/activity-logs/confused')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ PetActivityLogTagEnum::Crafting, PetActivityLogTagEnum::Location_At_Home ]))
             ;
 
@@ -287,9 +290,9 @@ class StickCraftingService
             $this->houseSimService->getState()->loseItem('Wheat', 1);
 
             if($this->rng->rngNextInt(1, 4) === 1)
-                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% started to make a Straw Broom, but a weird-lookin\' elf, or something, ran in, turned the Wheat into a Gold Bar, and left! And guess what kind of broom you can\'t make out of a Gold Bar! A STRAW ONE!', '');
+                $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% started to make a Straw Broom, but a weird-lookin\' elf, or something, ran in, turned the Wheat into a Gold Bar, and left! And guess what kind of broom you can\'t make out of a Gold Bar! A STRAW ONE!');
             else
-                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% started to make a Straw Broom, but a weird-lookin\' elf, or something, ran in, turned the Wheat into a Gold Bar, and left!', '');
+                $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% started to make a Straw Broom, but a weird-lookin\' elf, or something, ran in, turned the Wheat into a Gold Bar, and left!');
 
             $activityLog
                 ->addInterestingness(PetActivityLogInterestingness::UncommonActivity)
@@ -312,7 +315,7 @@ class StickCraftingService
             $this->houseSimService->getState()->loseOneOf($this->rng, [ 'Rice', 'Wheat' ]);
 
             $pet->increaseEsteem(2);
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% created a Straw Broom.', '')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% created a Straw Broom.')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Crafting,
                     PetActivityLogTagEnum::Location_At_Home,
@@ -326,7 +329,8 @@ class StickCraftingService
         }
         else
         {
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make a broom, but couldn\'t quite figure it out.', 'icons/activity-logs/confused')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to make a broom, but couldn\'t quite figure it out.')
+                ->setIcon('icons/activity-logs/confused')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ PetActivityLogTagEnum::Crafting, PetActivityLogTagEnum::Location_At_Home ]))
             ;
 
@@ -349,7 +353,7 @@ class StickCraftingService
             $this->houseSimService->getState()->loseItem('Crooked Stick', 1);
 
             $pet->increaseEsteem(2);
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% created a Bug-catcher\'s Net.', '')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% created a Bug-catcher\'s Net.')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Crafting,
                     PetActivityLogTagEnum::Location_At_Home,
@@ -363,7 +367,8 @@ class StickCraftingService
         }
         else
         {
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make a Bug-catcher\'s Net, but couldn\'t quite figure it out.', 'icons/activity-logs/confused')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to make a Bug-catcher\'s Net, but couldn\'t quite figure it out.')
+                ->setIcon('icons/activity-logs/confused')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ PetActivityLogTagEnum::Crafting, PetActivityLogTagEnum::Location_At_Home ]))
             ;
 
@@ -383,7 +388,7 @@ class StickCraftingService
         {
             $foodEaten = $this->houseSimService->getState()->loseOneOf($this->rng, [ 'Rice', 'Corn' ]);
             $pet->increaseFood(4);
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% started to make a Harvest Staff, but got hungry, and ate the ' . $foodEaten . ' :(', '')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% started to make a Harvest Staff, but got hungry, and ate the ' . $foodEaten . ' :(')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ PetActivityLogTagEnum::Crafting, PetActivityLogTagEnum::Location_At_Home, 'Eating' ]))
             ;
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::Crafts ], $activityLog);
@@ -398,7 +403,7 @@ class StickCraftingService
             $this->houseSimService->getState()->loseItem('Corn', 1);
 
             $pet->increaseEsteem(2);
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% created a Harvest Staff.', '')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% created a Harvest Staff.')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Crafting,
                     PetActivityLogTagEnum::Location_At_Home,
@@ -412,7 +417,8 @@ class StickCraftingService
         }
         else
         {
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make a staff, but couldn\'t decide what kind...', 'icons/activity-logs/confused')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to make a staff, but couldn\'t decide what kind...')
+                ->setIcon('icons/activity-logs/confused')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ PetActivityLogTagEnum::Crafting, PetActivityLogTagEnum::Location_At_Home ]))
             ;
 
@@ -434,7 +440,7 @@ class StickCraftingService
             $this->houseSimService->getState()->loseItem('Crooked Stick', 1);
             $this->houseSimService->getState()->loseItem('Hunting Spear', 1);
             $pet->increaseEsteem(2);
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% created an Overly-long Spear.', '')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% created an Overly-long Spear.')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Crafting,
                     PetActivityLogTagEnum::Location_At_Home,
@@ -449,7 +455,8 @@ class StickCraftingService
         }
         else
         {
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to extend a Hunting Spear, but couldn\'t quite figure it out.', 'icons/activity-logs/confused')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to extend a Hunting Spear, but couldn\'t quite figure it out.')
+                ->setIcon('icons/activity-logs/confused')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ PetActivityLogTagEnum::Crafting, PetActivityLogTagEnum::Location_At_Home ]))
             ;
 
@@ -471,7 +478,7 @@ class StickCraftingService
             $this->houseSimService->getState()->loseItem('Crooked Stick', 1);
             $this->houseSimService->getState()->loseItem('Overly-long Spear', 1);
             $pet->increaseEsteem(2);
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% created a - like - CRAZY-long Spear. It\'s really rather silly.', '')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% created a - like - CRAZY-long Spear. It\'s really rather silly.')
                 ->addInterestingness(PetActivityLogInterestingness::HoHum + 16)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Crafting,
@@ -487,7 +494,8 @@ class StickCraftingService
         }
         else
         {
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% considered extending an Overly-long Spear, but then thought that maybe that was going a bit overboard.', 'icons/activity-logs/confused')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% considered extending an Overly-long Spear, but then thought that maybe that was going a bit overboard.')
+                ->setIcon('icons/activity-logs/confused')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ PetActivityLogTagEnum::Crafting, PetActivityLogTagEnum::Location_At_Home ]))
             ;
 
@@ -510,7 +518,7 @@ class StickCraftingService
             $this->houseSimService->getState()->loseItem('Toadstool', 1);
             $this->houseSimService->getState()->loseItem('Crooked Stick', 1);
             $pet->increaseEsteem(2);
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% created a Champignon.', '')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% created a Champignon.')
                 ->addInterestingness(PetActivityLogInterestingness::HoHum + 15)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Crafting,
@@ -526,7 +534,8 @@ class StickCraftingService
         }
         else
         {
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make a Champignon, but couldn\'t quite figure it out.', 'icons/activity-logs/confused')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to make a Champignon, but couldn\'t quite figure it out.')
+                ->setIcon('icons/activity-logs/confused')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ PetActivityLogTagEnum::Crafting, PetActivityLogTagEnum::Location_At_Home, 'Magic-binding' ]))
             ;
 
@@ -548,7 +557,7 @@ class StickCraftingService
             $itemLost = $this->houseSimService->getState()->loseOneOf($this->rng, [ 'String', 'Glue' ]);
             $this->houseSimService->getState()->loseItem('Crooked Stick', 1);
             $pet->increaseEsteem(2);
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% created a Wooden Sword.', '')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% created a Wooden Sword.')
                 ->addInterestingness(PetActivityLogInterestingness::HoHum + 12)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Crafting,
@@ -577,7 +586,8 @@ class StickCraftingService
         }
         else
         {
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make a Wooden Sword, but couldn\'t quite figure it out.', 'icons/activity-logs/confused')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to make a Wooden Sword, but couldn\'t quite figure it out.')
+                ->setIcon('icons/activity-logs/confused')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ PetActivityLogTagEnum::Crafting, PetActivityLogTagEnum::Location_At_Home ]))
             ;
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::Crafts, PetSkillEnum::Brawl ], $activityLog);
@@ -596,7 +606,8 @@ class StickCraftingService
         {
             $pet->increaseSafety(-4);
 
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% started to make a lens from a piece of glass, but cut themselves! :(', 'icons/activity-logs/wounded')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% started to make a lens from a piece of glass, but cut themselves! :(')
+                ->setIcon('icons/activity-logs/wounded')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ PetActivityLogTagEnum::Crafting, PetActivityLogTagEnum::Location_At_Home ]))
             ;
 
@@ -609,7 +620,7 @@ class StickCraftingService
             $this->houseSimService->getState()->loseItem('Crooked Stick', 1);
             $this->houseSimService->getState()->loseItem('Glass', 1);
             $pet->increaseEsteem(2);
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% created a "Rustic" Magnifying Glass.', '')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% created a "Rustic" Magnifying Glass.')
                 ->addInterestingness(PetActivityLogInterestingness::HoHum + 13)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Crafting,
@@ -624,7 +635,8 @@ class StickCraftingService
         }
         else
         {
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make a magnifying glass, but almost broke the glass, and gave up.', 'icons/activity-logs/confused')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to make a magnifying glass, but almost broke the glass, and gave up.')
+                ->setIcon('icons/activity-logs/confused')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ PetActivityLogTagEnum::Crafting, PetActivityLogTagEnum::Location_At_Home ]))
             ;
 
@@ -724,7 +736,8 @@ class StickCraftingService
             $this->houseSimService->getState()->loseItem('Small, Yellow Plastic Bucket', 1);
             $this->houseSimService->getState()->loseItem('Crooked Stick', 1);
             $pet->increaseEsteem(2);
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% created a Naner-picker.', 'items/tool/basket/fruit-picker')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% created a Naner-picker.')
+                ->setIcon('items/tool/basket/fruit-picker')
                 ->addInterestingness(PetActivityLogInterestingness::HoHum + 15)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Crafting,
@@ -739,7 +752,8 @@ class StickCraftingService
         }
         else
         {
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to think up a way to make a stick more useful, but wasn\'t able to come up with anything.', 'icons/activity-logs/confused')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to think up a way to make a stick more useful, but wasn\'t able to come up with anything.')
+                ->setIcon('icons/activity-logs/confused')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ PetActivityLogTagEnum::Crafting, PetActivityLogTagEnum::Location_At_Home ]))
             ;
 

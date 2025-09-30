@@ -11,7 +11,6 @@ declare(strict_types=1);
  * You should have received a copy of the GNU General Public License along with The Poppy Seed Pets API. If not, see <https://www.gnu.org/licenses/>.
  */
 
-
 namespace App\Service\PetActivity\Crafting;
 
 use App\Entity\PetActivityLog;
@@ -41,15 +40,12 @@ use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\PetActivity\Crafting\Helpers\CoinSmithingService;
 use App\Service\PetExperienceService;
-use App\Service\ResponseService;
-use App\Service\WeatherService;
 use Doctrine\ORM\EntityManagerInterface;
 
 class MagicBindingService
 {
     public function __construct(
         private readonly InventoryService $inventoryService,
-        private readonly ResponseService $responseService,
         private readonly PetExperienceService $petExperienceService,
         private readonly IRandom $rng,
         private readonly CoinSmithingService $coinSmithingService,
@@ -260,7 +256,7 @@ class MagicBindingService
             // magic scrolls
             if($this->houseSimService->hasInventory('Paper'))
             {
-                if($this->houseSimService->hasInventory('Red'))
+                if($this->houseSimService->hasInventory('Red') || $this->houseSimService->hasInventory('Orange'))
                     $possibilities[] = new ActivityCallback($this->createFruitScroll(...), 8);
 
                 if($this->houseSimService->hasInventory('Wheat Flower'))
@@ -401,7 +397,8 @@ class MagicBindingService
 
         if($umbraCheck < 23)
         {
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to bind a Wood\'s Metal and a Witch\'s Broom together, but the two objects seemed to naturally repel one another!', 'icons/activity-logs/confused')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to bind a Wood\'s Metal and a Witch\'s Broom together, but the two objects seemed to naturally repel one another!')
+                ->setIcon('icons/activity-logs/confused')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Magic-binding' ]))
             ;
 
@@ -414,7 +411,7 @@ class MagicBindingService
             $this->houseSimService->getState()->loseItem('Witch\'s Broom', 1);
             $this->houseSimService->getState()->loseItem('Wood\'s Metal', 1);
             $pet->increaseEsteem($this->rng->rngNextInt(3, 6));
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% bound a Wood\'s Metal and a Witch\'s Broom, creating a Snickerblade!', '')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% bound a Wood\'s Metal and a Witch\'s Broom, creating a Snickerblade!')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Magic_binding,
                     PetActivityLogTagEnum::Location_At_Home,
@@ -469,7 +466,7 @@ class MagicBindingService
         if($umbraCheck <= 2)
         {
             $pet->increaseEsteem(-1);
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to enchant a Stereotypical Torch, but the torch flared up, and %pet:' . $pet->getId() . '.name% got burned! :(', '')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to enchant a Stereotypical Torch, but the torch flared up, and %pet:' . $pet->getId() . '.name% got burned! :(')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Magic-binding' ]))
             ;
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::Arcana ], $activityLog);
@@ -480,13 +477,15 @@ class MagicBindingService
         {
             if($this->rng->rngNextInt(1, 2) === 1 || $pet->hasMerit(MeritEnum::EIDETIC_MEMORY))
             {
-                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to enchant a Stereotypical Torch, but couldn\'t get it hot enough!', 'icons/activity-logs/confused')
+                $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to enchant a Stereotypical Torch, but couldn\'t get it hot enough!')
+                    ->setIcon('icons/activity-logs/confused')
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Magic-binding' ]))
                 ;
             }
             else
             {
-                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to enchant a Stereotypical Torch, but couldn\'t quite remember the steps.', 'icons/activity-logs/confused')
+                $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to enchant a Stereotypical Torch, but couldn\'t quite remember the steps.')
+                    ->setIcon('icons/activity-logs/confused')
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Magic-binding' ]))
                 ;
             }
@@ -501,7 +500,7 @@ class MagicBindingService
             $this->houseSimService->getState()->loseItem('Quintessence', 1);
             $this->houseSimService->getState()->loseItem('Stereotypical Torch', 1);
             $pet->increaseEsteem(2);
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% enchanted a Stereotypical Torch into a Crazy-hot Torch.', '')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% enchanted a Stereotypical Torch into a Crazy-hot Torch.')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Magic_binding,
                     PetActivityLogTagEnum::Location_At_Home,
@@ -523,13 +522,15 @@ class MagicBindingService
         {
             if($this->rng->rngNextInt(1, 2) === 1 || $pet->hasMerit(MeritEnum::EIDETIC_MEMORY))
             {
-                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to create a block of glowing dice, but couldn\'t get the shape just right...', 'icons/activity-logs/confused')
+                $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to create a block of glowing dice, but couldn\'t get the shape just right...')
+                    ->setIcon('icons/activity-logs/confused')
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Magic-binding' ]))
                 ;
             }
             else
             {
-                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to create a block of glowing dice, but couldn\'t quite remember the steps.', 'icons/activity-logs/confused')
+                $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to create a block of glowing dice, but couldn\'t quite remember the steps.')
+                    ->setIcon('icons/activity-logs/confused')
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Magic-binding' ]))
                 ;
             }
@@ -548,7 +549,7 @@ class MagicBindingService
             {
                 $pet->increaseEsteem(6);
 
-                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% created a Glowing Twenty-sided Die from a chunk of Blackonite!', '')
+                $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% created a Glowing Twenty-sided Die from a chunk of Blackonite!')
                     ->addInterestingness(PetActivityLogInterestingness::HoHum + 30)
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                         PetActivityLogTagEnum::Magic_binding,
@@ -564,7 +565,7 @@ class MagicBindingService
 
                 $pet->increaseEsteem($numberOfDice);
 
-                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% created a block of glowing dice from a chunk of Blackonite, then gently tapped it to break the dice apart. ' . $numberOfDice . ' were made!', '')
+                $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% created a block of glowing dice from a chunk of Blackonite, then gently tapped it to break the dice apart. ' . $numberOfDice . ' were made!')
                     ->addInterestingness(PetActivityLogInterestingness::HoHum + 15)
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                         PetActivityLogTagEnum::Magic_binding,
@@ -590,7 +591,8 @@ class MagicBindingService
 
         if($umbraCheck < 12)
         {
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% started to extract Quintessence from some Thaumatoxic Cookies, but started getting inexplicable shakes. %pet:' . $pet->getId() . '.name% decided to take a break from it for a bit...', 'icons/activity-logs/confused')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% started to extract Quintessence from some Thaumatoxic Cookies, but started getting inexplicable shakes. %pet:' . $pet->getId() . '.name% decided to take a break from it for a bit...')
+                ->setIcon('icons/activity-logs/confused')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Magic-binding' ]))
             ;
 
@@ -606,7 +608,7 @@ class MagicBindingService
         {
             $this->houseSimService->getState()->loseItem('Thaumatoxic Cookies', 1);
 
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% successfully extracted THREE Quintessence from some Thaumatoxic Cookies.', '')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% successfully extracted THREE Quintessence from some Thaumatoxic Cookies.')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Magic_binding,
                     PetActivityLogTagEnum::Location_At_Home,
@@ -626,7 +628,7 @@ class MagicBindingService
         {
             $this->houseSimService->getState()->loseItem('Thaumatoxic Cookies', 1);
 
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% successfully extracted TWO Quintessence from some Thaumatoxic Cookies.', '')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% successfully extracted TWO Quintessence from some Thaumatoxic Cookies.')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Magic_binding,
                     PetActivityLogTagEnum::Location_At_Home,
@@ -643,7 +645,7 @@ class MagicBindingService
         {
             $this->houseSimService->getState()->loseItem('Thaumatoxic Cookies', 1);
 
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% successfully extracted Quintessence from some Thaumatoxic Cookies.', '')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% successfully extracted Quintessence from some Thaumatoxic Cookies.')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Magic_binding,
                     PetActivityLogTagEnum::Location_At_Home,
@@ -666,7 +668,8 @@ class MagicBindingService
 
         if($umbraCheck < 12)
         {
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% started to extract Quintessence from a Mermaid Egg, but almost screwed it all up. %pet:' . $pet->getId() . '.name% decided to take a break from it for a bit...', 'icons/activity-logs/confused')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% started to extract Quintessence from a Mermaid Egg, but almost screwed it all up. %pet:' . $pet->getId() . '.name% decided to take a break from it for a bit...')
+                ->setIcon('icons/activity-logs/confused')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Magic-binding' ]))
             ;
 
@@ -677,7 +680,7 @@ class MagicBindingService
         {
             $this->houseSimService->getState()->loseItem('Mermaid Egg', 1);
 
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% successfully extracted Quintessence from a Mermaid Egg.', '')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% successfully extracted Quintessence from a Mermaid Egg.')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Magic_binding,
                     PetActivityLogTagEnum::Location_At_Home,
@@ -703,7 +706,7 @@ class MagicBindingService
             $pet->increaseSafety(-1);
 
             $pet->increasePsychedelic($this->rng->rngNextInt(1, 3));
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to extract Quintessence from Magic Smoke, but accidentally breathed a little bit of the smoke in! :O', '')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to extract Quintessence from Magic Smoke, but accidentally breathed a little bit of the smoke in! :O')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Magic-binding', 'Physics' ]))
             ;
 
@@ -712,7 +715,8 @@ class MagicBindingService
         }
         else if($umbraCheck < 12)
         {
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% started to extract Quintessence from Magic Smoke, but almost screwed it all up. %pet:' . $pet->getId() . '.name% decided to take a break from it for a bit...', 'icons/activity-logs/confused')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% started to extract Quintessence from Magic Smoke, but almost screwed it all up. %pet:' . $pet->getId() . '.name% decided to take a break from it for a bit...')
+                ->setIcon('icons/activity-logs/confused')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Magic-binding', 'Physics' ]))
             ;
 
@@ -723,7 +727,7 @@ class MagicBindingService
         {
             $this->houseSimService->getState()->loseItem('Magic Smoke', 1);
 
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% successfully extracted Quintessence from Magic Smoke.', '')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% successfully extracted Quintessence from Magic Smoke.')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Magic_binding,
                     PetActivityLogTagEnum::Physics,
@@ -749,13 +753,15 @@ class MagicBindingService
         {
             if($this->rng->rngNextInt(1, 2) === 1 || $pet->hasMerit(MeritEnum::EIDETIC_MEMORY))
             {
-                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to enchant an Hourglass, but the sand was just too mesmerizing...', 'icons/activity-logs/confused')
+                $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to enchant an Hourglass, but the sand was just too mesmerizing...')
+                    ->setIcon('icons/activity-logs/confused')
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Magic-binding' ]))
                 ;
             }
             else
             {
-                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to enchant an Hourglass, but couldn\'t quite remember the steps.', 'icons/activity-logs/confused')
+                $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to enchant an Hourglass, but couldn\'t quite remember the steps.')
+                    ->setIcon('icons/activity-logs/confused')
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Magic-binding' ]))
                 ;
             }
@@ -768,7 +774,7 @@ class MagicBindingService
             $this->houseSimService->getState()->loseItem('Quintessence', 1);
             $this->houseSimService->getState()->loseItem('Hourglass', 1);
             $pet->increaseEsteem(2);
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% enchanted an Hourglass. It\'s _magic_ now!', '')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% enchanted an Hourglass. It\'s _magic_ now!')
                 ->addInterestingness(PetActivityLogInterestingness::HoHum + 15)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Magic_binding,
@@ -791,7 +797,8 @@ class MagicBindingService
 
         if($umbraCheck < 18)
         {
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to enchant a Fish Bone Shovel, but somehow kept dozing off...', 'icons/activity-logs/confused')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to enchant a Fish Bone Shovel, but somehow kept dozing off...')
+                ->setIcon('icons/activity-logs/confused')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Magic-binding' ]))
             ;
 
@@ -804,7 +811,7 @@ class MagicBindingService
             $this->houseSimService->getState()->loseItem('Blackonite', 1);
             $this->houseSimService->getState()->loseItem('Fish Head Shovel', 1);
             $pet->increaseEsteem(2);
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% enchanted a Fish Head Shovel in Nephthys\'s name!', '')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% enchanted a Fish Head Shovel in Nephthys\'s name!')
                 ->addInterestingness(PetActivityLogInterestingness::HoHum + 18)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Magic_binding,
@@ -828,7 +835,7 @@ class MagicBindingService
         if($umbraCheck <= 2)
         {
             $pet->increaseEsteem(-1)->increaseSafety(-4);
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to enchant a piece of Glass, but accidentally cut themselves :(', '')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to enchant a piece of Glass, but accidentally cut themselves :(')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Magic-binding', 'Smithing' ]))
             ;
 
@@ -837,7 +844,8 @@ class MagicBindingService
         }
         else if($umbraCheck < 18)
         {
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to shape a piece of Blackonite into a staff, but the Blackonite was proving difficult to work with...', 'icons/activity-logs/confused')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to shape a piece of Blackonite into a staff, but the Blackonite was proving difficult to work with...')
+                ->setIcon('icons/activity-logs/confused')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Magic-binding', 'Smithing' ]))
             ;
 
@@ -850,7 +858,8 @@ class MagicBindingService
             $this->houseSimService->getState()->loseItem('Blackonite', 1);
             $this->houseSimService->getState()->loseItem('Glass', 1);
             $pet->increaseEsteem(2);
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% made and enchanted Temperance!', 'items/tool/scythe/little-death')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% made and enchanted Temperance!')
+                ->setIcon('items/tool/scythe/little-death')
                 ->addInterestingness(PetActivityLogInterestingness::HoHum + 18)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Magic-binding', 'Smithing' ]))
             ;
@@ -875,7 +884,7 @@ class MagicBindingService
         {
             $pet->increaseSafety(-6);
             StatusEffectHelpers::applyStatusEffect($this->em, $pet, StatusEffectEnum::HexHexed, 6 * 60);
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to enchant a Ceremonial Trident, but accidentally hexed themselves, instead! :(', '')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to enchant a Ceremonial Trident, but accidentally hexed themselves, instead! :(')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Magic-binding' ]))
             ;
 
@@ -886,13 +895,15 @@ class MagicBindingService
         {
             if($this->rng->rngNextInt(1, 2) === 1 || $pet->hasMerit(MeritEnum::EIDETIC_MEMORY))
             {
-                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to enchant an Ceremonial Trident, but the enchantment kept refusing to stick >:(', 'icons/activity-logs/confused')
+                $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to enchant an Ceremonial Trident, but the enchantment kept refusing to stick >:(')
+                    ->setIcon('icons/activity-logs/confused')
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Magic-binding' ]))
                 ;
             }
             else
             {
-                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to enchant an Ceremonial Trident, but couldn\'t quite remember the steps.', 'icons/activity-logs/confused')
+                $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to enchant an Ceremonial Trident, but couldn\'t quite remember the steps.')
+                    ->setIcon('icons/activity-logs/confused')
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Magic-binding' ]))
                 ;
             }
@@ -909,7 +920,7 @@ class MagicBindingService
 
             $this->houseSimService->getState()->loseItem('Ceremonial Trident', 1);
             $pet->increaseEsteem(3);
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% used a Ceremonial Trident to materialize the ' . $makes . '!', '')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% used a Ceremonial Trident to materialize the ' . $makes . '!')
                 ->addInterestingness(PetActivityLogInterestingness::HoHum + 20)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Magic_binding,
@@ -948,7 +959,8 @@ class MagicBindingService
 
         if($craftsCheck < 10)
         {
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to enchant a Blunderbuss, but didn\'t arrange the material components properly.', 'icons/activity-logs/confused')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to enchant a Blunderbuss, but didn\'t arrange the material components properly.')
+                ->setIcon('icons/activity-logs/confused')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Magic-binding', 'Crafting' ]))
             ;
 
@@ -959,13 +971,15 @@ class MagicBindingService
         {
             if($this->rng->rngNextInt(1, 2) === 1 || $pet->hasMerit(MeritEnum::EIDETIC_MEMORY))
             {
-                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to enchant a Blunderbuss, but the enchantment kept refusing to stick >:(', 'icons/activity-logs/confused')
+                $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to enchant a Blunderbuss, but the enchantment kept refusing to stick >:(')
+                    ->setIcon('icons/activity-logs/confused')
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Magic-binding', 'Crafting' ]))
                 ;
             }
             else
             {
-                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to enchant a Blunderbuss, but couldn\'t quite remember the steps.', 'icons/activity-logs/confused')
+                $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to enchant a Blunderbuss, but couldn\'t quite remember the steps.')
+                    ->setIcon('icons/activity-logs/confused')
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Magic-binding', 'Crafting' ]))
                 ;
             }
@@ -981,7 +995,7 @@ class MagicBindingService
             $this->houseSimService->getState()->loseItem('Moon Pearl', 1);
             $this->houseSimService->getState()->loseItem('Crooked Stick', 1);
             $pet->increaseEsteem(5);
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% made an Iridescent Hand Cannon by extending a Blunderbuss, and binding a Moon Pearl to it!', '')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% made an Iridescent Hand Cannon by extending a Blunderbuss, and binding a Moon Pearl to it!')
                 ->addInterestingness(PetActivityLogInterestingness::HoHum + 21)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Magic_binding,
@@ -1004,7 +1018,8 @@ class MagicBindingService
 
         if($craftsCheck < 12)
         {
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to enchant an Elvish Magnifying Glass, but didn\'t arrange the material components properly.', 'icons/activity-logs/confused')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to enchant an Elvish Magnifying Glass, but didn\'t arrange the material components properly.')
+                ->setIcon('icons/activity-logs/confused')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Magic-binding', 'Crafting' ]))
             ;
 
@@ -1015,13 +1030,15 @@ class MagicBindingService
         {
             if($this->rng->rngNextInt(1, 2) === 1 || $pet->hasMerit(MeritEnum::EIDETIC_MEMORY))
             {
-                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to bind an Elvish Magnifying Glass with a Moon Pearl, but had trouble wrangling the Gravitational Waves...', 'icons/activity-logs/confused')
+                $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to bind an Elvish Magnifying Glass with a Moon Pearl, but had trouble wrangling the Gravitational Waves...')
+                    ->setIcon('icons/activity-logs/confused')
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Magic-binding', 'Crafting' ]))
                 ;
             }
             else
             {
-                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to bind an Elvish Magnifying Glass with a Moon Pearl, but couldn\'t quite remember the steps.', 'icons/activity-logs/confused')
+                $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to bind an Elvish Magnifying Glass with a Moon Pearl, but couldn\'t quite remember the steps.')
+                    ->setIcon('icons/activity-logs/confused')
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Magic-binding', 'Crafting' ]))
                 ;
             }
@@ -1037,7 +1054,7 @@ class MagicBindingService
             $this->houseSimService->getState()->loseItem('Moon Pearl', 1);
             $this->houseSimService->getState()->loseItem('Elvish Magnifying Glass', 1);
             $pet->increaseEsteem(5);
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% made a Warping Wand!', '')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% made a Warping Wand!')
                 ->addInterestingness(PetActivityLogInterestingness::HoHum + 24)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Magic_binding,
@@ -1059,7 +1076,8 @@ class MagicBindingService
 
         if($umbraCheck < 18)
         {
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to enchant a Plastic Shovel, but had trouble binding the Quintessence to something so artificial.', 'icons/activity-logs/confused')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to enchant a Plastic Shovel, but had trouble binding the Quintessence to something so artificial.')
+                ->setIcon('icons/activity-logs/confused')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Magic-binding' ]))
             ;
 
@@ -1077,7 +1095,7 @@ class MagicBindingService
 
             if($umbraCheck >= 28)
             {
-                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% made an Invisible Shovel by binding the power of the moon to a Plastic Shovel! Oh: and there\'s a little Invisibility Juice left over!', '')
+                $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% made an Invisible Shovel by binding the power of the moon to a Plastic Shovel! Oh: and there\'s a little Invisibility Juice left over!')
                     ->addInterestingness(PetActivityLogInterestingness::HoHum + 28)
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                         PetActivityLogTagEnum::Magic_binding,
@@ -1089,7 +1107,7 @@ class MagicBindingService
             }
             else
             {
-                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% made an Invisible Shovel by binding the power of the moon to a Plastic Shovel!', '')
+                $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% made an Invisible Shovel by binding the power of the moon to a Plastic Shovel!')
                     ->addInterestingness(PetActivityLogInterestingness::HoHum + 18)
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                         PetActivityLogTagEnum::Magic_binding,
@@ -1115,7 +1133,8 @@ class MagicBindingService
 
         if($craftsCheck < 10)
         {
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to enchant a Painted Dumbbell, but didn\'t arrange the material components properly.', 'icons/activity-logs/confused')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to enchant a Painted Dumbbell, but didn\'t arrange the material components properly.')
+                ->setIcon('icons/activity-logs/confused')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Magic-binding', 'Crafting' ]))
             ;
 
@@ -1125,11 +1144,14 @@ class MagicBindingService
         else if($umbraCheck < 16)
         {
             if($this->rng->rngNextInt(1, 2) === 1 || $pet->hasMerit(MeritEnum::EIDETIC_MEMORY))
-                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to enchant a Painted Dumbbell, but couldn\'t get over how silly it looked!', 'icons/activity-logs/confused');
+                $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to enchant a Painted Dumbbell, but couldn\'t get over how silly it looked!');
             else
-                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to enchant a Painted Dumbbell, but couldn\'t quite remember the steps.', 'icons/activity-logs/confused');
+                $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to enchant a Painted Dumbbell, but couldn\'t quite remember the steps.');
 
-            $activityLog->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Magic-binding', 'Crafting' ]));
+            $activityLog
+                ->setIcon('icons/activity-logs/confused')
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Magic-binding', 'Crafting' ]))
+            ;
 
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::Arcana ], $activityLog);
             $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(46, 60), PetActivityStatEnum::MAGIC_BIND, false);
@@ -1142,7 +1164,7 @@ class MagicBindingService
             $this->houseSimService->getState()->loseItem('Quinacridone Magenta Dye', 1);
             $this->houseSimService->getState()->loseItem('Painted Dumbbell', 1);
             $pet->increaseEsteem(5);
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% made a Smiling Wand by decorating & enchanting a Painted Dumbbell!', '')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% made a Smiling Wand by decorating & enchanting a Painted Dumbbell!')
                 ->addInterestingness(PetActivityLogInterestingness::HoHum + 16)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Magic_binding,
@@ -1164,7 +1186,8 @@ class MagicBindingService
 
         if($umbraCheck < 20)
         {
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to enchant a Farmer\'s Multi-tool, but kept messing up the spell.', 'icons/activity-logs/confused')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to enchant a Farmer\'s Multi-tool, but kept messing up the spell.')
+                ->setIcon('icons/activity-logs/confused')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Magic-binding' ]))
             ;
 
@@ -1178,7 +1201,7 @@ class MagicBindingService
             $this->houseSimService->getState()->loseItem('Smallish Pumpkin', 1);
             $this->houseSimService->getState()->loseItem('Farmer\'s Multi-tool', 1);
             $pet->increaseEsteem(4);
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% enchanted a Farmer\'s Multi-tool with one of Gizubi\'s rituals.', '')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% enchanted a Farmer\'s Multi-tool with one of Gizubi\'s rituals.')
                 ->addInterestingness(PetActivityLogInterestingness::HoHum + 20)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Magic_binding,
@@ -1200,7 +1223,8 @@ class MagicBindingService
 
         if($umbraCheck < 20)
         {
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to enchant a Double Scythe, but kept messing up the spell.', 'icons/activity-logs/confused')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to enchant a Double Scythe, but kept messing up the spell.')
+                ->setIcon('icons/activity-logs/confused')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Magic-binding' ]))
             ;
 
@@ -1214,7 +1238,7 @@ class MagicBindingService
             $this->houseSimService->getState()->loseItem('Dark Scales', 1);
             $this->houseSimService->getState()->loseItem('Double Scythe', 1);
             $pet->increaseEsteem(4);
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% enchanted a Double Scythe with Umbral magic...', '')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% enchanted a Double Scythe with Umbral magic...')
                 ->addInterestingness(PetActivityLogInterestingness::HoHum + 20)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Magic_binding,
@@ -1318,7 +1342,7 @@ class MagicBindingService
 
             $this->houseSimService->getState()->loseItem('Musical Scales', 1);
 
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to bind a Dancing Sword, but accidentally dropped the Musical Scales, scattering Music Notes everywhere, and breaking one.', '')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to bind a Dancing Sword, but accidentally dropped the Musical Scales, scattering Music Notes everywhere, and breaking one.')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Magic-binding' ]))
             ;
 
@@ -1329,7 +1353,8 @@ class MagicBindingService
         }
         else if($umbraCheck < 18)
         {
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to enchant an Iron Sword, but kept messing up the song.', 'icons/activity-logs/confused')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to enchant an Iron Sword, but kept messing up the song.')
+                ->setIcon('icons/activity-logs/confused')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Magic-binding' ]))
             ;
 
@@ -1346,7 +1371,7 @@ class MagicBindingService
                 ->increaseEsteem(4)
                 ->increaseSafety(2)
             ;
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% bound a Dancing Sword...', '')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% bound a Dancing Sword...')
                 ->addInterestingness(PetActivityLogInterestingness::HoHum + 18)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Magic_binding,
@@ -1368,7 +1393,8 @@ class MagicBindingService
         if($umbraCheck < 19)
         {
             $pet->increaseSafety(-1);
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to enchant a Poker, but kept getting poked by it.', 'icons/activity-logs/confused')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to enchant a Poker, but kept getting poked by it.')
+                ->setIcon('icons/activity-logs/confused')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Magic-binding' ]))
             ;
 
@@ -1382,7 +1408,7 @@ class MagicBindingService
             $this->houseSimService->getState()->loseItem('Lightning in a Bottle', 1);
             $this->houseSimService->getState()->loseItem('Poker', 1);
             $pet->increaseEsteem(3);
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% bound a Wand of Lightning...', '')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% bound a Wand of Lightning...')
                 ->addInterestingness(PetActivityLogInterestingness::HoHum + 19)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Magic_binding,
@@ -1406,7 +1432,7 @@ class MagicBindingService
         {
             if($pet->hasMerit(MeritEnum::SHOCK_RESISTANT))
             {
-                $activityLog = $this->responseService->createActivityLog($pet, ActivityHelpers::PetName($pet) . ' tried to bind some lightning to a Heavy Hammer, but it kept trying to zap them! ' . ActivityHelpers::PetName($pet) . '\'s shock-resistance protected them from any harm, but it was still annoying as heck.', '')
+                $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, ActivityHelpers::PetName($pet) . ' tried to bind some lightning to a Heavy Hammer, but it kept trying to zap them! ' . ActivityHelpers::PetName($pet) . '\'s shock-resistance protected them from any harm, but it was still annoying as heck.')
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Magic-binding' ]))
                     ->addInterestingness(PetActivityLogInterestingness::ActivityUsingMerit)
                 ;
@@ -1418,7 +1444,7 @@ class MagicBindingService
             {
                 $pet->increaseSafety(-4);
 
-                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to bind some lightning to a Heavy Hammer, but accidentally zapped themselves! :(', '')
+                $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to bind some lightning to a Heavy Hammer, but accidentally zapped themselves! :(')
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Magic-binding' ]))
                 ;
 
@@ -1432,13 +1458,15 @@ class MagicBindingService
         {
             if($this->rng->rngNextBool())
             {
-                $activityLog = $this->responseService->createActivityLog($pet, ActivityHelpers::PetName($pet) . ' tried to bind lightning to a Heavy Hammer, but the hammer was just NOT having it...', 'icons/activity-logs/confused')
+                $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, ActivityHelpers::PetName($pet) . ' tried to bind lightning to a Heavy Hammer, but the hammer was just NOT having it...')
+                    ->setIcon('icons/activity-logs/confused')
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Magic-binding' ]))
                 ;
             }
             else if($pet->hasMerit(MeritEnum::SHOCK_RESISTANT))
             {
-                $activityLog = $this->responseService->createActivityLog($pet, ActivityHelpers::PetName($pet) . ' tried to bind lightning to a Heavy Hammer, but the lightning was throwing sparks like crazy. ' . ActivityHelpers::PetName($pet) . '\'s shock-resistance protected them, but it was still annoying...', 'icons/activity-logs/confused')
+                $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, ActivityHelpers::PetName($pet) . ' tried to bind lightning to a Heavy Hammer, but the lightning was throwing sparks like crazy. ' . ActivityHelpers::PetName($pet) . '\'s shock-resistance protected them, but it was still annoying...')
+                    ->setIcon('icons/activity-logs/confused')
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Magic-binding' ]))
                     ->addInterestingness(PetActivityLogInterestingness::ActivityUsingMerit)
                 ;
@@ -1446,7 +1474,8 @@ class MagicBindingService
             else
             {
                 $pet->increaseSafety(-2);
-                $activityLog = $this->responseService->createActivityLog($pet, ActivityHelpers::PetName($pet) . ' tried to bind lightning to a Heavy Hammer, but the lightning was throwing sparks like crazy, and they kept getting zapped! >:|', 'icons/activity-logs/confused')
+                $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, ActivityHelpers::PetName($pet) . ' tried to bind lightning to a Heavy Hammer, but the lightning was throwing sparks like crazy, and they kept getting zapped! >:|')
+                    ->setIcon('icons/activity-logs/confused')
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Magic-binding' ]))
                 ;
             }
@@ -1463,7 +1492,7 @@ class MagicBindingService
             $this->houseSimService->getState()->loseItem('Heavy Hammer', 1);
             $this->houseSimService->getState()->loseItem('White Feathers', 1);
             $pet->increaseEsteem($this->rng->rngNextInt(4, 8));
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% bound Mjölnir!', '')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% bound Mjölnir!')
                 ->addInterestingness(PetActivityLogInterestingness::HoHum + 25)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Magic_binding,
@@ -1521,7 +1550,7 @@ class MagicBindingService
             $this->houseSimService->getState()->loseItem('Black Feathers', 1);
             $this->houseSimService->getState()->loseItem('Vicious', 1);
             $pet->increaseEsteem(5);
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% bound The Dark Knight!', '')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% bound The Dark Knight!')
                 ->addInterestingness(PetActivityLogInterestingness::HoHum + 24)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Magic_binding,
@@ -1546,13 +1575,15 @@ class MagicBindingService
         {
             if($this->rng->rngNextInt(1, 2) === 1 || $pet->hasMerit(MeritEnum::EIDETIC_MEMORY))
             {
-                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make a Witch\'s Broom, but it kept flying out of their hands half-way through! >:(', 'icons/activity-logs/confused')
+                $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to make a Witch\'s Broom, but it kept flying out of their hands half-way through! >:(')
+                    ->setIcon('icons/activity-logs/confused')
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Magic-binding' ]))
                 ;
             }
             else
             {
-                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make a Witch\'s Broom, but couldn\'t quite remember the steps.', 'icons/activity-logs/confused')
+                $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to make a Witch\'s Broom, but couldn\'t quite remember the steps.')
+                    ->setIcon('icons/activity-logs/confused')
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Magic-binding' ]))
                 ;
             }
@@ -1568,7 +1599,7 @@ class MagicBindingService
             $this->houseSimService->getState()->loseItem('Straw Broom', 1);
             $this->houseSimService->getState()->loseItem('Witch-hazel', 1);
             $pet->increaseEsteem(2);
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% enchanted a broom into a Witch\'s Broom!', '')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% enchanted a broom into a Witch\'s Broom!')
                 ->addInterestingness(PetActivityLogInterestingness::HoHum + 14)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Magic_binding,
@@ -1602,7 +1633,7 @@ class MagicBindingService
         if($umbraCheck <= 2)
         {
             $pet->increaseSafety(-4);
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to enchant a ' . $mirror . ', but accidentally cut themselves on it! :(', '')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to enchant a ' . $mirror . ', but accidentally cut themselves on it! :(')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Magic-binding' ]))
             ;
 
@@ -1613,7 +1644,8 @@ class MagicBindingService
         }
         else if($umbraCheck < 16)
         {
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to enchant a ' . $mirror . ', but couldn\'t figure out a good enchantment...', 'icons/activity-logs/confused')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to enchant a ' . $mirror . ', but couldn\'t figure out a good enchantment...')
+                ->setIcon('icons/activity-logs/confused')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Magic-binding' ]))
             ;
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::Arcana ], $activityLog);
@@ -1644,7 +1676,7 @@ class MagicBindingService
                 $exp = 2;
             }
 
-            $activityLog = $this->responseService->createActivityLog($pet, $message, '')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, $message)
                 ->addInterestingness(PetActivityLogInterestingness::HoHum + 16)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Magic_binding,
@@ -1731,7 +1763,8 @@ class MagicBindingService
 
         if($umbraCheck < 18)
         {
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to enchant a Level 2 Sword, but it resisted the spell...', 'icons/activity-logs/confused')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to enchant a Level 2 Sword, but it resisted the spell...')
+                ->setIcon('icons/activity-logs/confused')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Magic-binding' ]))
             ;
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::Arcana ], $activityLog);
@@ -1745,7 +1778,7 @@ class MagicBindingService
             $this->houseSimService->getState()->loseItem('White Feathers', 1);
             $pet->increaseEsteem(2);
             $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 75), PetActivityStatEnum::MAGIC_BIND, true);
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% bound Armor!', '')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% bound Armor!')
                 ->addInterestingness(PetActivityLogInterestingness::HoHum + 18)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Magic_binding,
@@ -1779,7 +1812,8 @@ class MagicBindingService
         }
         else if($umbraCheck < 30)
         {
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% had an idea for a brilliantly-colored Blunderbuss, but couldn\'t figure out how to realize it...', 'icons/activity-logs/confused')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% had an idea for a brilliantly-colored Blunderbuss, but couldn\'t figure out how to realize it...')
+                ->setIcon('icons/activity-logs/confused')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Magic-binding', 'Smithing' ]))
             ;
 
@@ -1796,7 +1830,7 @@ class MagicBindingService
             $this->houseSimService->getState()->loseItem('Blunderbuss', 1);
             $this->houseSimService->getState()->loseItem('Ruby Feather', 1);
             $pet->increaseEsteem($this->rng->rngNextInt(4, 8));
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% created a Wunderbuss!!', '')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% created a Wunderbuss!!')
                 ->addInterestingness(PetActivityLogInterestingness::HoHum + 30)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Magic-binding', 'Smithing' ]))
             ;
@@ -1863,7 +1897,8 @@ class MagicBindingService
 
         if($umbraCheck < 22)
         {
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to imbue a Heavy Lance with Blood Wine, but the Blood Wine proved difficult to work with!', 'icons/activity-logs/confused')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to imbue a Heavy Lance with Blood Wine, but the Blood Wine proved difficult to work with!')
+                ->setIcon('icons/activity-logs/confused')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Magic-binding' ]))
             ;
 
@@ -1874,7 +1909,7 @@ class MagicBindingService
         {
             $this->houseSimService->getState()->loseItem('Blood Wine', 1);
             $this->houseSimService->getState()->loseItem('Heavy Lance', 1);
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% created an Ambu Lance!', '')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% created an Ambu Lance!')
                 ->addInterestingness(PetActivityLogInterestingness::HoHum + 22)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Magic_binding,
@@ -1897,7 +1932,8 @@ class MagicBindingService
 
         if($umbraCheck < 22)
         {
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to enchant Armor, but it resisted the spell...', 'icons/activity-logs/confused')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to enchant Armor, but it resisted the spell...')
+                ->setIcon('icons/activity-logs/confused')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Magic-binding' ]))
             ;
 
@@ -1910,7 +1946,7 @@ class MagicBindingService
             $this->houseSimService->getState()->loseItem('Armor', 1);
             $this->houseSimService->getState()->loseItem('Ruby Feather', 1);
             $pet->increaseEsteem(5);
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% bound Rubyeye!', '')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% bound Rubyeye!')
                 ->addInterestingness(PetActivityLogInterestingness::HoHum + 18)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Magic_binding,
@@ -1941,13 +1977,15 @@ class MagicBindingService
                     'Yemen'
                 ]);
 
-                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make an Astral Tuning Fork, but messed up the tuning and picked up a regular-ol\' radio station from somewhere in ' . $randomPlace . '!', 'icons/activity-logs/confused')
+                $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to make an Astral Tuning Fork, but messed up the tuning and picked up a regular-ol\' radio station from somewhere in ' . $randomPlace . '!')
+                    ->setIcon('icons/activity-logs/confused')
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Magic-binding' ]))
                 ;
             }
             else
             {
-                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make an Astral Tuning Fork, but couldn\'t quite remember the steps.', 'icons/activity-logs/confused')
+                $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to make an Astral Tuning Fork, but couldn\'t quite remember the steps.')
+                    ->setIcon('icons/activity-logs/confused')
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Magic-binding' ]))
                 ;
             }
@@ -1961,7 +1999,7 @@ class MagicBindingService
             $this->houseSimService->getState()->loseItem('Gold Tuning Fork', 1);
             $pet->increaseEsteem(2);
             $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::MAGIC_BIND, true);
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% enchanted a regular old Gold Tuning Fork; now it\'s an _Astral_ Tuning Fork!', '')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% enchanted a regular old Gold Tuning Fork; now it\'s an _Astral_ Tuning Fork!')
                 ->addInterestingness(PetActivityLogInterestingness::HoHum + 14)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Magic_binding,
@@ -1985,13 +2023,15 @@ class MagicBindingService
         {
             if($this->rng->rngNextInt(1, 2) === 1 || $pet->hasMerit(MeritEnum::EIDETIC_MEMORY))
             {
-                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make an Enchanted Compass, but nearly demagnetized it, instead!', 'icons/activity-logs/confused')
+                $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to make an Enchanted Compass, but nearly demagnetized it, instead!')
+                    ->setIcon('icons/activity-logs/confused')
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Magic-binding' ]))
                 ;
             }
             else
             {
-                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make an Enchanted Compass, but couldn\'t quite remember the steps.', 'icons/activity-logs/confused')
+                $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to make an Enchanted Compass, but couldn\'t quite remember the steps.')
+                    ->setIcon('icons/activity-logs/confused')
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Magic-binding' ]))
                 ;
             }
@@ -2007,7 +2047,7 @@ class MagicBindingService
             $this->houseSimService->getState()->loseItem('Quintessence', 1);
             $this->houseSimService->getState()->loseItem('Compass', 1);
             $pet->increaseEsteem(2);
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% enchanted a regular ol\' Compass; now it\'s an _Enchanted_ Compass!', '')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% enchanted a regular ol\' Compass; now it\'s an _Enchanted_ Compass!')
                 ->addInterestingness(PetActivityLogInterestingness::HoHum + 14)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Magic_binding,
@@ -2029,7 +2069,8 @@ class MagicBindingService
 
         if($umbraCheck < 14)
         {
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to bind a Whisper Stone, but had trouble with the incantations.', 'icons/activity-logs/confused')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to bind a Whisper Stone, but had trouble with the incantations.')
+                ->setIcon('icons/activity-logs/confused')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Magic-binding' ]))
             ;
 
@@ -2041,7 +2082,7 @@ class MagicBindingService
             $this->houseSimService->getState()->loseItem('Quintessence', 1);
             $this->houseSimService->getState()->loseItem('Striped Microcline', 1);
             $pet->increaseEsteem(2);
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% bound a Whisper Stone!', '')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% bound a Whisper Stone!')
                 ->addInterestingness(PetActivityLogInterestingness::HoHum + 14)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Magic_binding,
@@ -2064,7 +2105,8 @@ class MagicBindingService
 
         if($umbraCheck < 14)
         {
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to bind some Wings, but kept mixing up the steps.', 'icons/activity-logs/confused')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to bind some Wings, but kept mixing up the steps.')
+                ->setIcon('icons/activity-logs/confused')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Magic-binding' ]))
             ;
 
@@ -2082,7 +2124,7 @@ class MagicBindingService
 
             if($getQuill)
             {
-                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% bound some Wings... and made a Quill with a spare Feather.', '')
+                $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% bound some Wings... and made a Quill with a spare Feather.')
                     ->addInterestingness(PetActivityLogInterestingness::HoHum + 20)
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                         PetActivityLogTagEnum::Magic_binding,
@@ -2097,7 +2139,7 @@ class MagicBindingService
             }
             else
             {
-                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% bound some Wings.', '')
+                $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% bound some Wings.')
                     ->addInterestingness(PetActivityLogInterestingness::HoHum + 14)
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                         PetActivityLogTagEnum::Magic_binding,
@@ -2123,7 +2165,7 @@ class MagicBindingService
         {
             $pet->increaseSafety(-6);
             StatusEffectHelpers::applyStatusEffect($this->em, $pet, StatusEffectEnum::HexHexed, 6 * 60);
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to enchant a Gold Trifecta, but accidentally hexed themselves, instead! :(', '')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to enchant a Gold Trifecta, but accidentally hexed themselves, instead! :(')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Magic-binding' ]))
             ;
 
@@ -2134,13 +2176,15 @@ class MagicBindingService
         {
             if($this->rng->rngNextInt(1, 2) === 1 || $pet->hasMerit(MeritEnum::EIDETIC_MEMORY))
             {
-                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make a Gold Triskaidecta, but the enchantment wouldn\'t stick! >:(', 'icons/activity-logs/confused')
+                $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to make a Gold Triskaidecta, but the enchantment wouldn\'t stick! >:(')
+                    ->setIcon('icons/activity-logs/confused')
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Magic-binding' ]))
                 ;
             }
             else
             {
-                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make a Gold Triskaidecta, but couldn\'t quite remember the steps.', 'icons/activity-logs/confused')
+                $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to make a Gold Triskaidecta, but couldn\'t quite remember the steps.')
+                    ->setIcon('icons/activity-logs/confused')
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Magic-binding' ]))
                 ;
             }
@@ -2153,7 +2197,7 @@ class MagicBindingService
             $this->houseSimService->getState()->loseItem('Quintessence', 1);
             $this->houseSimService->getState()->loseItem('Gold Trifecta', 1);
             $pet->increaseEsteem(2);
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% imbued a Gold Trifecta with the power of the number 13!', '')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% imbued a Gold Trifecta with the power of the number 13!')
                 ->addInterestingness(PetActivityLogInterestingness::HoHum + 14)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Magic_binding,
@@ -2181,7 +2225,8 @@ class MagicBindingService
                 : $pet->getName() . ' tried to bind Mint to a Leaf Spear, but couldn\'t figure it out...'
             ;
 
-            $activityLog = $this->responseService->createActivityLog($pet, $message, 'icons/activity-logs/confused')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, $message)
+                ->setIcon('icons/activity-logs/confused')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Magic-binding' ]))
             ;
 
@@ -2195,7 +2240,7 @@ class MagicBindingService
             $this->houseSimService->getState()->loseItem('Mint', 1);
             $this->houseSimService->getState()->loseItem('Leaf Spear', 1);
 
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% bound Mint to a Leaf Spear, creating a Spearmint!', '')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% bound Mint to a Leaf Spear, creating a Spearmint!')
                 ->addInterestingness(PetActivityLogInterestingness::HoHum + 16)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Magic_binding,
@@ -2218,7 +2263,8 @@ class MagicBindingService
 
         if($skillCheck < 22)
         {
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to bind a Music Note to a Fishing Recorder, but couldn\'t get the pitch right...', 'icons/activity-logs/confused')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to bind a Music Note to a Fishing Recorder, but couldn\'t get the pitch right...')
+                ->setIcon('icons/activity-logs/confused')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Magic-binding' ]))
             ;
 
@@ -2231,7 +2277,7 @@ class MagicBindingService
             $this->houseSimService->getState()->loseItem('Music Note', 1);
             $this->houseSimService->getState()->loseItem('Fishing Recorder', 1);
 
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% bound a Music Note to a Fishing Recorder, creating a Kokopelli!', '')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% bound a Music Note to a Fishing Recorder, creating a Kokopelli!')
                 ->addInterestingness(PetActivityLogInterestingness::HoHum + 22)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Magic_binding,
@@ -2259,7 +2305,8 @@ class MagicBindingService
         {
             $pet->increaseSafety(-2);
 
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to bind some berries to a Crooked Stick, but the vines were scratchy, and berries kept falling off, and ugh!', 'icons/activity-logs/confused')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to bind some berries to a Crooked Stick, but the vines were scratchy, and berries kept falling off, and ugh!')
+                ->setIcon('icons/activity-logs/confused')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Magic-binding', 'Crafting' ]))
             ;
 
@@ -2268,7 +2315,8 @@ class MagicBindingService
         }
         else if($umbraCheck < 20)
         {
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to bind some berries to a Crooked Stick, but kept messing up the enchantment...', 'icons/activity-logs/confused')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to bind some berries to a Crooked Stick, but kept messing up the enchantment...')
+                ->setIcon('icons/activity-logs/confused')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Magic-binding', 'Crafting' ]))
             ;
 
@@ -2283,7 +2331,7 @@ class MagicBindingService
             $this->houseSimService->getState()->loseItem('Blackberries', 1);
             $this->houseSimService->getState()->loseItem('Goodberries', 1);
 
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% bound some berries to a Crooked Stick, creating Twiggen Berries!', '')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% bound some berries to a Crooked Stick, creating Twiggen Berries!')
                 ->addInterestingness(PetActivityLogInterestingness::HoHum + 20)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Magic_binding,
@@ -2312,13 +2360,15 @@ class MagicBindingService
         {
             if($this->rng->rngNextInt(1, 2) === 1)
             {
-                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to mix some Ambrotypic Solvent, but wasn\'t confident in their measurements of the ratios...', 'icons/activity-logs/confused')
+                $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to mix some Ambrotypic Solvent, but wasn\'t confident in their measurements of the ratios...')
+                    ->setIcon('icons/activity-logs/confused')
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Magic-binding', 'Physics' ]))
                 ;
             }
             else
             {
-                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to mix some Ambrotypic Solvent, but wasn\'t confident about how to properly infuse the Quintessence...', 'icons/activity-logs/confused')
+                $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to mix some Ambrotypic Solvent, but wasn\'t confident about how to properly infuse the Quintessence...')
+                    ->setIcon('icons/activity-logs/confused')
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Magic-binding', 'Physics' ]))
                 ;
             }
@@ -2332,7 +2382,7 @@ class MagicBindingService
             $this->houseSimService->getState()->loseItem('Silver Bar', 1);
             $this->houseSimService->getState()->loseItem('Paint Stripper', 1);
 
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% mixed some magic Ambrotypic Solvent!', '')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% mixed some magic Ambrotypic Solvent!')
                 ->addInterestingness(PetActivityLogInterestingness::HoHum + 14)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Magic_binding,
@@ -2399,7 +2449,7 @@ class MagicBindingService
             $this->houseSimService->getState()->loseItem('Quinacridone Magenta Dye', 1);
             $this->houseSimService->getState()->loseItem('Meteorite', 1);
             $pet->increaseEsteem(1);
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% channeled Noetala\'s watchful eye from the depths of space...', '')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% channeled Noetala\'s watchful eye from the depths of space...')
                 ->addInterestingness(PetActivityLogInterestingness::HoHum + 18)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Magic_binding,
@@ -2431,7 +2481,8 @@ class MagicBindingService
         }
         else
         {
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% considered invoking the watchful eye of Noetala, but thought better of it...', 'icons/activity-logs/confused')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% considered invoking the watchful eye of Noetala, but thought better of it...')
+                ->setIcon('icons/activity-logs/confused')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Magic-binding' ]))
             ;
 
@@ -2454,7 +2505,7 @@ class MagicBindingService
             $this->houseSimService->getState()->loseItem('Lotus Flower', 1);
             $this->houseSimService->getState()->loseItem('Quintessence', 1);
             $pet->increaseEsteem(1);
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% magically bound a Lotusjar!', '')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% magically bound a Lotusjar!')
                 ->addInterestingness(PetActivityLogInterestingness::HoHum + 24)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Magic_binding,
@@ -2467,7 +2518,8 @@ class MagicBindingService
         }
         else
         {
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% started making a Lotusjar, but almost accidentally tore the flower, so decided to take a break...', 'icons/activity-logs/confused')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% started making a Lotusjar, but almost accidentally tore the flower, so decided to take a break...')
+                ->setIcon('icons/activity-logs/confused')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Magic-binding' ]))
             ;
 
@@ -2485,7 +2537,8 @@ class MagicBindingService
 
         if($skillCheck < 16)
         {
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to infuse a Wand of Ice with Mint, but it wasn\'t working...', 'icons/activity-logs/confused')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to infuse a Wand of Ice with Mint, but it wasn\'t working...')
+                ->setIcon('icons/activity-logs/confused')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Magic-binding' ]))
             ;
 
@@ -2499,7 +2552,7 @@ class MagicBindingService
             $this->houseSimService->getState()->loseItem('Mint', 1);
             $this->houseSimService->getState()->loseItem('Wand of Ice', 1);
 
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% infused a Wand of Ice with Mint, creating a Cool Mint Scepter!', '')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% infused a Wand of Ice with Mint, creating a Cool Mint Scepter!')
                 ->addInterestingness(PetActivityLogInterestingness::HoHum + 16)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Magic_binding,
@@ -2525,7 +2578,8 @@ class MagicBindingService
         {
             $pet->increaseSafety(-1);
 
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to bind Everice to a Pinecone, but almost got frostbitten, and had to put it down for the time being...', 'icons/activity-logs/confused')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to bind Everice to a Pinecone, but almost got frostbitten, and had to put it down for the time being...')
+                ->setIcon('icons/activity-logs/confused')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Magic-binding' ]))
             ;
 
@@ -2537,7 +2591,7 @@ class MagicBindingService
             $this->houseSimService->getState()->loseItem('Pinecone', 1);
             $this->houseSimService->getState()->loseItem('Everice', 1);
 
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% bound some Everice to a Pinecone, creating a _Magic_ Pinecone!', '')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% bound some Everice to a Pinecone, creating a _Magic_ Pinecone!')
                 ->addInterestingness(PetActivityLogInterestingness::HoHum + 12)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Magic_binding,
@@ -2563,7 +2617,8 @@ class MagicBindingService
         {
             $pet->increaseSafety(-1);
 
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to bind Everice to an Invisible Shovel, but almost got frostbitten, and had to put it down for the time being...', 'icons/activity-logs/confused')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to bind Everice to an Invisible Shovel, but almost got frostbitten, and had to put it down for the time being...')
+                ->setIcon('icons/activity-logs/confused')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Magic-binding' ]))
             ;
 
@@ -2577,7 +2632,7 @@ class MagicBindingService
 
             if($skillCheck >= 26)
             {
-                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% bound some Everice to an Invisible Shovel, creating Sleet! Oh: and there\'s a little Invisibility Juice left over!', '')
+                $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% bound some Everice to an Invisible Shovel, creating Sleet! Oh: and there\'s a little Invisibility Juice left over!')
                     ->addInterestingness(PetActivityLogInterestingness::HoHum + 26)
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                         PetActivityLogTagEnum::Magic_binding,
@@ -2589,7 +2644,7 @@ class MagicBindingService
             }
             else
             {
-                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% bound some Everice to an Invisible Shovel, creating Sleet!', '')
+                $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% bound some Everice to an Invisible Shovel, creating Sleet!')
                     ->addInterestingness(PetActivityLogInterestingness::HoHum + 21)
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                         PetActivityLogTagEnum::Magic_binding,
@@ -2616,7 +2671,7 @@ class MagicBindingService
         {
             $pet->increaseSafety(-4);
 
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to bind Everice to a Scythe, but uttered the wrong sounds during the ritual, and got frostbitten! :(', '')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to bind Everice to a Scythe, but uttered the wrong sounds during the ritual, and got frostbitten! :(')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Magic-binding' ]))
             ;
 
@@ -2627,7 +2682,8 @@ class MagicBindingService
         {
             $pet->increaseSafety(-1);
 
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to bind Everice to a Scythe, but almost got frostbitten, and had to put it down for the time being...', 'icons/activity-logs/confused')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to bind Everice to a Scythe, but almost got frostbitten, and had to put it down for the time being...')
+                ->setIcon('icons/activity-logs/confused')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Magic-binding' ]))
             ;
 
@@ -2640,7 +2696,7 @@ class MagicBindingService
             $this->houseSimService->getState()->loseItem('Scythe', 1);
             $this->houseSimService->getState()->loseItem('String', 1);
 
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% bound some Everice to a Scythe, creating Frostbite!', '')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% bound some Everice to a Scythe, creating Frostbite!')
                 ->addInterestingness(PetActivityLogInterestingness::HoHum + 16)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Magic_binding,
@@ -2666,7 +2722,7 @@ class MagicBindingService
         {
             $pet->increaseSafety(-6);
             StatusEffectHelpers::applyStatusEffect($this->em, $pet, StatusEffectEnum::HexHexed, 6 * 60);
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to transmute plastic into ice, but accidentally hexed themselves, instead! :(', '')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to transmute plastic into ice, but accidentally hexed themselves, instead! :(')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Magic-binding' ]))
             ;
 
@@ -2677,7 +2733,8 @@ class MagicBindingService
         {
             $pet->increaseSafety(-1);
 
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to transmute plastic into ice, but the plastic resisted...', 'icons/activity-logs/confused')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to transmute plastic into ice, but the plastic resisted...')
+                ->setIcon('icons/activity-logs/confused')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Magic-binding' ]))
             ;
 
@@ -2690,7 +2747,7 @@ class MagicBindingService
             $this->houseSimService->getState()->loseItem('Quintessence', 1);
             $this->houseSimService->getState()->loseItem('Nonsenserang', 1);
 
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% transmuted the plastic of a Nonsenserang into ice, creating a Hexicle!', '')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% transmuted the plastic of a Nonsenserang into ice, creating a Hexicle!')
                 ->addInterestingness(PetActivityLogInterestingness::HoHum + 16)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Magic_binding,
@@ -2714,7 +2771,8 @@ class MagicBindingService
 
         if($umbraCheck < 10)
         {
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to bind a moonbeam to a Crystal Ball, but kept missing the moonbeams!', 'icons/activity-logs/confused')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to bind a moonbeam to a Crystal Ball, but kept missing the moonbeams!')
+                ->setIcon('icons/activity-logs/confused')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Magic-binding' ]))
             ;
 
@@ -2726,7 +2784,7 @@ class MagicBindingService
             $this->houseSimService->getState()->loseItem('Quintessence', 1);
             $this->houseSimService->getState()->loseItem('Crystal Ball', 1);
 
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% bound a moonbeam to a Crystal Ball, creating a Moon Pearl!', '')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% bound a moonbeam to a Crystal Ball, creating a Moon Pearl!')
                 ->addInterestingness(PetActivityLogInterestingness::HoHum + 10)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Magic_binding,
@@ -2752,7 +2810,7 @@ class MagicBindingService
         {
             $pet->increaseSafety(-6);
             StatusEffectHelpers::applyStatusEffect($this->em, $pet, StatusEffectEnum::HexHexed, 6 * 60);
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to enchant an Aubergine Scepter, but accidentally hexed themselves, instead! :(', '')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to enchant an Aubergine Scepter, but accidentally hexed themselves, instead! :(')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Magic-binding' ]))
             ;
 
@@ -2761,7 +2819,8 @@ class MagicBindingService
         }
         else if($umbraCheck < 16)
         {
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to enchant an Aubergine Scepter, but the evil was _too strong_.', 'icons/activity-logs/confused')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to enchant an Aubergine Scepter, but the evil was _too strong_.')
+                ->setIcon('icons/activity-logs/confused')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Magic-binding' ]))
             ;
 
@@ -2778,7 +2837,7 @@ class MagicBindingService
                 : $pet->getName() . ' bound an Aubergine Commander!'
             ;
 
-            $activityLog = $this->responseService->createActivityLog($pet, $message, '')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, $message)
                 ->addInterestingness(PetActivityLogInterestingness::HoHum + 16)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Magic_binding,
@@ -2802,7 +2861,8 @@ class MagicBindingService
 
         if($umbraCheck < 18)
         {
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to enchant a Sidereal Leaf Spear, but messed up the calendar calculations.', 'icons/activity-logs/confused')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to enchant a Sidereal Leaf Spear, but messed up the calendar calculations.')
+                ->setIcon('icons/activity-logs/confused')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Magic-binding' ]))
             ;
 
@@ -2819,7 +2879,7 @@ class MagicBindingService
 
             $makes = $this->rng->rngNextFromArray([ 'Midnight', 'Sunrise' ]);
 
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% enchanted a Sidereal Spear, creating ' . $makes . '!', '')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% enchanted a Sidereal Spear, creating ' . $makes . '!')
                 ->addInterestingness(PetActivityLogInterestingness::HoHum + 18)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Magic_binding,
@@ -2848,7 +2908,8 @@ class MagicBindingService
         {
             if($this->rng->rngNextInt(1, 2) === 1 || $pet->hasMerit(MeritEnum::EIDETIC_MEMORY))
             {
-                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to create ' . $scrollItem->getNameWithArticle() . ', but accidentally dropped the Paper at a crucial moment, and smudged the writing!', 'icons/activity-logs/confused')
+                $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to create ' . $scrollItem->getNameWithArticle() . ', but accidentally dropped the Paper at a crucial moment, and smudged the writing!')
+                    ->setIcon('icons/activity-logs/confused')
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                         PetActivityLogTagEnum::Magic_binding,
                     ]))
@@ -2856,7 +2917,8 @@ class MagicBindingService
             }
             else
             {
-                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to create ' . $scrollItem->getNameWithArticle() . ', but couldn\'t quite remember the steps.', 'icons/activity-logs/confused')
+                $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to create ' . $scrollItem->getNameWithArticle() . ', but couldn\'t quite remember the steps.')
+                    ->setIcon('icons/activity-logs/confused')
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                         PetActivityLogTagEnum::Magic_binding,
                     ]))
@@ -2873,7 +2935,7 @@ class MagicBindingService
             $this->houseSimService->getState()->loseItem('Paper', 1);
             $this->houseSimService->getState()->loseItem($uniqueIngredient, 1);
             $pet->increaseEsteem(2);
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% created ' . $scrollItem->getNameWithArticle() . '.', '')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% created ' . $scrollItem->getNameWithArticle() . '.')
                 ->addInterestingness(PetActivityLogInterestingness::HoHum + 15)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Magic_binding,
@@ -2889,7 +2951,66 @@ class MagicBindingService
 
     public function createFruitScroll(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        return $this->createGenericScroll($petWithSkills, 'Red', 'Scroll of Fruit');
+        $pet = $petWithSkills->getPet();
+        $umbraCheck = $this->rng->rngNextInt(1, 20 + $petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getMagicBindingBonus()->getTotal());
+
+        $scrollItem = ItemRepository::findOneByName($this->em, 'Scroll of Fruit');
+
+        if($umbraCheck <= 2)
+        {
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->houseSimService->getState()->loseItem('Quintessence', 1);
+
+            $lostItem = $this->houseSimService->getState()->loseOneOf($this->rng, [ 'Red', 'Orange' ]);
+
+            $randomGoop = $this->rng->rngNextFromArray([
+                'Blackberry Jam', 'Blueberry Jam',
+                'Apricot Preserves', 'Naner Preserves',
+                'Orange Marmalade', 'Pamplemousse Marmalade', 'Red Marmalade',
+            ]);
+
+            $pet->increaseEsteem(-2);
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried creating ' . $scrollItem->getNameWithArticle() . ', but the Quintessence got out of control and melted their ' . $lostItem . ' into a pile of ' . $randomGoop . '!')
+                ->addInterestingness(PetActivityLogInterestingness::HoHum + 2)
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
+                    PetActivityLogTagEnum::Magic_binding,
+                    PetActivityLogTagEnum::Location_At_Home,
+                ]))
+            ;
+            $this->inventoryService->petCollectsItem($scrollItem, $pet, $pet->getName() . ' bound this.', $activityLog);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::Crafts, PetSkillEnum::Arcana ], $activityLog);
+        }
+        else if($umbraCheck < 15)
+        {
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to create ' . $scrollItem->getNameWithArticle() . ', but accidentally dropped the Paper at a crucial moment, and smudged the writing!')
+                ->setIcon('icons/activity-logs/confused')
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
+                    PetActivityLogTagEnum::Magic_binding,
+                ]))
+            ;
+
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::Crafts, PetSkillEnum::Arcana ], $activityLog);
+        }
+        else // success!
+        {
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::MAGIC_BIND, true);
+            $this->houseSimService->getState()->loseItem('Quintessence', 1);
+            $this->houseSimService->getState()->loseItem('Paper', 1);
+            $this->houseSimService->getState()->loseOneOf($this->rng, [ 'Red', 'Orange' ]);
+            $pet->increaseEsteem(2);
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% created ' . $scrollItem->getNameWithArticle() . '.')
+                ->addInterestingness(PetActivityLogInterestingness::HoHum + 15)
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
+                    PetActivityLogTagEnum::Magic_binding,
+                    PetActivityLogTagEnum::Location_At_Home,
+                ]))
+            ;
+            $this->inventoryService->petCollectsItem($scrollItem, $pet, $pet->getName() . ' bound this.', $activityLog);
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::Crafts, PetSkillEnum::Arcana ], $activityLog);
+        }
+
+        return $activityLog;
     }
 
     public function createFarmerScroll(ComputedPetSkills $petWithSkills): PetActivityLog
@@ -2929,7 +3050,8 @@ class MagicBindingService
 
         if($umbraCheck < 18)
         {
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make a magic wand, but the Wings kept getting away,  and ' . $pet->getName() . ' spent all their time chasing them down!', 'icons/activity-logs/confused')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to make a magic wand, but the Wings kept getting away,  and ' . $pet->getName() . ' spent all their time chasing them down!')
+                ->setIcon('icons/activity-logs/confused')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Magic-binding' ]))
             ;
 
@@ -2967,13 +3089,15 @@ class MagicBindingService
         {
             if($this->rng->rngNextInt(1, 2) === 1 || $pet->hasMerit(MeritEnum::EIDETIC_MEMORY))
             {
-                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to create a Monster-summoning Scroll, but accidentally dropped the Paper at a crucial moment, and smudged the writing!', 'icons/activity-logs/confused')
+                $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to create a Monster-summoning Scroll, but accidentally dropped the Paper at a crucial moment, and smudged the writing!')
+                    ->setIcon('icons/activity-logs/confused')
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Magic-binding' ]))
                 ;
             }
             else
             {
-                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to create a Monster-summoning Scroll, but couldn\'t quite remember the steps.', 'icons/activity-logs/confused')
+                $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to create a Monster-summoning Scroll, but couldn\'t quite remember the steps.')
+                    ->setIcon('icons/activity-logs/confused')
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Magic-binding' ]))
                 ;
             }
@@ -2988,7 +3112,7 @@ class MagicBindingService
             $this->houseSimService->getState()->loseItem('Paper', 1);
             $this->houseSimService->getState()->loseItem('Talon', 1);
             $pet->increaseEsteem(3);
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% created a Monster-summoning Scroll.', '')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% created a Monster-summoning Scroll.')
                 ->addInterestingness(PetActivityLogInterestingness::HoHum + 18)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Magic_binding,
@@ -3009,7 +3133,8 @@ class MagicBindingService
 
         if($umbraCheck < 16)
         {
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to create a potato staff, but couldn\'t help but wonder if it was really such a good idea...', 'icons/activity-logs/confused')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to create a potato staff, but couldn\'t help but wonder if it was really such a good idea...')
+                ->setIcon('icons/activity-logs/confused')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Magic-binding' ]))
             ;
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::Crafts, PetSkillEnum::Arcana ], $activityLog);
@@ -3022,7 +3147,7 @@ class MagicBindingService
             $this->houseSimService->getState()->loseItem('Crooked Stick', 1);
             $this->houseSimService->getState()->loseItem('Potato', 1);
             $pet->increaseEsteem(5);
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% created a Glowing Russet Staff of Swiftness.', '')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% created a Glowing Russet Staff of Swiftness.')
                 ->addInterestingness(PetActivityLogInterestingness::HoHum + 16)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Magic_binding,
@@ -3043,7 +3168,8 @@ class MagicBindingService
 
         if($umbraCheck < 17)
         {
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to enchant a Rapier, but was having trouble getting the Wings to cooperate...', 'icons/activity-logs/confused')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to enchant a Rapier, but was having trouble getting the Wings to cooperate...')
+                ->setIcon('icons/activity-logs/confused')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Magic-binding' ]))
             ;
 
@@ -3057,7 +3183,7 @@ class MagicBindingService
             $this->houseSimService->getState()->loseItem('White Feathers', 1);
             $this->houseSimService->getState()->loseItem('Rapier', 1);
             $pet->increaseEsteem($this->rng->rngNextInt(3, 6));
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% bound a White Épée.', '')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% bound a White Épée.')
                 ->addInterestingness(PetActivityLogInterestingness::HoHum + 17)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Magic_binding,
@@ -3077,7 +3203,8 @@ class MagicBindingService
 
         if($umbraCheck < 16)
         {
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to bind a Flying Bindle, but the wings were being super-uncooperative, and kept trying to fly away!', 'icons/activity-logs/confused')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to bind a Flying Bindle, but the wings were being super-uncooperative, and kept trying to fly away!')
+                ->setIcon('icons/activity-logs/confused')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Magic-binding' ]))
             ;
 
@@ -3089,7 +3216,7 @@ class MagicBindingService
             $this->houseSimService->getState()->loseItem('Wings', 1);
             $this->houseSimService->getState()->loseItem('Bindle', 1);
             $pet->increaseEsteem(5);
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% gifted a Bindle with the power of flight!', '')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% gifted a Bindle with the power of flight!')
                 ->addInterestingness(PetActivityLogInterestingness::HoHum + 16)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Magic_binding,
@@ -3112,7 +3239,8 @@ class MagicBindingService
 
         if($umbraCheck < 16)
         {
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to bind a Flying Grappling Hook, but the wings were being super-uncooperative, and kept trying to fly away!', 'icons/activity-logs/confused')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to bind a Flying Grappling Hook, but the wings were being super-uncooperative, and kept trying to fly away!')
+                ->setIcon('icons/activity-logs/confused')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Magic-binding' ]))
             ;
 
@@ -3124,7 +3252,7 @@ class MagicBindingService
             $this->houseSimService->getState()->loseItem('Wings', 1);
             $this->houseSimService->getState()->loseItem('Grappling Hook', 1);
             $pet->increaseEsteem(5);
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% gifted a Grappling Hook with the power of flight!', '')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% gifted a Grappling Hook with the power of flight!')
                 ->addInterestingness(PetActivityLogInterestingness::HoHum + 16)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Magic_binding,
@@ -3147,7 +3275,8 @@ class MagicBindingService
 
         if($umbraCheck < 12 || $scienceCheck < 12)
         {
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to bind a Gravitational Waves to a Grappling Hook, but couldn\'t wrap their head around working with forces governed by such different paradigms...', 'icons/activity-logs/confused')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to bind a Gravitational Waves to a Grappling Hook, but couldn\'t wrap their head around working with forces governed by such different paradigms...')
+                ->setIcon('icons/activity-logs/confused')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Magic-binding', 'Physics' ]))
             ;
 
@@ -3161,7 +3290,7 @@ class MagicBindingService
             $this->houseSimService->getState()->loseItem('Gravitational Waves', 1);
             $this->houseSimService->getState()->loseItem('Grappling Hook', 1);
             $pet->increaseEsteem(4);
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% bound some Gravitational Waves to a Grappling Hook! Now it\'s real good at SMASHING STUFF!', '')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% bound some Gravitational Waves to a Grappling Hook! Now it\'s real good at SMASHING STUFF!')
                 ->addInterestingness(PetActivityLogInterestingness::HoHum + 18)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Magic_binding,
@@ -3183,7 +3312,8 @@ class MagicBindingService
 
         if($umbraCheck < 17)
         {
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to enchant some scales, but almost accidentally brought them to life!', 'icons/activity-logs/confused')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to enchant some scales, but almost accidentally brought them to life!')
+                ->setIcon('icons/activity-logs/confused')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Magic-binding' ]))
             ;
 
@@ -3198,7 +3328,7 @@ class MagicBindingService
             $this->houseSimService->getState()->loseItem('Scales', 1);
             $this->houseSimService->getState()->loseItem('Red Flail', 1);
             $pet->increaseEsteem(4);
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% bound some Scales to a Red Flail, creating a Yggdrasil Branch!', '')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% bound some Scales to a Red Flail, creating a Yggdrasil Branch!')
                 ->addInterestingness(PetActivityLogInterestingness::HoHum + 17)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Magic_binding,
@@ -3224,7 +3354,7 @@ class MagicBindingService
         {
             $this->houseSimService->getState()->loseItem('Jar of Fireflies', 1);
 
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% had an idea for a dreamy blade made of fireflies, but when handling the Jar of Fireflies, accidentally let them all out!', '')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% had an idea for a dreamy blade made of fireflies, but when handling the Jar of Fireflies, accidentally let them all out!')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Magic-binding' ]))
             ;
 
@@ -3235,7 +3365,8 @@ class MagicBindingService
         }
         else if($umbraCheck < 17)
         {
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% had an idea for a dreamy blade made of Viscaria, but couldn\'t figure out the right enchantment to use...', 'icons/activity-logs/confused')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% had an idea for a dreamy blade made of Viscaria, but couldn\'t figure out the right enchantment to use...')
+                ->setIcon('icons/activity-logs/confused')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Magic-binding' ]))
             ;
 
@@ -3250,7 +3381,7 @@ class MagicBindingService
             $this->houseSimService->getState()->loseItem('Viscaria', 1);
             $this->houseSimService->getState()->loseItem('Jar of Fireflies', 1);
             $pet->increaseEsteem(4);
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% bound a Lullablade!', '')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% bound a Lullablade!')
                 ->addInterestingness(PetActivityLogInterestingness::HoHum + 17)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Magic_binding,
@@ -3274,7 +3405,8 @@ class MagicBindingService
         if($umbraCheck < 19)
         {
             $pet->increaseSafety(-1);
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to enchant a Decorated Flute, but kept messing up the blessing.', 'icons/activity-logs/confused')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to enchant a Decorated Flute, but kept messing up the blessing.')
+                ->setIcon('icons/activity-logs/confused')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Magic-binding' ]))
             ;
 
@@ -3289,7 +3421,7 @@ class MagicBindingService
             $this->houseSimService->getState()->loseItem('Quinacridone Magenta Dye', 1);
             $this->houseSimService->getState()->loseItem('Decorated Flute', 1);
             $pet->increaseEsteem(3);
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% blessed a Decorated Flute with the skills of an ancient poet...', '')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% blessed a Decorated Flute with the skills of an ancient poet...')
                 ->addInterestingness(PetActivityLogInterestingness::HoHum + 20)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Magic_binding,
@@ -3312,7 +3444,8 @@ class MagicBindingService
 
         if($umbraCheck < 16)
         {
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to bring some Fluff to life, but kept messing up the spell.', 'icons/activity-logs/confused')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to bring some Fluff to life, but kept messing up the spell.')
+                ->setIcon('icons/activity-logs/confused')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Magic-binding' ]))
             ;
 
@@ -3327,7 +3460,7 @@ class MagicBindingService
             $this->houseSimService->getState()->loseItem('Fluff', 1);
             $this->houseSimService->getState()->loseOneOf($this->rng, [ 'Snakebite', 'Wood\'s Metal' ]);
             $pet->increaseEsteem(3);
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% brought some Fluff to life, and bound it to a sword, creating a Cattail!', '')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% brought some Fluff to life, and bound it to a sword, creating a Cattail!')
                 ->addInterestingness(PetActivityLogInterestingness::HoHum + 16)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Magic_binding,
@@ -3350,7 +3483,8 @@ class MagicBindingService
 
         if($umbraCheck < 20)
         {
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to enchant a Snakebite, but the enchantment wouldn\'t stick.', 'icons/activity-logs/confused')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to enchant a Snakebite, but the enchantment wouldn\'t stick.')
+                ->setIcon('icons/activity-logs/confused')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Magic-binding' ]))
             ;
 
@@ -3365,7 +3499,7 @@ class MagicBindingService
             $this->houseSimService->getState()->loseItem('Hebenon', 1);
             $this->houseSimService->getState()->loseItem('Snakebite');
             $pet->increaseEsteem(3);
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% steeped a Snakebite in Hebenon, then cast a spell on it, turning the Snakebite into Malice!', '')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% steeped a Snakebite in Hebenon, then cast a spell on it, turning the Snakebite into Malice!')
                 ->addInterestingness(PetActivityLogInterestingness::HoHum + 20)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Magic_binding,
@@ -3433,7 +3567,7 @@ class MagicBindingService
             $pet->increaseFood(8);
             $this->houseSimService->getState()->loseItem('Fish', 1);
 
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% was going to feed a Cattail, but ended up eating the Fish themselves...', '')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% was going to feed a Cattail, but ended up eating the Fish themselves...')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Magic-binding', 'Eating' ]))
             ;
 
@@ -3446,13 +3580,15 @@ class MagicBindingService
         {
             if($this->rng->rngNextBool())
             {
-                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to further enchant a Cattail, but it refused to eat >:(', 'icons/activity-logs/confused')
+                $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to further enchant a Cattail, but it refused to eat >:(')
+                    ->setIcon('icons/activity-logs/confused')
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Magic-binding' ]))
                 ;
             }
             else
             {
-                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to further enchant a Cattail, but it kept batting the Moon Pearl away >:(', 'icons/activity-logs/confused')
+                $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to further enchant a Cattail, but it kept batting the Moon Pearl away >:(')
+                    ->setIcon('icons/activity-logs/confused')
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Magic-binding' ]))
                 ;
             }
@@ -3468,7 +3604,7 @@ class MagicBindingService
             $this->houseSimService->getState()->loseItem('Cattail', 1);
             $this->houseSimService->getState()->loseItem('Moon Pearl', 1);
             $pet->increaseEsteem(4);
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% fed and enchanted a Cattail, creating a Molly!', '')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% fed and enchanted a Cattail, creating a Molly!')
                 ->addInterestingness(PetActivityLogInterestingness::HoHum + 20)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Magic_binding,
@@ -3493,7 +3629,7 @@ class MagicBindingService
         {
             $pet->increaseSafety(-4);
 
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to bind Everice to a Heavy Hammer, but uttered the wrong sounds during the ritual, and got frostbitten! :(', '')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to bind Everice to a Heavy Hammer, but uttered the wrong sounds during the ritual, and got frostbitten! :(')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Magic-binding' ]))
             ;
 
@@ -3505,7 +3641,8 @@ class MagicBindingService
 
             $pet->increaseSafety(-1);
 
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to bind Everice to a Heavy Hammer, but almost got frostbitten, and had to put it down for the time being...', 'icons/activity-logs/confused')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to bind Everice to a Heavy Hammer, but almost got frostbitten, and had to put it down for the time being...')
+                ->setIcon('icons/activity-logs/confused')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Magic-binding' ]))
             ;
 
@@ -3517,7 +3654,7 @@ class MagicBindingService
             $this->houseSimService->getState()->loseItem('Heavy Hammer', 1);
             $this->houseSimService->getState()->loseItem('Everice', 1);
 
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% bound some Everice to a Heavy Hammer, creating Fimbulvetr!', '')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% bound some Everice to a Heavy Hammer, creating Fimbulvetr!')
                 ->addInterestingness(PetActivityLogInterestingness::HoHum + 22)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Magic_binding,
@@ -3544,7 +3681,7 @@ class MagicBindingService
 
         if($roll <= 2)
         {
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to imbue an Iron Axe with lightning, but accidentally melted it, instead!', '')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to imbue an Iron Axe with lightning, but accidentally melted it, instead!')
                 ->addInterestingness(PetActivityLogInterestingness::HoHum + 22)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Magic-binding', 'Smithing' ]))
             ;
@@ -3560,7 +3697,7 @@ class MagicBindingService
             $this->houseSimService->getState()->loseItem('Quintessence', 1);
             $this->houseSimService->getState()->loseItem('Lightning in a Bottle', 1);
             $pet->increaseEsteem($this->rng->rngNextInt(2, 4));
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% silvered an Iron Axe, and imbued with lightning, creating a Lightning Axe.', '')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% silvered an Iron Axe, and imbued with lightning, creating a Lightning Axe.')
                 ->addInterestingness(PetActivityLogInterestingness::HoHum + 22)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Magic-binding', 'Smithing' ]))
             ;
@@ -3571,7 +3708,8 @@ class MagicBindingService
         }
         else
         {
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to imbue an Iron Axe with lightning, but it wasn\'t working out...', 'icons/activity-logs/confused')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to imbue an Iron Axe with lightning, but it wasn\'t working out...')
+                ->setIcon('icons/activity-logs/confused')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Magic-binding', 'Smithing' ]))
             ;
 
@@ -3592,7 +3730,7 @@ class MagicBindingService
             $this->houseSimService->getState()->loseItem('Tiny Black Hole', 1);
             $this->houseSimService->getState()->loseItem('Mericarp', 1);
             $pet->increaseEsteem(4);
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% created a Sunless Mericarp!', '')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% created a Sunless Mericarp!')
                 ->addInterestingness(PetActivityLogInterestingness::HoHum + 22)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Magic_binding,
@@ -3608,7 +3746,7 @@ class MagicBindingService
         {
             $this->houseSimService->getState()->loseItem('Tiny Black Hole', 1);
             $pet->increaseEsteem(-4);
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to bind a Tiny Black Hole to a Mericarp, but accidentally evaporated the black hole, instead :|', '')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to bind a Tiny Black Hole to a Mericarp, but accidentally evaporated the black hole, instead :|')
                 ->addInterestingness(PetActivityLogInterestingness::HoHum + 22)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Magic-binding' ]))
             ;
@@ -3618,7 +3756,8 @@ class MagicBindingService
         }
         else
         {
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to bind a Tiny Black Hole to a Mericarp, but almost evaporated the black hole, instead!', 'icons/activity-logs/confused')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to bind a Tiny Black Hole to a Mericarp, but almost evaporated the black hole, instead!')
+                ->setIcon('icons/activity-logs/confused')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Magic-binding' ]))
             ;
 
@@ -3691,7 +3830,8 @@ class MagicBindingService
 
         if($skillCheck < 20)
         {
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to enchant a Glass Pendulum, but couldn\'t get the enchantment to stick...', 'icons/activity-logs/confused')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to enchant a Glass Pendulum, but couldn\'t get the enchantment to stick...')
+                ->setIcon('icons/activity-logs/confused')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Magic-binding' ]))
             ;
 
@@ -3704,7 +3844,7 @@ class MagicBindingService
             $this->houseSimService->getState()->loseItem('Glass Pendulum', 1);
             $this->houseSimService->getState()->loseItem('Crooked Stick', 1);
 
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% enchanted a Glass Pendulum, creating an Aos Sí!', '')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% enchanted a Glass Pendulum, creating an Aos Sí!')
                 ->addInterestingness(PetActivityLogInterestingness::HoHum + 20)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Magic_binding,
@@ -3728,7 +3868,8 @@ class MagicBindingService
 
         if($skillCheck < 27)
         {
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to cast a spell with an Aos Sí, but wasn\'t able to get anywhere...', 'icons/activity-logs/confused')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to cast a spell with an Aos Sí, but wasn\'t able to get anywhere...')
+                ->setIcon('icons/activity-logs/confused')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Magic-binding' ]))
             ;
 
@@ -3740,7 +3881,7 @@ class MagicBindingService
             $this->houseSimService->getState()->loseItem('Aos Sí', 1);
             $this->houseSimService->getState()->loseItem('Blackonite', 1);
 
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% used an Aos Sí to absorb a piece of Blackonite, creating a Bean Sídhe!', '')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% used an Aos Sí to absorb a piece of Blackonite, creating a Bean Sídhe!')
                 ->addInterestingness(PetActivityLogInterestingness::HoHum + 27)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Magic_binding,

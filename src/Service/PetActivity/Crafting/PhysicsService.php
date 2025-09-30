@@ -16,45 +16,30 @@ namespace App\Service\PetActivity\Crafting;
 
 use App\Entity\Pet;
 use App\Entity\PetActivityLog;
-use App\Entity\PetRelationship;
-use App\Entity\PetSpecies;
-use App\Enum\FlavorEnum;
 use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingness;
 use App\Enum\PetActivityLogTagEnum;
 use App\Enum\PetActivityStatEnum;
-use App\Enum\PetBadgeEnum;
-use App\Enum\PetLocationEnum;
 use App\Enum\PetSkillEnum;
-use App\Enum\RelationshipEnum;
 use App\Enum\StatusEffectEnum;
 use App\Functions\ActivityHelpers;
-use App\Functions\ArrayFunctions;
-use App\Functions\EnchantmentRepository;
-use App\Functions\MeritRepository;
 use App\Functions\PetActivityLogFactory;
 use App\Functions\PetActivityLogTagHelpers;
-use App\Functions\PetBadgeHelpers;
-use App\Functions\PetColorFunctions;
 use App\Functions\StatusEffectHelpers;
 use App\Model\ActivityCallback;
 use App\Model\ComputedPetSkills;
 use App\Model\IActivityCallback;
 use App\Model\PetChanges;
-use App\Service\FieldGuideService;
-use App\Service\HattierService;
 use App\Service\HouseSimService;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\PetExperienceService;
-use App\Service\PetFactory;
-use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 
 class PhysicsService
 {
     public function __construct(
-        private readonly ResponseService $responseService, private readonly InventoryService $inventoryService,
+        private readonly InventoryService $inventoryService,
         private readonly IRandom $rng, private readonly PetExperienceService $petExperienceService,
         private readonly HouseSimService $houseSimService, private readonly EntityManagerInterface $em
     )
@@ -219,7 +204,7 @@ class PhysicsService
         {
             $this->houseSimService->getState()->loseItem('Worms', 1);
             $pet->increaseFood($this->rng->rngNextInt(3, 6));
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% started to create a Wormhole, but absentmindedly ate the Worms, instead :(', '')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% started to create a Wormhole, but absentmindedly ate the Worms, instead :(')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ PetActivityLogTagEnum::Physics, 'Eating' ]))
             ;
 
@@ -231,7 +216,7 @@ class PhysicsService
             $this->houseSimService->getState()->loseItem('Tiny Black Hole', 1);
             $this->houseSimService->getState()->loseItem('Worms', 1);
             $pet->increaseEsteem($this->rng->rngNextInt(2, 4));
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% created a Wormhole by inverting a Tiny Black Hole... and adding Worms?', '')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% created a Wormhole by inverting a Tiny Black Hole... and adding Worms?')
                 ->addInterestingness(PetActivityLogInterestingness::HoHum + 17)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ PetActivityLogTagEnum::Physics ]))
             ;
@@ -242,7 +227,8 @@ class PhysicsService
         }
         else
         {
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make a Wormhole, but the Worms kept crawling away, and %pet:' . $pet->getId() . '.name% wasted all their time gathering them back up again...', 'icons/activity-logs/confused')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to make a Wormhole, but the Worms kept crawling away, and %pet:' . $pet->getId() . '.name% wasted all their time gathering them back up again...')
+                ->setIcon('icons/activity-logs/confused')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ PetActivityLogTagEnum::Physics ]))
             ;
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::Science ], $activityLog);
@@ -261,7 +247,7 @@ class PhysicsService
         {
             if($pet->hasMerit(MeritEnum::SHOCK_RESISTANT))
             {
-                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to electrify an Iron Sword, but it kept trying to zap them! ' . ActivityHelpers::PetName($pet) . '\'s shock-resistance protected them from any harm, but it was still annoying as heck.', '')
+                $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to electrify an Iron Sword, but it kept trying to zap them! ' . ActivityHelpers::PetName($pet) . '\'s shock-resistance protected them from any harm, but it was still annoying as heck.')
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ PetActivityLogTagEnum::Physics, PetActivityLogTagEnum::Crafting ]))
                     ->addInterestingness(PetActivityLogInterestingness::ActivityUsingMerit)
                 ;
@@ -272,7 +258,7 @@ class PhysicsService
             else
             {
                 $pet->increaseSafety(-$this->rng->rngNextInt(4, 8));
-                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to electrify an Iron Sword, but accidentally zapped themselves, instead :(', '')
+                $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to electrify an Iron Sword, but accidentally zapped themselves, instead :(')
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ PetActivityLogTagEnum::Physics, PetActivityLogTagEnum::Crafting ]))
                 ;
 
@@ -286,7 +272,7 @@ class PhysicsService
             $this->houseSimService->getState()->loseItem('Lightning in a Bottle', 1);
             $this->houseSimService->getState()->loseItem('Iron Sword', 1);
             $pet->increaseEsteem(3);
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% electrified an Iron Sword; now it\'s a _Lightning_ Sword!', '')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% electrified an Iron Sword; now it\'s a _Lightning_ Sword!')
                 ->addInterestingness(PetActivityLogInterestingness::HoHum + 18)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ PetActivityLogTagEnum::Physics, PetActivityLogTagEnum::Crafting ]))
             ;
@@ -296,7 +282,8 @@ class PhysicsService
         }
         else
         {
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% started to electrify an Iron Sword, but couldn\'t convince the sword to hold the charge...', 'icons/activity-logs/confused')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% started to electrify an Iron Sword, but couldn\'t convince the sword to hold the charge...')
+                ->setIcon('icons/activity-logs/confused')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ PetActivityLogTagEnum::Physics, PetActivityLogTagEnum::Crafting ]))
             ;
 
@@ -316,7 +303,7 @@ class PhysicsService
         {
             if($pet->hasMerit(MeritEnum::SHOCK_RESISTANT))
             {
-                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to electrify a Glass Pendulum, but it kept trying to zap them! ' . ActivityHelpers::PetName($pet) . '\'s shock-resistance protected them from any harm, but it was still annoying as heck.', '')
+                $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to electrify a Glass Pendulum, but it kept trying to zap them! ' . ActivityHelpers::PetName($pet) . '\'s shock-resistance protected them from any harm, but it was still annoying as heck.')
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ PetActivityLogTagEnum::Physics, PetActivityLogTagEnum::Crafting ]))
                     ->addInterestingness(PetActivityLogInterestingness::ActivityUsingMerit)
                 ;
@@ -327,7 +314,7 @@ class PhysicsService
             else
             {
                 $pet->increaseSafety(-$this->rng->rngNextInt(4, 8));
-                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to electrify a Glass Pendulum, but accidentally zapped themselves, instead :(', '')
+                $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to electrify a Glass Pendulum, but accidentally zapped themselves, instead :(')
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ PetActivityLogTagEnum::Physics, PetActivityLogTagEnum::Crafting ]))
                 ;
 
@@ -341,7 +328,7 @@ class PhysicsService
             $this->houseSimService->getState()->loseItem('Gold Bar', 1);
             $this->houseSimService->getState()->loseItem('Glass Pendulum', 1);
             $pet->increaseEsteem(3);
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% electrified a Glass Pendulum laced with gold, creating a Livewire!', '')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% electrified a Glass Pendulum laced with gold, creating a Livewire!')
                 ->addInterestingness(PetActivityLogInterestingness::HoHum + 18)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ PetActivityLogTagEnum::Physics, PetActivityLogTagEnum::Crafting ]))
             ;
@@ -352,7 +339,8 @@ class PhysicsService
         }
         else
         {
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% started to electrify a Glass Pendulum, but couldn\'t convince the glass to hold the charge...', 'icons/activity-logs/confused')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% started to electrify a Glass Pendulum, but couldn\'t convince the glass to hold the charge...')
+                ->setIcon('icons/activity-logs/confused')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ PetActivityLogTagEnum::Physics, PetActivityLogTagEnum::Crafting ]))
             ;
 
@@ -377,7 +365,7 @@ class PhysicsService
             $pet->increaseSafety(-6);
             StatusEffectHelpers::applyStatusEffect($this->em, $pet, StatusEffectEnum::HexHexed, 6 * 60);
 
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make a Bermuda Triangle, but accidentally hexed themselves, instead! :(', '')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to make a Bermuda Triangle, but accidentally hexed themselves, instead! :(')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ PetActivityLogTagEnum::Physics, 'Smithing' ]))
             ;
 
@@ -391,7 +379,7 @@ class PhysicsService
             $this->houseSimService->getState()->loseItem('Seaweed', 1);
             $this->houseSimService->getState()->loseItem('Gravitational Waves', 1);
             $pet->increaseEsteem(5);
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% created a Bermuda Triangle out of a Gold Triangle!', '')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% created a Bermuda Triangle out of a Gold Triangle!')
                 ->addInterestingness(PetActivityLogInterestingness::HoHum + 19)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ PetActivityLogTagEnum::Physics, 'Smithing' ]))
             ;
@@ -400,7 +388,8 @@ class PhysicsService
         }
         else
         {
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make a Bermuda Triangle, but the Gold Triangle kept getting bent by the gravitational forces, and ' . $pet->getName() . ' spent all their time bending it back into shape!', 'icons/activity-logs/confused')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to make a Bermuda Triangle, but the Gold Triangle kept getting bent by the gravitational forces, and ' . $pet->getName() . ' spent all their time bending it back into shape!')
+                ->setIcon('icons/activity-logs/confused')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ PetActivityLogTagEnum::Physics, 'Smithing' ]))
             ;
 
@@ -425,7 +414,7 @@ class PhysicsService
             $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::SMITH, false);
 
             $pet->increaseSafety(-$this->rng->rngNextInt(4, 8));
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to engineer a Graviton Gun, but kept getting zapped by the Lightning in a Bottle! >:(', '')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to engineer a Graviton Gun, but kept getting zapped by the Lightning in a Bottle! >:(')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Electronics', 'Smithing' ]))
             ;
 
@@ -443,7 +432,7 @@ class PhysicsService
 
             if($roll >= 34)
             {
-                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% created a Graviton Gun! Neat! And neater still, they had enough iron left over to make a Mini Satellite Dish!', '')
+                $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% created a Graviton Gun! Neat! And neater still, they had enough iron left over to make a Mini Satellite Dish!')
                     ->addInterestingness(PetActivityLogInterestingness::HoHum + 24)
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Electronics', 'Smithing' ]))
                 ;
@@ -454,7 +443,7 @@ class PhysicsService
             }
             else
             {
-                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% created a Graviton Gun! Neat!', '')
+                $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% created a Graviton Gun! Neat!')
                     ->addInterestingness(PetActivityLogInterestingness::HoHum + 24)
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Electronics', 'Smithing' ]))
                 ;
@@ -465,7 +454,8 @@ class PhysicsService
         }
         else
         {
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% had an idea for how to make a Graviton Gun, but couldn\'t quite figure out the physics...', 'icons/activity-logs/confused')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% had an idea for how to make a Graviton Gun, but couldn\'t quite figure out the physics...')
+                ->setIcon('icons/activity-logs/confused')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Electronics', 'Smithing' ]))
             ;
 

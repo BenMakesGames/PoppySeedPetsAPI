@@ -22,20 +22,19 @@ use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
 use App\Enum\StatusEffectEnum;
 use App\Functions\ActivityHelpers;
+use App\Functions\PetActivityLogFactory;
 use App\Functions\PetActivityLogTagHelpers;
 use App\Functions\SpiceRepository;
 use App\Model\ComputedPetSkills;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\PetExperienceService;
-use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 
 class LeonidsService
 {
     public function __construct(
         private readonly IRandom $rng,
-        private readonly ResponseService $responseService,
         private readonly InventoryService $inventoryService,
         private readonly PetExperienceService $petExperienceService,
         private readonly EntityManagerInterface $em
@@ -70,7 +69,7 @@ class LeonidsService
         {
             $starrySpice = SpiceRepository::findOneByName($this->em, 'Starry');
 
-            $activityLog = $this->responseService->createActivityLog($pet, $this->getActivityLogPrefix($pet) . ' There, they saw a group of werecreatures playing in the Stardust! ' . ActivityHelpers::PetName($pet) . ' joined them, rolling in the dust, playing tug-of-war with Pobo bones, and howling at the stars!', '');
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, $this->getActivityLogPrefix($pet) . ' There, they saw a group of werecreatures playing in the Stardust! ' . ActivityHelpers::PetName($pet) . ' joined them, rolling in the dust, playing tug-of-war with Pobo bones, and howling at the stars!');
 
             $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::UMBRA, true);
 
@@ -86,19 +85,19 @@ class LeonidsService
         {
             if($pet->getTool() && $pet->getTool()->getItem()->getTreasure() && $pet->getTool()->getItem()->getTreasure()->getSilver() > 0)
             {
-                $activityLog = $this->responseService->createActivityLog($pet, $this->getActivityLogPrefix($pet) . ' There, they saw a group of werecreatures playing in the Stardust! The werecreatures gave ' . ActivityHelpers::PetName($pet) . ' strange looks (perhaps it\'s the silvery ' . $pet->getTool()->getFullItemName() . '?) but kept their distance while ' . ActivityHelpers::PetName($pet) . ' gathered some Stardust...', '');
+                $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, $this->getActivityLogPrefix($pet) . ' There, they saw a group of werecreatures playing in the Stardust! The werecreatures gave ' . ActivityHelpers::PetName($pet) . ' strange looks (perhaps it\'s the silvery ' . $pet->getTool()->getFullItemName() . '?) but kept their distance while ' . ActivityHelpers::PetName($pet) . ' gathered some Stardust...');
 
                 $this->inventoryService->petCollectsItem('Stardust', $pet, $pet->getName() . ' gathered this from fallen Leonids, while receiving strange looks from some werecreatures.', $activityLog);
             }
             else if($pet->getHat() && $pet->getHat()->getItem()->getTreasure() && $pet->getHat()->getItem()->getTreasure()->getSilver() > 0)
             {
-                $activityLog = $this->responseService->createActivityLog($pet, $this->getActivityLogPrefix($pet) . ' There, they saw a group of werecreatures playing in the Stardust! The werecreatures gave ' . ActivityHelpers::PetName($pet) . ' strange looks (perhaps it\'s the silvery ' . $pet->getHat()->getFullItemName() . '?) but kept their distance while ' . ActivityHelpers::PetName($pet) . ' gathered some Stardust...', '');
+                $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, $this->getActivityLogPrefix($pet) . ' There, they saw a group of werecreatures playing in the Stardust! The werecreatures gave ' . ActivityHelpers::PetName($pet) . ' strange looks (perhaps it\'s the silvery ' . $pet->getHat()->getFullItemName() . '?) but kept their distance while ' . ActivityHelpers::PetName($pet) . ' gathered some Stardust...');
 
                 $this->inventoryService->petCollectsItem('Stardust', $pet, $pet->getName() . ' gathered this from fallen Leonids, while receiving strange looks from some werecreatures.', $activityLog);
             }
             else
             {
-                $activityLog = $this->responseService->createActivityLog($pet, $this->getActivityLogPrefix($pet) . ' There, they saw a group of werecreatures playing in the Stardust! One of them approached ' . ActivityHelpers::PetName($pet) . ', and pushed a pile of Stardust forward with its paw, then left.', '');
+                $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, $this->getActivityLogPrefix($pet) . ' There, they saw a group of werecreatures playing in the Stardust! One of them approached ' . ActivityHelpers::PetName($pet) . ', and pushed a pile of Stardust forward with its paw, then left.');
 
                 $this->inventoryService->petCollectsItem('Stardust', $pet, $pet->getName() . ' was given this by some werecreatures in the Umbra!', $activityLog);
             }
@@ -113,7 +112,7 @@ class LeonidsService
 
             if($stealthCheck <= 2)
             {
-                $activityLog = $this->responseService->createActivityLog($pet, $this->getActivityLogPrefix($pet) . ' There, they saw a group of werecreatures playing in the Stardust! ' . ActivityHelpers::PetName($pet) . ' tried to gather some Stardust in secret, but were spotted, and forced to flee!', '');
+                $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, $this->getActivityLogPrefix($pet) . ' There, they saw a group of werecreatures playing in the Stardust! ' . ActivityHelpers::PetName($pet) . ' tried to gather some Stardust in secret, but were spotted, and forced to flee!');
 
                 if($pet->getTool() && $pet->getTool()->getItem()->getTreasure() && $pet->getTool()->getItem()->getTreasure()->getSilver() > 0)
                 {
@@ -130,7 +129,7 @@ class LeonidsService
             }
             else if($stealthCheck >= 12)
             {
-                $activityLog = $this->responseService->createActivityLog($pet, $this->getActivityLogPrefix($pet) . ' There, they saw a group of werecreatures playing in the Stardust! ' . ActivityHelpers::PetName($pet) . ' kept to the shadows, and gathered some Stardust in secret...', '');
+                $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, $this->getActivityLogPrefix($pet) . ' There, they saw a group of werecreatures playing in the Stardust! ' . ActivityHelpers::PetName($pet) . ' kept to the shadows, and gathered some Stardust in secret...');
 
                 $this->inventoryService->petCollectsItem('Stardust', $pet, $pet->getName() . ' gathered this from fallen Leonids in the Umbra!', $activityLog);
                 $this->inventoryService->petCollectsItem('Stardust', $pet, $pet->getName() . ' gathered this from fallen Leonids in the Umbra!', $activityLog);
@@ -141,7 +140,7 @@ class LeonidsService
             }
             else
             {
-                $activityLog = $this->responseService->createActivityLog($pet, $this->getActivityLogPrefix($pet) . ' There, they saw a group of werecreatures playing in the Stardust! ' . ActivityHelpers::PetName($pet) . ' quickly scooped some up, and ran away before they could get spotted!', '');
+                $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, $this->getActivityLogPrefix($pet) . ' There, they saw a group of werecreatures playing in the Stardust! ' . ActivityHelpers::PetName($pet) . ' quickly scooped some up, and ran away before they could get spotted!');
 
                 $this->inventoryService->petCollectsItem('Stardust', $pet, $pet->getName() . ' gathered this from fallen Leonids in the Umbra!', $activityLog);
 
@@ -164,7 +163,7 @@ class LeonidsService
         {
             $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::UMBRA, true);
 
-            $activityLog = $this->responseService->createActivityLog($pet, $this->getActivityLogPrefix($pet) . ' There, they encountered a large raccoon spirit, gathering Stardust. It snarled at ' . ActivityHelpers::PetName($pet) . ', but they calmed it down, and helped it gather some Stardust (it\'s the Light and Shadow way)! In addition to getting some Stardust of their own, the spirit gave ' . ActivityHelpers::PetName($pet) . ' some Quintesence as thanks!', '')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, $this->getActivityLogPrefix($pet) . ' There, they encountered a large raccoon spirit, gathering Stardust. It snarled at ' . ActivityHelpers::PetName($pet) . ', but they calmed it down, and helped it gather some Stardust (it\'s the Light and Shadow way)! In addition to getting some Stardust of their own, the spirit gave ' . ActivityHelpers::PetName($pet) . ' some Quintesence as thanks!')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Guild' ]))
             ;
 
@@ -183,7 +182,7 @@ class LeonidsService
             {
                 $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::UMBRA, true);
 
-                $activityLog = $this->responseService->createActivityLog($pet, $this->getActivityLogPrefix($pet) . ' There, they encountered a large raccoon spirit, gathering Stardust. It snarled at ' . ActivityHelpers::PetName($pet) . ', but they calmed it down, and helped it gather some Stardust (it\'s the Light and Shadow way)! In addition to getting some Stardust of their own, the spirit gave ' . ActivityHelpers::PetName($pet) . ' some Quintesence as thanks!', '')
+                $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, $this->getActivityLogPrefix($pet) . ' There, they encountered a large raccoon spirit, gathering Stardust. It snarled at ' . ActivityHelpers::PetName($pet) . ', but they calmed it down, and helped it gather some Stardust (it\'s the Light and Shadow way)! In addition to getting some Stardust of their own, the spirit gave ' . ActivityHelpers::PetName($pet) . ' some Quintesence as thanks!')
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Fighting' ]))
                 ;
 
@@ -197,7 +196,7 @@ class LeonidsService
             {
                 $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::UMBRA, false);
 
-                $activityLog = $this->responseService->createActivityLog($pet, $this->getActivityLogPrefix($pet) . ' There, they encountered a large raccoon spirit, gathering Stardust. It snarled at ' . ActivityHelpers::PetName($pet) . ', and attacked; after a long fight in the Stardust, ' . ActivityHelpers::PetName($pet) . ' was forced to retreat!', '');
+                $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, $this->getActivityLogPrefix($pet) . ' There, they encountered a large raccoon spirit, gathering Stardust. It snarled at ' . ActivityHelpers::PetName($pet) . ', and attacked; after a long fight in the Stardust, ' . ActivityHelpers::PetName($pet) . ' was forced to retreat!');
 
                 $this->inventoryService->petCollectsItem('Stardust', $pet, $pet->getName() . ' got this all over themselves during a fight with a large raccoon spirit in the Umbra!', $activityLog);
 
@@ -220,7 +219,7 @@ class LeonidsService
             {
                 $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 75), PetActivityStatEnum::UMBRA, true);
 
-                $activityLog = $this->responseService->createActivityLog($pet, $this->getActivityLogPrefix($pet) . ' There, they ran into some fairies. They helped the fairies gather a ton of Stardust, for which they received lunch and Quintessence as way of thanks!', '');
+                $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, $this->getActivityLogPrefix($pet) . ' There, they ran into some fairies. They helped the fairies gather a ton of Stardust, for which they received lunch and Quintessence as way of thanks!');
 
                 $this->inventoryService->petCollectsItem('Quintessence', $pet, $pet->getName() . ' received this from some fairies after helping them gather tons of Stardust in the Umbra!', $activityLog);
 
@@ -230,7 +229,7 @@ class LeonidsService
             {
                 $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::UMBRA, true);
 
-                $activityLog = $this->responseService->createActivityLog($pet, $this->getActivityLogPrefix($pet) . ' There, they ran into some fairies. After working at it for a while, they all took a break, and the fairies shared some of their food!', '');
+                $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, $this->getActivityLogPrefix($pet) . ' There, they ran into some fairies. After working at it for a while, they all took a break, and the fairies shared some of their food!');
 
                 $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::Arcana ], $activityLog);
             }
@@ -256,7 +255,7 @@ class LeonidsService
         {
             $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::UMBRA, true);
 
-            $activityLog = $this->responseService->createActivityLog($pet, $this->getActivityLogPrefix($pet) . ' There, they ran into some fairies. They all hung out and kept each other company while gathering Stardust for a while...', '');
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, $this->getActivityLogPrefix($pet) . ' There, they ran into some fairies. They all hung out and kept each other company while gathering Stardust for a while...');
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::Arcana ], $activityLog);
         }
