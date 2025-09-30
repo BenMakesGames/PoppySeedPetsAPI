@@ -16,9 +16,8 @@ namespace App\Controller\Item\Pinata;
 
 use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
-use App\Enum\UserStat;
+use App\Entity\Item;
 use App\Functions\ArrayFunctions;
-use App\Functions\ItemRepository;
 use App\Functions\SpiceRepository;
 use App\Service\InventoryService;
 use App\Service\IRandom;
@@ -49,22 +48,28 @@ class FancyTeapotController
         $location = $inventory->getLocation();
         $lockedToOwner = $inventory->getLockedToOwner();
 
-        $teaBases = [
-            'Black Tea',
-            'Coffee Bean Tea',
-            'Coffee Bean Tea with Mammal Extract',
-            'Dreamwalker\'s Tea',
-            'Ginger Tea',
-            'Sweet Black Tea',
-            'Sweet Coffee Bean Tea',
-            'Sweet Coffee Bean Tea with Mammal Extract',
-            'Sweet Ginger Tea',
-            'Sweet Tea with Mammal Extract',
-            'Tea with Mammal Extract',
-            'Tiny Tea',
-            'Totally Tea',
-            'Tremendous Tea'
-        ];
+        $teaBasesQuery = $em->getRepository(Item::class)->createQueryBuilder('i');
+
+        /**
+         * Find all edible items with the Tea group (but NOT the Event Exclusive group)
+         *
+         * @var Item[] $teaBases
+         */
+        $teaBases = $teaBasesQuery
+            ->leftJoin('i.itemGroups', 'groups')
+            ->andWhere('i.food IS NOT NULL')
+            ->andWhere('groups.name = :teaGroupName')
+            ->andWhere('i.id NOT IN (
+                SELECT i2.id
+                FROM App\Entity\Item i2
+                JOIN i2.itemGroups groups2
+                WHERE groups2.name = :eventExclusiveGroupName
+            )')
+            ->setParameter('teaGroupName', 'Tea')
+            ->setParameter('eventExclusiveGroupName', 'Event Exclusive')
+            ->distinct()
+            ->getQuery()
+            ->execute();
 
         $teaSpices = [
             '5-Spice\'d',
