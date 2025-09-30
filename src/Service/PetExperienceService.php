@@ -168,9 +168,6 @@ class PetExperienceService
         if($oldLevel < 100 && $pet->getLevel() >= 100) PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::Level100, $activityLog);
     }
 
-    /**
-     * @throws EnumInvalidValueException
-     */
     private static function getPetFocusingStatusEffect(Pet $pet): ?FocusingStatusEffect
     {
         $possibleEffects = [
@@ -340,12 +337,12 @@ class PetExperienceService
 
 class FocusingStatusEffect
 {
-    function __construct(string $skill, string $statusEffect)
+    function __construct(string $skill, StatusEffectEnum $statusEffect)
     {
         $this->skill = $skill;
         $this->statusEffect = $statusEffect;
     }
 
     public string $skill;
-    public string $statusEffect;
+    public StatusEffectEnum $statusEffect;
 }

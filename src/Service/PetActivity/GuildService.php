@@ -258,6 +258,9 @@ class GuildService
             $guildNameArticle = GrammarFunctions::indefiniteArticle($member->getGuild()->getName());
             $message = '%pet:' . $pet->getId() . '.name% joined ' . $guildNameArticle . ' ' . $member->getGuild()->getName() . ' session of group meditation.';
 
+            /**
+             * @var array<int, array{effect: StatusEffectEnum, duration?: int, removeIt?: true}> $availableEffects
+             */
             $availableEffects = [];
 
             $inspired = $pet->getStatusEffect(StatusEffectEnum::Inspired);
@@ -277,12 +280,12 @@ class GuildService
 
                 if(array_key_exists('removeIt', $effectToGive))
                 {
-                    $message .= ' %pet:' . $pet->getId() . '.name%\'s ' . $effectToGive['effect'] . '-ness was washed away!';
+                    $message .= ' %pet:' . $pet->getId() . '.name%\'s ' . $effectToGive['effect']->value . '-ness was washed away!';
                     $pet->removeStatusEffect($pet->getStatusEffect($effectToGive['effect']));
                 }
-                else
+                else if(array_key_exists('duration', $effectToGive))
                 {
-                    $message .= ' %pet:' . $pet->getId() . '.name% started feeling ' . $effectToGive['effect'] . '!';
+                    $message .= ' %pet:' . $pet->getId() . '.name% started feeling ' . $effectToGive['effect']->value . '!';
                     StatusEffectHelpers::applyStatusEffect($this->em, $pet, $effectToGive['effect'], $effectToGive['duration']);
                 }
             }

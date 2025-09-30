@@ -14,6 +14,7 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Enum\StatusEffectEnum;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
@@ -149,8 +150,8 @@ class ItemTool
     #[ORM\Column(type: 'string', length: 40, nullable: true)]
     private ?string $adventureDescription = null;
 
-    #[ORM\Column(type: 'string', length: 20, nullable: true)]
-    private ?string $whenGatherApplyStatusEffect = null;
+    #[ORM\Column(type: 'string', length: 20, nullable: true, enumType: StatusEffectEnum::class)]
+    private ?StatusEffectEnum $whenGatherApplyStatusEffect = null;
 
     #[ORM\Column(type: 'integer', nullable: true)]
     private ?int $whenGatherApplyStatusEffectDuration = null;
@@ -392,7 +393,7 @@ class ItemTool
         {
             if($this->getWhenGatherApplyStatusEffect())
             {
-                $modifiers[] = 'when the pet obtains ' . $this->getWhenGather()->getName() . ', it becomes ' . $this->getWhenGatherApplyStatusEffect();
+                $modifiers[] = 'when the pet obtains ' . $this->getWhenGather()->getName() . ', it becomes ' . $this->getWhenGatherApplyStatusEffect()->value;
             }
 
             if($this->getWhenGatherAlsoGather())
@@ -700,12 +701,12 @@ class ItemTool
         return $this;
     }
 
-    public function getWhenGatherApplyStatusEffect(): ?string
+    public function getWhenGatherApplyStatusEffect(): ?StatusEffectEnum
     {
         return $this->whenGatherApplyStatusEffect;
     }
 
-    public function setWhenGatherApplyStatusEffect(?string $whenGatherApplyStatusEffect): self
+    public function setWhenGatherApplyStatusEffect(?StatusEffectEnum $whenGatherApplyStatusEffect): self
     {
         $this->whenGatherApplyStatusEffect = $whenGatherApplyStatusEffect;
 

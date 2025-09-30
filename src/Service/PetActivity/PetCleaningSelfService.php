@@ -22,6 +22,7 @@ use App\Enum\LocationEnum;
 use App\Enum\MeritEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetBadgeEnum;
+use App\Enum\StatusEffectEnum;
 use App\Exceptions\PSPNotFoundException;
 use App\Functions\ActivityHelpers;
 use App\Functions\PetActivityLogFactory;
@@ -46,7 +47,7 @@ class PetCleaningSelfService
     {
     }
 
-    public function cleanUpStatusEffect(Pet $pet, string $statusEffect, string $itemOnBody): bool
+    public function cleanUpStatusEffect(Pet $pet, StatusEffectEnum $statusEffect, string $itemOnBody): bool
     {
         $changes = new PetChanges($pet);
 

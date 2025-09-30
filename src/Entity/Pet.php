@@ -1159,17 +1159,14 @@ class Pet
         return $this;
     }
 
-    public function getStatusEffect(string $statusEffect): ?StatusEffect
+    public function getStatusEffect(StatusEffectEnum $statusEffect): ?StatusEffect
     {
-        if(!StatusEffectEnum::isAValue($statusEffect))
-            throw new EnumInvalidValueException(StatusEffectEnum::class, $statusEffect);
-
         return ArrayFunctions::find_one($this->statusEffects, fn(StatusEffect $se) =>
             $se->getStatus() === $statusEffect
         );
     }
 
-    public function hasStatusEffect(string $statusEffect): bool
+    public function hasStatusEffect(StatusEffectEnum $statusEffect): bool
     {
         return $this->getStatusEffect($statusEffect) !== null;
     }
