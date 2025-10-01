@@ -19,6 +19,7 @@ use App\Entity\ItemFood;
 use App\Entity\ItemGroup;
 use App\Entity\Spice;
 use App\Enum\FlavorEnum;
+use App\Enum\StatusEffectEnum;
 
 class FoodWithSpice
 {
@@ -34,7 +35,7 @@ class FoodWithSpice
     public int $containsTentacles;
     /** @var BonusItemChance[] */ public array $bonusItems = [];
     public array $grantedSkills = [];
-    /** @var array{effect: string, duration: int}[] */ public array $grantedStatusEffects = [];
+    /** @var array{effect: StatusEffectEnum, duration: int}[] */ public array $grantedStatusEffects = [];
     public bool $grantsSelfReflection = false;
     public int $earthy;
     public int $fruity;

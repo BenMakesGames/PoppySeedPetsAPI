@@ -32,7 +32,7 @@ class ItemGroup
     #[ORM\Column(type: 'string', length: 40, unique: true)]
     private string $name;
 
-    /** @var Collection<Item>  */
+    /** @var Collection<int, Item>  */
     #[ORM\ManyToMany(targetEntity: Item::class, inversedBy: 'itemGroups')]
     private Collection $items;
 
