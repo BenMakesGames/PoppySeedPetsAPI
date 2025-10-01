@@ -27,6 +27,7 @@ use App\Enum\EnumInvalidValueException;
 use App\Enum\HollowEarthMoveDirectionEnum;
 use App\Enum\HollowEarthRequiredActionEnum;
 use App\Enum\PetBadgeEnum;
+use App\Enum\StatusEffectEnum;
 use App\Enum\UnlockableFeatureEnum;
 use App\Enum\UserStat;
 use App\Functions\ArrayFunctions;
@@ -370,7 +371,7 @@ class HollowEarthService
 
         if(array_key_exists('statusEffect', $event))
         {
-            StatusEffectHelpers::applyStatusEffect($this->em, $pet, $event['statusEffect']['status'], $event['statusEffect']['duration']);
+            StatusEffectHelpers::applyStatusEffect($this->em, $pet, StatusEffectEnum::from($event['statusEffect']['status']), $event['statusEffect']['duration']);
             $doLog = true;
         }
 
