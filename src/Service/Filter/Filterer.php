@@ -152,7 +152,7 @@ class Filterer
 
     private static function cacheKey(string $prefix, int $page, string $orderBy, string $orderDir, array $filters): string
     {
-        return sprintf('%s_%d_%s_%s_%s', $prefix, $page, $orderBy, $orderDir, md5(json_encode($filters)));
+        return sprintf('%s_%d_%s_%s_%s', $prefix, $page, $orderBy, $orderDir, md5(json_encode($filters, JSON_THROW_ON_ERROR)));
     }
 
     private function getGrandTotal(QueryBuilder $qb): int
