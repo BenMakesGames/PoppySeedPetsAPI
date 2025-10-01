@@ -11,7 +11,6 @@ declare(strict_types=1);
  * You should have received a copy of the GNU General Public License along with The Poppy Seed Pets API. If not, see <https://www.gnu.org/licenses/>.
  */
 
-
 namespace App\Entity;
 
 use App\Enum\UnlockableFeatureEnum;
@@ -177,7 +176,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[Groups(["myAccount"])]
     #[ORM\OneToOne(targetEntity: UserSubscription::class, mappedBy: 'user', cascade: ['persist', 'remove'])]
-    private $subscription;
+    private ?UserSubscription $subscription = null;
 
     /** @var Collection<int, UserFieldGuideEntry>  */
     #[ORM\OneToMany(targetEntity: UserFieldGuideEntry::class, mappedBy: 'user', orphanRemoval: true)]

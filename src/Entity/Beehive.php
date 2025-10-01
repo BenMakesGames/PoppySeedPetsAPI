@@ -112,7 +112,7 @@ class Beehive
 
     public function getMaxFlowerPower(): float
     {
-        return log($this->getWorkers()) * 50;
+        return log($this->getWorkers()) * 10;
     }
 
     public function getFlowerPower(): float

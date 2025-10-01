@@ -11,7 +11,6 @@ declare(strict_types=1);
  * You should have received a copy of the GNU General Public License along with The Poppy Seed Pets API. If not, see <https://www.gnu.org/licenses/>.
  */
 
-
 namespace App\Entity;
 
 use App\Enum\EnumInvalidValueException;
@@ -39,10 +38,11 @@ class UserSubscription
     private ?string $tier = null;
 
     #[ORM\OneToOne(targetEntity: User::class, inversedBy: 'subscription', cascade: ['persist', 'remove'])]
-    private $user;
+    private ?User $user = null;
 
-    public function __construct()
+    public function __construct(int $patreonUserId)
     {
+        $this->patreonUserId = $patreonUserId;
         $this->updatedOn = new \DateTimeImmutable();
     }
 

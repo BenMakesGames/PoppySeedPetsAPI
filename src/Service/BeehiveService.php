@@ -11,7 +11,6 @@ declare(strict_types=1);
  * You should have received a copy of the GNU General Public License along with The Poppy Seed Pets API. If not, see <https://www.gnu.org/licenses/>.
  */
 
-
 namespace App\Service;
 
 use App\Entity\Beehive;
@@ -84,16 +83,16 @@ class BeehiveService
     public static function computeFlowerPower(Inventory $i): int
     {
         return
-            $i->getItem()->getFood()->getFloral() * 8 +
-            $i->getItem()->getFood()->getPlanty() * 4 +
-            $i->getItem()->getFood()->getFruity() * 4 +
-            $i->getItem()->getFood()->getLove() * 2 +
+            $i->getItem()->getFood()->getFloral() * 25 +
+            $i->getItem()->getFood()->getPlanty() * 10 +
+            $i->getItem()->getFood()->getFruity() * 10 +
+            $i->getItem()->getFood()->getLove() * 5 +
             (
                 $i->getSpice()?->getEffects() === null ? 0 : (
-                    $i->getSpice()->getEffects()->getFloral() * 8 +
-                    $i->getSpice()->getEffects()->getPlanty() * 4 +
-                    $i->getSpice()->getEffects()->getFruity() * 4 +
-                    $i->getSpice()->getEffects()->getLove() * 2
+                    $i->getSpice()->getEffects()->getFloral() * 25 +
+                    $i->getSpice()->getEffects()->getPlanty() * 10 +
+                    $i->getSpice()->getEffects()->getFruity() * 10 +
+                    $i->getSpice()->getEffects()->getLove() * 5
                 )
             )
         ;
@@ -102,15 +101,15 @@ class BeehiveService
     public static function mapFlowerPowerToRating(int $flowerPower): string
     {
         return match(true) {
-            $flowerPower >= 45 => 'Wow!',
-            $flowerPower >= 40 => 'S++',
-            $flowerPower >= 35 => 'S+',
-            $flowerPower >= 30 => 'S',
-            $flowerPower >= 25 => 'A+',
-            $flowerPower >= 20 => 'A',
-            $flowerPower >= 15 => 'B',
-            $flowerPower >= 10 => 'C',
-            $flowerPower >= 5 => 'D',
+            $flowerPower >= 135 => 'Wow!',
+            $flowerPower >= 120 => 'S++',
+            $flowerPower >= 105 => 'S+',
+            $flowerPower >= 90 => 'S',
+            $flowerPower >= 75 => 'A+',
+            $flowerPower >= 60 => 'A',
+            $flowerPower >= 45 => 'B',
+            $flowerPower >= 30 => 'C',
+            $flowerPower >= 15 => 'D',
             default => 'F',
         };
     }

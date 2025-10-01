@@ -11,7 +11,6 @@ declare(strict_types=1);
  * You should have received a copy of the GNU General Public License along with The Poppy Seed Pets API. If not, see <https://www.gnu.org/licenses/>.
  */
 
-
 namespace App\Controller\Patreon;
 
 use App\Attributes\DoesNotRequireHouseHours;
@@ -60,8 +59,8 @@ class ConnectAccountController
 
         if(!$subscription)
         {
-            $subscription = new UserSubscription();
-            $subscription->setPatreonUserId($patreonUserId);
+            $subscription = (new UserSubscription($patreonUserId))
+                ->setUser($user);
         }
 
         $user->setSubscription($subscription);
