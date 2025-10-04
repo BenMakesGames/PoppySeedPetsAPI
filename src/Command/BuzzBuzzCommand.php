@@ -40,16 +40,15 @@ class BuzzBuzzCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        // population increase
+        // population increase for beehives at >= 50% flower power
         $this->em->getConnection()->executeQuery('
             UPDATE beehive
             SET
-                workers = workers + 1,
-                flower_power = flower_power - 5
-            WHERE workers < 1000000 AND flower_power >= 20
+                workers = workers + 1
+            WHERE workers < 1000000 AND flower_power >= LOG(workers) * 5
         ');
 
-        // flower power
+        // create goods; consume flower power to create goods FASTER
         $this->em->getConnection()->executeQuery('
             UPDATE beehive
             SET
