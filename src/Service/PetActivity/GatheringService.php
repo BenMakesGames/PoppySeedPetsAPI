@@ -69,7 +69,8 @@ class GatheringService
         private readonly PetFactory $petFactory,
         private readonly GatheringDistractionService $gatheringDistractions,
         private readonly Clock $clock,
-        private readonly PetRelationshipService $petRelationshipService
+        private readonly PetRelationshipService $petRelationshipService,
+        private readonly WildHedgeMazeService $wildHedgeMaze,
     )
     {
     }
@@ -128,7 +129,7 @@ class GatheringService
                 break;
             case 17:
             case 18:
-                $activityLog = $this->foundWildHedgemaze($petWithSkills);
+                $activityLog = $this->wildHedgeMaze->exploreHedgeMaze($petWithSkills);
                 break;
             case 19:
             case 20:
