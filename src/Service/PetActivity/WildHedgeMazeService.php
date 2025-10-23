@@ -71,9 +71,7 @@ class WildHedgeMazeService
 
         // a pet with an eidetic memory and no mirror will remember that they shouldn't even attempt the light puzzle
         if(!(!$pet->getTool()?->getItem()->hasItemGroup('Mirror') && $petHasEideticMemory))
-        {
             $possibilities[] = $this->lightPuzzle(...);
-        }
 
         $activityLog = $this->rng->rngNextFromArray($possibilities)($petWithSkills);
 
@@ -110,17 +108,13 @@ class WildHedgeMazeService
 
             if($hasClimbing)
             {
-                $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, ActivityHelpers::PetName($pet) . ' found a hedge maze in the forest; they climbed over its walls and quickly came upon what was obviously a light-based puzzle where they had to get a beam of light to hit some weird thing in the ground. They used their ' . $toolName . ' to reflect the beam, and a little hatch opened in the ground with a Gaming Box inside!')
-                    ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Gathering' ]))
-                ;
+                $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, ActivityHelpers::PetName($pet) . ' found a hedge maze in the forest; they climbed over its walls and quickly came upon what was obviously a light-based puzzle where they had to get a beam of light to hit some weird thing in the ground. They used their ' . $toolName . ' to reflect the beam, and a little hatch opened in the ground with a Gaming Box inside!');
 
                 $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 45), PetActivityStatEnum::GATHER, false);
             }
             else
             {
-                $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, ActivityHelpers::PetName($pet) . ' found a hedge maze in the forest; exploring it, they came upon what was obviously a light-based puzzle where they had to get a beam of light to hit some weird thing in the ground. They used their ' . $toolName . ' to reflect the beam, and a little hatch opened in the ground with a Gaming Box inside!')
-                    ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Gathering' ]))
-                ;
+                $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, ActivityHelpers::PetName($pet) . ' found a hedge maze in the forest; exploring it, they came upon what was obviously a light-based puzzle where they had to get a beam of light to hit some weird thing in the ground. They used their ' . $toolName . ' to reflect the beam, and a little hatch opened in the ground with a Gaming Box inside!');
 
                 $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::GATHER, false);
             }
@@ -131,17 +125,13 @@ class WildHedgeMazeService
         {
             if($hasClimbing)
             {
-                $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, ActivityHelpers::PetName($pet) . ' found a hedge maze in the forest; they climbed over its walls and quickly came upon what was obviously a light-based puzzle where they had to get a beam of light to hit some weird thing in the ground, but didn\'t have a reflective surface available to do it! :(')
-                    ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Gathering' ]))
-                ;
+                $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, ActivityHelpers::PetName($pet) . ' found a hedge maze in the forest; they climbed over its walls and quickly came upon what was obviously a light-based puzzle where they had to get a beam of light to hit some weird thing in the ground, but didn\'t have a reflective surface available to do it! :(');
 
                 $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(15, 30), PetActivityStatEnum::GATHER, false);
             }
             else
             {
-                $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, ActivityHelpers::PetName($pet) . ' found a hedge maze in the forest; exploring it, they came upon what was obviously a light-based puzzle where they had to get a beam of light to hit some weird thing in the ground, but didn\'t have a reflective surface available to do it! :(')
-                    ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Gathering' ]))
-                ;
+                $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, ActivityHelpers::PetName($pet) . ' found a hedge maze in the forest; exploring it, they came upon what was obviously a light-based puzzle where they had to get a beam of light to hit some weird thing in the ground, but didn\'t have a reflective surface available to do it! :(');
 
                 $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 45), PetActivityStatEnum::GATHER, false);
             }
@@ -149,7 +139,9 @@ class WildHedgeMazeService
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::Nature ], $activityLog);
         }
 
-        return $activityLog;
+        return $activityLog
+            ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Gathering', PetActivityLogTagEnum::Location_Hedge_Maze_Light_Puzzle ]))
+        ;
     }
 
     private function sphinx(ComputedPetSkills $petWithSkills): PetActivityLog
@@ -171,18 +163,10 @@ class WildHedgeMazeService
 
             $pet->increaseEsteem(count($loot) + 2);
 
-            if($hasClimbing)
-            {
-                $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% found a hedge maze in the forest; they climbed over its walls and quickly came upon a Hedge Maze Sphinx. ' . $pet->getName() . ' was able to solve its riddle, and was rewarded with ' . ArrayFunctions::list_nice_sorted($loot) . '.')
-                    ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Gathering' ]))
-                ;
-            }
-            else
-            {
-                $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% found a hedge maze in the forest; exploring it, they ran into a Hedge Maze Sphinx. ' . $pet->getName() . ' was able to solve its riddle, and was rewarded with ' . ArrayFunctions::list_nice_sorted($loot) . '.')
-                    ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Gathering' ]))
-                ;
-            }
+            $activityLog = $hasClimbing
+                ? PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% found a hedge maze in the forest; they climbed over its walls and quickly came upon a Hedge Maze Sphinx. ' . $pet->getName() . ' was able to solve its riddle, and was rewarded with ' . ArrayFunctions::list_nice_sorted($loot) . '.')
+                : PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% found a hedge maze in the forest; exploring it, they ran into a Hedge Maze Sphinx. ' . $pet->getName() . ' was able to solve its riddle, and was rewarded with ' . ArrayFunctions::list_nice_sorted($loot) . '.')
+            ;
 
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::Arcana, PetSkillEnum::Nature ], $activityLog);
         }
@@ -190,18 +174,10 @@ class WildHedgeMazeService
         {
             $pet->increaseEsteem(-$this->rng->rngNextInt(3, 4));
 
-            if($hasClimbing)
-            {
-                $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% found a hedge maze in the forest; they climbed over its walls and quickly came upon a Hedge Maze Sphinx. The sphinx asked a really hard question, which ' . $pet->getName() . ' wasn\'t able to answer. They were consequentially ejected from the maze!')
-                    ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Gathering' ]))
-                ;
-            }
-            else
-            {
-                $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% found a hedge maze in the forest; exploring it, they ran into a Hedge Maze Sphinx. The sphinx asked a really hard question, which ' . $pet->getName() . ' wasn\'t able to answer. They were consequentially ejected from the maze!')
-                    ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Gathering' ]))
-                ;
-            }
+            $activityLog = $hasClimbing
+                ? PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% found a hedge maze in the forest; they climbed over its walls and quickly came upon a Hedge Maze Sphinx. The sphinx asked a really hard question, which ' . $pet->getName() . ' wasn\'t able to answer. They were consequentially ejected from the maze!')
+                : PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% found a hedge maze in the forest; exploring it, they ran into a Hedge Maze Sphinx. The sphinx asked a really hard question, which ' . $pet->getName() . ' wasn\'t able to answer. They were consequentially ejected from the maze!')
+            ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::Arcana, PetSkillEnum::Nature ], $activityLog);
         }
@@ -211,7 +187,9 @@ class WildHedgeMazeService
         foreach($loot as $itemName)
             $this->inventoryService->petCollectsItem($itemName, $pet, $pet->getName() . ' found this in a Wild Hedgemaze.', $activityLog);
 
-        return $activityLog;
+        return $activityLog
+            ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Gathering', PetActivityLogTagEnum::Location_Hedge_Maze_Sphinx ]))
+        ;
     }
 
     private function gather(ComputedPetSkills $petWithSkills): PetActivityLog
@@ -239,7 +217,7 @@ class WildHedgeMazeService
 
         $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% went to the Wild Hedgemaze. It turns out mazes are way easier with a perfect memory! ' . $pet->getName() . ' found ' . ArrayFunctions::list_nice_sorted($loot) . '.');
 
-        $tags = [ 'Gathering' ];
+        $tags = [ 'Gathering', PetActivityLogTagEnum::Location_Hedge_Maze ];
 
         if($lucky)
         {
@@ -288,7 +266,7 @@ class WildHedgeMazeService
 
         $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% stumbled upon a Wild Hedge Maze. They got totally lost in there, but at least picked up ' . ArrayFunctions::list_nice_sorted($loot) . ' along the way.');
 
-        $tags = [ 'Gathering' ];
+        $tags = [ 'Gathering', PetActivityLogTagEnum::Location_Hedge_Maze ];
 
         if($lucky)
         {
