@@ -11,7 +11,6 @@ declare(strict_types=1);
  * You should have received a copy of the GNU General Public License along with The Poppy Seed Pets API. If not, see <https://www.gnu.org/licenses/>.
  */
 
-
 namespace App\Enum;
 
 final class PetActivityLogTagEnum
@@ -116,4 +115,8 @@ final class PetActivityLogTagEnum
     public const string Location_The_Deep_Sea = 'Location: The Deep Sea';
     public const string Location_The_Fructal_Plane = 'Location: The Fructal Plane';
     public const string Location_The_Burnt_Forest = 'Location: The Burnt Forest';
+
+    public const string Location_Hedge_Maze = 'Location: Hedge Maze';
+    public const string Location_Hedge_Maze_Sphinx = 'Location: Hedge Maze Sphinx';
+    public const string Location_Hedge_Maze_Light_Puzzle = 'Location: Hedge Maze Light Puzzle';
 }
