@@ -47,8 +47,12 @@ class ButterknifeController
 
         $em->flush();
 
-        $responseService->addFlashMessage('There we go. Back to normal.');
-        $responseService->setReloadPets($reloadPets);
+        $responseService
+            ->addFlashMessage('There we go. Back to normal.')
+            ->setReloadPets($reloadPets)
+            ->setReloadInventory()
+        ;
+
 
         return $responseService->itemActionSuccess(null);
     }
