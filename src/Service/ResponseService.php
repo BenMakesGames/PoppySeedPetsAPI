@@ -227,7 +227,7 @@ class FlashMessage
     public string $entry;
 
     #[Groups(["petActivityLogs"])]
-    public string $icon;
+    public ?string $icon;
 
     #[Groups(["petActivityLogs"])]
     public ?PetChangesSummary $changes;
@@ -235,10 +235,10 @@ class FlashMessage
     #[Groups(["petActivityLogs"])]
     public int $interestingness;
 
-    #[Groups(["petActivityLogs"])]
     /**
      * @var PetActivityLogTag[] $tags
      */
+    #[Groups(["petActivityLogs"])]
     public array $tags = [];
 
     #[Groups(["petActivityLogs"])]
@@ -250,7 +250,7 @@ class FlashMessage
     #[Groups(["petActivityLogs"])]
     public array $createdItems = [];
 
-    public function __construct(int $id, string $entry, string $icon, ?PetChangesSummary $changes, int $interestingness)
+    public function __construct(int $id, string $entry, ?string $icon, ?PetChangesSummary $changes, int $interestingness)
     {
         $this->id = $id;
         $this->entry = $entry;

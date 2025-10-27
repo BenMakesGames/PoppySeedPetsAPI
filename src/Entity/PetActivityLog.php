@@ -208,10 +208,7 @@ class PetActivityLog
         if ($this->createdItems->exists(fn(int $key, PetActivityLogItem $createdItem) => $createdItem->getItem()->getId() === $item->getId()))
             return $this;
 
-        $createdItem = (new PetActivityLogItem())
-            ->setItem($item)
-            ->setLog($this)
-        ;
+        $createdItem = new PetActivityLogItem($this, $item);
 
         $this->createdItems->add($createdItem);
 

@@ -28,39 +28,31 @@ class PetActivityLogItem
 
     #[ORM\ManyToOne(inversedBy: 'createdItems')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?PetActivityLog $log = null;
+    private PetActivityLog $log;
 
     #[Groups(["petActivityLogAndPublicPet"])]
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Item $item = null;
+    private Item $item;
+
+    public function __construct(PetActivityLog $log, Item $item)
+    {
+        $this->log = $log;
+        $this->item = $item;
+    }
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getLog(): ?PetActivityLog
+    public function getLog(): PetActivityLog
     {
         return $this->log;
     }
 
-    public function setLog(?PetActivityLog $log): static
-    {
-        $this->log = $log;
-
-        return $this;
-    }
-
-    public function getItem(): ?Item
+    public function getItem(): Item
     {
         return $this->item;
-    }
-
-    public function setItem(?Item $item): static
-    {
-        $this->item = $item;
-
-        return $this;
     }
 }
