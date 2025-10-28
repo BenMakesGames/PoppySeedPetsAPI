@@ -326,28 +326,19 @@ class UmbraService
         {
             if($hasEideticMemory && !($hasRelevantSpirit && $this->rng->rngNextBool()))
             {
-                $messageDetail = $pet->getName() . ' had already memorized the lay of the land, and pointed the way';
+                $messageDetail = ActivityHelpers::PetName($pet) . ' had already memorized the lay of the land, and after calming the three down pointed the way.';
                 $useSpirit = false;
             }
             else {
-                $messageDetail = $pet->getName() . ' and ' . $pet->getSpiritCompanion()->getName() . ' were able to point the way';
+                $messageDetail = ActivityHelpers::PetName($pet) . ' and ' . $pet->getSpiritCompanion()->getName() . ' were able to calm them down and point the way.';
                 $useSpirit = true;
             }
 
-            if($this->rng->rngNextInt(1, 2) === 1)
-            {
-                $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% met a friendly spirit lost in the Umbra. ' . $messageDetail . '; the spirit was very thankful, and insisted that ' . $pet->getName() . ' take ' . $rewards[$reward] . ' ' . $reward . '.')
-                    ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'The Umbra' ]))
-                ;
-                $this->inventoryService->petCollectsItem($reward, $pet, $pet->getName() . ' received this from a friendly spirit as thanks for helping it navigate the Umbra.', $activityLog);
-                $pet->increaseEsteem(1);
-            }
-            else {
-                $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% met a friendly spirit lost in the Umbra. ' . $messageDetail . '; the spirit was very thankful, and wished ' . $pet->getName() . ' well.')
-                    ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'The Umbra' ]))
-                ;
-                $pet->increaseEsteem(4);
-            }
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% met a swan, fish, and crab in the Umbra. They were arguing over which way to pull a cart, and getting nowhere. ' . $messageDetail . ' The three were very thankful, and insisted that ' . ActivityHelpers::PetName($pet) . ' take ' . $rewards[$reward] . ' ' . $reward . '.')
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'The Umbra' ]))
+            ;
+            $this->inventoryService->petCollectsItem($reward, $pet, $pet->getName() . ' received this from a swan, fish, and crab who were lost in the Umbra.', $activityLog);
+            $pet->increaseEsteem(2);
 
             if($useSpirit)
                 $activityLog->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Spirit Companion' ]));
@@ -362,20 +353,11 @@ class UmbraService
 
         if($roll >= 14)
         {
-            if($this->rng->rngNextInt(1, 2) === 1)
-            {
-                $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% met a friendly spirit lost in the Umbra. ' . $pet->getName() . ' was able to point the way; the spirit was very thankful, and insisted that ' . $pet->getName() . ' take ' . $rewards[$reward] . ' ' . $reward . '.')
-                    ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'The Umbra' ]))
-                ;
-                $this->inventoryService->petCollectsItem($reward, $pet, $pet->getName() . ' received this from a friendly spirit as thanks for helping it navigate the Umbra.', $activityLog);
-                $pet->increaseEsteem(1);
-            }
-            else {
-                $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% met a friendly spirit lost in the Umbra. ' . $pet->getName() . ' was able to point the way; the spirit was very thankful, and wished ' . $pet->getName() . ' well.')
-                    ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'The Umbra' ]))
-                ;
-                $pet->increaseEsteem(4);
-            }
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, ActivityHelpers::PetName($pet) . ' met a swan, fish, and crab in the Umbra. They were arguing over which way to pull a cart, and getting nowhere. ' . ActivityHelpers::PetName($pet) . ' was able to point the way; the three were very thankful, and insisted that ' . ActivityHelpers::PetName($pet) . ' take ' . $rewards[$reward] . ' ' . $reward . '.')
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'The Umbra' ]))
+            ;
+            $this->inventoryService->petCollectsItem($reward, $pet, $pet->getName() . ' received this from a swan, fish, and crab who were lost in the Umbra.', $activityLog);
+            $pet->increaseEsteem(2);
 
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::Arcana ], $activityLog);
             $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::UMBRA, true);
@@ -383,7 +365,7 @@ class UmbraService
             return $activityLog;
         }
         else {
-            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% met a friendly spirit lost in the Umbra. It asked for directions, but ' . $pet->getName() . ' didn\'t know how to help.')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% met a swan, fish, and crab in the Umbra. They were arguing over which way to pull a cart, and getting nowhere. ' . ActivityHelpers::PetName($pet) . ' tried to help, but wasn\'t able to get through to them.')
                 ->setIcon('icons/activity-logs/confused')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'The Umbra' ]))
             ;
