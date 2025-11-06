@@ -113,6 +113,18 @@ class PetSpecies
     #[ORM\Column(type: 'text', nullable: true)]
     private ?string $physicalDescription = null;
 
+    #[ORM\Column]
+    #[Groups(["myPet", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails", "parkEvent", "helperPet", "petActivityLogAndPublicPet", 'petActivityLogs'])]
+    private float $faceX;
+
+    #[ORM\Column]
+    #[Groups(["myPet", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails", "parkEvent", "helperPet", "petActivityLogAndPublicPet", 'petActivityLogs'])]
+    private float $faceY;
+
+    #[ORM\Column]
+    #[Groups(["myPet", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails", "parkEvent", "helperPet", "petActivityLogAndPublicPet", 'petActivityLogs'])]
+    private float $faceAngle;
+
     public function __construct()
     {
         $this->pets = new ArrayCollection();
@@ -346,6 +358,42 @@ class PetSpecies
     public function setPhysicalDescription(?string $physicalDescription): self
     {
         $this->physicalDescription = $physicalDescription;
+
+        return $this;
+    }
+
+    public function getFaceX(): ?float
+    {
+        return $this->faceX;
+    }
+
+    public function setFaceX(float $faceX): static
+    {
+        $this->faceX = $faceX;
+
+        return $this;
+    }
+
+    public function getFaceY(): ?float
+    {
+        return $this->faceY;
+    }
+
+    public function setFaceY(float $faceY): static
+    {
+        $this->faceY = $faceY;
+
+        return $this;
+    }
+
+    public function getFaceAngle(): ?float
+    {
+        return $this->faceAngle;
+    }
+
+    public function setFaceAngle(float $faceAngle): static
+    {
+        $this->faceAngle = $faceAngle;
 
         return $this;
     }
