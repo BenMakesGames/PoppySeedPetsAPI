@@ -860,12 +860,6 @@ class Pet
     }
 
     #[Groups(['myPet'])]
-    public function getCanInteract(): bool
-    {
-        return $this->getLastInteracted() < (new \DateTimeImmutable())->modify('-4 hours');
-    }
-
-    #[Groups(['myPet'])]
     public function getCanParticipateInParkEvents(): bool
     {
         return $this->getLastInteracted() > (new \DateTimeImmutable())->modify('-48 hours');

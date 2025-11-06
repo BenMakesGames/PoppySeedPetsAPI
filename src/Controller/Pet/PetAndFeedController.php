@@ -23,7 +23,7 @@ use App\Exceptions\PSPNotFoundException;
 use App\Exceptions\PSPPetNotFoundException;
 use App\Service\IRandom;
 use App\Service\PetActivity\EatingService;
-use App\Service\PetAndPraiseService;
+use App\Service\QualityTimeService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -39,7 +39,7 @@ class PetAndFeedController
     #[Route("/{pet}/pet", methods: ["POST"], requirements: ["pet" => "\d+"])]
     public function pet(
         Pet $pet, ResponseService $responseService, EntityManagerInterface $em, IRandom $rng,
-        PetAndPraiseService $petAndPraiseService, UserAccessor $userAccessor
+        QualityTimeService $petAndPraiseService, UserAccessor $userAccessor
     ): JsonResponse
     {
         $user = $userAccessor->getUserOrThrow();
