@@ -36,33 +36,6 @@ use App\Service\UserAccessor;
 class PetAndFeedController
 {
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
-    #[Route("/{pet}/pet", methods: ["POST"], requirements: ["pet" => "\d+"])]
-    public function pet(
-        Pet $pet, ResponseService $responseService, EntityManagerInterface $em, IRandom $rng,
-        QualityTimeService $petAndPraiseService, UserAccessor $userAccessor
-    ): JsonResponse
-    {
-        $user = $userAccessor->getUserOrThrow();
-
-        if($pet->getOwner()->getId() !== $user->getId())
-            throw new PSPPetNotFoundException();
-
-        if(!$pet->isAtHome())
-            throw new PSPInvalidOperationException('Pets that aren\'t home cannot be interacted with.');
-
-        $petAndPraiseService->doPet($user, $pet);
-
-        $em->flush();
-
-        $emoji = $pet->getRandomAffectionExpression($rng);
-
-        if($emoji)
-            return $responseService->success([ 'pet' => $pet, 'emoji' => $emoji ], [ SerializationGroupEnum::MY_PET ]);
-        else
-            return $responseService->success([ 'pet' => $pet ], [ SerializationGroupEnum::MY_PET ]);
-    }
-
-    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     #[Route("/{pet}/feed", methods: ["POST"], requirements: ["pet" => "\d+"])]
     public function feed(
         Pet $pet, Request $request, ResponseService $responseService, EntityManagerInterface $em,

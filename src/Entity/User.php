@@ -185,6 +185,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToOne(mappedBy: 'owner', cascade: ['persist', 'remove'])]
     private ?CookingBuddy $cookingBuddy = null;
 
+    #[ORM\Column]
+    private \DateTimeImmutable $lastPerformedQualityTime;
+
     public function __construct(string $name, string $email)
     {
         $this->name = $name;
@@ -202,6 +205,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->unlockedFeatures = new ArrayCollection();
         $this->badges = new ArrayCollection();
         $this->fieldGuideEntries = new ArrayCollection();
+
+        // 3 hours & 58 minutes - players can do this action every 4 hours; this makes it appear
+        // for brand new players after 2 minutes of poking around the site
+        $this->lastPerformedQualityTime = (new \DateTimeImmutable())->modify('-238 minutes');
     }
 
     public function getId(): ?int
@@ -778,6 +785,19 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         }
 
         $this->cookingBuddy = $cookingBuddy;
+
+        return $this;
+    }
+
+    #[Groups(['myAccount'])]
+    public function getLastPerformedQualityTime(): \DateTimeImmutable
+    {
+        return $this->lastPerformedQualityTime;
+    }
+
+    public function setLastPerformedQualityTime(): static
+    {
+        $this->lastPerformedQualityTime = new \DateTimeImmutable();
 
         return $this;
     }

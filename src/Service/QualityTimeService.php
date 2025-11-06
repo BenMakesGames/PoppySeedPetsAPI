@@ -35,7 +35,7 @@ class QualityTimeService
     {
     }
 
-    public function doQualityTime(User $user): void
+    public function doQualityTime(User $user): string
     {
         $pets = $this->em->getRepository(Pet::class)->findBy([
             'owner' => $user,
@@ -88,7 +88,7 @@ class QualityTimeService
 
             $describeQualityTime = $this->getRandomQualityTimeDescription($user, $pets);
 
-            PetActivityLogFactory::createUnreadLog($this->em, $pet, $describeQualityTime)
+            PetActivityLogFactory::createReadLog($this->em, $pet, $describeQualityTime)
                 ->setIcon('ui/affection')
                 ->setChanges($changes->compare($pet))
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ PetActivityLogTagEnum::QualityTime ]))
@@ -96,6 +96,14 @@ class QualityTimeService
         }
 
         $this->userStatsRepository->incrementStat($user, UserStat::PettedAPet, count($pets));
+
+        $user->setLastPerformedQualityTime();
+
+        return $describeQualityTime;
     }
 
+    private function getRandomQualityTimeDescription(User $user, array $pets): string
+    {
+        return 'This is a generic quality time success message!';
+    }
 }
