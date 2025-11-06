@@ -204,7 +204,7 @@ class UpsertRecipeCommand extends PoppySeedPetsCommand
             $this->output->writeln('Current ' . $describedAs . ':');
 
             foreach($quantities as $ingredient)
-                $this->output->writeln('  ' . $ingredient->quantity . 'x ' . $ingredient->item->getName());
+                $this->output->writeln('  ' . $ingredient->quantity . 'x ' . $ingredient->item->getName() . ' (#' . $ingredient->item->getId() . ')');
 
             if(!$this->confirm('Change ' . $describedAs . '?', false))
                 return $quantities;

@@ -93,7 +93,7 @@ final class MonsterOfTheWeekHelpers
             MonsterOfTheWeekEnum::Boshinogami => [ 'Hat Box' ],
             MonsterOfTheWeekEnum::Cardea => [ 'Tile: Flying Keys, Only', 'Magic Crystal Ball', 'Bag of Feathers', 'Tile: Triple Chest' ],
             MonsterOfTheWeekEnum::Dionysus => [ 'Tile: Statue Garden', 'Whisper Stone' ],
-            MonsterOfTheWeekEnum::Huehuecoyotl => [ 'Magic Hourglass', 'Maraca', 'Tile: Very Cool Beans' ],
+            MonsterOfTheWeekEnum::Huehuecoyotl => [ 'Magic Hourglass', 'Firefly Harp', 'Maraca', 'Tile: Very Cool Beans' ],
             MonsterOfTheWeekEnum::EiriPersona => [ 'Eiri Persona Persona' ],
             default => throw new \InvalidArgumentException("Invalid monster"),
         };
