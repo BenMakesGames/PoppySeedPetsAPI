@@ -493,25 +493,30 @@ class MagicBeanstalkService
 
             $possibleLoot = [
                 $wheatFlourOrCorn,
-                $this->rng->rngNextFromArray([ 'Gold Bar', 'Linens and Things' ]),
-                $this->rng->rngNextFromArray([ 'Pamplemousse', 'Fig' ]),
-                'Jelly-filled Donut',
+                'Gold Bar',
+                'Linens and Things',
+                'Pamplemousse',
+                'Fig',
+                'Slice of Bread',
+                'Stereotypical Bone',
                 'Puddin\' Rec\'pes',
+                'Gold Harp'
             ];
 
             $loot = [
                 'Fluff',
-                $this->rng->rngNextFromArray($possibleLoot),
             ];
 
-            if($this->rng->rngNextInt(1, 1000) <= $petWithSkills->getPerception()->getTotal() && $pet->hasMerit(MeritEnum::BEHATTED))
-                $loot[] = 'White Bow';
+            if($this->rng->rngNextInt(1, 20 + $petWithSkills->getPerception()->getTotal()) >= 20)
+                $loot = array_merge($loot, $this->rng->rngNextSubsetFromArray($possibleLoot, 2));
+            else
+                $loot[] = $this->rng->rngNextFromArray($possibleLoot);
 
             if($this->rng->rngNextInt(1, max(5, 30 - $petWithSkills->getPerception()->getTotal() * 3)) === 1)
                 $loot[] = 'Marshmallows';
 
-            if($this->rng->rngNextInt(1, 20 + $petWithSkills->getPerception()->getTotal()) >= 20)
-                $loot[] = $this->rng->rngNextFromArray($possibleLoot);
+            if($this->rng->rngNextInt(1, 1000) <= $petWithSkills->getPerception()->getTotal() && $pet->hasMerit(MeritEnum::BEHATTED))
+                $loot[] = 'White Bow';
 
             $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% climbed %user:' . $pet->getOwner()->getId() . '.name\'s% magic bean-stalk all the way to the clouds, and found a huge castle! They explored it for a little while, eventually making off with ' . ArrayFunctions::list_nice_sorted($loot) . '!')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Magic Beanstalk', 'Stealth' ]))

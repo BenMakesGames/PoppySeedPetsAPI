@@ -97,6 +97,9 @@ class MagicBindingService
 
             if($this->houseSimService->hasInventory('Rainbow'))
                 $possibilities[] = new ActivityCallback($this->createRainbowWings(...), 8);
+
+            if($this->houseSimService->hasInventory('Gold Harp') && $this->houseSimService->hasInventory('Jar of Fireflies'))
+                $possibilities[] = new ActivityCallback($this->createFireflyHarp(...), 8);
         }
 
         if($this->houseSimService->hasInventory('Ruby Feather'))
@@ -1886,6 +1889,42 @@ class MagicBindingService
             $this->petExperienceService->gainExp($pet, 4, [ PetSkillEnum::Arcana ], $activityLog);
             return $activityLog;
         }
+    }
+
+    public function createFireflyHarp(ComputedPetSkills $petWithSkills): PetActivityLog
+    {
+        $pet = $petWithSkills->getPet();
+        $magicBindingCheck = $this->rng->rngNextInt(1, 20 + $petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getMagicBindingBonus()->getTotal());
+
+        if($magicBindingCheck < 22)
+        {
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, ActivityHelpers::PetName($pet) . ' tried to attract some fireflies to a Gold Harp, but they weren\'t going for it...')
+                ->setIcon('icons/activity-logs/confused')
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Magic-binding' ]))
+            ;
+
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::Arcana ], $activityLog);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+        }
+        else
+        {
+            $this->houseSimService->getState()->loseItem('Gold Harp', 1);
+            $this->houseSimService->getState()->loseItem('Jar of Fireflies', 1);
+            $this->houseSimService->getState()->loseItem('Wings', 1);
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% created a Firefly Harp!')
+                ->addInterestingness(PetActivityLogInterestingness::HoHum + 22)
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
+                    PetActivityLogTagEnum::Magic_binding,
+                    PetActivityLogTagEnum::Location_At_Home,
+                ]))
+            ;
+            $this->inventoryService->petCollectsItem('Firefly Harp', $pet, $pet->getName() . ' created this!', $activityLog);
+
+            $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::Arcana ], $activityLog);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 75), PetActivityStatEnum::MAGIC_BIND, true);
+        }
+
+        return $activityLog;
     }
 
     public function createAmbuLance(ComputedPetSkills $petWithSkills): PetActivityLog
