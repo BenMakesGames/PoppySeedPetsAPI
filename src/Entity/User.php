@@ -801,4 +801,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
+
+    public function hasFieldGuideEntry(string $entryName): bool
+    {
+        return $this->fieldGuideEntries->exists(
+            fn(int $key, UserFieldGuideEntry $entry) => $entry->getEntry()->getName() === $entryName
+        );
+    }
 }

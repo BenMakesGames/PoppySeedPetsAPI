@@ -11,7 +11,6 @@ declare(strict_types=1);
  * You should have received a copy of the GNU General Public License along with The Poppy Seed Pets API. If not, see <https://www.gnu.org/licenses/>.
  */
 
-
 namespace App\Controller\House;
 
 use App\Attributes\DoesNotRequireHouseHours;
@@ -21,6 +20,7 @@ use App\Enum\LocationEnum;
 use App\Enum\PetLocationEnum;
 use App\Enum\SerializationGroupEnum;
 use App\Exceptions\PSPInvalidOperationException;
+use App\Service\CommentFormatter;
 use App\Service\HouseService;
 use App\Service\QualityTimeService;
 use App\Service\ResponseService;
@@ -40,7 +40,7 @@ class DoQualityTimeController
     #[Route("/doQualityTime", methods: ["POST"])]
     public function doQualityTime(
         ResponseService $responseService, EntityManagerInterface $em, QualityTimeService $qualityTimeService,
-        UserAccessor $userAccessor
+        UserAccessor $userAccessor, CommentFormatter $commentFormatter
     ): JsonResponse
     {
         $user = $userAccessor->getUserOrThrow();
@@ -55,7 +55,7 @@ class DoQualityTimeController
         $responseService->setReloadPets();
 
         return $responseService->success([
-            'message' => $message,
+            'message' => $commentFormatter->format($message),
         ]);
     }
 }
