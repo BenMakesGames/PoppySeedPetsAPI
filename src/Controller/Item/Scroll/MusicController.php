@@ -53,7 +53,7 @@ class MusicController
         ];
 
         $rareItems = [
-            'Bass Guitar', 'Maraca', 'Melodica', 'Sousaphone'
+            'Bass Guitar', 'Maraca', 'Melodica', 'Sousaphone', 'Gold Harp'
         ];
 
         $location = $inventory->getLocation();
