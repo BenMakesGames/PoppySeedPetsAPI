@@ -22,8 +22,9 @@ use Doctrine\ORM\EntityManagerInterface;
 
 final class UserMenuFunctions
 {
+    /** @var array<int, string>  */
     private const array DefaultOrder = [
-        'home', 'cookingBuddy', 'basement', 'greenhouse', 'beehive', 'dragonDen', 'hollowEarth', 'starKindred',
+        'home', 'cookingBuddy', 'basement', 'greenhouse', 'beehive', 'dragonDen', 'hollowEarth', 'library',
         'fireplace', 'park', 'plaza', 'museum', 'zoologist', 'market', 'grocer', 'petShelter',
         'bookstore', 'trader', 'hattier', 'fieldGuide', 'mailbox', 'painter', 'florist',
         'journal', 'achievements'
@@ -53,6 +54,7 @@ final class UserMenuFunctions
 
     /**
      * @param UserMenuItem[] $menuItems
+     * @param array<int, string> $userSortOrders
      */
     private static function maybeAddMenuItem(array &$menuItems, string $name, User $user, array $userSortOrders, ?UnlockableFeatureEnum $feature): bool
     {
@@ -80,6 +82,7 @@ final class UserMenuFunctions
     {
         $userSortOrderEntity = $em->getRepository(UserMenuOrder::class)->findOneBy([ 'user' => $user ]);
 
+        /** @var array<int, string> $userSortOrder */
         $userSortOrder = $userSortOrderEntity
             ? $userSortOrderEntity->getMenuOrder()
             : self::DefaultOrder
@@ -94,8 +97,7 @@ final class UserMenuFunctions
             (self::maybeAddMenuItem($menuItems, 'beehive', $user, $userSortOrder, UnlockableFeatureEnum::Beehive) ? 0 : 1) +
             (self::maybeAddMenuItem($menuItems, 'fireplace', $user, $userSortOrder, UnlockableFeatureEnum::Fireplace) ? 0 : 1) +
             (self::maybeAddMenuItem($menuItems, 'dragonDen', $user, $userSortOrder, UnlockableFeatureEnum::DragonDen) ? 0 : 1) +
-            (self::maybeAddMenuItem($menuItems, 'hollowEarth', $user, $userSortOrder, UnlockableFeatureEnum::HollowEarth) ? 0 : 1) +
-            (self::maybeAddMenuItem($menuItems, 'starKindred', $user, $userSortOrder, UnlockableFeatureEnum::StarKindred) ? 0 : 1) +
+            (self::maybeAddMenuItem($menuItems, 'library', $user, $userSortOrder, UnlockableFeatureEnum::Library) ? 0 : 1) +
             (self::maybeAddMenuItem($menuItems, 'park', $user, $userSortOrder, UnlockableFeatureEnum::Park) ? 0 : 1) +
             (self::maybeAddMenuItem($menuItems, 'plaza', $user, $userSortOrder, null) ? 0 : 1) +
             (self::maybeAddMenuItem($menuItems, 'museum', $user, $userSortOrder, UnlockableFeatureEnum::Museum) ? 0 : 1) +

@@ -16,23 +16,24 @@ namespace App\Enum;
 
 enum UnlockableFeatureEnum: string
 {
-    case Florist = 'Florist';
+    case Basement = 'Basement';
+    case Beehive = 'Beehive';
+    case BulkSelling = 'Bulk Selling';
     case Bookstore = 'Bookstore';
+    case CookingBuddy = 'Cooking Buddy';
+    case DragonDen = 'Dragon Den';
+    case FieldGuide = 'Field Guide';
+    case Fireplace = 'Fireplace';
+    case Florist = 'Florist';
+    case Greenhouse = 'Greenhouse';
+    case Hattier = 'Hattier';
+    case HollowEarth = 'Hollow Earth';
+    case Mailbox = 'Mailbox';
+    case Market = 'Market';
     case Museum = 'Museum';
     case Park = 'Park';
-    case Greenhouse = 'Greenhouse';
-    case CookingBuddy = 'Cooking Buddy';
-    case Basement = 'Basement';
-    case HollowEarth = 'Hollow Earth';
-    case Market = 'Market';
-    case Fireplace = 'Fireplace';
-    case Beehive = 'Beehive';
-    case Trader = 'Trader';
-    case Mailbox = 'Mailbox';
-    case DragonDen = 'Dragon Den';
-    case BulkSelling = 'Bulk Selling';
-    case Hattier = 'Hattier';
-    case FieldGuide = 'Field Guide';
     case StarKindred = 'Star Kindred';
+    case Library = 'Library';
+    case Trader = 'Trader';
     case Zoologist = 'Zoologist';
 }
