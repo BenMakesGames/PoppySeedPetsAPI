@@ -88,14 +88,12 @@ class MoveController
             if ($itemsInTargetLocation + count($inventory) > User::MaxHouseInventory)
                 throw new PSPInvalidOperationException('You do not have enough space in your house!');
         }
-
-        if($location === LocationEnum::Basement)
+        else if($location === LocationEnum::Basement)
         {
             if ($itemsInTargetLocation + count($inventory) > User::MaxBasementInventory)
                 throw new PSPInvalidOperationException('You do not have enough space in the basement!');
         }
-
-        if($location === LocationEnum::Mantle)
+        else if($location === LocationEnum::Mantle)
         {
             $fireplace = $user->getFireplace()
                 ?? throw new PSPNotUnlockedException('Fireplace');
@@ -103,8 +101,7 @@ class MoveController
             if ($itemsInTargetLocation + count($inventory) > $fireplace->getMantleSize())
                 throw new PSPInvalidOperationException('The mantle only has space for ' . $fireplace->getMantleSize() . ' items.');
         }
-
-        if($location === LocationEnum::Library)
+        else if($location === LocationEnum::Library)
         {
             $uniqueItemIds = [];
 
