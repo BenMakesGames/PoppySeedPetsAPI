@@ -29,6 +29,29 @@ final class Version20251109182331 extends AbstractMigration
         $this->addSql(<<<'EOSQL'
         UPDATE `item` SET `description` = 'What kind of stories do pears tell?\n\n<span class=\"inline-upside-down\">Answer: <em>pear</em>ables!</span>' WHERE `item`.`id` = 1394; 
         EOSQL);
+
+        // "Die" item group
+        $this->addSql(<<<'EOSQL'
+        INSERT INTO `item_group` (`id`, `name`, `is_craving`, `is_gift_shop`) VALUES (59, 'Die', '0', '0')
+        ON DUPLICATE KEY UPDATE id = id
+        EOSQL);
+
+        $this->addSql(<<<'EOSQL'
+        INSERT INTO item_group_item
+        (item_group_id, item_id)
+        SELECT 59 AS item_group_id,item.id AS item_id
+        FROM item
+        WHERE name IN (
+            'Glowing Four-sided Die',
+            'Glowing Six-sided Die',
+            'Glowing Eight-sided Die',
+            'Glowing Twenty-sided Die',
+            'Glowing Ten-sided Die',
+            'Glowing Twelve-sided Die',
+            'Dreidel'
+        )
+        ON DUPLICATE KEY UPDATE `item_id` = `item_id`
+        EOSQL);
     }
 
     public function down(Schema $schema): void

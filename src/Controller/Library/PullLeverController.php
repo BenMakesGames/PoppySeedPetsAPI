@@ -19,6 +19,7 @@ use App\Enum\UnlockableFeatureEnum;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotUnlockedException;
 use App\Functions\UserUnlockedFeatureHelpers;
+use App\Service\HollowEarthService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -32,9 +33,8 @@ class PullLeverController
     #[Route("/pullLever", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function getCurrent(
-        UserAccessor $userAccessor,
-        EntityManagerInterface $em,
-        ResponseService $responseService,
+        UserAccessor $userAccessor, EntityManagerInterface $em, ResponseService $responseService,
+        HollowEarthService $hollowEarthService
     ): JsonResponse
     {
         $user = $userAccessor->getUserOrThrow();
@@ -47,7 +47,7 @@ class PullLeverController
 
         $bookCount = $em->createQueryBuilder()
             ->select('COUNT(i)')->from(Inventory::class, 'i')
-            ->andWhere('i.user = :user')
+            ->andWhere('i.owner = :user')
             ->andWhere('i.location = :library')
             ->setParameter('user', $user)
             ->setParameter('library', LocationEnum::Library)
@@ -56,11 +56,13 @@ class PullLeverController
 
         if($bookCount < 10)
         {
-            $responseService->addFlashMessage('You pull the lever, but nothing happens... (Maybe you need more books? Is that how these secret library levers work??)');
+            $responseService->addFlashMessage('You pull the lever, but nothing happens... (Maybe you need more books? Is that how these hidden library levers work??)');
         }
         else
         {
-            UserUnlockedFeatureHelpers::create($em, $user, UnlockableFeatureEnum::HollowEarth);
+            $hollowEarthService->unlockHollowEarth($user);
+
+            $em->flush();
 
             $responseService->addFlashMessage('You pull the lever, revealing a secret passage! (You can now travel to the Hollow Earth! Get some dice ready!)');
         }
