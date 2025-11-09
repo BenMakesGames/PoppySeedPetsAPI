@@ -179,5 +179,6 @@ class FortuneCookie
         'Punctuality is the politeness of kings and the duty of gentle people everywhere.',
         'Magnanimity will bring you universal respect.',
         'Many opportunities are open; take advantage of them!',
+        'A helping hand will be extended when you need it most.',
     ];
 }

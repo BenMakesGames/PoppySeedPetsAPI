@@ -24,4 +24,5 @@ final class LocationEnum
     const int Wardrobe = 3;
     const int Lunchbox = 4;
     const int BirdBath = 5;
+    const int Library = 6;
 }

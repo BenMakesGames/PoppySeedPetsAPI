@@ -534,5 +534,11 @@ class Music
 
         // R U Guna Move
         'If you say sooo... iiit\'s irrelevaaant. (Are you gonna move? Are you gonna-- are you gonna-- are you gonna move?)',
+
+        // Our Lips Are Sealed, by the Go-Go's
+        'Can you hear theeem? They talk about us. Telling liiees, well that\'s no surprise...',
+
+        // If It Makes You Happy, by Sherly Crow
+        'If it makes you haaapyyyyy... it can\'t be that baaaaa-a-a-aaad... if it makes you haaapyyyyy... then why the hell are you sooo saaad...',
     ];
 }

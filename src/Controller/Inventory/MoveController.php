@@ -21,6 +21,7 @@ use App\Enum\UnlockableFeatureEnum;
 use App\Exceptions\PSPFormValidationException;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotFoundException;
+use App\Exceptions\PSPNotUnlockedException;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
 use App\Service\UserAccessor;
@@ -52,6 +53,9 @@ class MoveController
 
         if($user->hasUnlockedFeature(UnlockableFeatureEnum::Basement))
             $allowedLocations[] = LocationEnum::Basement;
+
+        if($user->hasUnlockedFeature(UnlockableFeatureEnum::Library))
+            $allowedLocations[] = LocationEnum::Library;
 
         if(!in_array($location, $allowedLocations))
             throw new PSPFormValidationException('Invalid location given.');
@@ -93,8 +97,43 @@ class MoveController
 
         if($location === LocationEnum::Mantle)
         {
-            if ($itemsInTargetLocation + count($inventory) > $user->getFireplace()->getMantleSize())
-                throw new PSPInvalidOperationException('The mantle only has space for ' . $user->getFireplace()->getMantleSize() . ' items.');
+            $fireplace = $user->getFireplace()
+                ?? throw new PSPNotUnlockedException('Fireplace');
+
+            if ($itemsInTargetLocation + count($inventory) > $fireplace->getMantleSize())
+                throw new PSPInvalidOperationException('The mantle only has space for ' . $fireplace->getMantleSize() . ' items.');
+        }
+
+        if($location === LocationEnum::Library)
+        {
+            $uniqueItemIds = [];
+
+            foreach($inventory as $i)
+            {
+                if(!$i->getItem()->hasItemGroup('Book'))
+                    throw new PSPInvalidOperationException('Only books can be placed in the Library! (' . $i->getItem()->getName() . ' isn\'t a book, at least.)');
+
+                if(in_array($i->getItem()->getId(), $uniqueItemIds))
+                    throw new PSPInvalidOperationException('Every book in the Library must be unique. (You selected multiple copies of ' . $i->getItem()->getName() . ' to move just now, at least.)');
+
+                $uniqueItemIds[] = $i->getItem()->getId();
+            }
+
+            $alreadyInLibrary = $em->createQueryBuilder()
+                ->select('item.name AS itemName')->from(Inventory::class, 'i')
+                ->join('i.item', 'item')
+                ->andWhere('i.owner=:user')
+                ->andWhere('i.location=:library')
+                ->andWhere('item.id IN (:books)')
+                ->setParameter('user', $user->getId())
+                ->setParameter('library', LocationEnum::Library)
+                ->setParameter('books', $uniqueItemIds)
+                ->setMaxResults(1)
+                ->getQuery()
+                ->getScalarResult();
+
+            if(count($alreadyInLibrary) > 0)
+                throw new PSPInvalidOperationException('Every book in the Library must be unique. (You already have a copy of ' . $alreadyInLibrary[0]['itemName'] . ' in your Library, at least.)');
         }
 
         foreach($inventory as $i)
