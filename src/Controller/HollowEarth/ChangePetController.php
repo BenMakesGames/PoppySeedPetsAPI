@@ -38,10 +38,9 @@ class ChangePetController
     ): JsonResponse
     {
         $user = $userAccessor->getUserOrThrow();
-        $player = $user->getHollowEarthPlayer();
 
-        if($player === null)
-            throw new PSPNotUnlockedException('Hollow Earth');
+        $player = $user->getHollowEarthPlayer()
+            ?? throw new PSPNotUnlockedException('Hollow Earth');
 
         if($pet->getOwner()->getId() !== $user->getId())
             throw new PSPPetNotFoundException();

@@ -33,8 +33,7 @@ class DieController
     #[Route("/{inventory}/roll", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function roll(
-        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, IRandom $rng,
-        HollowEarthService $hollowEarthService, UserAccessor $userAccessor
+        Inventory $inventory, ResponseService $responseService, IRandom $rng, UserAccessor $userAccessor
     ): JsonResponse
     {
         $user = $userAccessor->getUserOrThrow();
@@ -58,20 +57,9 @@ class DieController
             $roll = $rng->rngNextInt(1, $sides);
         }
 
-        if($user->hasUnlockedFeature(UnlockableFeatureEnum::HollowEarth))
-            return $responseService->itemActionSuccess('You got a ' . $roll . '.', []);
-
-        $hollowEarthService->unlockHollowEarth($user);
-
-        $em->flush();
-
-        if($inventory->getLocation() === LocationEnum::Basement)
-            $location = 'under the basement stairs';
-        else
-            $location = 'on one of the walls';
-
-        return $responseService->itemActionSuccess("You rolled a $roll.\n\nYou notice a door $location that you're _quite_ certain did not exist before now...\n\nThat's... more than a little weird.\n\n(A new location has been made available - check the menu...)");
+        return $responseService->itemActionSuccess('You got a ' . $roll . '.');
     }
+
     #[Route("/{inventory}/changeYourFate", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function changeYourFate(
