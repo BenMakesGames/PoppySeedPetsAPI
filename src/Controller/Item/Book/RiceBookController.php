@@ -53,7 +53,7 @@ class RiceBookController
     {
         $user = $userAccessor->getUserOrThrow();
 
-        ItemControllerHelpers::validateInventory($user, $inventory, 'riceBook/#/upload');
+        ItemControllerHelpers::validateInventoryAllowingLibrary($user, $inventory, 'riceBook/#/upload');
 
         $message = $cookingService->showRecipeNamesToCookingBuddy($user, self::Recipes);
 
@@ -66,7 +66,7 @@ class RiceBookController
         UserAccessor $userAccessor
     ): JsonResponse
     {
-        ItemControllerHelpers::validateInventory($userAccessor->getUserOrThrow(), $inventory, 'riceBook/#/read');
+        ItemControllerHelpers::validateInventoryAllowingLibrary($userAccessor->getUserOrThrow(), $inventory, 'riceBook/#/read');
 
         return $responseService->itemActionSuccess('# Of Rice
 

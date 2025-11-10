@@ -35,7 +35,7 @@ class BakingBookController
     {
         $user = $userAccessor->getUserOrThrow();
 
-        ItemControllerHelpers::validateInventory($user, $inventory, 'bakingBook/#/upload');
+        ItemControllerHelpers::validateInventoryAllowingLibrary($user, $inventory, 'bakingBook/#/upload');
 
         $message = $cookingService->showRecipeNamesToCookingBuddy($user, [
             'Baking Powder',
@@ -86,7 +86,7 @@ class BakingBookController
         UserAccessor $userAccessor
     ): JsonResponse
     {
-        ItemControllerHelpers::validateInventory($userAccessor->getUserOrThrow(), $inventory, 'bakingBook/#/read');
+        ItemControllerHelpers::validateInventoryAllowingLibrary($userAccessor->getUserOrThrow(), $inventory, 'bakingBook/#/read');
 
         return $responseService->itemActionSuccess('# Big Book of Baking
 

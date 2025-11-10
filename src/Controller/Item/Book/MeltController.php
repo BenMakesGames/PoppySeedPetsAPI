@@ -47,7 +47,7 @@ class MeltController
     {
         $user = $userAccessor->getUserOrThrow();
 
-        ItemControllerHelpers::validateInventory($user, $inventory, 'melt/#/upload');
+        ItemControllerHelpers::validateInventoryAllowingLibrary($user, $inventory, 'melt/#/upload');
 
         $recipeNames = array_map(fn(Recipe $recipe) => $recipe->name, $this->getRecipes($recipeRepository));
 
@@ -63,7 +63,7 @@ class MeltController
         UserAccessor $userAccessor, RecipeRepository $recipeRepository
     ): JsonResponse
     {
-        ItemControllerHelpers::validateInventory($userAccessor->getUserOrThrow(), $inventory, 'melt/#/read');
+        ItemControllerHelpers::validateInventoryAllowingLibrary($userAccessor->getUserOrThrow(), $inventory, 'melt/#/read');
 
         $recipes = $this->getRecipes($recipeRepository);
 

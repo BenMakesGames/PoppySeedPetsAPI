@@ -36,7 +36,7 @@ class Cooking101Controller
     {
         $user = $userAccessor->getUserOrThrow();
 
-        ItemControllerHelpers::validateInventory($user, $inventory, 'cooking101/#/upload');
+        ItemControllerHelpers::validateInventoryAllowingLibrary($user, $inventory, 'cooking101/#/upload');
 
         $message = $cookingService->showRecipeNamesToCookingBuddy($user, [
             'Matzah Bread',
@@ -66,7 +66,7 @@ class Cooking101Controller
         RecipeRepository $recipeRepository
     ): JsonResponse
     {
-        ItemControllerHelpers::validateInventory($userAccessor->getUserOrThrow(), $inventory, 'cooking101/#/read');
+        ItemControllerHelpers::validateInventoryAllowingLibrary($userAccessor->getUserOrThrow(), $inventory, 'cooking101/#/read');
 
         $recipeCount = count($recipeRepository->recipes);
 

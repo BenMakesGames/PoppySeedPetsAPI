@@ -37,7 +37,24 @@ class ItemControllerHelpers
             $inventory->getLocation() !== LocationEnum::Home &&
             $inventory->getLocation() !== LocationEnum::Mantle
         )
-            throw new PSPInvalidOperationException('To do this, the item must be in your house, Basement, or Fireplace mantle.');
+            throw new PSPInvalidOperationException('To do this, the item must be in your House, Basement, or Fireplace Mantle.');
+    }
+
+    public static function validateInventoryAllowingLibrary(?User $user, Inventory $inventory, string $action): void
+    {
+        if(!$user || $user->getId() !== $inventory->getOwner()->getId())
+            throw new PSPNotFoundException('That item does not exist.');
+
+        if(!$inventory->getItem()->hasUseAction($action))
+            throw new PSPInvalidOperationException('That item cannot be used in that way!');
+
+        if(
+            $inventory->getLocation() !== LocationEnum::Basement &&
+            $inventory->getLocation() !== LocationEnum::Home &&
+            $inventory->getLocation() !== LocationEnum::Mantle &&
+            $inventory->getLocation() !== LocationEnum::Library
+        )
+            throw new PSPInvalidOperationException('To do this, the item must be in your House, Basement, Fireplace Mantle, or Library.');
     }
 
     /**
@@ -52,7 +69,7 @@ class ItemControllerHelpers
         else if($inventory->getLocation() === LocationEnum::Mantle)
             self::validateMantleSpace($inventory, $em);
         else
-            throw new PSPInvalidOperationException('To do this, the item must be in your house, Basement, or Fireplace mantle.');
+            throw new PSPInvalidOperationException('To do this, the item must be in your House, Basement, or Fireplace Mantle.');
     }
 
     private static function validateHouseSpace(Inventory $inventory, EntityManagerInterface $em): void

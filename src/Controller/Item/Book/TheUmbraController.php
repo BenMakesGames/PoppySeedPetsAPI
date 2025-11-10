@@ -31,7 +31,7 @@ class TheUmbraController
         UserAccessor $userAccessor
     ): JsonResponse
     {
-        ItemControllerHelpers::validateInventory($userAccessor->getUserOrThrow(), $inventory, 'theUmbra/#/read');
+        ItemControllerHelpers::validateInventoryAllowingLibrary($userAccessor->getUserOrThrow(), $inventory, 'theUmbra/#/read');
 
         return $responseService->itemActionSuccess('# The Umbra
 

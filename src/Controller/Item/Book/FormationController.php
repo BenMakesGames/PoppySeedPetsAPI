@@ -31,7 +31,7 @@ class FormationController
         UserAccessor $userAccessor
     ): JsonResponse
     {
-        ItemControllerHelpers::validateInventory($userAccessor->getUserOrThrow(), $inventory, 'formation/#/read');
+        ItemControllerHelpers::validateInventoryAllowingLibrary($userAccessor->getUserOrThrow(), $inventory, 'formation/#/read');
 
         return $responseService->itemActionSuccess('# Formation
 

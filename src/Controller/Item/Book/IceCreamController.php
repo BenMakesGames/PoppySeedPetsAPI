@@ -35,7 +35,7 @@ class IceCreamController
     {
         $user = $userAccessor->getUserOrThrow();
 
-        ItemControllerHelpers::validateInventory($user, $inventory, 'iceCream/#/upload');
+        ItemControllerHelpers::validateInventoryAllowingLibrary($user, $inventory, 'iceCream/#/upload');
 
         $message = $cookingService->showRecipeNamesToCookingBuddy($user, [
             'Blackberry Ice Cream',
@@ -60,7 +60,7 @@ class IceCreamController
         UserAccessor $userAccessor
     ): JsonResponse
     {
-        ItemControllerHelpers::validateInventory($userAccessor->getUserOrThrow(), $inventory, 'iceCream/#/read');
+        ItemControllerHelpers::validateInventoryAllowingLibrary($userAccessor->getUserOrThrow(), $inventory, 'iceCream/#/read');
 
         return $responseService->itemActionSuccess('# We All Scream
 

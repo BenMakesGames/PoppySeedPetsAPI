@@ -31,7 +31,7 @@ class VampiresController
         UserAccessor $userAccessor
     ): JsonResponse
     {
-        ItemControllerHelpers::validateInventory($userAccessor->getUserOrThrow(), $inventory, 'onVampires/#/read');
+        ItemControllerHelpers::validateInventoryAllowingLibrary($userAccessor->getUserOrThrow(), $inventory, 'onVampires/#/read');
 
         return $responseService->itemActionSuccess(<<<EOBOOK
 ### The Monster

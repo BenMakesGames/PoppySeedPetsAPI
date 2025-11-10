@@ -31,7 +31,7 @@ class ArmadillosController
         UserAccessor $userAccessor
     ): JsonResponse
     {
-        ItemControllerHelpers::validateInventory($userAccessor->getUserOrThrow(), $inventory, 'theBeginningOfTheArmadillos/#/read');
+        ItemControllerHelpers::validateInventoryAllowingLibrary($userAccessor->getUserOrThrow(), $inventory, 'theBeginningOfTheArmadillos/#/read');
 
         return $responseService->itemActionSuccess('# The Beginning of the Armadillos
 

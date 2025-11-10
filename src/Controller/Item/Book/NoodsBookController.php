@@ -33,7 +33,7 @@ class NoodsBookController
     {
         $user = $userAccessor->getUserOrThrow();
 
-        ItemControllerHelpers::validateInventory($user, $inventory, 'noodsBook/#/upload');
+        ItemControllerHelpers::validateInventoryAllowingLibrary($user, $inventory, 'noodsBook/#/upload');
 
         if(!$user->getCookingBuddy())
             $message = 'You need a Cooking Buddy to do this.';
@@ -49,7 +49,7 @@ class NoodsBookController
         UserAccessor $userAccessor
     ): JsonResponse
     {
-        ItemControllerHelpers::validateInventory($userAccessor->getUserOrThrow(), $inventory, 'noodsBook/#/read');
+        ItemControllerHelpers::validateInventoryAllowingLibrary($userAccessor->getUserOrThrow(), $inventory, 'noodsBook/#/read');
 
         return $responseService->itemActionSuccess('## Noods
 

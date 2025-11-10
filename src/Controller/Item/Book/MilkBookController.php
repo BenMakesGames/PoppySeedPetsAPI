@@ -35,7 +35,7 @@ class MilkBookController
     {
         $user = $userAccessor->getUserOrThrow();
 
-        ItemControllerHelpers::validateInventory($user, $inventory, 'milkBook/#/upload');
+        ItemControllerHelpers::validateInventoryAllowingLibrary($user, $inventory, 'milkBook/#/upload');
 
         $message = $cookingService->showRecipeNamesToCookingBuddy($user, [
             'Chocolate Cream Pie',
@@ -83,7 +83,7 @@ class MilkBookController
         UserAccessor $userAccessor
     ): JsonResponse
     {
-        ItemControllerHelpers::validateInventory($userAccessor->getUserOrThrow(), $inventory, 'milkBook/#/read');
+        ItemControllerHelpers::validateInventoryAllowingLibrary($userAccessor->getUserOrThrow(), $inventory, 'milkBook/#/read');
 
         return $responseService->itemActionSuccess('Have you ever found yourself in a situation where you just have way too much dang milk? Maybe your goat\'s just been overflowing with the stuff; maybe you have a reasonable amount, but just don\'t like the taste of it; maybe your friends\' goat was overflowing with the stuff, so they brought you some as a "gift". (I\'m on to you, Greg and Rachel!)
 

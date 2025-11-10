@@ -45,7 +45,7 @@ class FruitJuiceController
     {
         $user = $userAccessor->getUserOrThrow();
 
-        ItemControllerHelpers::validateInventory($user, $inventory, 'fruitJuice/#/upload');
+        ItemControllerHelpers::validateInventoryAllowingLibrary($user, $inventory, 'fruitJuice/#/upload');
 
         $message = $cookingService->showRecipeNamesToCookingBuddy($user, self::Recipes);
 
@@ -59,7 +59,7 @@ class FruitJuiceController
         UserAccessor $userAccessor
     ): JsonResponse
     {
-        ItemControllerHelpers::validateInventory($userAccessor->getUserOrThrow(), $inventory, 'fruitJuice/#/read');
+        ItemControllerHelpers::validateInventoryAllowingLibrary($userAccessor->getUserOrThrow(), $inventory, 'fruitJuice/#/read');
 
         return $responseService->itemActionSuccess('### Fresh-squeezed Fruit Juice
 

@@ -35,7 +35,7 @@ class FishBookController
     {
         $user = $userAccessor->getUserOrThrow();
 
-        ItemControllerHelpers::validateInventory($user, $inventory, 'fishBook/#/upload');
+        ItemControllerHelpers::validateInventoryAllowingLibrary($user, $inventory, 'fishBook/#/upload');
 
         $message = $cookingService->showRecipeNamesToCookingBuddy($user, [
             'Baked Fish Fingers',
@@ -74,7 +74,7 @@ class FishBookController
         UserAccessor $userAccessor
     ): JsonResponse
     {
-        ItemControllerHelpers::validateInventory($userAccessor->getUserOrThrow(), $inventory, 'fishBook/#/read');
+        ItemControllerHelpers::validateInventoryAllowingLibrary($userAccessor->getUserOrThrow(), $inventory, 'fishBook/#/read');
 
         return $responseService->itemActionSuccess('# Fish Book
 

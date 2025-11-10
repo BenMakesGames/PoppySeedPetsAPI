@@ -31,7 +31,7 @@ class ECETextbookController
         UserAccessor $userAccessor
     ): JsonResponse
     {
-        ItemControllerHelpers::validateInventory($userAccessor->getUserOrThrow(), $inventory, 'eceTextbook/#/read');
+        ItemControllerHelpers::validateInventoryAllowingLibrary($userAccessor->getUserOrThrow(), $inventory, 'eceTextbook/#/read');
 
         return $responseService->itemActionSuccess('# Electrical Engineering 212
 

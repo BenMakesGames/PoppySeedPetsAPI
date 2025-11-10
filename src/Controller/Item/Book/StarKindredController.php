@@ -36,7 +36,7 @@ class StarKindredController
     {
         $user = $userAccessor->getUserOrThrow();
 
-        ItemControllerHelpers::validateInventory($user, $inventory, 'starKindred/#/read');
+        ItemControllerHelpers::validateInventoryAllowingLibrary($user, $inventory, 'starKindred/#/read');
 
         if(
             !$user->hasUnlockedFeature(UnlockableFeatureEnum::StarKindred) ||

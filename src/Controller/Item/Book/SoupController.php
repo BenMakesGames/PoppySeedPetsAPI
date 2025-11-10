@@ -35,7 +35,7 @@ class SoupController
     {
         $user = $userAccessor->getUserOrThrow();
 
-        ItemControllerHelpers::validateInventory($user, $inventory, 'SOUP/#/UPLOAD');
+        ItemControllerHelpers::validateInventoryAllowingLibrary($user, $inventory, 'SOUP/#/UPLOAD');
 
         $message = $cookingService->showRecipeNamesToCookingBuddy($user, [
             '15-bean Soup',
@@ -66,7 +66,7 @@ class SoupController
         UserAccessor $userAccessor
     ): JsonResponse
     {
-        ItemControllerHelpers::validateInventory($userAccessor->getUserOrThrow(), $inventory, 'SOUP/#/READ');
+        ItemControllerHelpers::validateInventoryAllowingLibrary($userAccessor->getUserOrThrow(), $inventory, 'SOUP/#/READ');
 
         return $responseService->itemActionSuccess('# SOUP
 

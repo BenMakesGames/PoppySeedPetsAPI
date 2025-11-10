@@ -45,7 +45,7 @@ class LeChocolatController
     {
         $user = $userAccessor->getUserOrThrow();
 
-        ItemControllerHelpers::validateInventory($user, $inventory, 'leChocolat/#/upload');
+        ItemControllerHelpers::validateInventoryAllowingLibrary($user, $inventory, 'leChocolat/#/upload');
 
         $recipeNames = array_map(fn(Recipe $recipe) => $recipe->name, $this->getRecipes($recipeRepository));
 
@@ -61,7 +61,7 @@ class LeChocolatController
         UserAccessor $userAccessor, RecipeRepository $recipeRepository
     ): JsonResponse
     {
-        ItemControllerHelpers::validateInventory($userAccessor->getUserOrThrow(), $inventory, 'leChocolat/#/read');
+        ItemControllerHelpers::validateInventoryAllowingLibrary($userAccessor->getUserOrThrow(), $inventory, 'leChocolat/#/read');
 
         $recipes = $this->getRecipes($recipeRepository);
 
