@@ -31,7 +31,7 @@ class BookOfFlowersController
         UserAccessor $userAccessor
     ): JsonResponse
     {
-        ItemControllerHelpers::validateInventory($userAccessor->getUserOrThrow(), $inventory, 'bookOfFlowers/#/read');
+        ItemControllerHelpers::validateInventoryAllowingLibrary($userAccessor->getUserOrThrow(), $inventory, 'bookOfFlowers/#/read');
 
         return $responseService->itemActionSuccess('# Book of Flowers
 

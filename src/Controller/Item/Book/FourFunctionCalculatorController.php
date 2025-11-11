@@ -31,7 +31,7 @@ class FourFunctionCalculatorController
         UserAccessor $userAccessor
     ): JsonResponse
     {
-        ItemControllerHelpers::validateInventory($userAccessor->getUserOrThrow(), $inventory, 'fourFunctionCalculator/#/read');
+        ItemControllerHelpers::validateInventoryAllowingLibrary($userAccessor->getUserOrThrow(), $inventory, 'fourFunctionCalculator/#/read');
 
         return $responseService->itemActionSuccess('
 | Basic Operations |

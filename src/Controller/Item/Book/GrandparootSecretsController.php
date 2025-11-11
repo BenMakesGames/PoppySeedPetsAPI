@@ -35,7 +35,7 @@ class GrandparootSecretsController
     {
         $user = $userAccessor->getUserOrThrow();
 
-        ItemControllerHelpers::validateInventory($user, $inventory, 'grandparootSecrets/#/upload');
+        ItemControllerHelpers::validateInventoryAllowingLibrary($user, $inventory, 'grandparootSecrets/#/upload');
 
         $message = $cookingService->showRecipeNamesToCookingBuddy($user, [
             'Aging Powder',
@@ -68,7 +68,7 @@ class GrandparootSecretsController
         UserAccessor $userAccessor
     ): JsonResponse
     {
-        ItemControllerHelpers::validateInventory($userAccessor->getUserOrThrow(), $inventory, 'grandparootSecrets/#/read');
+        ItemControllerHelpers::validateInventoryAllowingLibrary($userAccessor->getUserOrThrow(), $inventory, 'grandparootSecrets/#/read');
 
         return $responseService->itemActionSuccess('# Unlocking the Secrets of Grandparoot
 

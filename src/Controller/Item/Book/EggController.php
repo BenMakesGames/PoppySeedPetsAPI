@@ -31,7 +31,7 @@ class EggController
         UserAccessor $userAccessor
     ): JsonResponse
     {
-        ItemControllerHelpers::validateInventory($userAccessor->getUserOrThrow(), $inventory, 'eggBook/#/listen');
+        ItemControllerHelpers::validateInventoryAllowingLibrary($userAccessor->getUserOrThrow(), $inventory, 'eggBook/#/listen');
 
         return $responseService->itemActionSuccess('\*hiiiiiisssss\*
 Egg Book.

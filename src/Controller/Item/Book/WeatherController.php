@@ -31,7 +31,7 @@ class WeatherController
         UserAccessor $userAccessor
     ): JsonResponse
     {
-        ItemControllerHelpers::validateInventory($userAccessor->getUserOrThrow(), $inventory, 'weatherGuide/#/read');
+        ItemControllerHelpers::validateInventoryAllowingLibrary($userAccessor->getUserOrThrow(), $inventory, 'weatherGuide/#/read');
 
         return $responseService->itemActionSuccess(<<<EOMD
 # Poppy Seed Pets Island Skies: A Guide to Our Weather

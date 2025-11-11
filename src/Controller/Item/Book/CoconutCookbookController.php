@@ -35,7 +35,7 @@ class CoconutCookbookController
     {
         $user = $userAccessor->getUserOrThrow();
 
-        ItemControllerHelpers::validateInventory($user, $inventory, 'coconutCookbook/#/upload');
+        ItemControllerHelpers::validateInventoryAllowingLibrary($user, $inventory, 'coconutCookbook/#/upload');
 
         $message = $cookingService->showRecipeNamesToCookingBuddy($user, [
             'Coconut Milk',
@@ -55,7 +55,7 @@ class CoconutCookbookController
         UserAccessor $userAccessor
     ): JsonResponse
     {
-        ItemControllerHelpers::validateInventory($userAccessor->getUserOrThrow(), $inventory, 'coconutCookbook/#/read');
+        ItemControllerHelpers::validateInventoryAllowingLibrary($userAccessor->getUserOrThrow(), $inventory, 'coconutCookbook/#/read');
 
         return $responseService->itemActionSuccess(<<<EOBOOK
 # Cuckoo for Coconuts

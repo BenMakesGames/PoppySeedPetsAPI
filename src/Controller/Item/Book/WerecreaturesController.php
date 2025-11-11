@@ -31,7 +31,7 @@ class WerecreaturesController
         UserAccessor $userAccessor
     ): JsonResponse
     {
-        ItemControllerHelpers::validateInventory($userAccessor->getUserOrThrow(), $inventory, 'werecreatures/#/read');
+        ItemControllerHelpers::validateInventoryAllowingLibrary($userAccessor->getUserOrThrow(), $inventory, 'werecreatures/#/read');
 
         return $responseService->itemActionSuccess(<<<EOBOOK
 ### Etymology and History

@@ -39,7 +39,7 @@ class YellowyLimeController
     {
         $user = $userAccessor->getUserOrThrow();
 
-        ItemControllerHelpers::validateInventory($user, $inventory, 'yellowyLime/#/upload');
+        ItemControllerHelpers::validateInventoryAllowingLibrary($user, $inventory, 'yellowyLime/#/upload');
 
         $message = $cookingService->showRecipeNamesToCookingBuddy($user, [
             'Yellowy Key-y Lime Pie',
@@ -63,7 +63,7 @@ class YellowyLimeController
     {
         $user = $userAccessor->getUserOrThrow();
 
-        ItemControllerHelpers::validateInventory($user, $inventory, 'yellowyLime/#/read');
+        ItemControllerHelpers::validateInventoryAllowingLibrary($user, $inventory, 'yellowyLime/#/read');
 
         $magnifyingGlass = InventoryHelpers::findAnyOneFromItemGroup($em, $user, 'Magnifying Glass', [
             LocationEnum::Home,

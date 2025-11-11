@@ -35,7 +35,7 @@ class PieRecipesController
     {
         $user = $userAccessor->getUserOrThrow();
 
-        ItemControllerHelpers::validateInventory($user, $inventory, 'pieRecipes/#/upload');
+        ItemControllerHelpers::validateInventoryAllowingLibrary($user, $inventory, 'pieRecipes/#/upload');
 
         $message = $cookingService->showRecipeNamesToCookingBuddy($user, [
             'Pie Crust',
@@ -57,7 +57,7 @@ class PieRecipesController
         UserAccessor $userAccessor
     ): JsonResponse
     {
-        ItemControllerHelpers::validateInventory($userAccessor->getUserOrThrow(), $inventory, 'pieRecipes/#/read');
+        ItemControllerHelpers::validateInventoryAllowingLibrary($userAccessor->getUserOrThrow(), $inventory, 'pieRecipes/#/read');
 
         return $responseService->itemActionSuccess('Who are you, and how did you come by a copy of my book, I wonder. Did you find it washed up on some strange shore? Pry it from the hands of a hungry Preta? Or perhaps you just bought it from a bookstore?
 

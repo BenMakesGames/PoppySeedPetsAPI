@@ -48,7 +48,7 @@ class MikroniumRecipesController
     {
         $user = $userAccessor->getUserOrThrow();
 
-        ItemControllerHelpers::validateInventory($user, $inventory, 'mikroniumRecipes/#/upload');
+        ItemControllerHelpers::validateInventoryAllowingLibrary($user, $inventory, 'mikroniumRecipes/#/upload');
 
         $recipeNames = array_map(fn(Recipe $recipe) => $recipe->name, $this->getRecipes($recipeRepository));
 
@@ -64,7 +64,7 @@ class MikroniumRecipesController
         UserAccessor $userAccessor, RecipeRepository $recipeRepository
     ): JsonResponse
     {
-        ItemControllerHelpers::validateInventory($userAccessor->getUserOrThrow(), $inventory, 'mikroniumRecipes/#/read');
+        ItemControllerHelpers::validateInventoryAllowingLibrary($userAccessor->getUserOrThrow(), $inventory, 'mikroniumRecipes/#/read');
 
         $recipes = $this->getRecipes($recipeRepository);
 

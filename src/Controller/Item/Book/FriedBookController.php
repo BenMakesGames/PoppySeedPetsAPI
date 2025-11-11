@@ -35,7 +35,7 @@ class FriedBookController
     {
         $user = $userAccessor->getUserOrThrow();
 
-        ItemControllerHelpers::validateInventory($user, $inventory, 'friedBook/#/upload');
+        ItemControllerHelpers::validateInventoryAllowingLibrary($user, $inventory, 'friedBook/#/upload');
 
         $message = $cookingService->showRecipeNamesToCookingBuddy($user, [
             'Sunflower Oil',
@@ -75,7 +75,7 @@ class FriedBookController
         UserAccessor $userAccessor
     ): JsonResponse
     {
-        ItemControllerHelpers::validateInventory($userAccessor->getUserOrThrow(), $inventory, 'friedBook/#/read');
+        ItemControllerHelpers::validateInventoryAllowingLibrary($userAccessor->getUserOrThrow(), $inventory, 'friedBook/#/read');
 
         return $responseService->itemActionSuccess('# Fried
 

@@ -35,7 +35,7 @@ class ArtOfTofuController
     {
         $user = $userAccessor->getUserOrThrow();
 
-        ItemControllerHelpers::validateInventory($user, $inventory, 'artOfTofu/#/upload');
+        ItemControllerHelpers::validateInventoryAllowingLibrary($user, $inventory, 'artOfTofu/#/upload');
 
         $message = $cookingService->showRecipeNamesToCookingBuddy($user, [
             'Tofu',
@@ -56,7 +56,7 @@ class ArtOfTofuController
         UserAccessor $userAccessor
     ): JsonResponse
     {
-        ItemControllerHelpers::validateInventory($userAccessor->getUserOrThrow(), $inventory, 'artOfTofu/#/read');
+        ItemControllerHelpers::validateInventoryAllowingLibrary($userAccessor->getUserOrThrow(), $inventory, 'artOfTofu/#/read');
 
         return $responseService->itemActionSuccess('# The Art of Tofu
 

@@ -48,7 +48,7 @@ class MegaliumRecipesController
     {
         $user = $userAccessor->getUserOrThrow();
 
-        ItemControllerHelpers::validateInventory($user, $inventory, 'megaliumRecipes/#/upload');
+        ItemControllerHelpers::validateInventoryAllowingLibrary($user, $inventory, 'megaliumRecipes/#/upload');
 
         $recipeNames = array_map(fn(Recipe $recipe) => $recipe->name, $this->getRecipes($recipeRepository));
 
@@ -64,7 +64,7 @@ class MegaliumRecipesController
         UserAccessor $userAccessor, RecipeRepository $recipeRepository
     ): JsonResponse
     {
-        ItemControllerHelpers::validateInventory($userAccessor->getUserOrThrow(), $inventory, 'megaliumRecipes/#/read');
+        ItemControllerHelpers::validateInventoryAllowingLibrary($userAccessor->getUserOrThrow(), $inventory, 'megaliumRecipes/#/read');
 
         $recipes = $this->getRecipes($recipeRepository);
 

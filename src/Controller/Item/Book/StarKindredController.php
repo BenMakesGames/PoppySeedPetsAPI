@@ -36,13 +36,20 @@ class StarKindredController
     {
         $user = $userAccessor->getUserOrThrow();
 
-        ItemControllerHelpers::validateInventory($user, $inventory, 'starKindred/#/read');
+        ItemControllerHelpers::validateInventoryAllowingLibrary($user, $inventory, 'starKindred/#/read');
 
-        if(!$user->hasUnlockedFeature(UnlockableFeatureEnum::StarKindred))
+        if(
+            !$user->hasUnlockedFeature(UnlockableFeatureEnum::StarKindred) ||
+            !$user->hasUnlockedFeature(UnlockableFeatureEnum::Library)
+        )
         {
-            UserUnlockedFeatureHelpers::create($em, $user, UnlockableFeatureEnum::StarKindred);
+            if(!$user->hasUnlockedFeature(UnlockableFeatureEnum::StarKindred))
+                UserUnlockedFeatureHelpers::create($em, $user, UnlockableFeatureEnum::StarKindred);
 
-            return $responseService->itemActionSuccess('Looks like a game you can play with your pets! You study the book several times, memorizing every detail... (You can now play ★Kindred with your pets! Find it in the menu!)');
+            if(!$user->hasUnlockedFeature(UnlockableFeatureEnum::Library))
+                UserUnlockedFeatureHelpers::create($em, $user, UnlockableFeatureEnum::Library);
+
+            return $responseService->itemActionSuccess('Looks like a game you can play with your pets! You study the book several times, memorizing every detail... and you also get an idea: why not start a personal library?! (You can now play ★Kindred with your pets in your Library, which is now in the menu!)');
         }
         else
         {

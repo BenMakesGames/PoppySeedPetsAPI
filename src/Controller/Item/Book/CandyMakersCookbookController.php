@@ -35,7 +35,7 @@ class CandyMakersCookbookController
     {
         $user = $userAccessor->getUserOrThrow();
 
-        ItemControllerHelpers::validateInventory($user, $inventory, 'candyMakerCookbook/#/upload');
+        ItemControllerHelpers::validateInventoryAllowingLibrary($user, $inventory, 'candyMakerCookbook/#/upload');
 
         $message = $cookingService->showRecipeNamesToCookingBuddy($user, [
             'Agar-agar',
@@ -90,7 +90,7 @@ class CandyMakersCookbookController
         UserAccessor $userAccessor
     ): JsonResponse
     {
-        ItemControllerHelpers::validateInventory($userAccessor->getUserOrThrow(), $inventory, 'candyMakerCookbook/#/read');
+        ItemControllerHelpers::validateInventoryAllowingLibrary($userAccessor->getUserOrThrow(), $inventory, 'candyMakerCookbook/#/read');
 
         return $responseService->itemActionSuccess('# Candy Maker\'s Cookbook
 
