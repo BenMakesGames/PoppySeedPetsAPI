@@ -25,7 +25,7 @@
         "phpdocumentor/reflection-docblock": "^5.3",
         "symfony/amazon-mailer": "*",
         "symfony/apache-pack": "^1.0",
-        "symfony/asset": "7.2.*",
+        "symfony/asset": "*",
         "symfony/console": "*",
         "symfony/dotenv": "*",
         "symfony/expression-language": "*",
@@ -43,7 +43,7 @@
         "symfony/security-bundle": "*",
         "symfony/serializer": "*",
         "symfony/translation": "*",
-        "symfony/twig-bundle": "7.2.*",
+        "symfony/twig-bundle": "*",
         "symfony/validator": "*",
         "symfony/web-link": "*",
         "symfony/yaml": "*",
@@ -54,7 +54,7 @@
         "phpstan/phpstan": "^2.1",
         "phpstan/phpstan-doctrine": "^2.0",
         "phpstan/phpstan-symfony": "^2.0",
-        "phpunit/phpunit": "^9.5",
+        "phpunit/phpunit": "^9.6",
         "symfony/browser-kit": "*",
         "symfony/css-selector": "*",
         "symfony/maker-bundle": "^1.0",
@@ -107,7 +107,7 @@
     "extra": {
         "symfony": {
             "allow-contrib": false,
-            "require": "7.2.*"
+            "require": "7.3.*"
         }
     }
 }
