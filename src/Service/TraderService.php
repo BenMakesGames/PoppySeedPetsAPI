@@ -21,6 +21,7 @@ use App\Entity\TradesUnlocked;
 use App\Entity\User;
 use App\Enum\CostOrYieldTypeEnum;
 use App\Enum\LocationEnum;
+use App\Enum\MonsterOfTheWeekEnum;
 use App\Enum\TradeGroupEnum;
 use App\Enum\UnlockableFeatureEnum;
 use App\Exceptions\PSPNotEnoughCurrencyException;
@@ -30,6 +31,7 @@ use App\Functions\ArrayFunctions;
 use App\Functions\CalendarFunctions;
 use App\Functions\ColorFunctions;
 use App\Functions\ItemRepository;
+use App\Functions\SimpleDb;
 use App\Model\ItemQuantity;
 use App\Model\TraderOffer;
 use App\Model\TraderOfferCostOrYield;
@@ -693,6 +695,31 @@ class TraderService
         return $results;
     }
 
+    private function currentMonsterOfTheWeekType(): ?MonsterOfTheWeekEnum
+    {
+
+        $db = SimpleDb::createReadOnlyConnection();
+
+        $query = $db->query(
+            "
+                SELECT monster.monster
+                FROM monster_of_the_week AS monster
+                WHERE ? >= monster.start_date AND ? <= monster.end_date
+                LIMIT 1
+            ",
+            [
+                date("Y-m-d"), date("Y-m-d")
+            ]
+        );
+
+        $data = $query->getResults();
+
+        return count($data) == 0
+            ? null
+            : MonsterOfTheWeekEnum::tryFrom($data[0]['monster'])
+        ;
+    }
+
     /**
      * @param ItemQuantity[] $quantities
      * @return TraderOffer[]
@@ -700,6 +727,33 @@ class TraderService
     private function getSpecialOffers(User $user, array $quantities): array
     {
         $offers = [];
+
+        if($this->currentMonsterOfTheWeekType() === MonsterOfTheWeekEnum::VafAndNir)
+        {
+            $offers[] = TraderOffer::createTradeOffer(
+                [ TraderOfferCostOrYield::createMoney(100) ],
+                [ TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Small Offering of Riches'), 1) ],
+                'Good luck with Vaf & Nir! Those two need to dial it in!',
+                $user,
+                $quantities
+            );
+
+            $offers[] = TraderOffer::createTradeOffer(
+                [ TraderOfferCostOrYield::createMoney(500) ],
+                [ TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Medium Offering of Riches'), 1) ],
+                'Good luck with Vaf & Nir! Those two need to dial it in!',
+                $user,
+                $quantities
+            );
+
+            $offers[] = TraderOffer::createTradeOffer(
+                [ TraderOfferCostOrYield::createMoney(2500) ],
+                [ TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Large Offering of Riches'), 1) ],
+                'Good luck with Vaf & Nir! Those two need to dial it in!',
+                $user,
+                $quantities
+            );
+        }
 
         if(CalendarFunctions::isApricotFestival($this->clock->now))
         {
