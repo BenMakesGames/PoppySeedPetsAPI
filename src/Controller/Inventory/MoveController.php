@@ -107,8 +107,8 @@ class MoveController
 
             foreach($inventory as $i)
             {
-                if(!$i->getItem()->hasItemGroup('Book'))
-                    throw new PSPInvalidOperationException('Only books can be placed in the Library! (' . $i->getItem()->getName() . ' isn\'t a book, at least.)');
+                if(!$i->getItem()->hasItemGroup('Book') && !$i->getItem()->hasItemGroup('Note'))
+                    throw new PSPInvalidOperationException('Only books and notes can be placed in the Library! (' . $i->getItem()->getName() . ' isn\'t a book or note, at least.)');
 
                 if(in_array($i->getItem()->getId(), $uniqueItemIds))
                     throw new PSPInvalidOperationException('Every book in the Library must be unique. (You selected multiple copies of ' . $i->getItem()->getName() . ' to move just now, at least.)');
