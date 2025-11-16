@@ -17,6 +17,7 @@ namespace App\Service;
 use App\Entity\Pet;
 use App\Entity\PetGroup;
 use App\Entity\PetRelationship;
+use App\Entity\PetSkills;
 use App\Enum\PetActivityLogInterestingness;
 use App\Enum\PetGroupTypeEnum;
 use App\Enum\RelationshipEnum;
@@ -201,10 +202,10 @@ class PetGroupService
         $recruits = $this->em->getRepository(Pet::class)->createQueryBuilder('p')
             ->select('p2')
             ->distinct(true)
-            ->leftJoin('App:PetRelationship', 'r', Join::WITH, 'r.pet = p.id')
-            ->leftJoin('App:Pet', 'p2', Join::WITH, 'r.relationship = p2.id AND p2.id NOT IN (:groupMembers)')
-            ->leftJoin('App:PetRelationship', 'r2', Join::WITH, 'r2.pet = p2.id AND r2.relationship IN (:groupMembers)')
-            ->leftJoin('App:PetSkills', 'p2s', Join::WITH, 'p2.skills = p2s.id')
+            ->leftJoin(PetRelationship::class, 'r', Join::WITH, 'r.pet = p.id')
+            ->leftJoin(Pet::class, 'p2', Join::WITH, 'r.relationship = p2.id AND p2.id NOT IN (:groupMembers)')
+            ->leftJoin(PetRelationship::class, 'r2', Join::WITH, 'r2.pet = p2.id AND r2.relationship IN (:groupMembers)')
+            ->leftJoin(PetSkills::class, 'p2s', Join::WITH, 'p2.skills = p2s.id')
             ->andWhere('r.currentRelationship NOT IN (:unhappyRelationships)')
             ->andWhere('p.id IN (:groupMembers)')
             ->andWhere('r2.currentRelationship NOT IN (:unhappyRelationships)')

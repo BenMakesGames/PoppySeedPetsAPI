@@ -15,6 +15,7 @@ declare(strict_types=1);
 namespace App\Controller\Museum;
 
 use App\Entity\User;
+use App\Entity\UserStats;
 use App\Enum\SerializationGroupEnum;
 use App\Enum\UnlockableFeatureEnum;
 use App\Enum\UserStat;
@@ -26,7 +27,6 @@ use Doctrine\ORM\Query\Expr;
 use Doctrine\ORM\Tools\Pagination\Paginator;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use App\Service\UserAccessor;
@@ -46,7 +46,7 @@ class TopDonorsController
 
         $qb = $em->getRepository(User::class)->createQueryBuilder('u')
             ->select('u AS user,s.value AS itemsDonated')
-            ->leftJoin('App:UserStats', 's', Expr\Join::WITH, 's.user = u.id')
+            ->leftJoin(UserStats::class, 's', Expr\Join::WITH, 's.user = u.id')
             ->andWhere('s.stat = :statName')
             ->addOrderBy('s.value', 'DESC')
             ->addOrderBy('s.lastTime', 'ASC')
