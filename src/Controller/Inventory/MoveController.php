@@ -113,7 +113,7 @@ class MoveController
                     && !$i->getItem()->hasItemGroup('Pamphlet')
                 )
                 {
-                    throw new PSPInvalidOperationException('Only books and notes can be placed in the Library! (' . $i->getItem()->getName() . ' isn\'t a book or note, at least.)');
+                    throw new PSPInvalidOperationException('Only Books, Pamphlets, and Notes can be placed in the Library! (' . ucfirst($i->getItem()->getNameWithArticle()) . '? Not in that category.)');
                 }
 
                 if(in_array($i->getItem()->getId(), $uniqueItemIds))
