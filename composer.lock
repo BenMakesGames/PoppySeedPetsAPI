@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "6c94cfcb6f830aa50ea51bcdda9ebbb7",
+    "content-hash": "d3badeddd1b38310b30a93e5796f1681",
     "packages": [
         {
             "name": "async-aws/core",
@@ -2561,35 +2561,35 @@
         },
         {
             "name": "oro/doctrine-extensions",
-            "version": "1.3.2",
+            "version": "3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/oroinc/doctrine-extensions.git",
-                "reference": "529d239d065eb6843025f901d402379bb551cd75"
+                "reference": "eba6790c8f1e7d07de4888b3252670e0a37cde4b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/oroinc/doctrine-extensions/zipball/529d239d065eb6843025f901d402379bb551cd75",
-                "reference": "529d239d065eb6843025f901d402379bb551cd75",
+                "url": "https://api.github.com/repos/oroinc/doctrine-extensions/zipball/eba6790c8f1e7d07de4888b3252670e0a37cde4b",
+                "reference": "eba6790c8f1e7d07de4888b3252670e0a37cde4b",
                 "shasum": ""
             },
             "require": {
-                "doctrine/orm": ">=2.2.3",
-                "php": ">=5.4.0"
+                "doctrine/orm": "^3.0",
+                "php": ">=8.1"
             },
             "require-dev": {
-                "doctrine/common": "<3.0.0",
-                "doctrine/data-fixtures": "^1.0",
-                "doctrine/orm": "<2.5.0",
-                "phpunit/phpunit": "4.*",
-                "squizlabs/php_codesniffer": "2.8.*",
-                "symfony/yaml": "2.*"
+                "doctrine/annotations": "^2.0",
+                "doctrine/data-fixtures": "^1.8",
+                "phpunit/phpunit": "~10",
+                "squizlabs/php_codesniffer": "3.9.*",
+                "symfony/cache": "^5 || ^6 || ^7",
+                "symfony/yaml": "^5 || ^6 || ^7"
             },
             "type": "library",
             "autoload": {
-                "psr-0": {
-                    "Oro\\ORM": "src/",
-                    "Oro\\DBAL": "src/"
+                "psr-4": {
+                    "Oro\\ORM\\": "src/Oro/ORM",
+                    "Oro\\DBAL\\": "src/Oro/DBAL"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -2599,11 +2599,11 @@
             "authors": [
                 {
                     "name": "Oro, Inc",
-                    "homepage": "http://www.orocrm.com"
+                    "homepage": "https://oroinc.com/"
                 }
             ],
             "description": "Doctrine Extensions for MySQL and PostgreSQL.",
-            "homepage": "https://github.com/orocrm/doctrine-extensions/",
+            "homepage": "https://github.com/oroinc/doctrine-extensions/",
             "keywords": [
                 "database",
                 "doctrine",
@@ -2615,9 +2615,9 @@
             ],
             "support": {
                 "issues": "https://github.com/oroinc/doctrine-extensions/issues",
-                "source": "https://github.com/oroinc/doctrine-extensions/tree/1.3.2"
+                "source": "https://github.com/oroinc/doctrine-extensions/tree/3.0"
             },
-            "time": "2021-09-02T13:33:38+00:00"
+            "time": "2025-02-14T18:44:04+00:00"
         },
         {
             "name": "overtrue/chinese-calendar",
