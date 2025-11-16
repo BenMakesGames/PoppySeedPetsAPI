@@ -207,7 +207,7 @@ class Pet
     private string $costume = '';
 
     #[ORM\OneToOne(mappedBy: 'pet', targetEntity: PetActivityStats::class, cascade: ['persist', 'remove'])]
-    private PetActivityStats $petActivityStats;
+    private ?PetActivityStats $petActivityStats = null;
 
     #[ORM\ManyToMany(targetEntity: PetGroup::class, mappedBy: 'members')]
     #[Groups(['petPublicProfile'])]
