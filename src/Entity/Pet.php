@@ -207,7 +207,7 @@ class Pet
     private string $costume = '';
 
     #[ORM\OneToOne(mappedBy: 'pet', targetEntity: PetActivityStats::class, cascade: ['persist', 'remove'])]
-    private $petActivityStats;
+    private PetActivityStats $petActivityStats;
 
     #[ORM\ManyToMany(targetEntity: PetGroup::class, mappedBy: 'members')]
     #[Groups(['petPublicProfile'])]
@@ -249,7 +249,7 @@ class Pet
 
     #[ORM\OneToOne(targetEntity: PetHouseTime::class, mappedBy: 'pet', cascade: ['persist', 'remove'])]
     #[Groups(['myPet'])]
-    private $houseTime;
+    private PetHouseTime $houseTime;
 
     /**
      * uses custom serialization method, defined below

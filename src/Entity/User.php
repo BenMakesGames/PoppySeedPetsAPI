@@ -45,9 +45,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Groups(['myAccount'])]
     private string $email;
 
+    /**
+     * @var string[]
+     */
     #[ORM\Column(type: 'json')]
     #[Groups(['myAccount'])]
-    private $roles = [];
+    private array $roles = [];
 
     /**
      * @var string The hashed password
@@ -146,7 +149,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private int $maxMarketBids = 5;
 
     #[ORM\OneToOne(targetEntity: UserMenuOrder::class, mappedBy: 'user', cascade: ['persist', 'remove'])]
-    private $menuOrder;
+    private UserMenuOrder $menuOrder;
 
     /** @var Collection<int, UserUnlockedAura>  */
     #[ORM\OneToMany(targetEntity: UserUnlockedAura::class, mappedBy: 'user', orphanRemoval: true)]

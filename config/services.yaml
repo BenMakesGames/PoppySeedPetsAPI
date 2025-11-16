@@ -46,13 +46,13 @@ services:
             $username: '%env(REDDIT_API_USERNAME)%'
             $password: '%env(REDDIT_API_PASSWORD)%'
 
-    App\DoctrineEventListeners\InventoryLoadListener:
+    App\Doctrine\EventListeners\InventoryLoadListener:
       arguments:
         - '@doctrine.orm.default_entity_manager'
       tags:
         - { name: 'doctrine.orm.entity_listener', event: 'postLoad', entity: 'App\Entity\Inventory' }
 
-    App\DoctrineEventListeners\PetLoadListener:
+    App\Doctrine\EventListeners\PetLoadListener:
       arguments:
         - '@doctrine.orm.default_entity_manager'
       tags:
