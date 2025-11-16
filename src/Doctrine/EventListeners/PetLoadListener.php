@@ -12,14 +12,16 @@ declare(strict_types=1);
  */
 
 
-namespace App\DoctrineEventListeners;
+namespace App\Doctrine\EventListeners;
 
 use App\Entity\Inventory;
+use App\Entity\Pet;
 use App\Functions\CacheHelpers;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Event\PostLoadEventArgs;
+use Doctrine\Persistence\Proxy;
 
-class InventoryLoadListener
+class PetLoadListener
 {
     private EntityManagerInterface $entityManager;
 
@@ -28,31 +30,31 @@ class InventoryLoadListener
         $this->entityManager = $entityManager;
     }
 
-    public function postLoad(Inventory $inventory, PostLoadEventArgs $eventArgs): void
+    public function postLoad(Pet $pet, PostLoadEventArgs $eventArgs): void
     {
-        $itemProxy = $inventory->getItem();
+        $petSpeciesProxy = $pet->getSpecies();
 
-        if(!$itemProxy instanceof \Doctrine\ORM\Proxy\Proxy)
+        if(!$petSpeciesProxy instanceof Proxy)
             return;
 
-        // Check if the Item proxy is already initialized
-        if ($itemProxy->__isInitialized()) {
+        // Check if the PetSpecies proxy is already initialized
+        if ($petSpeciesProxy->__isInitialized()) {
             return;
         }
 
-        $itemId = $itemProxy->getId();
-        $query = $this->entityManager->createQuery('SELECT i FROM App\Entity\Item i WHERE i.id = :id');
-        $query->setParameter('id', $itemId);
-        $query->enableResultCache(24 * 60 * 60, CacheHelpers::getCacheItemName('InventoryLoadListener_GetItemById_' . $itemId));
+        $speciesId = $petSpeciesProxy->getId();
+        $query = $this->entityManager->createQuery('SELECT s FROM App\Entity\PetSpecies s WHERE s.id = :id');
+        $query->setParameter('id', $speciesId);
+        $query->enableResultCache(24 * 60 * 60, CacheHelpers::getCacheItemName('PetLoadListener_GetPetSpeciesById_' . $speciesId));
 
         // Execute query and get the result
-        $item = $query->getOneOrNullResult();
+        $petSpecies = $query->getOneOrNullResult();
 
-        // Update the Item proxy with the fetched Item data
-        if ($item) {
+        // Update the PetSpecies proxy with the fetched Item data
+        if ($petSpecies) {
             $uow = $eventArgs->getObjectManager()->getUnitOfWork();
-            $uow->registerManaged($itemProxy, ['id' => $itemId], $uow->getOriginalEntityData($item));
-            $itemProxy->__load();
+            $uow->registerManaged($petSpeciesProxy, ['id' => $speciesId], $uow->getOriginalEntityData($petSpecies));
+            $petSpeciesProxy->__load();
         }
     }
 }

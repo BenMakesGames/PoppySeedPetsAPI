@@ -46,8 +46,8 @@ class PetActivityLog
     private \DateTimeImmutable $createdOn;
 
     #[Groups(["petActivityLogs", "petActivityLogAndPublicPet"])]
-    #[ORM\Column(type: 'object', nullable: true)]
-    private $changes;
+    #[ORM\Column(type: 'pet_changes_summary', nullable: true)]
+    private ?PetChangesSummary $changes = null;
 
     #[Groups(["petActivityLogs", "petActivityLogAndPublicPet"])]
     #[ORM\Column(type: 'string', length: 100)]

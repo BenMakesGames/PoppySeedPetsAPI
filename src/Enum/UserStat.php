@@ -11,7 +11,6 @@ declare(strict_types=1);
  * You should have received a copy of the GNU General Public License along with The Poppy Seed Pets API. If not, see <https://www.gnu.org/licenses/>.
  */
 
-
 namespace App\Enum;
 
 final class UserStat
@@ -89,4 +88,8 @@ final class UserStat
     public const string RECEIVED_A_MINOR_PRIZE_FROM_AN_EIRI_PERSONA = 'Received a Minor Reward from an Eiri Persona';
     public const string RECEIVED_A_MODERATE_PRIZE_FROM_AN_EIRI_PERSONA = 'Received a Moderate Reward from an Eiri Persona';
     public const string RECEIVED_A_MAJOR_PRIZE_FROM_AN_EIRI_PERSONA = 'Received a Major Reward from an Eiri Persona';
+
+    public const string RECEIVED_A_MINOR_PRIZE_FROM_VAF_AND_NIR = 'Received a Minor Reward from Vaf & Nir';
+    public const string RECEIVED_A_MODERATE_PRIZE_FROM_VAF_AND_NIR = 'Received a Moderate Reward from Vaf & Nir';
+    public const string RECEIVED_A_MAJOR_PRIZE_FROM_VAF_AND_NIR = 'Received a Major Reward from Vaf & Nir';
 }

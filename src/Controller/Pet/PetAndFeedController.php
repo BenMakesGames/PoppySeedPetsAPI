@@ -23,7 +23,7 @@ use App\Exceptions\PSPNotFoundException;
 use App\Exceptions\PSPPetNotFoundException;
 use App\Service\IRandom;
 use App\Service\PetActivity\EatingService;
-use App\Service\PetAndPraiseService;
+use App\Service\QualityTimeService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -35,33 +35,6 @@ use App\Service\UserAccessor;
 #[Route("/pet")]
 class PetAndFeedController
 {
-    #[IsGranted("IS_AUTHENTICATED_FULLY")]
-    #[Route("/{pet}/pet", methods: ["POST"], requirements: ["pet" => "\d+"])]
-    public function pet(
-        Pet $pet, ResponseService $responseService, EntityManagerInterface $em, IRandom $rng,
-        PetAndPraiseService $petAndPraiseService, UserAccessor $userAccessor
-    ): JsonResponse
-    {
-        $user = $userAccessor->getUserOrThrow();
-
-        if($pet->getOwner()->getId() !== $user->getId())
-            throw new PSPPetNotFoundException();
-
-        if(!$pet->isAtHome())
-            throw new PSPInvalidOperationException('Pets that aren\'t home cannot be interacted with.');
-
-        $petAndPraiseService->doPet($user, $pet);
-
-        $em->flush();
-
-        $emoji = $pet->getRandomAffectionExpression($rng);
-
-        if($emoji)
-            return $responseService->success([ 'pet' => $pet, 'emoji' => $emoji ], [ SerializationGroupEnum::MY_PET ]);
-        else
-            return $responseService->success([ 'pet' => $pet ], [ SerializationGroupEnum::MY_PET ]);
-    }
-
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     #[Route("/{pet}/feed", methods: ["POST"], requirements: ["pet" => "\d+"])]
     public function feed(

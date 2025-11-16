@@ -39,13 +39,14 @@ final class MonsterOfTheWeekHelpers
     {
         return match($monster)
         {
-            // [ easy = hard / 7.5, rounding down to a nice number; medium is about half way between ]
+            // [ easy = hard / 7.5, rounding down to a nice number; medium is half-way between ]
             MonsterOfTheWeekEnum::Anhur => [ 25, 110, 200 ],
             MonsterOfTheWeekEnum::Boshinogami => [ 40, 170, 300 ],
             MonsterOfTheWeekEnum::Cardea => [ 10, 45, 75 ],
             MonsterOfTheWeekEnum::Dionysus => [ 100, 425, 750 ],
             MonsterOfTheWeekEnum::Huehuecoyotl => [ 10, 45, 75 ],
             MonsterOfTheWeekEnum::EiriPersona => [ 25, 110, 200 ],
+            MonsterOfTheWeekEnum::VafAndNir => [ 60, 280, 500 ],
             default => throw new UnreachableException()
         };
     }
@@ -67,6 +68,7 @@ final class MonsterOfTheWeekHelpers
             MonsterOfTheWeekEnum::Dionysus => 'Dionysus\'s Hunger',
             MonsterOfTheWeekEnum::Huehuecoyotl => 'Huehuecoyotl\'s Folly',
             MonsterOfTheWeekEnum::EiriPersona => 'an Eiri Persona',
+            MonsterOfTheWeekEnum::VafAndNir => 'Vaf & Nir',
             default => throw new UnreachableException()
         };
     }
@@ -81,6 +83,7 @@ final class MonsterOfTheWeekHelpers
             MonsterOfTheWeekEnum::Dionysus => [ 'Essence d\'Assortiment', 'Potion of Nature' ],
             MonsterOfTheWeekEnum::Huehuecoyotl => [ 'Potion of Music', 'Dancing Sword', 'LP' ],
             MonsterOfTheWeekEnum::EiriPersona => [ 'Magic Smoke', 'Lightning in a Bottle', 'Potion of Science' ],
+            MonsterOfTheWeekEnum::VafAndNir => [ 'Dragon Flag', 'Dragonstick', 'Dragondrop', 'Dragon Polymorph Potion'  ],
             default => throw new UnreachableException()
         };
     }
@@ -95,6 +98,7 @@ final class MonsterOfTheWeekHelpers
             MonsterOfTheWeekEnum::Dionysus => [ 'Tile: Statue Garden', 'Whisper Stone' ],
             MonsterOfTheWeekEnum::Huehuecoyotl => [ 'Magic Hourglass', 'Firefly Harp', 'Maraca', 'Tile: Very Cool Beans' ],
             MonsterOfTheWeekEnum::EiriPersona => [ 'Eiri Persona Persona' ],
+            MonsterOfTheWeekEnum::VafAndNir => [ 'Scroll of Dice', 'Gold Baabble', 'Metal Detector (Gold)' ],
             default => throw new \InvalidArgumentException("Invalid monster"),
         };
     }
@@ -109,6 +113,7 @@ final class MonsterOfTheWeekHelpers
             MonsterOfTheWeekEnum::Dionysus => [ 'Skill Scroll: Nature' ],
             MonsterOfTheWeekEnum::Huehuecoyotl => [ 'Skill Scroll: Music' ],
             MonsterOfTheWeekEnum::EiriPersona => [ 'Skill Scroll: Science' ],
+            MonsterOfTheWeekEnum::VafAndNir => [ 'Scroll of Crowns' ],
             default => throw new UnreachableException()
         };
     }
@@ -123,6 +128,7 @@ final class MonsterOfTheWeekHelpers
             MonsterOfTheWeekEnum::Dionysus => self::getItemValueForDionysus($item),
             MonsterOfTheWeekEnum::Huehuecoyotl => self::getItemValueForHuehuecoyotl($item),
             MonsterOfTheWeekEnum::EiriPersona => self::getItemValueForEiriPersona($item),
+            MonsterOfTheWeekEnum::VafAndNir => self::getItemValueForVafAndNir($item),
             default => 0,
         };
     }
@@ -224,6 +230,17 @@ final class MonsterOfTheWeekHelpers
             $points += 2;
 
         return (int)floor(pow($points, 1.3333));
+    }
+
+    public static function getItemValueForVafAndNir(Item $item): int
+    {
+        return match($item->getName())
+        {
+            'Small Offering of Riches' => 5,
+            'Medium Offering of Riches' => 30,
+            'Large Offering of Riches' => 180,
+            default => 0,
+        };
     }
 
     public static function getItemValueForEiriPersona(Item $item): int

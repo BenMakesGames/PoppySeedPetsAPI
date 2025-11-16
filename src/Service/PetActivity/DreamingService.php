@@ -19,6 +19,7 @@ use App\Entity\PetActivityLog;
 use App\Entity\PetSpecies;
 use App\Enum\LocationEnum;
 use App\Enum\PetActivityLogInterestingness;
+use App\Enum\PetActivityLogTagEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetBadgeEnum;
 use App\Functions\GrammarFunctions;
@@ -149,7 +150,7 @@ class DreamingService
 
         $log = PetActivityLogFactory::createUnreadLog($this->em, $pet, $eventDescription)
             ->addInterestingness(PetActivityLogInterestingness::ActivityUsingMerit)
-            ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Dream' ]))
+            ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ PetActivityLogTagEnum::Dream ]))
         ;
 
         PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::PulledAnItemFromADream, $log);
