@@ -31,6 +31,7 @@ final class MonsterOfTheWeekHelpers
             MonsterOfTheWeekEnum::Dionysus => 'Blueberries',
             MonsterOfTheWeekEnum::Huehuecoyotl => 'Music Note',
             MonsterOfTheWeekEnum::EiriPersona => 'Pointer',
+            MonsterOfTheWeekEnum::VafAndNir => 'Gold Ore',
             default => throw new UnreachableException()
         };
     }
