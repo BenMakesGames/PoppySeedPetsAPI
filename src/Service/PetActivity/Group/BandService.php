@@ -18,6 +18,7 @@ use App\Entity\PetGroup;
 use App\Enum\EnumInvalidValueException;
 use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingness;
+use App\Enum\PetActivityLogTagEnum;
 use App\Enum\PetSkillEnum;
 use App\Functions\GroupNameGenerator;
 use App\Functions\PetActivityLogFactory;
@@ -216,7 +217,7 @@ class BandService
                 ->setIcon(self::ActivityIcon)
                 ->addInterestingness(PetActivityLogInterestingness::UncommonActivity)
                 ->setChanges($changes->compare($pet))
-                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Group Hangout', 'Band' ]))
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Group Hangout', PetActivityLogTagEnum::Band ]))
             ;
         }
     }
@@ -239,7 +240,7 @@ class BandService
                 ->setIcon(self::ActivityIcon)
                 ->addInterestingness(PetActivityLogInterestingness::UncommonActivity)
                 ->setChanges($changes->compare($pet))
-                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Group Hangout', 'Band', 'Moneys' ]))
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Group Hangout', PetActivityLogTagEnum::Band, 'Moneys' ]))
             ;
         }
     }
@@ -305,7 +306,7 @@ class BandService
                     ->setIcon(self::ActivityIcon)
                     ->addInterestingness(PetActivityLogInterestingness::UncommonActivity)
                     ->setChanges($petChanges[$member->getId()]->compare($member))
-                    ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Group Hangout', 'Band' ]))
+                    ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Group Hangout', PetActivityLogTagEnum::Band ]))
                 ;
 
                 $activityLogsPerPet[$member->getId()] = $activityLog;
@@ -333,7 +334,7 @@ class BandService
                     ->setIcon(self::ActivityIcon)
                     ->addInterestingness(PetActivityLogInterestingness::HoHum)
                     ->setChanges($petChanges[$member->getId()]->compare($member))
-                    ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Group Hangout', 'Band' ]))
+                    ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Group Hangout', PetActivityLogTagEnum::Band ]))
                 ;
 
                 $activityLogsPerPet[$member->getId()] = $activityLog;

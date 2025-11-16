@@ -11,28 +11,24 @@ declare(strict_types=1);
  * You should have received a copy of the GNU General Public License along with The Poppy Seed Pets API. If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace App\Model;
+namespace DoctrineMigrations;
 
-use App\Enum\EnumInvalidValueException;
-use App\Enum\HolidayEnum;
-use Symfony\Component\Serializer\Attribute\Groups;
+use Doctrine\DBAL\Schema\Schema;
+use Doctrine\Migrations\AbstractMigration;
 
-final class WeatherData
+final class Version20251106215731 extends AbstractMigration
 {
-    public \DateTimeImmutable $date;
-
-    /** @var HolidayEnum[] */
-    public array $holidays;
-
-    public WeatherSky $sky;
-
-    public function isHoliday(HolidayEnum $holiday): bool
+    public function getDescription(): string
     {
-        return in_array($holiday, $this->holidays);
+        return '';
     }
 
-    public function isRaining()
+    public function up(Schema $schema): void
     {
-        return $this->sky === WeatherSky::Rainy || $this->sky === WeatherSky::Stormy;
+        $this->addSql('UPDATE pet_activity_log_tag SET title="Quality Time" WHERE title="Petting" LIMIT 1');
+    }
+
+    public function down(Schema $schema): void
+    {
     }
 }

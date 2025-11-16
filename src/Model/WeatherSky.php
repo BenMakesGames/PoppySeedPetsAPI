@@ -1,5 +1,5 @@
 <?php
-declare(strict_types=1);
+declare(strict_types = 1);
 
 /**
  * This file is part of the Poppy Seed Pets API.
@@ -13,26 +13,11 @@ declare(strict_types=1);
 
 namespace App\Model;
 
-use App\Enum\EnumInvalidValueException;
-use App\Enum\HolidayEnum;
-use Symfony\Component\Serializer\Attribute\Groups;
-
-final class WeatherData
+enum WeatherSky: string
 {
-    public \DateTimeImmutable $date;
-
-    /** @var HolidayEnum[] */
-    public array $holidays;
-
-    public WeatherSky $sky;
-
-    public function isHoliday(HolidayEnum $holiday): bool
-    {
-        return in_array($holiday, $this->holidays);
-    }
-
-    public function isRaining()
-    {
-        return $this->sky === WeatherSky::Rainy || $this->sky === WeatherSky::Stormy;
-    }
+    case Clear = 'clear';
+    case Cloudy = 'cloudy';
+    case Rainy = 'rainy';
+    case Snowy = 'snowy';
+    case Stormy = 'stormy';
 }

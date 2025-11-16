@@ -22,4 +22,5 @@ enum MonsterOfTheWeekEnum: string
     case Huehuecoyotl = 'Huehuecoyotl';
     case Cardea = 'Cardea';
     case EiriPersona = 'Eiri Persona';
+    case VafAndNir = 'Vaf & Nir';
 }

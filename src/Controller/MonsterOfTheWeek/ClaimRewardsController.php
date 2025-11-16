@@ -121,6 +121,7 @@ class ClaimRewardsController
                 MonsterOfTheWeekEnum::Dionysus => UserStat::RECEIVED_A_MINOR_PRIZE_FROM_DIONYSUSS_HUNGER,
                 MonsterOfTheWeekEnum::Huehuecoyotl => UserStat::RECEIVED_A_MINOR_PRIZE_FROM_HUEHUECOYOTLS_FOLLY,
                 MonsterOfTheWeekEnum::EiriPersona => UserStat::RECEIVED_A_MINOR_PRIZE_FROM_AN_EIRI_PERSONA,
+                MonsterOfTheWeekEnum::VafAndNir => UserStat::RECEIVED_A_MINOR_PRIZE_FROM_VAF_AND_NIR,
                 default => throw new \Exception('Invalid monster: ' . $monster->value)
             },
             'Moderate' => match ($monster)
@@ -131,6 +132,7 @@ class ClaimRewardsController
                 MonsterOfTheWeekEnum::Dionysus => UserStat::RECEIVED_A_MODERATE_PRIZE_FROM_DIONYSUSS_HUNGER,
                 MonsterOfTheWeekEnum::Huehuecoyotl => UserStat::RECEIVED_A_MODERATE_PRIZE_FROM_HUEHUECOYOTLS_FOLLY,
                 MonsterOfTheWeekEnum::EiriPersona => UserStat::RECEIVED_A_MODERATE_PRIZE_FROM_AN_EIRI_PERSONA,
+                MonsterOfTheWeekEnum::VafAndNir => UserStat::RECEIVED_A_MODERATE_PRIZE_FROM_VAF_AND_NIR,
                 default => throw new \Exception('Invalid monster: ' . $monster->value)
             },
             'Major' => match ($monster)
@@ -141,6 +143,7 @@ class ClaimRewardsController
                 MonsterOfTheWeekEnum::Dionysus => UserStat::RECEIVED_A_MAJOR_PRIZE_FROM_DIONYSUSS_HUNGER,
                 MonsterOfTheWeekEnum::Huehuecoyotl => UserStat::RECEIVED_A_MAJOR_PRIZE_FROM_HUEHUECOYOTLS_FOLLY,
                 MonsterOfTheWeekEnum::EiriPersona => UserStat::RECEIVED_A_MAJOR_PRIZE_FROM_AN_EIRI_PERSONA,
+                MonsterOfTheWeekEnum::VafAndNir => UserStat::RECEIVED_A_MAJOR_PRIZE_FROM_VAF_AND_NIR,
                 default => throw new \Exception('Invalid monster: ' . $monster->value)
             }
         };

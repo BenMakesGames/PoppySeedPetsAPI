@@ -17,6 +17,7 @@ namespace App\Service\PetActivity\Daydreams;
 use App\Entity\PetActivityLog;
 use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingness;
+use App\Enum\PetActivityLogTagEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetBadgeEnum;
 use App\Enum\PetSkillEnum;
@@ -60,7 +61,7 @@ class FoodFightDaydream
         $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::OTHER, null);
 
         $log
-            ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Dream' ]))
+            ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ PetActivityLogTagEnum::Dream ]))
             ->setIcon('icons/status-effect/daydream-food-fight')
             ->addInterestingness(PetActivityLogInterestingness::UncommonActivity)
             ->setChanges($changes->compare($pet));

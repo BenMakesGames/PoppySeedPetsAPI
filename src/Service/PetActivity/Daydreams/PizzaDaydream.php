@@ -19,6 +19,7 @@ use App\Entity\PetActivityLog;
 use App\Entity\PetRelationship;
 use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingness;
+use App\Enum\PetActivityLogTagEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetBadgeEnum;
 use App\Enum\PetSkillEnum;
@@ -66,7 +67,7 @@ class PizzaDaydream
         $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::OTHER, null);
 
         $log
-            ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Dream' ]))
+            ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ PetActivityLogTagEnum::Dream ]))
             ->setIcon('icons/status-effect/daydream-pizza')
             ->addInterestingness(PetActivityLogInterestingness::UncommonActivity)
             ->setChanges($changes->compare($pet));
@@ -102,13 +103,13 @@ class PizzaDaydream
             $this->transactionService->getMoney($otherPet->getOwner(), 2, $otherPet->getName() . ' received a tip for delivering a pizza in a dream... which was also apparently real?!?');
 
             PetActivityLogFactory::createUnreadLog($this->em, $otherPet, ActivityHelpers::PetName($otherPet) . ' dreamed they delivered a pizza to ' . ActivityHelpers::PetName($pet) . ', who tipped them 2~~m~~. When they woke up, they were holding the 2~~m~~!')
-                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Dream' ]))
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ PetActivityLogTagEnum::Dream ]))
             ;
         }
         else
         {
             PetActivityLogFactory::createReadLog($this->em, $otherPet, ActivityHelpers::PetName($otherPet) . ' dreamed they delivered a pizza to ' . ActivityHelpers::PetName($pet) . ', who tipped them 2~~m~~. When they woke up, they were holding the 2~~m~~!')
-                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Dream' ]))
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ PetActivityLogTagEnum::Dream ]))
             ;
         }
 
