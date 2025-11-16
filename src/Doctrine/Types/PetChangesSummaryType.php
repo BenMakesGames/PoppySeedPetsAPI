@@ -18,7 +18,7 @@ use Doctrine\DBAL\Types\Type;
 
 class PetChangesSummaryType extends Type
 {
-    public const NAME = 'pet_changes_summary';
+    public const string NAME = 'pet_changes_summary';
 
     public function getName(): string
     {
