@@ -33,6 +33,12 @@ final class Version20251115225737 extends AbstractMigration
         EOSQL);
 
         $this->addSql(<<<'EOSQL'
+        INSERT INTO `item_group` (`id`, `name`, `is_craving`, `is_gift_shop`)
+        VALUES ('61', 'Pamphlet', '0', '0')
+        ON DUPLICATE KEY UPDATE `id` = `id`;
+        EOSQL);
+
+        $this->addSql(<<<'EOSQL'
         INSERT INTO item_group_item (item_group_id, item_id)
         SELECT 60 as item_group_id, item.id AS item_id
         FROM item
@@ -47,6 +53,24 @@ final class Version20251115225737 extends AbstractMigration
             'Stroganoff Recipe',
             'Puddin\' Rec\'pes',
             'Creepy Mask Day'
+        )
+        ON DUPLICATE KEY UPDATE item_id = item_id;
+        EOSQL);
+
+        $this->addSql(<<<'EOSQL'
+        DELETE FROM item_group_item
+        WHERE
+            item_group_id = (SELECT id FROM item_group WHERE name = 'Book')
+            AND item_id = (SELECT id FROM item WHERE name = 'Formation')
+        EOSQL);
+
+        $this->addSql(<<<'EOSQL'
+        INSERT INTO item_group_item (item_group_id, item_id)
+        SELECT 61 as item_group_id, item.id AS item_id
+        FROM item
+        WHERE item.name IN (
+            'A Guide to Our Weather',
+            'Formation'
         )
         ON DUPLICATE KEY UPDATE item_id = item_id;
         EOSQL);
