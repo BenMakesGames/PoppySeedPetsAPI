@@ -128,7 +128,6 @@ class QualityTimeService
             $this->bakeCookies($user, $pets),
             $this->playCharades($user, $pets),
             $this->stretchTogether($user, $pets),
-            $this->goForAWalk($user, $pets),
         ];
 
         if($sky !== WeatherSky::Stormy)
@@ -444,21 +443,6 @@ class QualityTimeService
             'a bone-eating snot flower worm',
             'a sparklemuffin peacock spider',
             'a magical liopleurodon',
-            'an aha ha',
-            'a boops boops',
-            'a la cucaracha ',
-            'a la cerveza',
-            'a mini mum',
-            'a mini ature',
-            'a mini scule',
-            'a hotwheels sisyphus',
-            'a tinkerbella nana',
-            'a preseucoela imallshookupis',
-            'a oedipina complex',
-            'a chaos nobile',
-            'a yellow fly of the dismal swamp',
-            'a diabolical ironclad beetle',
-            'a miserable mining bee',
         ];
 
         if($user->hasFieldGuideEntry('Cosmic Goat'))
