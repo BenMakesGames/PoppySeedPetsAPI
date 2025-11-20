@@ -11,7 +11,6 @@ declare(strict_types=1);
  * You should have received a copy of the GNU General Public License along with The Poppy Seed Pets API. If not, see <https://www.gnu.org/licenses/>.
  */
 
-
 namespace App\Controller\Plaza;
 
 use App\Functions\CalendarFunctions;
@@ -33,7 +32,8 @@ class GetEventCalendarController
 
         $eventCalendar = $cacheHelper->getOrCompute($cacheKey, \DateInterval::createFromDateString('1 month'), function() use ($clock) {
             $endMonth = (int)(((int)$clock->now->format('Y') + 1) . $clock->now->format('m'));
-            $today = \DateTimeImmutable::createFromFormat('Y-m-d', $clock->now->format('Y-m') . '-01');
+            $today = \DateTimeImmutable::createFromFormat('Y-m-d', $clock->now->format('Y-m') . '-01')
+                ?: throw new \RuntimeException('Invalid date format');
 
             $currentYear = 0;
             $currentMonth = 0;
@@ -61,7 +61,7 @@ class GetEventCalendarController
                 }
 
                 $years[count($years) - 1]['months'][count($years[count($years) - 1]['months']) - 1]['days'][] = [
-                    'dayOfWeek' => $today->format('N'),
+                    'dayOfWeek' => (int)$today->format('N'),
                     'date' => $today->format('Y-m-d'),
                     'holidays' => CalendarFunctions::getEventData($today),
                 ];
