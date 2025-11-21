@@ -508,7 +508,7 @@ class InventoryService
         return $this->petCollectsEnhancedItem($item, null, null, $pet, $comment, $activityLog);
     }
 
-    public function petAttractsRandomBug(Pet $pet, string $bugName = null): ?Inventory
+    public function petAttractsRandomBug(Pet $pet, ?string $bugName = null): ?Inventory
     {
         $bugs = 1;
         $toolAttractsBugs = false;

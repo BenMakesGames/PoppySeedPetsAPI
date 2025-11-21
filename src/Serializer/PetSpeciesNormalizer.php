@@ -35,7 +35,7 @@ class PetSpeciesNormalizer implements NormalizerInterface
     /**
      * @param PetSpecies $data
      */
-    public function normalize($data, string $format = null, array $context = []): array|string|int|float|bool|\ArrayObject|null
+    public function normalize($data, ?string $format = null, array $context = []): array|string|int|float|bool|\ArrayObject|null
     {
         $normalizedData = $this->normalizer->normalize($data, $format, $context);
 
@@ -58,7 +58,7 @@ class PetSpeciesNormalizer implements NormalizerInterface
         ;
     }
 
-    public function supportsNormalization($data, string $format = null, array $context = []): bool
+    public function supportsNormalization($data, ?string $format = null, array $context = []): bool
     {
         return $data instanceof PetSpecies;
     }

@@ -33,7 +33,7 @@ class UserFieldGuideEntryNormalizer implements NormalizerInterface
     /**
      * @param UserFieldGuideEntry $data
      */
-    public function normalize($data, string $format = null, array $context = []): array|string|int|float|bool|\ArrayObject|null
+    public function normalize($data, ?string $format = null, array $context = []): array|string|int|float|bool|\ArrayObject|null
     {
         $normalizedData = $this->normalizer->normalize($data, $format, $context);
 
@@ -42,7 +42,7 @@ class UserFieldGuideEntryNormalizer implements NormalizerInterface
         return $normalizedData;
     }
 
-    public function supportsNormalization($data, string $format = null, array $context = []): bool
+    public function supportsNormalization($data, ?string $format = null, array $context = []): bool
     {
         return $data instanceof UserFieldGuideEntry;
     }
