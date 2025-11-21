@@ -18,7 +18,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 
 class MaintenanceModeSubscriber implements EventSubscriberInterface
 {
-    public function onKernelRequest(RequestEvent $event)
+    public function onKernelRequest(RequestEvent $event): void
     {
         if (isset($_SERVER['APP_MAINTENANCE']) && $_SERVER['APP_MAINTENANCE']) {
             $response = new JsonResponse([
