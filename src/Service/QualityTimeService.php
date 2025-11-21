@@ -138,7 +138,7 @@ class QualityTimeService
         if($sky === WeatherSky::Clear)
         {
             $possibleMessages[] = $this->stargaze($user, $pets);
-            $possibleMessages[] = $this->goForAWalk($user, $pets);
+            $possibleMessages[] = $this->goOnAWalk($user, $pets);
         }
 
         if(CalendarFunctions::isApricotFestival($this->clock->now))
@@ -504,32 +504,32 @@ class QualityTimeService
     }
 
     /**
- * @param Pet[] $pets
- */
-private function goOnAWalk(User $user, array $pets): QualityTimeResult
-{
-    $petNamesList = array_map(fn(Pet $pet) => ActivityHelpers::PetName($pet), $pets);
-    $everyonesNames = ArrayFunctions::list_nice([
-        ActivityHelpers::UserName($user, true),
-        ...$petNamesList
-    ]);
+     * @param Pet[] $pets
+     */
+    private function goOnAWalk(User $user, array $pets): QualityTimeResult
+    {
+        $petNamesList = array_map(fn(Pet $pet) => ActivityHelpers::PetName($pet), $pets);
+        $everyonesNames = ArrayFunctions::list_nice([
+            ActivityHelpers::UserName($user, true),
+            ...$petNamesList
+        ]);
 
-    $message = "$everyonesNames went on a walk around the neighborhood.";
+        $message = "$everyonesNames went on a walk around the neighborhood.";
 
-    $randomPet = $this->rng->rngNextFromArray($petNamesList);
+        $randomPet = $this->rng->rngNextFromArray($petNamesList);
 
-    $endings = [
-        "$randomPet saw a HUGE bug on a rock. Neat!",
-        "$randomPet got too tired to walk and had to be carried home.",
-        "$randomPet saw a colorful snake basking on a rock. How cool!.",
-        "$randomPet found the BIGGEST STICK EVER but it was too heavy to carry, so they had to leave it behind.",
-        "$randomPet saw a colorful lizard basking on a rock. How cute!",
-    ];
+        $endings = [
+            "$randomPet saw a HUGE bug on a rock. Neat!",
+            "$randomPet got too tired to walk and had to be carried home.",
+            "$randomPet saw a colorful snake basking on a rock. How cool!.",
+            "$randomPet found the BIGGEST STICK EVER but it was too heavy to carry, so they had to leave it behind.",
+            "$randomPet saw a colorful lizard basking on a rock. How cute!",
+        ];
 
-    $message .= ' ' . $this->rng->rngNextFromArray($endings);
+        $message .= ' ' . $this->rng->rngNextFromArray($endings);
 
-    return new QualityTimeResult($message, foodBased: false);
-}
+        return new QualityTimeResult($message, foodBased: false);
+    }
 }
 
 class QualityTimeResult
