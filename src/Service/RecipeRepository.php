@@ -744,6 +744,7 @@ final class RecipeRepository
             new Recipe('Tiny Tea (C)', '738:1,1005:1', '825:1', 0),
             new Recipe('TKG', '14:1,17:1,324:1', '1071:1', 0),
             new Recipe('Toad Jelly', '12:1,38:1,121:1', '1117:3', 0),
+            new Recipe('Toadstool Tea', '21:1,39:1', '1496:1', 0),
             new Recipe('Tofu Fried Rice (A)', '7:1,14:1,17:1,195:1,324:1,494:1', '919:3', 0),
             new Recipe('Tofu Fried Rice (B)', '14:1,17:1,30:1,195:1,324:1,494:1', '919:3', 0),
             new Recipe('Tofu', '215:1,493:1', '494:2', 0),
