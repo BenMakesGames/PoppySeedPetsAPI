@@ -521,7 +521,7 @@ class QualityTimeService
         $endings = [
             "$randomPet saw a HUGE bug on a rock. Neat!",
             "$randomPet got too tired to walk and had to be carried home.",
-            "$randomPet saw a colorful snake basking on a rock. How cool!.",
+            "$randomPet saw a colorful snake basking on a rock. How cool!",
             "$randomPet found the BIGGEST STICK EVER but it was too heavy to carry, so they had to leave it behind.",
             "$randomPet saw a colorful lizard basking on a rock. How cute!",
         ];
