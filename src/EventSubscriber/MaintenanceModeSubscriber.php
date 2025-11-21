@@ -31,7 +31,7 @@ class MaintenanceModeSubscriber implements EventSubscriberInterface
         }
     }
 
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             // High priority (after CORS listener at 250) to short-circuit before heavy processing
