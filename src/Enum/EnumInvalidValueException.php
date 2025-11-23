@@ -11,14 +11,11 @@ declare(strict_types=1);
  * You should have received a copy of the GNU General Public License along with The Poppy Seed Pets API. If not, see <https://www.gnu.org/licenses/>.
  */
 
-
 namespace App\Enum;
-
-use Throwable;
 
 class EnumInvalidValueException extends \Exception
 {
-    public function __construct(string $className, $value, Throwable $previous = null)
+    public function __construct(string $className, mixed $value, ?\Throwable $previous = null)
     {
         parent::__construct('"' . (string)$value . '" is not a ' . $className . ' value.', 0, $previous);
     }

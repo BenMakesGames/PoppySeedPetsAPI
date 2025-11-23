@@ -27,6 +27,7 @@ enum PetSpeciesName: string
     case Grabber = 'Grabber';
     case Hedgehog = 'Hedgehog';
     case InfinityImp = 'Infinity Imp';
+    case Juramaia = 'Juramaia';
     case Mushroom = 'Mushroom';
     case Noombat = 'Noombat';
     case Peacock = 'Peacock';

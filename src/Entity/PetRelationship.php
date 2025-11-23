@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
-use App\Enum\EnumInvalidValueException;
 use App\Enum\MeritEnum;
 use App\Enum\RelationshipEnum;
 use Doctrine\ORM\Mapping as ORM;

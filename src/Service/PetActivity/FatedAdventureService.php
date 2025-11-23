@@ -14,7 +14,6 @@ declare(strict_types=1);
 
 namespace App\Service\PetActivity;
 
-use App\Entity\Pet;
 use App\Entity\PetActivityLog;
 use App\Entity\StatusEffect;
 use App\Enum\EnumInvalidValueException;

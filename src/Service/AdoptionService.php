@@ -11,7 +11,6 @@ declare(strict_types=1);
  * You should have received a copy of the GNU General Public License along with The Poppy Seed Pets API. If not, see <https://www.gnu.org/licenses/>.
  */
 
-
 namespace App\Service;
 
 use App\Entity\Pet;
@@ -204,6 +203,12 @@ class AdoptionService
                 $pet->species = PetSpeciesRepository::findOneByName($this->em, PetSpeciesName::Noombat);
                 $pet->label = 'noom!';
                 $dialog = "Agh! This happens every year at about this time! Noombats everywhere! I don't know if it's Noombat breeding season, or what, but please adopt one of these things! If you insist, though, and ";
+            }
+            else if(CalendarFunctions::isJuramaiaDay($this->clock->now))
+            {
+                $pet->species = PetSpeciesRepository::findOneByName($this->em, PetSpeciesName::Juramaia);
+                $pet->label = '!?!';
+                $dialog = "For some reason this happens every August 25th! Juramaia everywhere! (Or would it be Juramaias? Juramaiae??? 🤷‍♂️)\n\nOf course - as always - if ";
             }
             else if(CalendarFunctions::isLeapDay($this->clock->now))
             {

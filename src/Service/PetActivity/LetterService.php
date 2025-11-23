@@ -11,7 +11,6 @@ declare(strict_types=1);
  * You should have received a copy of the GNU General Public License along with The Poppy Seed Pets API. If not, see <https://www.gnu.org/licenses/>.
  */
 
-
 namespace App\Service\PetActivity;
 
 use App\Entity\Letter;
@@ -19,7 +18,6 @@ use App\Entity\Pet;
 use App\Entity\PetActivityLog;
 use App\Entity\User;
 use App\Entity\UserLetter;
-use App\Enum\EnumInvalidValueException;
 use App\Enum\LetterSenderEnum;
 use App\Enum\LocationEnum;
 use App\Enum\PetActivityLogInterestingness;

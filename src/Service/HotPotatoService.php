@@ -11,7 +11,6 @@ declare(strict_types=1);
  * You should have received a copy of the GNU General Public License along with The Poppy Seed Pets API. If not, see <https://www.gnu.org/licenses/>.
  */
 
-
 namespace App\Service;
 
 use App\Entity\Inventory;
@@ -74,7 +73,7 @@ class HotPotatoService
         return $this->responseService->itemActionSuccess($messageStart . ' to <a href="/poppyopedia/resident/' . $target->getId() . '">' . $target->getName() . '</a>!', [ 'itemDeleted' => true ]);
     }
 
-    public function teleportItem(Inventory $inventory, string $messageStart = null): JsonResponse
+    public function teleportItem(Inventory $inventory, ?string $messageStart = null): JsonResponse
     {
         $owner = $inventory->getOwner();
 

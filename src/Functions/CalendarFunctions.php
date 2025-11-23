@@ -11,7 +11,6 @@ declare(strict_types=1);
  * You should have received a copy of the GNU General Public License along with The Poppy Seed Pets API. If not, see <https://www.gnu.org/licenses/>.
  */
 
-
 namespace App\Functions;
 
 use App\Enum\HolidayEnum;
@@ -22,6 +21,11 @@ final class CalendarFunctions
     public static function isJelephantDay(\DateTimeInterface $dt): bool
     {
         return $dt->format('nd') === '812';
+    }
+
+    public static function isJuramaiaDay(\DateTimeInterface $dt): bool
+    {
+        return $dt->format('nd') === '825';
     }
 
     public static function isNoombatDay(\DateTimeInterface $dt): bool
@@ -442,6 +446,9 @@ final class CalendarFunctions
 
         if(self::isJelephantDay($dt))
             $events[] = HolidayEnum::JelephantDay;
+
+        if(self::isJuramaiaDay($dt))
+            $events[] = HolidayEnum::JuramaiaDay;
 
         if(self::isChineseNewYear($dt))
             $events[] = HolidayEnum::LunarNewYear;
