@@ -305,7 +305,10 @@ class BookstoreService
                 $bookPrices['Basement Blueprint'] = 150;
 
             if($itemsDonatedToMuseum->getValue() >= 200)
+            {
                 $bookPrices['Electrical Engineering Textbook'] = 50;
+                $bookPrices['Physics Textbook'] = 50;
+            }
 
             if($itemsDonatedToMuseum->getValue() >= 300)
                 $bookPrices['The Umbra'] = 25;

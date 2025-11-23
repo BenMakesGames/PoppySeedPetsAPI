@@ -366,9 +366,6 @@ class MagicBindingService
         if($this->houseSimService->hasInventory('Cattail') && $this->houseSimService->hasInventory('Moon Pearl') && $this->houseSimService->hasInventory('Fish'))
             $possibilities[] = new ActivityCallback($this->createMolly(...), 8);
 
-        if($this->houseSimService->hasInventory('Magic Smoke'))
-            $possibilities[] = new ActivityCallback($this->magicSmokeToQuint(...), $magicSmokeWeight);
-
         if($this->houseSimService->hasInventory('Rainbow Wings') && $this->houseSimService->hasInventory('Heavy Hammer'))
             $possibilities[] = new ActivityCallback($this->createLessHeavyHeavyHammer(...), 8);
 
@@ -693,54 +690,6 @@ class MagicBindingService
             $this->inventoryService->petCollectsItem('Quintessence', $pet, $pet->getName() . ' extracted this from a Mermaid Egg.', $activityLog);
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::Arcana ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::MAGIC_BIND, true);
-        }
-
-        return $activityLog;
-    }
-
-    public function magicSmokeToQuint(ComputedPetSkills $petWithSkills): PetActivityLog
-    {
-        $pet = $petWithSkills->getPet();
-        $umbraCheck = $this->rng->rngNextInt(1, 20 + (int)floor(($petWithSkills->getArcana()->getTotal() + $petWithSkills->getScience()->getTotal()) / 2) + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getMagicBindingBonus()->getTotal());
-
-        if($umbraCheck <= 2)
-        {
-            $pet->increaseSafety(-1);
-
-            $pet->increasePsychedelic($this->rng->rngNextInt(1, 3));
-            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to extract Quintessence from Magic Smoke, but accidentally breathed a little bit of the smoke in! :O')
-                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Magic-binding', 'Physics' ]))
-            ;
-
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::Arcana, PetSkillEnum::Science ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
-        }
-        else if($umbraCheck < 12)
-        {
-            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% started to extract Quintessence from Magic Smoke, but almost screwed it all up. %pet:' . $pet->getId() . '.name% decided to take a break from it for a bit...')
-                ->setIcon('icons/activity-logs/confused')
-                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Magic-binding', 'Physics' ]))
-            ;
-
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::Arcana, PetSkillEnum::Science ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
-        }
-        else // success!
-        {
-            $this->houseSimService->getState()->loseItem('Magic Smoke', 1);
-
-            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% successfully extracted Quintessence from Magic Smoke.')
-                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
-                    PetActivityLogTagEnum::Magic_binding,
-                    PetActivityLogTagEnum::Physics,
-                    PetActivityLogTagEnum::Location_At_Home,
-                ]))
-            ;
-
-            $this->inventoryService->petCollectsItem('Quintessence', $pet, $pet->getName() . ' extracted this from Magic Smoke.', $activityLog);
-
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::Arcana, PetSkillEnum::Science ], $activityLog);
             $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::MAGIC_BIND, true);
         }
 
