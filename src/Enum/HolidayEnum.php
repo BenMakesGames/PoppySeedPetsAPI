@@ -11,7 +11,6 @@ declare(strict_types=1);
  * You should have received a copy of the GNU General Public License along with The Poppy Seed Pets API. If not, see <https://www.gnu.org/licenses/>.
  */
 
-
 namespace App\Enum;
 
 enum HolidayEnum: string
@@ -32,6 +31,7 @@ enum HolidayEnum: string
     case Hanukkah = 'Hanukkah';
     case Holi = 'Holi';
     case JelephantDay = 'Jelephant Day';
+    case JuramaiaDay = 'Juramaia Day';
     case LeapDay = 'Leap Day';
     case LunarNewYear = 'Lunar New Year';
     case NewYearsDay = 'New Year\'s Day';

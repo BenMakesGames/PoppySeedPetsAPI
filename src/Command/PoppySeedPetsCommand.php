@@ -11,7 +11,6 @@ declare(strict_types=1);
  * You should have received a copy of the GNU General Public License along with The Poppy Seed Pets API. If not, see <https://www.gnu.org/licenses/>.
  */
 
-
 namespace App\Command;
 
 use Symfony\Component\Console\Command\Command;
@@ -49,7 +48,7 @@ abstract class PoppySeedPetsCommand extends Command
         return $this->questionHelper->ask($this->input, $this->output, new ConfirmationQuestion($prompt, $defaultValue));
     }
 
-    protected function askNullableInt(string $prompt, ?int $defaultValue, callable $constraint = null): ?int
+    protected function askNullableInt(string $prompt, ?int $defaultValue, ?callable $constraint = null): ?int
     {
         $question = new Question($prompt . ' (' . ($defaultValue === null ? '~' : $defaultValue) . ') ', $defaultValue);
 
@@ -70,7 +69,7 @@ abstract class PoppySeedPetsCommand extends Command
         return $this->ask($question);
     }
 
-    protected function askInt(string $prompt, int $defaultValue, callable $constraint = null): int
+    protected function askInt(string $prompt, int $defaultValue, ?callable $constraint = null): int
     {
         $question = new Question($prompt . ' (' . $defaultValue . ') ', $defaultValue);
 
@@ -99,7 +98,7 @@ abstract class PoppySeedPetsCommand extends Command
         return $this->ask($question);
     }
 
-    protected function askNullableString(string $prompt, ?string $defaultValue, callable $constraint = null): ?string
+    protected function askNullableString(string $prompt, ?string $defaultValue, ?callable $constraint = null): ?string
     {
         if($defaultValue === null) $defaultValue = '~';
 
@@ -108,7 +107,7 @@ abstract class PoppySeedPetsCommand extends Command
         return $result === '~' ? null : $result;
     }
 
-    protected function askString(string $prompt, ?string $defaultValue, callable $constraint = null): string
+    protected function askString(string $prompt, ?string $defaultValue, ?callable $constraint = null): string
     {
         if($defaultValue === null) $defaultValue = '';
 
@@ -124,7 +123,7 @@ abstract class PoppySeedPetsCommand extends Command
         return trim($this->ask($question));
     }
 
-    protected function askFloat(string $prompt, float $defaultValue, callable $constraint = null): float
+    protected function askFloat(string $prompt, float $defaultValue, ?callable $constraint = null): float
     {
         $question = new Question($prompt . ' (' . $defaultValue . ') ', $defaultValue);
 

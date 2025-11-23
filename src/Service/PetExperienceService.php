@@ -11,7 +11,6 @@ declare(strict_types=1);
  * You should have received a copy of the GNU General Public License along with The Poppy Seed Pets API. If not, see <https://www.gnu.org/licenses/>.
  */
 
-
 namespace App\Service;
 
 use App\Entity\Pet;
@@ -25,7 +24,6 @@ use App\Enum\PetBadgeEnum;
 use App\Enum\PetSkillEnum;
 use App\Enum\StatusEffectEnum;
 use App\Enum\UnlockableFeatureEnum;
-use App\Exceptions\PSPFormValidationException;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Functions\ActivityHelpers;
 use App\Functions\ArrayFunctions;

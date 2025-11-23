@@ -11,12 +11,10 @@ declare(strict_types=1);
  * You should have received a copy of the GNU General Public License along with The Poppy Seed Pets API. If not, see <https://www.gnu.org/licenses/>.
  */
 
-
 namespace App\Service\PetActivity;
 
 use App\Entity\PetActivityLog;
 use App\Enum\DistractionLocationEnum;
-use App\Enum\EnumInvalidValueException;
 use App\Enum\PetActivityLogInterestingness;
 use App\Enum\PetActivityLogTagEnum;
 use App\Enum\PetSkillEnum;
@@ -27,7 +25,6 @@ use App\Model\WeatherSky;
 use App\Service\FieldGuideService;
 use App\Service\IRandom;
 use App\Service\PetExperienceService;
-use App\Service\ResponseService;
 use App\Service\WeatherService;
 use Doctrine\ORM\EntityManagerInterface;
 
