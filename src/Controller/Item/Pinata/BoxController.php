@@ -11,7 +11,6 @@ declare(strict_types=1);
  * You should have received a copy of the GNU General Public License along with The Poppy Seed Pets API. If not, see <https://www.gnu.org/licenses/>.
  */
 
-
 namespace App\Controller\Item\Pinata;
 
 use App\Controller\Item\ItemControllerHelpers;
@@ -1006,10 +1005,8 @@ class BoxController
         ItemControllerHelpers::validateInventory($user, $inventory, 'box/goldChest/#/open');
         ItemControllerHelpers::validateLocationSpace($inventory, $em);
 
-        $key = InventoryHelpers::findOneToConsume($em, $user, 'Gold Key');
-
-        if(!$key)
-            throw new PSPNotFoundException('You need a Gold Key to unlock a Gold Chest!');
+        $key = InventoryHelpers::findOneToConsume($em, $user, 'Gold Key')
+            ?? throw new PSPNotFoundException('You need a Gold Key to unlock a Gold Chest!');
 
         $comment = $user->getName() . ' got this from ' . $inventory->getItem()->getNameWithArticle() . '.';
 
@@ -1051,6 +1048,9 @@ class BoxController
         ItemControllerHelpers::validateInventory($user, $inventory, 'box/rubyChest/#/open');
         ItemControllerHelpers::validateLocationSpace($inventory, $em);
 
+        $key = InventoryHelpers::findOneToConsume($em, $user, 'Gold Key')
+            ?? throw new PSPNotFoundException('You need a Gold Key to unlock this chest!');
+
         $comment = $user->getName() . ' got this from ' . $inventory->getItem()->getNameWithArticle() . '.';
 
         $possibleItems = [
@@ -1072,6 +1072,8 @@ class BoxController
 
         foreach($items as $item)
             $newInventory[] = $inventoryService->receiveItem($item, $user, $user, $comment, $location, $inventory->getLockedToOwner());
+
+        $em->remove($key);
 
         return BoxHelpers::countRemoveFlushAndRespond('You opened the Ruby Chest... whoa: it\'s got', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em);
     }
