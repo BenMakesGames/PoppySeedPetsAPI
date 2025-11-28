@@ -25,7 +25,6 @@ use App\Enum\MoonPhaseEnum;
 use App\Enum\PetActivityLogInterestingness;
 use App\Enum\PetActivityLogTagEnum;
 use App\Enum\PetActivityStatEnum;
-use App\Enum\PetBadgeEnum;
 use App\Enum\PetSkillEnum;
 use App\Enum\StatusEffectEnum;
 use App\Enum\UnlockableFeatureEnum;
@@ -40,7 +39,6 @@ use App\Functions\ItemRepository;
 use App\Functions\NumberFunctions;
 use App\Functions\PetActivityLogFactory;
 use App\Functions\PetActivityLogTagHelpers;
-use App\Functions\PetBadgeHelpers;
 use App\Functions\StatusEffectHelpers;
 use App\Functions\UserQuestRepository;
 use App\Model\ComputedPetSkills;
@@ -53,7 +51,6 @@ use App\Service\PetActivity\Holiday\HuntTurkeyDragon;
 use App\Service\PetExperienceService;
 use App\Service\TransactionService;
 use App\Service\UserStatsService;
-use App\Service\WeatherService;
 use Doctrine\ORM\EntityManagerInterface;
 
 class HuntingService implements IPetActivity
@@ -115,12 +112,8 @@ class HuntingService implements IPetActivity
         $activityLog = null;
         $changes = new PetChanges($pet);
 
-        $weather = WeatherService::getWeather($this->clock->now);
-
         if(DateFunctions::moonPhase($this->clock->now) === MoonPhaseEnum::FullMoon && $this->rng->rngNextInt(1, 100) === 1)
-        {
             $activityLog = $this->werecreatureEncounterService->encounterWerecreature($petWithSkills, 'hunting', [ 'Hunting' ]);
-        }
         else
         {
             switch($roll)
@@ -202,15 +195,13 @@ class HuntingService implements IPetActivity
                         $activityLog = $this->huntedLeshyDemon($petWithSkills);
                     break;
                 case 22:
+                default:
                     $activityLog = $this->huntedEggSaladMonstrosity($petWithSkills);
                     break;
             }
         }
 
-        if($activityLog)
-        {
-            $activityLog->setChanges($changes->compare($pet));
-        }
+        $activityLog->setChanges($changes->compare($pet));
 
         if(AdventureMath::petAttractsBug($this->rng, $pet, 100))
             $this->inventoryService->petAttractsRandomBug($pet);

@@ -38,7 +38,6 @@ use App\Functions\PetBadgeHelpers;
 use App\Functions\PetColorFunctions;
 use App\Functions\PetSpeciesRepository;
 use App\Model\ComputedPetSkills;
-use App\Model\PetChanges;
 use App\Service\FieldGuideService;
 use App\Service\HattierService;
 use App\Service\HouseSimService;

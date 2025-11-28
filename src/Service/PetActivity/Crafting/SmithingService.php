@@ -15,7 +15,6 @@ namespace App\Service\PetActivity\Crafting;
 
 use App\Entity\PetActivityLog;
 use App\Enum\ActivityPersonalityEnum;
-use App\Enum\GuildEnum;
 use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingness;
 use App\Enum\PetActivityLogTagEnum;
@@ -26,7 +25,6 @@ use App\Functions\CalendarFunctions;
 use App\Functions\PetActivityLogFactory;
 use App\Functions\PetActivityLogTagHelpers;
 use App\Model\ComputedPetSkills;
-use App\Model\PetChanges;
 use App\Service\Clock;
 use App\Service\HouseSimService;
 use App\Service\InventoryService;
