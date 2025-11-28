@@ -20,10 +20,8 @@ use App\Functions\CalendarFunctions;
 use App\Functions\ItemRepository;
 use App\Functions\PetActivityLogFactory;
 use App\Functions\PetActivityLogTagHelpers;
-use App\Model\ActivityCallback;
 use App\Model\ComputedPetSkills;
 use App\Model\HouseSimRecipe;
-use App\Model\IActivityCallback;
 use App\Service\Clock;
 use App\Service\HouseSimService;
 use App\Service\InventoryService;
@@ -44,10 +42,7 @@ class EventLanternService
     {
     }
 
-    /**
-     * @return IActivityCallback[]
-     */
-    public function getCraftingPossibilities(ComputedPetSkills $petWithSkills): array
+    public function possibilities(ComputedPetSkills $petWithSkills): array
     {
         $now = new \DateTimeImmutable();
         $possibilities = [];
@@ -63,16 +58,16 @@ class EventLanternService
         if($items)
         {
             if(CalendarFunctions::isHalloweenCrafting($this->clock->now))
-                $possibilities[] = new ActivityCallback($this->createMoonlightLantern(...), 10);
+                $possibilities[] = $this->createMoonlightLantern(...);
 
             if(CalendarFunctions::isPiDayCrafting($this->clock->now))
-                $possibilities[] = new ActivityCallback($this->createPiLantern(...), 10);
+                $possibilities[] = $this->createPiLantern(...);
 
             if((int)$now->format('n') === 12)
-                $possibilities[] = new ActivityCallback($this->createTreelightLantern(...), 10);
+                $possibilities[] = $this->createTreelightLantern(...);
 
             if(CalendarFunctions::isSaintMartinsDayCrafting($this->clock->now))
-                $possibilities[] = new ActivityCallback($this->createDapperSwanLantern(...), 10);
+                $possibilities[] = $this->createDapperSwanLantern(...);
         }
 
         return $possibilities;

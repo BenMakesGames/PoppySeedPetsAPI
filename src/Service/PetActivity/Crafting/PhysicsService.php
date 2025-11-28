@@ -11,11 +11,11 @@ declare(strict_types=1);
  * You should have received a copy of the GNU General Public License along with The Poppy Seed Pets API. If not, see <https://www.gnu.org/licenses/>.
  */
 
-
 namespace App\Service\PetActivity\Crafting;
 
 use App\Entity\Pet;
 use App\Entity\PetActivityLog;
+use App\Enum\ActivityPersonalityEnum;
 use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingness;
 use App\Enum\PetActivityLogTagEnum;
@@ -25,18 +25,18 @@ use App\Enum\StatusEffectEnum;
 use App\Functions\ActivityHelpers;
 use App\Functions\PetActivityLogFactory;
 use App\Functions\PetActivityLogTagHelpers;
+use App\Functions\SpiceRepository;
 use App\Functions\StatusEffectHelpers;
-use App\Model\ActivityCallback;
 use App\Model\ComputedPetSkills;
-use App\Model\IActivityCallback;
 use App\Model\PetChanges;
 use App\Service\HouseSimService;
 use App\Service\InventoryService;
 use App\Service\IRandom;
+use App\Service\PetActivity\IPetActivity;
 use App\Service\PetExperienceService;
 use Doctrine\ORM\EntityManagerInterface;
 
-class PhysicsService
+class PhysicsService implements IPetActivity
 {
     public function __construct(
         private readonly InventoryService $inventoryService,
@@ -46,64 +46,66 @@ class PhysicsService
     {
     }
 
-    /**
-     * @return IActivityCallback[]
-     */
-    public function getCraftingPossibilities(ComputedPetSkills $petWithSkills): array
+    public function preferredWithFullHouse(): bool { return true; }
+
+    public function groupKey(): string { return 'physics'; }
+
+    public function groupDesire(ComputedPetSkills $petWithSkills): int
+    {
+        $pet = $petWithSkills->getPet();
+
+        if($pet->hasStatusEffect(StatusEffectEnum::Wereform))
+            return 0;
+
+        $desire = $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getPhysicsBonus()->getTotal();
+
+        // when a pet is equipped, the equipment bonus counts twice for affecting a pet's desires
+        if($pet->getTool() && $pet->getTool()->getItem()->getTool())
+            $desire += $pet->getTool()->getItem()->getTool()->getScience() + $pet->getTool()->getItem()->getTool()->getPhysics();
+
+        if($petWithSkills->getPet()->hasActivityPersonality(ActivityPersonalityEnum::CraftingScience))
+            $desire += 4;
+        else
+            $desire += $this->rng->rngNextInt(1, 4);
+
+        return max(1, (int)round($desire * (1 + $this->rng->rngNextInt(-10, 10) / 100)));
+    }
+
+    public function possibilities(ComputedPetSkills $petWithSkills): array
     {
         $possibilities = [];
 
+        if($this->houseSimService->hasInventory('Planetary Ring'))
+            $possibilities[] = $this->siftThroughPlanetaryRing(...);
+
         if($this->houseSimService->hasInventory('Tiny Black Hole') && $this->houseSimService->hasInventory('Worms'))
-            $possibilities[] = new ActivityCallback($this->createWormhole(...), 10);
+            $possibilities[] = $this->createWormhole(...);
 
         if($this->houseSimService->hasInventory('Photon'))
-            $possibilities[] = new ActivityCallback($this->createPoisson(...), 10);
+            $possibilities[] = $this->createPoisson(...);
 
         if($this->houseSimService->hasInventory('Lightning in a Bottle'))
         {
             if($this->houseSimService->hasInventory('Iron Sword'))
-                $possibilities[] = new ActivityCallback($this->createLightningSword(...), 10);
+                $possibilities[] = $this->createLightningSword(...);
 
             if($this->houseSimService->hasInventory('Gold Bar'))
             {
                 if($this->houseSimService->hasInventory('Glass Pendulum'))
-                    $possibilities[] = new ActivityCallback($this->createLivewire(...), 10);
+                    $possibilities[] = $this->createLivewire(...);
             }
 
             if($this->houseSimService->hasInventory('Iron Bar') && $this->houseSimService->hasInventory('Plastic') && $this->houseSimService->hasInventory('Gravitational Waves'))
-                $possibilities[] = new ActivityCallback($this->createGravitonGun(...), 10);
+                $possibilities[] = $this->createGravitonGun(...);
         }
 
         if($this->houseSimService->hasInventory('Gold Triangle') && $this->houseSimService->hasInventory('Seaweed') && $this->houseSimService->hasInventory('Gravitational Waves'))
-            $possibilities[] = new ActivityCallback($this->createBermudaTriangle(...), 10);
+            $possibilities[] = $this->createBermudaTriangle(...);
 
         if($this->houseSimService->hasInventory('Snail Shell') && $this->houseSimService->hasInventory('Gravitational Waves') && $this->houseSimService->hasInventory('Crystal Ball'))
-            $possibilities[] = new ActivityCallback($this->createGeodesicCurlicue(...), 10);
+            $possibilities[] = $this->createGeodesicCurlicue(...);
 
         return $possibilities;
-    }
-
-    /**
-     * @param IActivityCallback[] $possibilities
-     */
-    public function adventure(ComputedPetSkills $petWithSkills, array $possibilities): PetActivityLog
-    {
-        if(count($possibilities) === 0)
-            throw new \InvalidArgumentException('possibilities must contain at least one item.');
-
-        $pet = $petWithSkills->getPet();
-
-        /** @var IActivityCallback $method */
-        $method = $this->rng->rngNextFromArray($possibilities);
-
-        $changes = new PetChanges($pet);
-
-        /** @var PetActivityLog $activityLog */
-        $activityLog = $method->getCallable()($petWithSkills);
-
-        $activityLog->setChanges($changes->compare($pet));
-
-        return $activityLog;
     }
 
     private function doGravityMishapAdventure(Pet $pet, string $attemptedCraft): PetActivityLog
@@ -501,6 +503,76 @@ class PhysicsService
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::Science ], $activityLog);
             $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::PROGRAM, false);
+        }
+
+        return $activityLog;
+    }
+
+    private function siftThroughPlanetaryRing(ComputedPetSkills $petWithSkills): PetActivityLog
+    {
+        $pet = $petWithSkills->getPet();
+        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal());
+
+        if($roll >= 16)
+        {
+            $this->houseSimService->getState()->loseItem('Planetary Ring', 1);
+
+            $lucky = $pet->hasMerit(MeritEnum::LUCKY) && $this->rng->rngNextInt(1, 70) === 1;
+
+            if($this->rng->rngNextInt(1, 70) === 1 || $lucky)
+            {
+                $loot = 'Meteorite';
+
+                $exclaim = $lucky ? '! Lucky~!' : '!';
+            }
+            else
+            {
+                $loot = $this->rng->rngNextFromArray([
+                    'Everice',
+                    'Silica Grounds',
+                    'Iron Ore', 'Iron Ore',
+                    $this->rng->rngNextFromArray([ 'Silver Ore', 'Gold Ore' ]),
+                    'Dark Matter',
+                    'Glowing Six-sided Die',
+                    'String',
+                    'Icy Moon',
+                ]);
+
+                $exclaim = '.';
+
+                if($loot == 'Glowing Six-sided Die')
+                    $exclaim .= ' (I guess the gods DO play dice, Einstein!)';
+            }
+
+            if($loot === 'String')
+                $spice = SpiceRepository::findOneByName($this->em, 'Cosmic');
+            else
+                $spice = null;
+
+            $pet->increaseEsteem(3);
+
+            $tags = [ 'Gathering', 'Physics', PetActivityLogTagEnum::Location_At_Home ];
+            if($lucky) $tags[] = 'Lucky~!';
+
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% sifted through a Planetary Ring, and found ' . $loot . $exclaim)
+                ->addInterestingness(PetActivityLogInterestingness::HoHum + 16)
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, $tags))
+            ;
+
+            $this->inventoryService->petCollectsEnhancedItem($loot, null, $spice, $pet, $pet->getName() . ' found this in a Planetary Ring.', $activityLog);
+
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::Science, PetSkillEnum::Nature ], $activityLog);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::GATHER, true);
+        }
+        else
+        {
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% sifted through a Planetary Ring, looking for something interesting, but couldn\'t find anything.')
+                ->setIcon('icons/activity-logs/confused')
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Gathering', 'Physics', PetActivityLogTagEnum::Location_At_Home ]))
+            ;
+
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::Science, PetSkillEnum::Nature ], $activityLog);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::GATHER, false);
         }
 
         return $activityLog;

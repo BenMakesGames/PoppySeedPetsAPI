@@ -17,6 +17,7 @@ use App\Entity\MuseumItem;
 use App\Entity\Pet;
 use App\Entity\PetActivityLog;
 use App\Entity\User;
+use App\Enum\ActivityPersonalityEnum;
 use App\Enum\DistractionLocationEnum;
 use App\Enum\GuildEnum;
 use App\Enum\MeritEnum;
@@ -48,13 +49,14 @@ use App\Service\Clock;
 use App\Service\FieldGuideService;
 use App\Service\InventoryService;
 use App\Service\IRandom;
+use App\Service\PetActivity\Holiday\HuntTurkeyDragon;
 use App\Service\PetExperienceService;
 use App\Service\TransactionService;
 use App\Service\UserStatsService;
 use App\Service\WeatherService;
 use Doctrine\ORM\EntityManagerInterface;
 
-class HuntingService
+class HuntingService implements IPetActivity
 {
     public function __construct(
         private readonly InventoryService $inventoryService,
@@ -66,12 +68,39 @@ class HuntingService
         private readonly EntityManagerInterface $em,
         private readonly WerecreatureEncounterService $werecreatureEncounterService,
         private readonly GatheringDistractionService $gatheringDistractions,
-        private readonly FieldGuideService $fieldGuideService
+        private readonly FieldGuideService $fieldGuideService,
+        private readonly HuntTurkeyDragon $huntTurkeyDragon
     )
     {
     }
 
-    public function adventure(ComputedPetSkills $petWithSkills): void
+    public function preferredWithFullHouse(): bool { return false; }
+
+    public function groupKey(): string { return 'hunting'; }
+
+    public function groupDesire(ComputedPetSkills $petWithSkills): int
+    {
+        $pet = $petWithSkills->getPet();
+        $desire = $petWithSkills->getStrength()->getTotal() + $petWithSkills->getBrawl()->getTotal();
+
+        // when a pet is equipped, the equipment bonus counts twice for affecting a pet's desires
+        if($pet->getTool() && $pet->getTool()->getItem()->getTool())
+            $desire += $pet->getTool()->getItem()->getTool()->getBrawl();
+
+        if($petWithSkills->getPet()->hasActivityPersonality(ActivityPersonalityEnum::Hunting))
+            $desire += 4;
+        else
+            $desire += $this->rng->rngNextInt(1, 4);
+
+        return max(1, (int)round($desire * (1 + $this->rng->rngNextInt(-10, 10) / 100)));
+    }
+
+    public function possibilities(ComputedPetSkills $petWithSkills): array
+    {
+        return [ $this->run(...) ];
+    }
+
+    public function run(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
         $maxSkill = 10 + $petWithSkills->getStrength()->getTotal() + $petWithSkills->getBrawl()->getTotal() - $pet->getAlcohol() - $pet->getPsychedelic();
@@ -168,7 +197,7 @@ class HuntingService
                     break;
                 case 21:
                     if($useThanksgivingPrey)
-                        $activityLog = $this->huntedTurkeyDragon($petWithSkills);
+                        $activityLog = $this->huntTurkeyDragon->hunt($petWithSkills);
                     else
                         $activityLog = $this->huntedLeshyDemon($petWithSkills);
                     break;
@@ -185,6 +214,8 @@ class HuntingService
 
         if(AdventureMath::petAttractsBug($this->rng, $pet, 100))
             $this->inventoryService->petAttractsRandomBug($pet);
+
+        return $activityLog;
     }
 
     private function canRescueAnotherHouseFairy(User $user): bool
@@ -1483,94 +1514,6 @@ class HuntingService
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::Brawl ], $activityLog);
             $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::HUNT, false);
         }
-
-        return $activityLog;
-    }
-
-    public function huntedTurkeyDragon(ComputedPetSkills $petWithSkills): PetActivityLog
-    {
-        $pet = $petWithSkills->getPet();
-
-        $skill = 10 + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getBrawl()->getTotal();
-
-        $gobbleGobble = $pet->getStatusEffect(StatusEffectEnum::GobbleGobble);
-
-        $pet->increaseFood(-1);
-
-        $getExtraItem = $this->rng->rngNextInt(1, 20 + $petWithSkills->getNature()->getTotal() + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal()) >= 15;
-
-        $possibleItems = [
-            'Giant Turkey Leg',
-            'Scales',
-            'Feathers',
-            'Talon',
-            'Quintessence',
-            'Charcoal',
-            'Smallish Pumpkin Spice',
-        ];
-
-        if($this->rng->rngNextInt(1, $skill) >= 18)
-        {
-            $pet->increaseSafety(1);
-            $pet->increaseEsteem(2);
-
-            if($gobbleGobble !== null)
-                $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% found the Turkeydragon, and defeated it, claiming its head as a prize! (Dang! Brutal!)');
-            else
-                $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% was attacked by a Turkeydragon, but was able to defeat it.');
-
-            $numItems = $getExtraItem ? 3 : 2;
-
-            for($i = 0; $i < $numItems; $i++)
-            {
-                $itemName = $this->rng->rngNextFromArray($possibleItems);
-
-                $this->inventoryService->petCollectsItem($itemName, $pet, $pet->getName() . ' got this from defeating a Turkeydragon.', $activityLog);
-            }
-
-            if($gobbleGobble !== null)
-            {
-                $this->inventoryService->petCollectsItem('Turkey King', $pet, $pet->getName() . ' got this from defeating a Turkeydragon.', $activityLog);
-                PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::DefeatedATurkeyKing, $activityLog);
-            }
-
-            $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::Brawl, PetSkillEnum::Nature ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::HUNT, true);
-        }
-        else
-        {
-            if($getExtraItem)
-            {
-                $itemName = $this->rng->rngNextFromArray($possibleItems);
-
-                $aSome = in_array($itemName, [ 'Scales', 'Feathers', 'Quintessence', 'Charcoal' ]) ? 'some' : 'a';
-
-                if($gobbleGobble !== null)
-                    $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% found the Turkeydragon, and attacked it! ' . $pet->getName() . ' was able to claim ' . $aSome . ' ' . $itemName . ' before being forced to flee...');
-                else
-                    $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% was attacked by a Turkeydragon! ' . $pet->getName() . ' was able to claim ' . $aSome . ' ' . $itemName . ' before fleeing...');
-
-                $this->inventoryService->petCollectsItem($itemName, $pet, $pet->getName() . ' nabbed this from a Turkeydragon before running from it.', $activityLog);
-            }
-            else
-            {
-                $pet->increaseSafety(-1);
-                $pet->increaseEsteem(-1);
-
-                if($gobbleGobble !== null)
-                    $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% found the Turkeydragon, and attacked it, but was forced to flee!');
-                else
-                    $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% was attacked by a Turkeydragon, and forced to flee!');
-            }
-
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::Brawl ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::HUNT, false);
-        }
-
-        $activityLog->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Fighting', 'Special Event', 'Thanksgiving' ]));
-
-        if($gobbleGobble !== null)
-            $pet->removeStatusEffect($gobbleGobble);
 
         return $activityLog;
     }

@@ -16,6 +16,7 @@ namespace App\Service\PetActivity\Crafting;
 use App\Entity\Pet;
 use App\Entity\PetActivityLog;
 use App\Entity\PetRelationship;
+use App\Enum\ActivityPersonalityEnum;
 use App\Enum\FlavorEnum;
 use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingness;
@@ -26,6 +27,7 @@ use App\Enum\PetLocationEnum;
 use App\Enum\PetSkillEnum;
 use App\Enum\PetSpeciesName;
 use App\Enum\RelationshipEnum;
+use App\Enum\StatusEffectEnum;
 use App\Functions\ActivityHelpers;
 use App\Functions\ArrayFunctions;
 use App\Functions\EnchantmentRepository;
@@ -35,20 +37,19 @@ use App\Functions\PetActivityLogTagHelpers;
 use App\Functions\PetBadgeHelpers;
 use App\Functions\PetColorFunctions;
 use App\Functions\PetSpeciesRepository;
-use App\Model\ActivityCallback;
 use App\Model\ComputedPetSkills;
-use App\Model\IActivityCallback;
 use App\Model\PetChanges;
 use App\Service\FieldGuideService;
 use App\Service\HattierService;
 use App\Service\HouseSimService;
 use App\Service\InventoryService;
 use App\Service\IRandom;
+use App\Service\PetActivity\IPetActivity;
 use App\Service\PetExperienceService;
 use App\Service\PetFactory;
 use Doctrine\ORM\EntityManagerInterface;
 
-class ProgrammingService
+class ProgrammingService implements IPetActivity
 {
     public function __construct(
         private readonly InventoryService $inventoryService,
@@ -60,69 +61,91 @@ class ProgrammingService
     {
     }
 
-    /**
-     * @return IActivityCallback[]
-     */
-    public function getCraftingPossibilities(ComputedPetSkills $petWithSkills): array
+    public function preferredWithFullHouse(): bool { return true; }
+
+    public function groupKey(): string { return 'programming'; }
+
+    public function groupDesire(ComputedPetSkills $petWithSkills): int
+    {
+        $pet = $petWithSkills->getPet();
+
+        if($pet->hasStatusEffect(StatusEffectEnum::Wereform))
+            return 0;
+
+        $desire = $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getHackingBonus()->getTotal();
+
+        // when a pet is equipped, the equipment bonus counts twice for affecting a pet's desires
+        if($pet->getTool() && $pet->getTool()->getItem()->getTool())
+            $desire += $pet->getTool()->getItem()->getTool()->getScience() + $pet->getTool()->getItem()->getTool()->getHacking();
+
+        if($petWithSkills->getPet()->hasActivityPersonality(ActivityPersonalityEnum::CraftingScience))
+            $desire += 4;
+        else
+            $desire += $this->rng->rngNextInt(1, 4);
+
+        return max(1, (int)round($desire * (1 + $this->rng->rngNextInt(-10, 10) / 100)));
+    }
+
+    public function possibilities(ComputedPetSkills $petWithSkills): array
     {
         $pet = $petWithSkills->getPet();
 
         $possibilities = [];
 
         if($this->houseSimService->hasInventory('Macintosh'))
-            $possibilities[] = new ActivityCallback($this->hackMacintosh(...), 10);
+            $possibilities[] = $this->hackMacintosh(...);
 
         if($this->houseSimService->hasInventory('Painted Boomerang') && $this->houseSimService->hasInventory('Imaginary Number'))
-            $possibilities[] = new ActivityCallback($this->createStrangeAttractor(...), 10);
+            $possibilities[] = $this->createStrangeAttractor(...);
 
         if($this->houseSimService->hasInventory('Pointer'))
         {
-            $possibilities[] = new ActivityCallback($this->createStringFromPointer(...), 10);
+            $possibilities[] = $this->createStringFromPointer(...);
 
             if($this->houseSimService->hasInventory('Wings') && $this->houseSimService->hasInventory('Quinacridone Magenta Dye'))
-                $possibilities[] = new ActivityCallback($this->createDragondrop(...), 10);
+                $possibilities[] = $this->createDragondrop(...);
 
             if($this->houseSimService->hasInventory('Finite State Machine'))
-                $possibilities[] = new ActivityCallback($this->createRegex(...), 10);
+                $possibilities[] = $this->createRegex(...);
 
             if($this->houseSimService->hasInventory('NUL'))
             {
                 if($this->houseSimService->hasInventory('Plastic Fishing Rod'))
-                    $possibilities[] = new ActivityCallback($this->createPhishingRod(...), 10);
+                    $possibilities[] = $this->createPhishingRod(...);
 
                 if($this->houseSimService->hasInventory('Gold Key'))
-                    $possibilities[] = new ActivityCallback($this->createDiffieHKey(...), 10);
+                    $possibilities[] = $this->createDiffieHKey(...);
             }
         }
 
         if($this->houseSimService->hasInventory('Regex'))
         {
             if($this->houseSimService->hasInventory('Password'))
-                $possibilities[] = new ActivityCallback($this->createBruteForce(...), 10);
+                $possibilities[] = $this->createBruteForce(...);
         }
 
         if($this->houseSimService->hasInventory('Brute Force'))
         {
             if($this->houseSimService->hasInventory('XOR') && $this->houseSimService->hasInventory('Gold Bar'))
-                $possibilities[] = new ActivityCallback($this->createL33tH4xx0r(...), 10);
+                $possibilities[] = $this->createL33tH4xx0r(...);
 
             if($this->houseSimService->hasInventory('Lightning in a Bottle') && $this->houseSimService->hasInventory('Paper'))
-                $possibilities[] = new ActivityCallback($this->createZawinskisLaw(...), 10);
+                $possibilities[] = $this->createZawinskisLaw(...);
         }
 
         if($this->houseSimService->hasInventory('Hash Table'))
         {
             if($this->houseSimService->hasInventory('Finite State Machine') && $this->houseSimService->hasInventory('String'))
-                $possibilities[] = new ActivityCallback($this->createCompiler(...), 10);
+                $possibilities[] = $this->createCompiler(...);
 
             if($this->houseSimService->hasInventory('Elvish Magnifying Glass'))
-                $possibilities[] = new ActivityCallback($this->createRijndael(...), 10);
+                $possibilities[] = $this->createRijndael(...);
 
             if($this->houseSimService->hasInventory('Ruler'))
-                $possibilities[] = new ActivityCallback($this->createViswanathsConstant(...), 10);
+                $possibilities[] = $this->createViswanathsConstant(...);
 
             if($this->houseSimService->hasInventory('Regex'))
-                $possibilities[] = new ActivityCallback($this->createHapaxLegomenon(...), 10);
+                $possibilities[] = $this->createHapaxLegomenon(...);
         }
 
         if($this->houseSimService->hasInventory('Lightning in a Bottle'))
@@ -136,34 +159,11 @@ class ProgrammingService
                 )
             )
             {
-                $possibilities[] = new ActivityCallback($this->createSentientBeetle(...), 10);
+                $possibilities[] = $this->createSentientBeetle(...);
             }
         }
 
         return $possibilities;
-    }
-
-    /**
-     * @param IActivityCallback[] $possibilities
-     */
-    public function adventure(ComputedPetSkills $petWithSkills, array $possibilities): PetActivityLog
-    {
-        if(count($possibilities) === 0)
-            throw new \InvalidArgumentException('possibilities must contain at least one item.');
-
-        $pet = $petWithSkills->getPet();
-
-        /** @var IActivityCallback $method */
-        $method = $this->rng->rngNextFromArray($possibilities);
-
-        $changes = new PetChanges($pet);
-
-        /** @var PetActivityLog $activityLog */
-        $activityLog = $method->getCallable()($petWithSkills);
-
-        $activityLog->setChanges($changes->compare($pet));
-
-        return $activityLog;
     }
 
     public function getDescriptionOfRummageLocation(): string

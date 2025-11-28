@@ -16,6 +16,7 @@ namespace App\Service\PetActivity;
 use App\Entity\Dragon;
 use App\Entity\Pet;
 use App\Entity\PetActivityLog;
+use App\Enum\ActivityPersonalityEnum;
 use App\Enum\GuildEnum;
 use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingness;
@@ -50,7 +51,7 @@ use App\Service\TransactionService;
 use App\Service\WeatherService;
 use Doctrine\ORM\EntityManagerInterface;
 
-class UmbraService
+class UmbraService implements IPetActivity
 {
     public function __construct(
         private readonly InventoryService $inventoryService,
@@ -68,11 +69,50 @@ class UmbraService
     {
     }
 
-    public function adventure(ComputedPetSkills $petWithSkills): void
+    public function preferredWithFullHouse(): bool { return false; }
+
+    public function groupKey(): string { return 'theUmbra'; }
+
+    public function groupDesire(ComputedPetSkills $petWithSkills): int
+    {
+        $pet = $petWithSkills->getPet();
+        $desire = $petWithSkills->getStamina()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getArcana()->getTotal() + $petWithSkills->getUmbraBonus()->getTotal();
+
+        if($pet->getTool() && $pet->getTool()->getItem()->getTool())
+            $desire += $pet->getTool()->getItem()->getTool()->getArcana() + $pet->getTool()->getItem()->getTool()->getUmbra();
+
+        if($petWithSkills->getPet()->hasActivityPersonality(ActivityPersonalityEnum::Umbra))
+            $desire += 4;
+        else
+            $desire += $this->rng->rngNextInt(1, 4);
+
+        if(
+            $pet->hasMerit(MeritEnum::NATURAL_CHANNEL) ||
+            ($pet->getTool() && $pet->getTool()->getItem()->getTool() && $pet->getTool()->getItem()->getTool()->getAdventureDescription() === 'The Umbra')
+        )
+        {
+            if($pet->getPsychedelic() > $pet->getMaxPsychedelic() / 2)
+                return (int)ceil($desire * $pet->getPsychedelic() * 2 / $pet->getMaxPsychedelic());
+            else
+                return $desire;
+        }
+        else if($pet->getPsychedelic() > 0)
+        {
+            return (int)ceil($desire * $pet->getPsychedelic() * 2 / $pet->getMaxPsychedelic());
+        }
+        else
+            return 0;
+    }
+
+    public function possibilities(ComputedPetSkills $petWithSkills): array
+    {
+        return [ $this->run(...) ];
+    }
+
+    public function run(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
 
-        $activityLog = null;
         $changes = new PetChanges($pet);
 
         $this->fieldGuideService->maybeUnlock($pet->getOwner(), 'The Umbra', ActivityHelpers::PetName($pet) . ' pushed through the Storm and entered the Umbra!');
@@ -81,7 +121,8 @@ class UmbraService
         {
             $activityLog = $this->leonidsService->adventure($petWithSkills);
         }
-        else {
+        else
+        {
             $weather = WeatherService::getWeather(new \DateTimeImmutable());
 
             // psychedelics bonus is built into getUmbra()
@@ -163,15 +204,15 @@ class UmbraService
                     break;
 
                 case 23:
+                default:
                     $activityLog = $this->foundCursedGarden($petWithSkills);
                     break;
             }
         }
 
-        if($activityLog)
-        {
-            $activityLog->setChanges($changes->compare($pet));
-        }
+        $activityLog->setChanges($changes->compare($pet));
+
+        return $activityLog;
     }
 
     private function foundNothing(Pet $pet, int $roll): PetActivityLog
@@ -1128,17 +1169,6 @@ class UmbraService
 
         foreach($loot as $itemName)
             $this->inventoryService->petCollectsItem($itemName, $pet, $pet->getName() . ' ' . $didWhat . '.', $activityLog);
-
-        return $activityLog;
-    }
-
-    public function speakToBunnySpirit(Pet $pet): PetActivityLog
-    {
-        $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, 'A rabbit spirit visited %pet:' . $pet->getId() . '.name%, and the two talked for a while, about this world, and the other...')
-            ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'The Umbra' ]))
-        ;
-        $this->petExperienceService->gainExp($pet, 10, [ PetSkillEnum::Arcana, PetSkillEnum::Nature ], $activityLog);
-        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::UMBRA, true);
 
         return $activityLog;
     }

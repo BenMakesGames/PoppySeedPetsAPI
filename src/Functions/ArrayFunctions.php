@@ -129,6 +129,12 @@ final class ArrayFunctions
         return $results;
     }
 
+    /**
+     * @template T
+     * @param iterable<T> $array
+     * @param callable(T): int $weightingDelegate
+     * @return T
+     */
     public static function pick_one_weighted(iterable $array, callable $weightingDelegate)
     {
         $items = [];
@@ -148,6 +154,9 @@ final class ArrayFunctions
 
             $total += $weight;
         }
+
+        if($total < 1)
+            throw new \InvalidArgumentException('The total weight of all items was less than 1. This is not allowed.');
 
         $index = random_int(0, $total - 1);
 

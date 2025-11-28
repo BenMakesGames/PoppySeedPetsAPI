@@ -11,12 +11,12 @@ declare(strict_types=1);
  * You should have received a copy of the GNU General Public License along with The Poppy Seed Pets API. If not, see <https://www.gnu.org/licenses/>.
  */
 
-
 namespace App\Service\PetActivity\SpecialLocations;
 
 use App\Entity\Pet;
 use App\Entity\PetActivityLog;
 use App\Entity\Spice;
+use App\Enum\ActivityPersonalityEnum;
 use App\Enum\GuildEnum;
 use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingness;
@@ -24,6 +24,7 @@ use App\Enum\PetActivityLogTagEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetBadgeEnum;
 use App\Enum\PetSkillEnum;
+use App\Enum\StatusEffectEnum;
 use App\Functions\ActivityHelpers;
 use App\Functions\ArrayFunctions;
 use App\Functions\NumberFunctions;
@@ -37,10 +38,11 @@ use App\Service\FieldGuideService;
 use App\Service\HouseSimService;
 use App\Service\InventoryService;
 use App\Service\IRandom;
+use App\Service\PetActivity\IPetActivity;
 use App\Service\PetExperienceService;
 use Doctrine\ORM\EntityManagerInterface;
 
-class IcyMoonService
+class IcyMoonService implements IPetActivity
 {
     public function __construct(
         private readonly InventoryService $inventoryService,
@@ -53,7 +55,40 @@ class IcyMoonService
     {
     }
 
-    public function adventure(ComputedPetSkills $petWithSkills): PetActivityLog
+    public function preferredWithFullHouse(): bool { return false; }
+
+    public function groupKey(): string { return 'icyMoon'; }
+
+    public function groupDesire(ComputedPetSkills $petWithSkills): int
+    {
+        $pet = $petWithSkills->getPet();
+
+        if($pet->hasStatusEffect(StatusEffectEnum::Wereform))
+            return 0;
+
+        $desire = $petWithSkills->getStamina()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal() - $pet->getAlcohol();
+
+        // when a pet is equipped, the equipment bonus counts twice for affecting a pet's desires
+        if($pet->getTool() && $pet->getTool()->getItem()->getTool())
+            $desire += $pet->getTool()->getItem()->getTool()->getScience() + $pet->getTool()->getItem()->getTool()->getGathering();
+
+        if($petWithSkills->getPet()->hasActivityPersonality(ActivityPersonalityEnum::IcyMoon))
+            $desire += 4;
+        else
+            $desire += $this->rng->rngNextInt(1, 4);
+
+        return max(0, (int)round($desire * (1 + $this->rng->rngNextInt(-10, 10) / 100) * 3 / 4));
+    }
+
+    public function possibilities(ComputedPetSkills $petWithSkills): array
+    {
+        if(!$this->houseSimService->hasInventory('Submarine'))
+            return [];
+
+        return [ $this->run(...) ];
+    }
+
+    public function run(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
         $maxSkill = 5 + (int)ceil(($petWithSkills->getStamina()->getTotal() + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getScience()->getTotal()) / 2) - $pet->getAlcohol();

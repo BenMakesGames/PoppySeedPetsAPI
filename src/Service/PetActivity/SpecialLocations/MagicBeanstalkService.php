@@ -11,11 +11,12 @@ declare(strict_types=1);
  * You should have received a copy of the GNU General Public License along with The Poppy Seed Pets API. If not, see <https://www.gnu.org/licenses/>.
  */
 
-
 namespace App\Service\PetActivity\SpecialLocations;
 
+use App\Entity\GreenhousePlant;
 use App\Entity\Pet;
 use App\Entity\PetActivityLog;
+use App\Enum\ActivityPersonalityEnum;
 use App\Enum\GuildEnum;
 use App\Enum\MeritEnum;
 use App\Enum\PetActivityStatEnum;
@@ -33,10 +34,11 @@ use App\Model\PetChanges;
 use App\Service\Clock;
 use App\Service\InventoryService;
 use App\Service\IRandom;
+use App\Service\PetActivity\IPetActivity;
 use App\Service\PetExperienceService;
 use Doctrine\ORM\EntityManagerInterface;
 
-class MagicBeanstalkService
+class MagicBeanstalkService implements IPetActivity
 {
     public function __construct(
         private readonly InventoryService $inventoryService,
@@ -48,7 +50,44 @@ class MagicBeanstalkService
     {
     }
 
-    public function adventure(ComputedPetSkills $petWithSkills): void
+    public function preferredWithFullHouse(): bool { return false; }
+
+    public function groupKey(): string { return 'magicBeanstalk'; }
+
+    public function groupDesire(ComputedPetSkills $petWithSkills): int
+    {
+        $pet = $petWithSkills->getPet();
+        $desire = $petWithSkills->getStamina()->getTotal() + $petWithSkills->getNature()->getTotal() + $petWithSkills->getClimbingBonus()->getTotal();
+
+        // when a pet is equipped, the equipment bonus counts twice for affecting a pet's desires
+        if($pet->getTool() && $pet->getTool()->getItem()->getTool())
+            $desire += $pet->getTool()->getItem()->getTool()->getNature() + $pet->getTool()->getItem()->getTool()->getClimbing();
+
+        if($petWithSkills->getPet()->hasActivityPersonality(ActivityPersonalityEnum::Beanstalk))
+            $desire += 4;
+        else
+            $desire += $this->rng->rngNextInt(1, 4);
+
+        return max(1, (int)round($desire * (1 + $this->rng->rngNextInt(-10, 10) / 100)));
+    }
+
+    public function possibilities(ComputedPetSkills $petWithSkills): array
+    {
+        $hasMagicBeanstalk = $petWithSkills->getPet()->getOwner()->getGreenhousePlants()->exists(
+            fn(int $key, GreenhousePlant $p) =>
+                $p->getPlant()->getName() === 'Magic Beanstalk' &&
+                $p->getIsAdult() &&
+                $p->getProgress() >= 1 &&
+                (new \DateTimeImmutable()) >= $p->getCanNextInteract()
+        );
+
+        if(!$hasMagicBeanstalk)
+            return [];
+
+        return [ $this->run(...) ];
+    }
+
+    public function run(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
         $maxSkill = 10 + (int)floor(($petWithSkills->getStrength()->getTotal() + $petWithSkills->getStamina()->getTotal()) * 1.5) + (int)ceil($petWithSkills->getNature()->getTotal() / 2) + $petWithSkills->getClimbingBonus()->getTotal() - $pet->getAlcohol() * 2;
@@ -56,9 +95,6 @@ class MagicBeanstalkService
         $maxSkill = NumberFunctions::clamp($maxSkill, 1, 21);
 
         $roll = $this->rng->rngNextInt(1, $maxSkill);
-
-        $activityLog = null;
-        $changes = new PetChanges($pet);
 
         switch($roll)
         {
@@ -107,17 +143,15 @@ class MagicBeanstalkService
                 break;
             case 20:
             case 21:
+            default:
                 $activityLog = $this->foundGiantCastle($petWithSkills);
                 break;
         }
 
-        if($activityLog)
-        {
-            $activityLog->setChanges($changes->compare($pet));
-        }
-
         if(AdventureMath::petAttractsBug($this->rng, $pet, 75))
             $this->inventoryService->petAttractsRandomBug($pet);
+
+        return $activityLog;
     }
 
     private function badClimber(Pet $pet): PetActivityLog

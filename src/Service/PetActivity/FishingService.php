@@ -15,6 +15,7 @@ namespace App\Service\PetActivity;
 
 use App\Entity\Pet;
 use App\Entity\PetActivityLog;
+use App\Enum\ActivityPersonalityEnum;
 use App\Enum\DistractionLocationEnum;
 use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingness;
@@ -40,7 +41,7 @@ use App\Service\TransactionService;
 use App\Service\WeatherService;
 use Doctrine\ORM\EntityManagerInterface;
 
-class FishingService
+class FishingService implements IPetActivity
 {
     public function __construct(
         private readonly InventoryService $inventoryService,
@@ -54,7 +55,33 @@ class FishingService
     {
     }
 
-    public function adventure(ComputedPetSkills $petWithSkills): void
+    public function preferredWithFullHouse(): bool { return false; }
+
+    public function groupKey(): string { return 'fishing'; }
+
+    public function groupDesire(ComputedPetSkills $petWithSkills): int
+    {
+        $pet = $petWithSkills->getPet();
+        $desire = $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getNature()->getTotal() + $petWithSkills->getFishingBonus()->getTotal();
+
+        // when a pet is equipped, the equipment bonus counts twice for affecting a pet's desires
+        if($pet->getTool() && $pet->getTool()->getItem()->getTool())
+            $desire += $pet->getTool()->getItem()->getTool()->getNature() + $pet->getTool()->getItem()->getTool()->getFishing();
+
+        if($petWithSkills->getPet()->hasActivityPersonality(ActivityPersonalityEnum::Fishing))
+            $desire += 4;
+        else
+            $desire += $this->rng->rngNextInt(1, 4);
+
+        return max(1, (int)round($desire * (1 + $this->rng->rngNextInt(-10, 10) / 100)));
+    }
+
+    public function possibilities(ComputedPetSkills $petWithSkills): array
+    {
+        return [ $this->run(...) ];
+    }
+
+    public function run(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
         $maxSkill = 5 + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getNature()->getTotal() + $petWithSkills->getFishingBonus()->getTotal() - (int)ceil(($pet->getAlcohol() + $pet->getPsychedelic()) / 2);
@@ -136,6 +163,7 @@ class FishingService
                     break;
                 case 20:
                 case 21:
+                default:
                     // @TODO
                     /*if($this->rng->rngNextInt(1, 50) === 1)
                         $activityLog = $this->fishedNarwhal($pet);
@@ -145,13 +173,12 @@ class FishingService
             }
         }
 
-        if($activityLog)
-        {
-            $activityLog->setChanges($changes->compare($pet));
-        }
+        $activityLog->setChanges($changes->compare($pet));
 
         if(AdventureMath::petAttractsBug($this->rng, $pet, 75))
             $this->inventoryService->petAttractsRandomBug($pet);
+
+        return $activityLog;
     }
 
     private function failedToFish(Pet $pet): PetActivityLog

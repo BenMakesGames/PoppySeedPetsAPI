@@ -15,6 +15,7 @@ namespace App\Service\PetActivity\SpecialLocations;
 
 use App\Entity\Pet;
 use App\Entity\PetActivityLog;
+use App\Enum\ActivityPersonalityEnum;
 use App\Enum\GuildEnum;
 use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingness;
@@ -22,6 +23,7 @@ use App\Enum\PetActivityLogTagEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetBadgeEnum;
 use App\Enum\PetSkillEnum;
+use App\Enum\StatusEffectEnum;
 use App\Functions\ActivityHelpers;
 use App\Functions\AdventureMath;
 use App\Functions\ArrayFunctions;
@@ -34,12 +36,14 @@ use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
 use App\Service\FieldGuideService;
 use App\Service\HattierService;
+use App\Service\HouseSimService;
 use App\Service\InventoryService;
 use App\Service\IRandom;
+use App\Service\PetActivity\IPetActivity;
 use App\Service\PetExperienceService;
 use Doctrine\ORM\EntityManagerInterface;
 
-class DeepSeaService
+class DeepSeaService implements IPetActivity
 {
     public function __construct(
         private readonly InventoryService $inventoryService,
@@ -47,12 +51,46 @@ class DeepSeaService
         private readonly IRandom $rng,
         private readonly HattierService $hattierService,
         private readonly FieldGuideService $fieldGuideService,
-        private readonly EntityManagerInterface $em
+        private readonly EntityManagerInterface $em,
+        private readonly HouseSimService $houseSimService
     )
     {
     }
 
-    public function adventure(ComputedPetSkills $petWithSkills): ?PetActivityLog
+    public function preferredWithFullHouse(): bool { return false; }
+
+    public function groupKey(): string { return 'deepSea'; }
+
+    public function groupDesire(ComputedPetSkills $petWithSkills): int
+    {
+        $pet = $petWithSkills->getPet();
+
+        if($pet->hasStatusEffect(StatusEffectEnum::Wereform))
+            return 0;
+
+        $desire = $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getFishingBonus()->getTotal();
+
+        // when a pet is equipped, the equipment bonus counts twice for affecting a pet's desires
+        if($pet->getTool() && $pet->getTool()->getItem()->getTool())
+            $desire += $pet->getTool()->getItem()->getTool()->getScience() + $pet->getTool()->getItem()->getTool()->getFishing();
+
+        if($petWithSkills->getPet()->hasActivityPersonality(ActivityPersonalityEnum::Submarine))
+            $desire += 4;
+        else
+            $desire += $this->rng->rngNextInt(1, 4);
+
+        return max(1, (int)round($desire * (1 + $this->rng->rngNextInt(-10, 10) / 100)));
+    }
+
+    public function possibilities(ComputedPetSkills $petWithSkills): array
+    {
+        if(!$this->houseSimService->hasInventory('Submarine'))
+            return [];
+
+        return [ $this->run(...) ];
+    }
+
+    private function run(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
         $maxSkill = 10 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getFishingBonus()->getTotal() - (int)ceil(($pet->getAlcohol() + $pet->getPsychedelic()) / 2);
@@ -60,8 +98,6 @@ class DeepSeaService
         $maxSkill = NumberFunctions::clamp($maxSkill, 1, 18);
 
         $roll = $this->rng->rngNextInt(1, $maxSkill);
-
-        $changes = new PetChanges($pet);
 
         $activityLog = match($roll)
         {
@@ -76,8 +112,6 @@ class DeepSeaService
             17 => $this->findSubmarineVolcano($petWithSkills),
             default => $this->findSunkenShip($petWithSkills),
         };
-
-        $activityLog->setChanges($changes->compare($pet));
 
         if(AdventureMath::petAttractsBug($this->rng, $pet, 75))
             $this->inventoryService->petAttractsRandomBug($pet);

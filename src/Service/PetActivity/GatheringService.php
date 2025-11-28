@@ -16,6 +16,7 @@ namespace App\Service\PetActivity;
 use App\Entity\Pet;
 use App\Entity\PetActivityLog;
 use App\Entity\PetSpecies;
+use App\Enum\ActivityPersonalityEnum;
 use App\Enum\DistractionLocationEnum;
 use App\Enum\FlavorEnum;
 use App\Enum\GuildEnum;
@@ -56,7 +57,7 @@ use App\Service\TransactionService;
 use App\Service\WeatherService;
 use Doctrine\ORM\EntityManagerInterface;
 
-class GatheringService
+class GatheringService implements IPetActivity
 {
     public function __construct(
         private readonly ResponseService $responseService,
@@ -75,7 +76,33 @@ class GatheringService
     {
     }
 
-    public function adventure(ComputedPetSkills $petWithSkills): void
+    public function preferredWithFullHouse(): bool { return false; }
+
+    public function groupKey(): string { return 'gathering'; }
+
+    public function groupDesire(ComputedPetSkills $petWithSkills): int
+    {
+        $pet = $petWithSkills->getPet();
+        $desire = $petWithSkills->getPerception()->getTotal() + $petWithSkills->getNature()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal();
+
+        // when a pet is equipped, the equipment bonus counts twice for affecting a pet's desires
+        if($pet->getTool() && $pet->getTool()->getItem()->getTool())
+            $desire += $pet->getTool()->getItem()->getTool()->getNature() + $pet->getTool()->getItem()->getTool()->getGathering();
+
+        if($petWithSkills->getPet()->hasActivityPersonality(ActivityPersonalityEnum::Gathering))
+            $desire += 4;
+        else
+            $desire += $this->rng->rngNextInt(1, 4);
+
+        return max(1, (int)round($desire * (1 + $this->rng->rngNextInt(-10, 10) / 100)));
+    }
+
+    public function possibilities(ComputedPetSkills $petWithSkills): array
+    {
+        return [ $this->run(...) ];
+    }
+
+    public function run(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
         $maxSkill = 10 + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getNature()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal() - $pet->getAlcohol() - $pet->getPsychedelic();
@@ -84,7 +111,6 @@ class GatheringService
 
         $roll = $this->rng->rngNextInt(1, $maxSkill);
 
-        $activityLog = null;
         $changes = new PetChanges($pet);
 
         switch($roll)
@@ -143,6 +169,7 @@ class GatheringService
                 $activityLog = $this->foundDeepMicroJungle($petWithSkills);
                 break;
             case 24:
+            default:
                 if($this->fieldGuideService->hasUnlocked($pet->getOwner(), 'Île Volcan'))
                     $activityLog = $this->foundOldSettlement($petWithSkills);
                 else if($this->rng->rngNextBool())
@@ -152,13 +179,12 @@ class GatheringService
                 break;
         }
 
-        if($activityLog)
-        {
-            $activityLog->setChanges($changes->compare($pet));
-        }
+        $activityLog->setChanges($changes->compare($pet));
 
         if(AdventureMath::petAttractsBug($this->rng, $pet, 75))
             $this->inventoryService->petAttractsRandomBug($pet);
+
+        return $activityLog;
     }
 
     private function foundAbandonedQuarry(ComputedPetSkills $petWithSkills): PetActivityLog
