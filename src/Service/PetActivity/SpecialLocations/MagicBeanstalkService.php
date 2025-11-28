@@ -11,11 +11,12 @@ declare(strict_types=1);
  * You should have received a copy of the GNU General Public License along with The Poppy Seed Pets API. If not, see <https://www.gnu.org/licenses/>.
  */
 
-
 namespace App\Service\PetActivity\SpecialLocations;
 
+use App\Entity\GreenhousePlant;
 use App\Entity\Pet;
 use App\Entity\PetActivityLog;
+use App\Enum\ActivityPersonalityEnum;
 use App\Enum\GuildEnum;
 use App\Enum\MeritEnum;
 use App\Enum\PetActivityStatEnum;
@@ -33,10 +34,11 @@ use App\Model\PetChanges;
 use App\Service\Clock;
 use App\Service\InventoryService;
 use App\Service\IRandom;
+use App\Service\PetActivity\IPetActivity;
 use App\Service\PetExperienceService;
 use Doctrine\ORM\EntityManagerInterface;
 
-class MagicBeanstalkService
+class MagicBeanstalkService implements IPetActivity
 {
     public function __construct(
         private readonly InventoryService $inventoryService,
@@ -48,7 +50,44 @@ class MagicBeanstalkService
     {
     }
 
-    public function adventure(ComputedPetSkills $petWithSkills): void
+    public function preferredWithFullHouse(): bool { return false; }
+
+    public function groupKey(): string { return 'magicBeanstalk'; }
+
+    public function groupDesire(ComputedPetSkills $petWithSkills): int
+    {
+        $pet = $petWithSkills->getPet();
+        $desire = $petWithSkills->getStamina()->getTotal() + $petWithSkills->getNature()->getTotal() + $petWithSkills->getClimbingBonus()->getTotal();
+
+        // when a pet is equipped, the equipment bonus counts twice for affecting a pet's desires
+        if($pet->getTool() && $pet->getTool()->getItem()->getTool())
+            $desire += $pet->getTool()->getItem()->getTool()->getNature() + $pet->getTool()->getItem()->getTool()->getClimbing();
+
+        if($petWithSkills->getPet()->hasActivityPersonality(ActivityPersonalityEnum::Beanstalk))
+            $desire += 4;
+        else
+            $desire += $this->rng->rngNextInt(1, 4);
+
+        return max(1, (int)round($desire * (1 + $this->rng->rngNextInt(-10, 10) / 100)));
+    }
+
+    public function possibilities(ComputedPetSkills $petWithSkills): array
+    {
+        $hasMagicBeanstalk = $petWithSkills->getPet()->getOwner()->getGreenhousePlants()->exists(
+            fn(int $key, GreenhousePlant $p) =>
+                $p->getPlant()->getName() === 'Magic Beanstalk' &&
+                $p->getIsAdult() &&
+                $p->getProgress() >= 1 &&
+                (new \DateTimeImmutable()) >= $p->getCanNextInteract()
+        );
+
+        if(!$hasMagicBeanstalk)
+            return [];
+
+        return [ $this->run(...) ];
+    }
+
+    public function run(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
         $maxSkill = 10 + (int)floor(($petWithSkills->getStrength()->getTotal() + $petWithSkills->getStamina()->getTotal()) * 1.5) + (int)ceil($petWithSkills->getNature()->getTotal() / 2) + $petWithSkills->getClimbingBonus()->getTotal() - $pet->getAlcohol() * 2;
@@ -56,9 +95,6 @@ class MagicBeanstalkService
         $maxSkill = NumberFunctions::clamp($maxSkill, 1, 21);
 
         $roll = $this->rng->rngNextInt(1, $maxSkill);
-
-        $activityLog = null;
-        $changes = new PetChanges($pet);
 
         switch($roll)
         {
@@ -107,17 +143,15 @@ class MagicBeanstalkService
                 break;
             case 20:
             case 21:
+            default:
                 $activityLog = $this->foundGiantCastle($petWithSkills);
                 break;
         }
 
-        if($activityLog)
-        {
-            $activityLog->setChanges($changes->compare($pet));
-        }
-
         if(AdventureMath::petAttractsBug($this->rng, $pet, 75))
             $this->inventoryService->petAttractsRandomBug($pet);
+
+        return $activityLog;
     }
 
     private function badClimber(Pet $pet): PetActivityLog
@@ -200,7 +234,7 @@ class MagicBeanstalkService
 
         $meters = $this->rng->rngNextInt(7 + $roll, 6 + $roll * 2) / 2;
 
-        if($this->rng->rngNextInt(1, 20 + $petWithSkills->getStealth()->getTotal() + $petWithSkills->getDexterity()->getTotal()) >= 10)
+        if($this->rng->rngSkillRoll($petWithSkills->getStealth()->getTotal() + $petWithSkills->getDexterity()->getTotal()) >= 10)
         {
             $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% climbed %user:' . $pet->getOwner()->getId() . '.name\'s% magic bean-stalk, getting as high as ~' . $meters . ' meters. There, they found a bird\'s nest, which they raided.')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Magic Beanstalk', 'Stealth' ]))
@@ -208,7 +242,7 @@ class MagicBeanstalkService
 
             $this->inventoryService->petCollectsItem('Egg', $pet, $pet->getName() . ' stole this from a Bird Nest.', $activityLog);
 
-            $perceptionRoll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getPerception()->getTotal());
+            $perceptionRoll = $this->rng->rngSkillRoll($petWithSkills->getPerception()->getTotal());
 
             if($perceptionRoll >= 25)
                 $this->inventoryService->petCollectsItem('Black Feathers', $pet, $pet->getName() . ' stole this from a Bird Nest.', $activityLog);
@@ -224,7 +258,7 @@ class MagicBeanstalkService
         }
         else if($pet->isInGuild(GuildEnum::HighImpact))
         {
-            if($this->rng->rngNextInt(1, 20 + max($petWithSkills->getStrength()->getTotal(), $petWithSkills->getDexterity()->getTotal()) + $petWithSkills->getBrawl()->getTotal()) >= 10)
+            if($this->rng->rngSkillRoll(max($petWithSkills->getStrength()->getTotal(), $petWithSkills->getDexterity()->getTotal()) + $petWithSkills->getBrawl()->getTotal()) >= 10)
             {
                 $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% climbed %user:' . $pet->getOwner()->getId() . '.name\'s% magic bean-stalk, getting as high as ~' . $meters . ' meters. There, they found a bird\'s nest, guarded by its mother. It seemed a suitable challenge for a member of High Impact, so %pet:' . $pet->getId() . '.name% fought the bird, chased it off, and raided its nest.')
                     ->setIcon('guilds/high-impact')
@@ -234,7 +268,7 @@ class MagicBeanstalkService
                 $this->inventoryService->petCollectsItem('Egg', $pet, $pet->getName() . ' stole this from a Bird Nest.', $activityLog);
                 $this->inventoryService->petCollectsItem('Feathers', $pet, $pet->getName() . ' stole this from a Bird Nest.', $activityLog);
 
-                $perceptionRoll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getPerception()->getTotal());
+                $perceptionRoll = $this->rng->rngSkillRoll($petWithSkills->getPerception()->getTotal());
 
                 if($perceptionRoll >= 20)
                     $this->inventoryService->petCollectsItem('Black Feathers', $pet, $pet->getName() . ' stole this from a Bird Nest.', $activityLog);
@@ -334,7 +368,7 @@ class MagicBeanstalkService
 
         $meters = $this->rng->rngNextInt(2000, 3000) / 2;
 
-        if($this->rng->rngNextInt(1, 20 + $petWithSkills->getStealth()->getTotal() + $petWithSkills->getDexterity()->getTotal()) >= 18)
+        if($this->rng->rngSkillRoll($petWithSkills->getStealth()->getTotal() + $petWithSkills->getDexterity()->getTotal()) >= 18)
         {
             $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% climbed %user:' . $pet->getOwner()->getId() . '.name\'s% magic bean-stalk, getting as high as ~' . $meters . ' meters! There, they found a white Pegasus\' nest, which they raided.')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Magic Beanstalk', 'Stealth' ]))
@@ -342,7 +376,7 @@ class MagicBeanstalkService
 
             $this->inventoryService->petCollectsItem('Egg', $pet, $pet->getName() . ' stole this from a white Pegasus nest.', $activityLog);
 
-            $perceptionRoll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getPerception()->getTotal());
+            $perceptionRoll = $this->rng->rngSkillRoll($petWithSkills->getPerception()->getTotal());
 
             if($perceptionRoll >= 18)
                 $this->inventoryService->petCollectsItem('White Feathers', $pet, $pet->getName() . ' stole this from a white Pegasus nest.', $activityLog);
@@ -374,7 +408,7 @@ class MagicBeanstalkService
 
         $meters = $this->rng->rngNextInt(2000, 3000) / 2;
 
-        if($this->rng->rngNextInt(1, 20 + max($petWithSkills->getStrength()->getTotal(), $petWithSkills->getDexterity()->getTotal()) + $petWithSkills->getBrawl()->getTotal()) >= 18)
+        if($this->rng->rngSkillRoll(max($petWithSkills->getStrength()->getTotal(), $petWithSkills->getDexterity()->getTotal()) + $petWithSkills->getBrawl()->getTotal()) >= 18)
         {
             $pet->increaseEsteem($this->rng->rngNextInt(4, 8));
 
@@ -412,7 +446,7 @@ class MagicBeanstalkService
 
         $meters = $this->rng->rngNextInt(3200, 3800) / 2;
 
-        if($this->rng->rngNextInt(1, 20 + $petWithSkills->getStrength()->getTotal() + $petWithSkills->getNature()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal()) >= 18)
+        if($this->rng->rngSkillRoll($petWithSkills->getStrength()->getTotal() + $petWithSkills->getNature()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal()) >= 18)
         {
             $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% climbed %user:' . $pet->getOwner()->getId() . '.name\'s% magic bean-stalk, getting as high as ~' . $meters . ' meters! There, they found some Everice stuck to part of the stalk, and pried a piece off.')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Magic Beanstalk', 'Gathering' ]))
@@ -444,7 +478,7 @@ class MagicBeanstalkService
 
         $meters = $this->rng->rngNextInt(3200, 3800) / 2;
 
-        if($this->rng->rngNextInt(1, 20 + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal()) >= 20)
+        if($this->rng->rngSkillRoll($petWithSkills->getDexterity()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal()) >= 20)
         {
             if($this->rng->rngNextInt(1, 10) === 1)
             {
@@ -487,7 +521,7 @@ class MagicBeanstalkService
     {
         $pet = $petWithSkills->getPet();
 
-        if($this->rng->rngNextInt(1, 20 + $petWithSkills->getStealth()->getTotal() + $petWithSkills->getDexterity()->getTotal()) >= 20)
+        if($this->rng->rngSkillRoll($petWithSkills->getStealth()->getTotal() + $petWithSkills->getDexterity()->getTotal()) >= 20)
         {
             $wheatFlourOrCorn = DateFunctions::isCornMoon($this->clock->now) ? 'Corn' : 'Wheat Flour';
 
@@ -507,7 +541,7 @@ class MagicBeanstalkService
                 'Fluff',
             ];
 
-            if($this->rng->rngNextInt(1, 20 + $petWithSkills->getPerception()->getTotal()) >= 20)
+            if($this->rng->rngSkillRoll($petWithSkills->getPerception()->getTotal()) >= 20)
                 $loot = array_merge($loot, $this->rng->rngNextSubsetFromArray($possibleLoot, 2));
             else
                 $loot[] = $this->rng->rngNextFromArray($possibleLoot);

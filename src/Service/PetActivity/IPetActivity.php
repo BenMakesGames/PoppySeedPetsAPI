@@ -1,5 +1,5 @@
 <?php
-declare(strict_types=1);
+declare(strict_types = 1);
 
 /**
  * This file is part of the Poppy Seed Pets API.
@@ -11,11 +11,22 @@ declare(strict_types=1);
  * You should have received a copy of the GNU General Public License along with The Poppy Seed Pets API. If not, see <https://www.gnu.org/licenses/>.
  */
 
+namespace App\Service\PetActivity;
 
-namespace App\Model;
+use App\Entity\PetActivityLog;
+use App\Model\ComputedPetSkills;
+use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 
-interface IActivityCallback
+#[AutoconfigureTag('app.petActivity')]
+interface IPetActivity
 {
-    public function getWeight(): int;
-    public function getCallable(): callable;
+    public function preferredWithFullHouse(): bool;
+    public function groupKey(): string;
+    public function groupDesire(ComputedPetSkills $petWithSkills): int;
+
+    /**
+     * @param ComputedPetSkills $petWithSkills
+     * @return (callable(ComputedPetSkills): PetActivityLog)[]
+     */
+    public function possibilities(ComputedPetSkills $petWithSkills): array;
 }

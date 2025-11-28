@@ -11,7 +11,6 @@ declare(strict_types=1);
  * You should have received a copy of the GNU General Public License along with The Poppy Seed Pets API. If not, see <https://www.gnu.org/licenses/>.
  */
 
-
 namespace App\Controller\Item\Pinata;
 
 use App\Controller\Item\ItemControllerHelpers;
@@ -217,36 +216,34 @@ class BoxController
         }
         else
         {
-            $possibleItems = [
-                'Baker\'s Box',
-                'Fruits & Veggies Box',
-                'Handicrafts Supply Box',
-                'Little Strongbox',
-                'Sandbox',
-                'Jukebox',
-                'Pepperbox',
-                'Juice Box',
-                'Twilight Box',
-                'Nature Box',
-                'Monster Box',
-                'Pizza Box',
-            ];
-
-            if($rng->rngNextInt(1, 2) === 0) // TODO: remove this entirely once we get to, like, 20 possible boxes??
-                $possibleItems[] = [ $rng->rngNextFromArray([ 'Cereal Box', 'Hat Box' ]) ];
-
-            if($rng->rngNextInt(1, 20) === 0)
-            {
-                $possibleItems[] = $rng->rngNextFromArray([
+            $possibleItems = $rng->rngNextInt(1, 30) === 0
+                // holiday boxes:
+                ? [
                     '4th of July Box',
                     'New Year Box',
                     'Lunar New Year Box',
                     'Bastille Day Box',
                     'Cinco de Mayo Box',
                     'Awa Odori Box',
-                    // TODO: other holiday boxes
-                ]);
-            }
+                ]
+                // regular-type boxes:
+                : [
+                    'Baker\'s Box',
+                    'Fruits & Veggies Box',
+                    'Handicrafts Supply Box',
+                    'Little Strongbox',
+                    'Sandbox',
+                    'Jukebox',
+                    'Pepperbox',
+                    'Juice Box',
+                    'Twilight Box',
+                    'Nature Box',
+                    'Monster Box',
+                    'Pizza Box',
+                    'Cereal Box',
+                    'Hat Box'
+                ]
+            ;
 
             shuffle($possibleItems);
 
@@ -1006,10 +1003,8 @@ class BoxController
         ItemControllerHelpers::validateInventory($user, $inventory, 'box/goldChest/#/open');
         ItemControllerHelpers::validateLocationSpace($inventory, $em);
 
-        $key = InventoryHelpers::findOneToConsume($em, $user, 'Gold Key');
-
-        if(!$key)
-            throw new PSPNotFoundException('You need a Gold Key to unlock a Gold Chest!');
+        $key = InventoryHelpers::findOneToConsume($em, $user, 'Gold Key')
+            ?? throw new PSPNotFoundException('You need a Gold Key to unlock a Gold Chest!');
 
         $comment = $user->getName() . ' got this from ' . $inventory->getItem()->getNameWithArticle() . '.';
 
@@ -1051,6 +1046,9 @@ class BoxController
         ItemControllerHelpers::validateInventory($user, $inventory, 'box/rubyChest/#/open');
         ItemControllerHelpers::validateLocationSpace($inventory, $em);
 
+        $key = InventoryHelpers::findOneToConsume($em, $user, 'Gold Key')
+            ?? throw new PSPNotFoundException('You need a Gold Key to unlock this chest!');
+
         $comment = $user->getName() . ' got this from ' . $inventory->getItem()->getNameWithArticle() . '.';
 
         $possibleItems = [
@@ -1072,6 +1070,8 @@ class BoxController
 
         foreach($items as $item)
             $newInventory[] = $inventoryService->receiveItem($item, $user, $user, $comment, $location, $inventory->getLockedToOwner());
+
+        $em->remove($key);
 
         return BoxHelpers::countRemoveFlushAndRespond('You opened the Ruby Chest... whoa: it\'s got', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em);
     }

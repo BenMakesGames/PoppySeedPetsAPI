@@ -24,7 +24,7 @@ use Symfony\Component\HttpKernel\Event\ControllerEvent;
 use Symfony\Component\HttpKernel\Event\ResponseEvent;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\KernelEvents;
-use Symfony\Component\RateLimiter\RateLimiterFactory;
+use Symfony\Component\RateLimiter\RateLimiterFactoryInterface;
 
 class ControllerActionSubscriber implements EventSubscriberInterface
 {
@@ -39,7 +39,7 @@ class ControllerActionSubscriber implements EventSubscriberInterface
     public function __construct(
         private readonly Security $security,
         private readonly HouseService $houseService,
-        private readonly RateLimiterFactory $pspDefaultLimiter
+        private readonly RateLimiterFactoryInterface $pspDefaultLimiter
     )
     {
     }

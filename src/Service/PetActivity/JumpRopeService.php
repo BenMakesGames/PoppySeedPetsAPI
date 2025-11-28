@@ -11,7 +11,6 @@ declare(strict_types=1);
  * You should have received a copy of the GNU General Public License along with The Poppy Seed Pets API. If not, see <https://www.gnu.org/licenses/>.
  */
 
-
 namespace App\Service\PetActivity;
 
 use App\Entity\PetActivityLog;
@@ -88,7 +87,7 @@ class JumpRopeService
 
     private function doBreakCheck(ComputedPetSkills $petWithSkills, int $difficulty, PetActivityLog $log): void
     {
-        $skillCheck = $this->rng->rngNextInt(1, 20 + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getStamina()->getTotal());
+        $skillCheck = $this->rng->rngSkillRoll($petWithSkills->getDexterity()->getTotal() + $petWithSkills->getStamina()->getTotal());
 
         if($skillCheck < $difficulty)
         {

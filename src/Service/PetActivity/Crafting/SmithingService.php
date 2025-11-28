@@ -11,20 +11,19 @@ declare(strict_types=1);
  * You should have received a copy of the GNU General Public License along with The Poppy Seed Pets API. If not, see <https://www.gnu.org/licenses/>.
  */
 
-
 namespace App\Service\PetActivity\Crafting;
 
 use App\Entity\PetActivityLog;
-use App\Enum\GuildEnum;
+use App\Enum\ActivityPersonalityEnum;
 use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingness;
 use App\Enum\PetActivityLogTagEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
+use App\Enum\StatusEffectEnum;
 use App\Functions\CalendarFunctions;
 use App\Functions\PetActivityLogFactory;
 use App\Functions\PetActivityLogTagHelpers;
-use App\Model\ActivityCallback;
 use App\Model\ComputedPetSkills;
 use App\Service\Clock;
 use App\Service\HouseSimService;
@@ -36,11 +35,12 @@ use App\Service\PetActivity\Crafting\Helpers\IronSmithingService;
 use App\Service\PetActivity\Crafting\Helpers\MeteoriteSmithingService;
 use App\Service\PetActivity\Crafting\Helpers\SilverSmithingService;
 use App\Service\PetActivity\Crafting\Helpers\TwuWuvCraftingService;
+use App\Service\PetActivity\IPetActivity;
 use App\Service\PetExperienceService;
 use App\Service\TransactionService;
 use Doctrine\ORM\EntityManagerInterface;
 
-class SmithingService
+class SmithingService implements IPetActivity
 {
     public function __construct(
         private readonly InventoryService $inventoryService,
@@ -60,161 +60,185 @@ class SmithingService
     {
     }
 
-    public function getCraftingPossibilities(ComputedPetSkills $petWithSkills): array
+    public function preferredWithFullHouse(): bool { return true; }
+
+    public function groupKey(): string { return 'smithing'; }
+
+    public function groupDesire(ComputedPetSkills $petWithSkills): int
     {
         $pet = $petWithSkills->getPet();
-        $weight = ($pet->getSafety() > 0 || $pet->isInGuild(GuildEnum::Dwarfcraft)) ? 10 : 1;
+
+        if($pet->hasStatusEffect(StatusEffectEnum::Wereform))
+            return 0;
+
+        $desire = $petWithSkills->getStamina()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal();
+
+        // when a pet is equipped, the equipment bonus counts twice for affecting a pet's desires
+        if($pet->getTool() && $pet->getTool()->getItem()->getTool())
+            $desire += $pet->getTool()->getItem()->getTool()->getCrafts() + $pet->getTool()->getItem()->getTool()->getSmithing();
+
+        if($petWithSkills->getPet()->hasActivityPersonality(ActivityPersonalityEnum::CraftingSmithing))
+            $desire += 4;
+        else
+            $desire += $this->rng->rngNextInt(1, 4);
+
+        return max(1, (int)round($desire * (1 + $this->rng->rngNextInt(-10, 10) / 100)));
+    }
+
+    public function possibilities(ComputedPetSkills $petWithSkills): array
+    {
+        $pet = $petWithSkills->getPet();
 
         $possibilities = [];
 
         if($this->houseSimService->hasInventory('Twu Wuv'))
         {
             if($this->houseSimService->hasInventory('String') && $this->houseSimService->hasInventory('Silver Bar'))
-                $possibilities[] = new ActivityCallback($this->twuWuvCraftingService->createCupid(...), 15);
+                $possibilities[] = $this->twuWuvCraftingService->createCupid(...);
         }
 
         if($this->houseSimService->hasInventory('Charcoal'))
-            $possibilities[] = new ActivityCallback($this->createCoke(...), $weight);
+            $possibilities[] = $this->createCoke(...);
 
         if($this->houseSimService->hasInventory('Toasted Marshmallow') && $this->houseSimService->hasInventory('Blackonite'))
-            $possibilities[] = new ActivityCallback($this->createBlackenedMarshmallow(...), $weight);
+            $possibilities[] = $this->createBlackenedMarshmallow(...);
 
         if($this->houseSimService->hasInventory('Iron Ore'))
         {
             if($this->houseSimService->hasInventory('Moon Pearl') && $this->houseSimService->hasInventory('Gravitational Waves'))
-                $possibilities[] = new ActivityCallback($this->createHighTide(...), 10);
+                $possibilities[] = $this->createHighTide(...);
             else
-                $possibilities[] = new ActivityCallback($this->createIronBar(...), $weight);
+                $possibilities[] = $this->createIronBar(...);
         }
 
         if($this->houseSimService->hasInventory('Silver Ore'))
-            $possibilities[] = new ActivityCallback($this->createSilverBar(...), $weight);
+            $possibilities[] = $this->createSilverBar(...);
 
         if($this->houseSimService->hasInventory('Gold Ore'))
-            $possibilities[] = new ActivityCallback($this->createGoldBar(...), $weight);
+            $possibilities[] = $this->createGoldBar(...);
 
         if($this->houseSimService->hasInventory('Silica Grounds') && $this->houseSimService->hasInventory('Limestone'))
-            $possibilities[] = new ActivityCallback($this->createGlass(...), $weight);
+            $possibilities[] = $this->createGlass(...);
 
         if($this->houseSimService->hasInventory('Glass'))
         {
-            $possibilities[] = new ActivityCallback($this->createCrystalBall(...), max(1, $weight - 2));
+            $possibilities[] = $this->createCrystalBall(...);
 
             if($this->houseSimService->hasInventory('Plastic'))
-                $possibilities[] = new ActivityCallback($this->createFiberglass(...), $weight);
+                $possibilities[] = $this->createFiberglass(...);
 
             if($this->houseSimService->hasInventory('Silver Bar') || $this->houseSimService->hasInventory('Dark Matter'))
-                $possibilities[] = new ActivityCallback($this->createMirror(...), $weight);
+                $possibilities[] = $this->createMirror(...);
         }
 
         if($this->houseSimService->hasInventory('Fiberglass'))
         {
             if($this->houseSimService->hasInventory('String'))
-                $possibilities[] = new ActivityCallback($this->createFiberglassBow(...), 10);
+                $possibilities[] = $this->createFiberglassBow(...);
 
             if($this->houseSimService->hasInventory('Shiny Pail'))
-                $possibilities[] = new ActivityCallback($this->createShinyNanerPicker(...), 10);
+                $possibilities[] = $this->createShinyNanerPicker(...);
         }
 
         if($this->houseSimService->hasInventory('Iron Bar'))
         {
-            $possibilities[] = new ActivityCallback($this->ironSmithingService->createIronKey(...), $weight);
-            $possibilities[] = new ActivityCallback($this->ironSmithingService->createBasicIronCraft(...), $weight);
+            $possibilities[] = $this->ironSmithingService->createIronKey(...);
+            $possibilities[] = $this->ironSmithingService->createBasicIronCraft(...);
 
             if($this->houseSimService->hasInventory('Snail Shell') && $this->houseSimService->hasInventory('Grappling Hook'))
-                $possibilities[] = new ActivityCallback($this->ironSmithingService->createSnailpplingHook(...), 10);
+                $possibilities[] = $this->ironSmithingService->createSnailpplingHook(...);
 
             if($this->houseSimService->hasInventory('Plastic'))
             {
                 if($this->houseSimService->hasInventory('Yellow Dye'))
-                    $possibilities[] = new ActivityCallback($this->ironSmithingService->createYellowScissors(...), 10);
+                    $possibilities[] = $this->ironSmithingService->createYellowScissors(...);
 
                 if($this->houseSimService->hasInventory('Green Dye'))
-                    $possibilities[] = new ActivityCallback($this->ironSmithingService->createGreenScissors(...), 10);
+                    $possibilities[] = $this->ironSmithingService->createGreenScissors(...);
 
-                $possibilities[] = new ActivityCallback($this->ironSmithingService->createSaucepan(...), 7);
+                $possibilities[] = $this->ironSmithingService->createSaucepan(...);
             }
 
             if($this->houseSimService->hasInventory('Wings') && $this->houseSimService->hasInventory('Laser-guided Sword'))
-                $possibilities[] = new ActivityCallback($this->ironSmithingService->createMeatSeekingClaymore(...), $weight);
+                $possibilities[] = $this->ironSmithingService->createMeatSeekingClaymore(...);
 
             if($this->houseSimService->hasInventory('Crooked Stick'))
-                $possibilities[] = new ActivityCallback($this->ironSmithingService->createScythe(...), 10);
+                $possibilities[] = $this->ironSmithingService->createScythe(...);
 
             if($this->houseSimService->hasInventory('String'))
-                $possibilities[] = new ActivityCallback($this->ironSmithingService->createGrapplingHook(...), 10);
+                $possibilities[] = $this->ironSmithingService->createGrapplingHook(...);
 
             if($this->houseSimService->hasInventory('Dark Matter'))
-                $possibilities[] = new ActivityCallback($this->ironSmithingService->createHeavyTool(...), $petWithSkills->getStrength()->getTotal() >= 3 ? $weight : (int)ceil($weight / 2));
+                $possibilities[] = $this->ironSmithingService->createHeavyTool(...);
 
             if($this->houseSimService->hasInventory('Mirror'))
-                $possibilities[] = new ActivityCallback($this->ironSmithingService->createMirrorShield(...), $weight);
+                $possibilities[] = $this->ironSmithingService->createMirrorShield(...);
 
             if($this->houseSimService->hasInventory('Toadstool'))
-                $possibilities[] = new ActivityCallback($this->ironSmithingService->createMushketeer(...), $weight);
+                $possibilities[] = $this->ironSmithingService->createMushketeer(...);
 
             if($this->houseSimService->hasInventory('Green Dye') && $this->houseSimService->hasInventory('Bug-catcher\'s Net'))
-                $possibilities[] = new ActivityCallback($this->ironSmithingService->createWaterStrider(...), 10);
+                $possibilities[] = $this->ironSmithingService->createWaterStrider(...);
         }
 
         if($this->houseSimService->hasInventory('Saucepan') || $this->houseSimService->hasInventory('Upside-down Saucepan'))
         {
             if($this->houseSimService->hasInventory('Rice'))
-                $possibilities[] = new ActivityCallback($this->createRiceFryingPan(...), 8);
+                $possibilities[] = $this->createRiceFryingPan(...);
 
             if($this->houseSimService->hasInventory('Scales'))
-                $possibilities[] = new ActivityCallback($this->createFishFryingPan(...), 10);
+                $possibilities[] = $this->createFishFryingPan(...);
         }
 
         if($this->houseSimService->hasInventory('Yellow Scissors') && $this->houseSimService->hasInventory('Green Scissors') && $this->houseSimService->hasInventory('Quinacridone Magenta Dye'))
-            $possibilities[] = new ActivityCallback($this->createTriColorScissors(...), 10);
+            $possibilities[] = $this->createTriColorScissors(...);
 
         if($this->houseSimService->hasInventory('Firestone'))
         {
             if($this->houseSimService->hasInventory('Tri-color Scissors'))
-                $possibilities[] = new ActivityCallback($this->createPapersBane(...), $weight);
+                $possibilities[] = $this->createPapersBane(...);
 
             if($this->houseSimService->hasInventory('Nail File'))
-                $possibilities[] = new ActivityCallback($this->createCrazyHotNailFile(...), $weight);
+                $possibilities[] = $this->createCrazyHotNailFile(...);
 
             if($this->houseSimService->hasInventory('Warping Wand'))
-                $possibilities[] = new ActivityCallback($this->createRedWarpingWand(...), $weight);
+                $possibilities[] = $this->createRedWarpingWand(...);
 
             if($this->houseSimService->hasInventory('Dragonstick'))
-                $possibilities[] = new ActivityCallback($this->createDragonbreath(...), $weight);
+                $possibilities[] = $this->createDragonbreath(...);
 
             if($this->houseSimService->hasInventory('Cooking Buddy'))
-                $possibilities[] = new ActivityCallback($this->createCookingWithFire(...), $weight);
+                $possibilities[] = $this->createCookingWithFire(...);
         }
 
         if($this->houseSimService->hasInventory('Silver Bar'))
         {
-            $possibilities[] = new ActivityCallback($this->silverSmithingService->createSilverKey(...), $weight);
-            $possibilities[] = new ActivityCallback($this->silverSmithingService->createBasicSilverCraft(...), $weight);
+            $possibilities[] = $this->silverSmithingService->createSilverKey(...);
+            $possibilities[] = $this->silverSmithingService->createBasicSilverCraft(...);
 
             if($this->houseSimService->hasInventory('Mericarp'))
-                $possibilities[] = new ActivityCallback($this->silverSmithingService->createSilveredMericarp(...), 10);
+                $possibilities[] = $this->silverSmithingService->createSilveredMericarp(...);
 
             if($this->houseSimService->hasInventory('Crown Coral'))
-                $possibilities[] = new ActivityCallback($this->silverSmithingService->createCoralTrident(...), 10);
+                $possibilities[] = $this->silverSmithingService->createCoralTrident(...);
 
             if($this->houseSimService->hasInventory('"Rustic" Magnifying Glass'))
-                $possibilities[] = new ActivityCallback($this->silverSmithingService->createElvishMagnifyingGlass(...), 10);
+                $possibilities[] = $this->silverSmithingService->createElvishMagnifyingGlass(...);
 
             if($this->houseSimService->hasInventory('Leaf Spear'))
-                $possibilities[] = new ActivityCallback($this->silverSmithingService->createSylvanFishingRod(...), 10);
+                $possibilities[] = $this->silverSmithingService->createSylvanFishingRod(...);
 
             if($this->houseSimService->hasInventory('Glass'))
             {
                 if($this->houseSimService->hasInventory('Silica Grounds'))
-                    $possibilities[] = new ActivityCallback($this->silverSmithingService->createHourglass(...), $weight);
+                    $possibilities[] = $this->silverSmithingService->createHourglass(...);
             }
 
             if($this->houseSimService->hasInventory('Gold Key') && $this->houseSimService->hasInventory('White Cloth'))
-                $possibilities[] = new ActivityCallback($this->silverSmithingService->createGoldKeyblade(...), 10);
+                $possibilities[] = $this->silverSmithingService->createGoldKeyblade(...);
 
             if($this->houseSimService->hasInventory('Wand of Lightning'))
-                $possibilities[] = new ActivityCallback($this->silverSmithingService->createLightningAxe(...), $weight);
+                $possibilities[] = $this->silverSmithingService->createLightningAxe(...);
 
             if(
                 $this->houseSimService->hasInventory('Iron Axe') &&
@@ -222,114 +246,114 @@ class SmithingService
                 $this->houseSimService->hasInventory('Talon')
             )
             {
-                $possibilities[] = new ActivityCallback($this->silverSmithingService->createSharktoothAxe(...), $weight);
+                $possibilities[] = $this->silverSmithingService->createSharktoothAxe(...);
             }
         }
 
         if($this->houseSimService->hasInventory('Gold Bar'))
         {
-            $possibilities[] = new ActivityCallback($this->goldSmithingService->createGoldKey(...), $weight);
+            $possibilities[] = $this->goldSmithingService->createGoldKey(...);
 
-            $possibilities[] = new ActivityCallback($this->goldSmithingService->createGoldTuningFork(...), (int)ceil($weight / 2));
+            $possibilities[] = $this->goldSmithingService->createGoldTuningFork(...);
 
             if($this->houseSimService->hasInventory('Mericarp'))
-                $possibilities[] = new ActivityCallback($this->goldSmithingService->createGildedMericarp(...), 10);
+                $possibilities[] = $this->goldSmithingService->createGildedMericarp(...);
 
             if($this->houseSimService->hasInventory('Culinary Knife') && $this->houseSimService->hasInventory('Firestone'))
-                $possibilities[] = new ActivityCallback($this->goldSmithingService->createNoWhiskNoReward(...), $weight);
+                $possibilities[] = $this->goldSmithingService->createNoWhiskNoReward(...);
 
             if($this->houseSimService->hasInventory('Eggplant'))
-                $possibilities[] = new ActivityCallback($this->goldSmithingService->createAubergineScepter(...), 8);
+                $possibilities[] = $this->goldSmithingService->createAubergineScepter(...);
 
             if($this->houseSimService->hasInventory('Blackonite') && $this->houseSimService->hasInventory('White Cloth'))
-                $possibilities[] = new ActivityCallback($this->goldSmithingService->createVicious(...), 10);
+                $possibilities[] = $this->goldSmithingService->createVicious(...);
 
             if($this->houseSimService->hasInventory('Fiberglass') && $this->houseSimService->hasInventory('Moon Pearl'))
-                $possibilities[] = new ActivityCallback($this->goldSmithingService->createMoonhammer(...), 10);
+                $possibilities[] = $this->goldSmithingService->createMoonhammer(...);
 
             if($this->houseSimService->hasInventory('Dark Scales') && $this->houseSimService->hasInventory('Dragon Flag'))
-                $possibilities[] = new ActivityCallback($this->goldSmithingService->createKundravsStandard(...), 10);
+                $possibilities[] = $this->goldSmithingService->createKundravsStandard(...);
 
             if($this->houseSimService->hasInventory('String'))
-                $possibilities[] = new ActivityCallback($this->goldSmithingService->createGoldTriangle(...), 10);
+                $possibilities[] = $this->goldSmithingService->createGoldTriangle(...);
 
             if($this->houseSimService->hasInventory('Chanterelle') && $this->houseSimService->hasInventory('Flute'))
-                $possibilities[] = new ActivityCallback($this->goldSmithingService->createFungalClarinet(...), 10);
+                $possibilities[] = $this->goldSmithingService->createFungalClarinet(...);
 
             if($this->houseSimService->hasInventory('Glass'))
-                $possibilities[] = new ActivityCallback($this->goldSmithingService->createGoldTelescope(...), $weight);
+                $possibilities[] = $this->goldSmithingService->createGoldTelescope(...);
 
             if($this->houseSimService->hasInventory('Plastic Shovel') && $this->houseSimService->hasInventory('Green Dye'))
-                $possibilities[] = new ActivityCallback($this->goldSmithingService->createCoreopsis(...), 10);
+                $possibilities[] = $this->goldSmithingService->createCoreopsis(...);
 
             if($this->houseSimService->hasInventory('Plastic') && $this->houseSimService->hasInventory('3D Printer'))
-                $possibilities[] = new ActivityCallback($this->goldSmithingService->createGoldRod(...), 10);
+                $possibilities[] = $this->goldSmithingService->createGoldRod(...);
 
             if($this->houseSimService->hasInventory('Enchanted Compass'))
-                $possibilities[] = new ActivityCallback($this->goldSmithingService->createGoldCompass(...), $weight);
+                $possibilities[] = $this->goldSmithingService->createGoldCompass(...);
 
             if($this->houseSimService->hasInventory('Silver Key') && $this->houseSimService->hasInventory('White Cloth'))
-                $possibilities[] = new ActivityCallback($this->goldSmithingService->createSilverKeyblade(...), 10);
+                $possibilities[] = $this->goldSmithingService->createSilverKeyblade(...);
 
             if($this->houseSimService->hasInventory('Leaf Spear') && $this->houseSimService->hasInventory('Iron Bar'))
-                $possibilities[] = new ActivityCallback($this->goldSmithingService->createSiderealLeafSpear(...), 10);
+                $possibilities[] = $this->goldSmithingService->createSiderealLeafSpear(...);
         }
 
         if($this->houseSimService->hasInventory('Silver Bar') && $this->houseSimService->hasInventory('Gold Bar') && $this->houseSimService->hasInventory('White Cloth'))
-            $possibilities[] = new ActivityCallback($this->createCeremonialTrident(...), 10);
+            $possibilities[] = $this->createCeremonialTrident(...);
 
         if($this->houseSimService->hasInventory('Iron Sword'))
         {
             if($this->houseSimService->hasInventory('Whisk'))
-                $possibilities[] = new ActivityCallback($this->createCulinaryKnife(...), 10);
+                $possibilities[] = $this->createCulinaryKnife(...);
 
             if($this->houseSimService->hasInventory('Wooden Sword'))
-                $possibilities[] = new ActivityCallback($this->createWoodsMetal(...), 10);
+                $possibilities[] = $this->createWoodsMetal(...);
 
             if($this->houseSimService->hasInventory('Scales') && $this->houseSimService->hasInventory('Fluff'))
-                $possibilities[] = new ActivityCallback($this->createDragonscale(...), 10);
+                $possibilities[] = $this->createDragonscale(...);
 
             if($this->houseSimService->hasInventory('Dark Scales') && $this->houseSimService->hasInventory('Fluff'))
-                $possibilities[] = new ActivityCallback($this->createDrakkonscale(...), 10);
+                $possibilities[] = $this->createDrakkonscale(...);
 
             if($this->houseSimService->hasInventory('Everice') && $this->houseSimService->hasInventory('Firestone'))
-                $possibilities[] = new ActivityCallback($this->createAntipode(...), 10);
+                $possibilities[] = $this->createAntipode(...);
         }
 
         if($this->houseSimService->hasInventory('Lightning Sword'))
         {
             if($this->houseSimService->hasInventory('Antipode'))
-                $possibilities[] = new ActivityCallback($this->createTrinityBlade(...), 10);
+                $possibilities[] = $this->createTrinityBlade(...);
 
             if($this->houseSimService->hasInventory('Wand of Lightning'))
-                $possibilities[] = new ActivityCallback($this->createWayTooMuchLightning(...), 10);
+                $possibilities[] = $this->createWayTooMuchLightning(...);
         }
 
         if($this->houseSimService->hasInventory('Everice'))
         {
             if($this->houseSimService->hasInventory('Poker'))
-                $possibilities[] = new ActivityCallback($this->createWandOfIce(...), 10);
+                $possibilities[] = $this->createWandOfIce(...);
 
             if($this->houseSimService->hasInventory('Crooked Fishing Rod'))
-                $possibilities[] = new ActivityCallback($this->createIceFishing(...), 10);
+                $possibilities[] = $this->createIceFishing(...);
         }
 
         if($this->houseSimService->hasInventory('Poker') && $this->houseSimService->hasInventory('Gypsum Dragon'))
-            $possibilities[] = new ActivityCallback($this->createDragonstick(...), 10);
+            $possibilities[] = $this->createDragonstick(...);
 
         if($this->houseSimService->hasInventory('Meteorite'))
         {
             if($this->houseSimService->hasInventory('Iron Bar') && $this->houseSimService->hasInventory('Gold Bar'))
-                $possibilities[] = new ActivityCallback($this->meteoriteSmithingService->createIlumetsa(...), 10);
+                $possibilities[] = $this->meteoriteSmithingService->createIlumetsa(...);
 
             if($this->houseSimService->hasInventory('Moon Pearl') && $this->houseSimService->hasInventory('Dark Mirror'))
-                $possibilities[] = new ActivityCallback($this->meteoriteSmithingService->createHorizonMirror(...), 10);
+                $possibilities[] = $this->meteoriteSmithingService->createHorizonMirror(...);
         }
 
         if(CalendarFunctions::isHalloweenCrafting($this->clock->now))
         {
             if($this->houseSimService->hasInventory('Small, Yellow Plastic Bucket') || $this->houseSimService->hasInventory('Upside-down, Yellow Plastic Bucket'))
-                $possibilities[] = new ActivityCallback($this->halloweenSmithingService->createPumpkinBucket(...), 10);
+                $possibilities[] = $this->halloweenSmithingService->createPumpkinBucket(...);
         }
 
         return $possibilities;
@@ -338,7 +362,7 @@ class SmithingService
     public function createTriColorScissors(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $roll = $this->rng->rngNextInt(1, 20 + max($petWithSkills->getDexterity()->getTotal(), $petWithSkills->getIntelligence()->getTotal()) + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal());
+        $roll = $this->rng->rngSkillRoll(max($petWithSkills->getDexterity()->getTotal(), $petWithSkills->getIntelligence()->getTotal()) + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal());
 
         if($roll >= 16)
         {
@@ -374,7 +398,7 @@ class SmithingService
     public function createPapersBane(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $roll = $this->rng->rngNextInt(1, 20 + max($petWithSkills->getDexterity()->getTotal(), $petWithSkills->getIntelligence()->getTotal()) + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal());
+        $roll = $this->rng->rngSkillRoll(max($petWithSkills->getDexterity()->getTotal(), $petWithSkills->getIntelligence()->getTotal()) + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal());
 
         if($roll >= 20)
         {
@@ -413,7 +437,7 @@ class SmithingService
     public function createCrazyHotNailFile(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $roll = $this->rng->rngNextInt(1, 20 + max($petWithSkills->getDexterity()->getTotal(), $petWithSkills->getIntelligence()->getTotal()) + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal());
+        $roll = $this->rng->rngSkillRoll(max($petWithSkills->getDexterity()->getTotal(), $petWithSkills->getIntelligence()->getTotal()) + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal());
 
         if($roll >= 30)
         {
@@ -484,7 +508,7 @@ class SmithingService
     public function createRedWarpingWand(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal());
+        $roll = $this->rng->rngSkillRoll($petWithSkills->getDexterity()->getTotal() + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal());
 
         if($roll >= 26)
         {
@@ -536,7 +560,7 @@ class SmithingService
     private function createFryingPan(ComputedPetSkills $petWithSkills, string $otherMaterial, string $makes): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal());
+        $roll = $this->rng->rngSkillRoll($petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal());
 
         if($roll <= 2)
         {
@@ -591,7 +615,7 @@ class SmithingService
     public function createMirror(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal());
+        $roll = $this->rng->rngSkillRoll($petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal());
 
         if($roll <= 3)
         {
@@ -649,7 +673,7 @@ class SmithingService
     public function createHighTide(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getStamina()->getTotal() + min($petWithSkills->getScience()->getTotal(), $petWithSkills->getCrafts()->getTotal()) + $petWithSkills->getSmithingBonus()->getTotal());
+        $roll = $this->rng->rngSkillRoll($petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getStamina()->getTotal() + min($petWithSkills->getScience()->getTotal(), $petWithSkills->getCrafts()->getTotal()) + $petWithSkills->getSmithingBonus()->getTotal());
 
         if($roll <= 3)
         {
@@ -710,7 +734,7 @@ class SmithingService
     public function createGlass(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal());
+        $roll = $this->rng->rngSkillRoll($petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal());
 
         if($roll <= 2)
         {
@@ -773,7 +797,7 @@ class SmithingService
     {
         $pet = $petWithSkills->getPet();
 
-        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal());
+        $roll = $this->rng->rngSkillRoll($petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal());
 
         if($roll <= 2)
         {
@@ -847,7 +871,7 @@ class SmithingService
     {
         $pet = $petWithSkills->getPet();
 
-        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal());
+        $roll = $this->rng->rngSkillRoll($petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal());
 
         if($roll <= 2)
         {
@@ -913,7 +937,7 @@ class SmithingService
     public function createFiberglassBow(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal());
+        $roll = $this->rng->rngSkillRoll($petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal());
 
         if($roll >= 14)
         {
@@ -951,7 +975,7 @@ class SmithingService
     public function createShinyNanerPicker(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal());
+        $roll = $this->rng->rngSkillRoll($petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal());
 
         if($roll >= 18)
         {
@@ -987,7 +1011,7 @@ class SmithingService
     public function createCeremonialTrident(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal());
+        $roll = $this->rng->rngSkillRoll($petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal());
 
         if($pet->hasMerit(MeritEnum::SILVERBLOOD))
             $roll += 5;
@@ -1046,7 +1070,7 @@ class SmithingService
     public function createAntipode(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $roll = $this->rng->rngNextInt(1, 20 + max($petWithSkills->getDexterity()->getTotal(), $petWithSkills->getIntelligence()->getTotal()) + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal());
+        $roll = $this->rng->rngSkillRoll(max($petWithSkills->getDexterity()->getTotal(), $petWithSkills->getIntelligence()->getTotal()) + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal());
 
         if($roll == 1)
         {
@@ -1101,7 +1125,7 @@ class SmithingService
     public function createWoodsMetal(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $roll = $this->rng->rngNextInt(1, 20 + max($petWithSkills->getDexterity()->getTotal(), $petWithSkills->getIntelligence()->getTotal()) + $petWithSkills->getStamina()->getTotal() + max($petWithSkills->getCrafts()->getTotal(), $petWithSkills->getScience()->getTotal()) + $petWithSkills->getSmithingBonus()->getTotal());
+        $roll = $this->rng->rngSkillRoll(max($petWithSkills->getDexterity()->getTotal(), $petWithSkills->getIntelligence()->getTotal()) + $petWithSkills->getStamina()->getTotal() + max($petWithSkills->getCrafts()->getTotal(), $petWithSkills->getScience()->getTotal()) + $petWithSkills->getSmithingBonus()->getTotal());
 
         if($roll <= 2)
         {
@@ -1153,7 +1177,7 @@ class SmithingService
     public function createCulinaryKnife(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal());
+        $roll = $this->rng->rngSkillRoll($petWithSkills->getDexterity()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal());
 
         if($roll >= 16)
         {
@@ -1189,7 +1213,7 @@ class SmithingService
     public function createDragonscale(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $roll = $this->rng->rngNextInt(1, 20 + max($petWithSkills->getDexterity()->getTotal(), $petWithSkills->getIntelligence()->getTotal()) + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal());
+        $roll = $this->rng->rngSkillRoll(max($petWithSkills->getDexterity()->getTotal(), $petWithSkills->getIntelligence()->getTotal()) + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal());
 
         if($roll >= 16)
         {
@@ -1226,7 +1250,7 @@ class SmithingService
     public function createDrakkonscale(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $roll = $this->rng->rngNextInt(1, 20 + max($petWithSkills->getDexterity()->getTotal(), $petWithSkills->getIntelligence()->getTotal()) + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal());
+        $roll = $this->rng->rngSkillRoll(max($petWithSkills->getDexterity()->getTotal(), $petWithSkills->getIntelligence()->getTotal()) + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal());
 
         if($roll >= 17)
         {
@@ -1263,7 +1287,7 @@ class SmithingService
     public function createTrinityBlade(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $roll = $this->rng->rngNextInt(1, 20 + max($petWithSkills->getDexterity()->getTotal(), $petWithSkills->getIntelligence()->getTotal()) + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal());
+        $roll = $this->rng->rngSkillRoll(max($petWithSkills->getDexterity()->getTotal(), $petWithSkills->getIntelligence()->getTotal()) + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal());
 
         if($roll >= 25)
         {
@@ -1299,7 +1323,7 @@ class SmithingService
     public function createWayTooMuchLightning(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $roll = $this->rng->rngNextInt(1, 20 + max($petWithSkills->getDexterity()->getTotal(), $petWithSkills->getIntelligence()->getTotal()) + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal());
+        $roll = $this->rng->rngSkillRoll(max($petWithSkills->getDexterity()->getTotal(), $petWithSkills->getIntelligence()->getTotal()) + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal());
 
         if($roll >= 25)
         {
@@ -1335,7 +1359,7 @@ class SmithingService
     public function createWandOfIce(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $roll = $this->rng->rngNextInt(1, 20 + max($petWithSkills->getDexterity()->getTotal(), $petWithSkills->getIntelligence()->getTotal()) + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal());
+        $roll = $this->rng->rngSkillRoll(max($petWithSkills->getDexterity()->getTotal(), $petWithSkills->getIntelligence()->getTotal()) + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal());
 
         if($roll == 1)
         {
@@ -1384,7 +1408,7 @@ class SmithingService
     public function createIceFishing(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $roll = $this->rng->rngNextInt(1, 20 + max($petWithSkills->getDexterity()->getTotal(), $petWithSkills->getIntelligence()->getTotal()) + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal());
+        $roll = $this->rng->rngSkillRoll(max($petWithSkills->getDexterity()->getTotal(), $petWithSkills->getIntelligence()->getTotal()) + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal());
 
         if($roll >= 14)
         {
@@ -1419,7 +1443,7 @@ class SmithingService
     public function createDragonstick(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal());
+        $roll = $this->rng->rngSkillRoll($petWithSkills->getDexterity()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal());
 
         if($roll >= 15)
         {
@@ -1453,7 +1477,7 @@ class SmithingService
     public function createDragonbreath(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $roll = $this->rng->rngNextInt(1, 20 + max($petWithSkills->getDexterity()->getTotal(), $petWithSkills->getIntelligence()->getTotal()) + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal());
+        $roll = $this->rng->rngSkillRoll(max($petWithSkills->getDexterity()->getTotal(), $petWithSkills->getIntelligence()->getTotal()) + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal());
 
         if($roll >= 22)
         {
@@ -1491,7 +1515,7 @@ class SmithingService
     private function createCookingWithFire(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $roll = $this->rng->rngNextInt(1, 20 + max($petWithSkills->getDexterity()->getTotal(), $petWithSkills->getIntelligence()->getTotal()) + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal());
+        $roll = $this->rng->rngSkillRoll(max($petWithSkills->getDexterity()->getTotal(), $petWithSkills->getIntelligence()->getTotal()) + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal());
 
         if($roll >= 18)
         {
@@ -1529,7 +1553,7 @@ class SmithingService
     public function createBlackenedMarshmallow(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal());
+        $roll = $this->rng->rngSkillRoll($petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal());
 
         if($roll >= 20)
         {
@@ -1561,7 +1585,7 @@ class SmithingService
     public function createCoke(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal());
+        $roll = $this->rng->rngSkillRoll($petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal());
 
         if($roll === 1)
         {
@@ -1643,7 +1667,7 @@ class SmithingService
     public function createIronBar(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal());
+        $roll = $this->rng->rngSkillRoll($petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal());
 
         if($roll <= 2)
         {
@@ -1687,7 +1711,7 @@ class SmithingService
     public function createSilverBar(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal());
+        $roll = $this->rng->rngSkillRoll($petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal());
 
         if($pet->hasMerit(MeritEnum::SILVERBLOOD))
             $roll += 5;
@@ -1732,7 +1756,7 @@ class SmithingService
     public function createGoldBar(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal());
+        $roll = $this->rng->rngSkillRoll($petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal());
 
         if($roll <= 2)
         {

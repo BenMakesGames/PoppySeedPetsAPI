@@ -14,12 +14,14 @@ declare(strict_types=1);
 namespace App\Service\PetActivity;
 
 use App\Entity\PetActivityLog;
+use App\Enum\ActivityPersonalityEnum;
 use App\Enum\GuildEnum;
 use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingness;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetBadgeEnum;
 use App\Enum\PetSkillEnum;
+use App\Enum\StatusEffectEnum;
 use App\Functions\ActivityHelpers;
 use App\Functions\AdventureMath;
 use App\Functions\ItemRepository;
@@ -35,7 +37,7 @@ use App\Service\PetQuestRepository;
 use App\Service\TransactionService;
 use Doctrine\ORM\EntityManagerInterface;
 
-class Protocol7Service
+class Protocol7Service implements IPetActivity
 {
     public function __construct(
         private readonly InventoryService $inventoryService,
@@ -49,18 +51,56 @@ class Protocol7Service
     {
     }
 
-    public function adventure(ComputedPetSkills $petWithSkills): void
+    public function preferredWithFullHouse(): bool { return false; }
+
+    public function groupKey(): string { return 'hack'; }
+
+    public function groupDesire(ComputedPetSkills $petWithSkills): int
     {
         $pet = $petWithSkills->getPet();
-        $maxSkill = 10 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getHackingBonus()->getTotal() - $pet->getAlcohol();
+
+        if($pet->hasStatusEffect(StatusEffectEnum::Wereform))
+            return 0;
+
+        $desire = $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getHackingBonus()->getTotal();
+
+        // when a pet is equipped, the equipment bonus counts twice for affecting a pet's desires
+        if($pet->getTool() && $pet->getTool()->getItem()->getTool())
+            $desire += $pet->getTool()->getItem()->getTool()->getScience() + $pet->getTool()->getItem()->getTool()->getHacking();
+
+        if($petWithSkills->getPet()->hasActivityPersonality(ActivityPersonalityEnum::Protocol7))
+            $desire += 4;
+        else
+            $desire += $this->rng->rngNextInt(1, 4);
+
+        return max(1, (int)round($desire * (1 + $this->rng->rngNextInt(-10, 10) / 100)));
+    }
+
+    public function possibilities(ComputedPetSkills $petWithSkills): array
+    {
+        $pet = $petWithSkills->getPet();
+
+        if(
+            !$pet->hasMerit(MeritEnum::PROTOCOL_7) &&
+            $pet->getTool()?->getItem()->getTool()?->getAdventureDescription() !== 'Project-E'
+        )
+        {
+            return [];
+        }
+
+        return [ $this->run(...) ];
+    }
+
+    public function run(ComputedPetSkills $petWithSkills): PetActivityLog
+    {
+        $pet = $petWithSkills->getPet();
+
+        $maxSkill = 10 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getHackingBonus()->getTotal() - $pet->getAlcohol() * 2;
 
         // protocol 7 is weird; we do a modulo here.
         // we don't do "distraction" encounters for protocol 7; instead, we rely on the modulo, which has the
         // effect of making lower-ranked encounters more common than higher ones for higher-level pets.
         $roll = $this->rng->rngNextInt(0, max(1, $maxSkill)) % 20;
-
-        $activityLog = null;
-        $changes = new PetChanges($pet);
 
         switch($roll)
         {
@@ -111,17 +151,15 @@ class Protocol7Service
                 $activityLog = $this->exploreWalledGarden($petWithSkills);
                 break;
             case 19:
+            default:
                 $activityLog = $this->foundCorruptSector($petWithSkills);
                 break;
         }
 
-        if($activityLog)
-        {
-            $activityLog->setChanges($changes->compare($pet));
-        }
-
         if(AdventureMath::petAttractsBug($this->rng, $pet, 75))
             $this->inventoryService->petAttractsRandomBug($pet, 'Beta Bug');
+
+        return $activityLog;
     }
 
     private function foundNothing(ComputedPetSkills $petWithSkills, int $roll): PetActivityLog
@@ -155,7 +193,7 @@ class Protocol7Service
     {
         $pet = $petWithSkills->getPet();
 
-        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal() + $petWithSkills->getHackingBonus()->getTotal());
+        $roll = $this->rng->rngSkillRoll($petWithSkills->getPerception()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal() + $petWithSkills->getHackingBonus()->getTotal());
 
         if($roll >= 15)
         {
@@ -175,7 +213,7 @@ class Protocol7Service
                 [ 'an old BBS still somehow online, and started digging through its logs', 'digging through the logs of an old BBS' ],
                 [ 'a forgotten internet journal, and started combing through old posts and replies', 'digging through posts of a forgotten internet journal' ],
                 [ 'a crazy-old MUD no one plays anymore, and started digging through its logs', 'digging through the logs of a forgotten MUD' ],
-                [ 'an archive of ROMs from a forgotten computer system, and started trying to make sense of them', 'trying to make sense of old ROMs' ]
+                [ 'an archive of ROMs from a forgotten computer system, and started trying to make sense of them', 'trying to make sense of old ROMs' ],
             ]);
 
             $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% accessed Project-E, following some breadcrumbs left by other members of Time\'s Arrow. They reached ' . $locationAndAction . ', eventually piecing together ' . $item->getNameWithArticle() . '!')
@@ -329,13 +367,13 @@ class Protocol7Service
 
         if($pet->isInGuild(GuildEnum::TimesArrow))
         {
-            $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() * 2 + $petWithSkills->getScience()->getTotal());
+            $roll = $this->rng->rngSkillRoll($petWithSkills->getIntelligence()->getTotal() * 2 + $petWithSkills->getScience()->getTotal());
 
             if($pet->hasMerit(MeritEnum::SOOTHING_VOICE))
                 $roll += 2;
         }
         else
-            $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal());
+            $roll = $this->rng->rngSkillRoll($petWithSkills->getDexterity()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal());
 
         $success = $roll >= 10;
 
@@ -398,12 +436,12 @@ class Protocol7Service
     {
         $pet = $petWithSkills->getPet();
 
-        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getHackingBonus()->getTotal());
+        $roll = $this->rng->rngSkillRoll($petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getHackingBonus()->getTotal());
 
         $monster = $this->rng->rngNextFromArray([
             [
                 'name' => 'a Trojan Horse',
-                'loot' => [ 'Plastic' ]
+                'loot' => [ 'Plastic' ],
             ],
             [
                 'name' => 'a Clickjacker',
@@ -411,8 +449,8 @@ class Protocol7Service
             ],
             [
                 'name' => 'an SQL Injection',
-                'loot' => [ 'Finite State Machine' ]
-            ]
+                'loot' => [ 'Finite State Machine' ],
+            ],
         ]);
 
         $baddie = $monster['name'];
@@ -445,12 +483,12 @@ class Protocol7Service
     {
         $pet = $petWithSkills->getPet();
 
-        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getHackingBonus()->getTotal());
+        $roll = $this->rng->rngSkillRoll($petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getHackingBonus()->getTotal());
 
         $monster = $this->rng->rngNextFromArray([
             [
                 'name' => 'a Keylogger',
-                'loot' => [ 'Hash Table', 'Password' ]
+                'loot' => [ 'Hash Table', 'Password' ],
             ],
             [
                 'name' => 'a Rootkit',
@@ -458,8 +496,8 @@ class Protocol7Service
             ],
             [
                 'name' => 'a Boot Sector Virus',
-                'loot' => [ 'Pointer', 'NUL' ]
-            ]
+                'loot' => [ 'Pointer', 'NUL' ],
+            ],
         ]);
 
         $baddie = $monster['name'];
@@ -529,10 +567,10 @@ class Protocol7Service
             [
                 'subject' => 'about city planning',
                 'loot' => [ 'Traffic Light', 'Traffic Cone' ],
-            ]
+            ],
         ]);
 
-        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal());
+        $roll = $this->rng->rngSkillRoll($petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal());
 
         if($roll >= 16)
         {
@@ -566,17 +604,17 @@ class Protocol7Service
     {
         $pet = $petWithSkills->getPet();
 
-        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getHackingBonus()->getTotal());
+        $roll = $this->rng->rngSkillRoll($petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getHackingBonus()->getTotal());
 
         $monster = $this->rng->rngNextFromArray([
             [
                 'name' => 'a Slow Loris',
-                'loot' => [ 'String', 'NUL' ]
+                'loot' => [ 'String', 'NUL' ],
             ],
             [
                 'name' => 'a Man in the Middle',
                 'loot' => [ 'Cryptocurrency Wallet', 'Cryptocurrency Wallet', 'Hash Table' ],
-            ]
+            ],
         ]);
 
         $baddie = $monster['name'];
@@ -634,7 +672,7 @@ class Protocol7Service
     {
         $pet = $petWithSkills->getPet();
 
-        $check = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getHackingBonus()->getTotal());
+        $check = $this->rng->rngSkillRoll($petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getHackingBonus()->getTotal());
 
         if($check < 15)
         {
@@ -758,11 +796,11 @@ class Protocol7Service
 
         if($pet->isInGuild(GuildEnum::Tapestries))
         {
-            $check = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal() + max($petWithSkills->getArcana()->getTotal(), $petWithSkills->getScience()->getTotal()) + $petWithSkills->getHackingBonus()->getTotal());
+            $check = $this->rng->rngSkillRoll($petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal() + max($petWithSkills->getArcana()->getTotal(), $petWithSkills->getScience()->getTotal()) + $petWithSkills->getHackingBonus()->getTotal());
         }
         else
         {
-            $check = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getHackingBonus()->getTotal());
+            $check = $this->rng->rngSkillRoll($petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getHackingBonus()->getTotal());
         }
 
         $lucky = $pet->hasMerit(MeritEnum::LUCKY) && $this->rng->rngNextInt(1, 100) === 1;
@@ -808,7 +846,7 @@ class Protocol7Service
                 'Password',
                 'Cryptocurrency Wallet',
                 'Egg Book Audiobook',
-                'Lycanthropy Report'
+                'Lycanthropy Report',
             ]);
 
             $lucky = false;
@@ -825,7 +863,7 @@ class Protocol7Service
                 $otherLoot = $this->rng->rngNextFromArray([
                     'Hash Table',
                     'Finite State Machine',
-                    'Browser Cookie'
+                    'Browser Cookie',
                 ]);
             }
 

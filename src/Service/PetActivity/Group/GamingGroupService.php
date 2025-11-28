@@ -11,7 +11,6 @@ declare(strict_types=1);
  * You should have received a copy of the GNU General Public License along with The Poppy Seed Pets API. If not, see <https://www.gnu.org/licenses/>.
  */
 
-
 namespace App\Service\PetActivity\Group;
 
 use App\Entity\Pet;
@@ -105,7 +104,7 @@ class GamingGroupService
             };
         }
 
-        return $this->rng->rngNextInt(1, 20 + $total);
+        return $this->rng->rngSkillRoll($total);
     }
 
     private const string NameScrawlful2 = 'Scrawlful 2';

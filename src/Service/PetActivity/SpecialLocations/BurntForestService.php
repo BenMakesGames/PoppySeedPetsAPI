@@ -11,11 +11,11 @@ declare(strict_types=1);
  * You should have received a copy of the GNU General Public License along with The Poppy Seed Pets API. If not, see <https://www.gnu.org/licenses/>.
  */
 
-
 namespace App\Service\PetActivity\SpecialLocations;
 
 use App\Entity\Pet;
 use App\Entity\PetActivityLog;
+use App\Enum\ActivityPersonalityEnum;
 use App\Enum\GuildEnum;
 use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogTagEnum;
@@ -37,10 +37,11 @@ use App\Service\FieldGuideService;
 use App\Service\HattierService;
 use App\Service\InventoryService;
 use App\Service\IRandom;
+use App\Service\PetActivity\IPetActivity;
 use App\Service\PetExperienceService;
 use Doctrine\ORM\EntityManagerInterface;
 
-class BurntForestService
+class BurntForestService implements IPetActivity
 {
     public function __construct(
         private readonly PetExperienceService $petExperienceService,
@@ -53,9 +54,41 @@ class BurntForestService
     {
     }
 
-    public function adventure(ComputedPetSkills $petWithSkills): void
+    public function preferredWithFullHouse(): bool { return false; }
+
+    public function groupKey(): string { return 'burntForest'; }
+
+    public function groupDesire(ComputedPetSkills $petWithSkills): int
     {
         $pet = $petWithSkills->getPet();
+        $desire = $petWithSkills->getStamina()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getArcana()->getTotal() + $petWithSkills->getUmbraBonus()->getTotal();
+
+        if($pet->getTool() && $pet->getTool()->getItem()->getTool())
+            $desire += $pet->getTool()->getItem()->getTool()->getArcana() + $pet->getTool()->getItem()->getTool()->getUmbra();
+
+        if($petWithSkills->getPet()->hasActivityPersonality(ActivityPersonalityEnum::Umbra))
+            $desire += 4;
+        else
+            $desire += $this->rng->rngNextInt(1, 4);
+
+        return max([
+            (int)ceil($desire * $pet->getPsychedelic() * 2 / $pet->getMaxPsychedelic()),
+            $desire
+        ]);
+    }
+
+    public function possibilities(ComputedPetSkills $petWithSkills): array
+    {
+        if($petWithSkills->getPet()->getTool()?->getEnchantment()?->getName() !== 'Burnt')
+            return [];
+
+        return [ $this->run(...) ];
+    }
+
+    public function run(ComputedPetSkills $petWithSkills): PetActivityLog
+    {
+        $pet = $petWithSkills->getPet();
+
         $maxSkill = 10
             + (int)(
                 (
@@ -73,7 +106,6 @@ class BurntForestService
 
         $roll = $this->rng->rngNextInt(1, $maxSkill);
 
-        $activityLog = null;
         $changes = new PetChanges($pet);
 
         switch($roll)
@@ -114,23 +146,23 @@ class BurntForestService
 
             case 14:
             case 15:
+            default:
                 $activityLog = $this->findScalySquirmingMass($petWithSkills);
                 break;
         }
 
-        if($activityLog)
-        {
-            $activityLog
-                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
-                    PetActivityLogTagEnum::Location_The_Burnt_Forest
-                ]))
-                ->setChanges($changes->compare($pet))
-            ;
+        $activityLog
+            ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
+                PetActivityLogTagEnum::Location_The_Burnt_Forest
+            ]))
+            ->setChanges($changes->compare($pet))
+        ;
 
-            $this->fieldGuideService->maybeUnlock($pet->getOwner(), 'Burnt Forest', ActivityHelpers::PetName($pet) . ' used their ' . $pet->getTool()->getFullItemName() . ' to visit the Burnt Forest.');
+        $this->fieldGuideService->maybeUnlock($pet->getOwner(), 'Burnt Forest', ActivityHelpers::PetName($pet) . ' used their ' . $pet->getTool()->getFullItemName() . ' to visit the Burnt Forest.');
 
-            PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::VisitedTheBurntForest, $activityLog);
-        }
+        PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::VisitedTheBurntForest, $activityLog);
+
+        return $activityLog;
     }
 
     private function failToFindAnything(ComputedPetSkills $petWithSkills): PetActivityLog
@@ -183,7 +215,7 @@ class BurntForestService
     private function findAWoundedFairy(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal());
+        $roll = $this->rng->rngSkillRoll($petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal());
 
         if($roll >= 11)
         {
@@ -222,7 +254,7 @@ class BurntForestService
     private function findSquirmingMass(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getBrawl()->getTotal() + $petWithSkills->getStrength()->getTotal() + $petWithSkills->getDexterity()->getTotal());
+        $roll = $this->rng->rngSkillRoll($petWithSkills->getBrawl()->getTotal() + $petWithSkills->getStrength()->getTotal() + $petWithSkills->getDexterity()->getTotal());
 
         $resistsFire = $petWithSkills->getHasProtectionFromHeat()->getTotal() > 0;
 
@@ -230,7 +262,7 @@ class BurntForestService
         {
             $loot = $this->rng->rngNextFromArray([ 'Tentacle', 'Tentacle', 'Quintessence' ]);
 
-            if($resistsFire || $this->rng->rngNextInt(1, 20 + $petWithSkills->getStamina()->getTotal()) >= 10)
+            if($resistsFire || $this->rng->rngSkillRoll($petWithSkills->getStamina()->getTotal()) >= 10)
             {
                 $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% visited the Burnt Forest, and encountered a mass of flaming tentacles! They beat the tentacles back, and got a ' . $loot . '!')
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'The Umbra', 'Fighting', 'Heatstroke' ]))
@@ -253,7 +285,7 @@ class BurntForestService
         }
         else
         {
-            if($resistsFire || $this->rng->rngNextInt(1, 20 + $petWithSkills->getStamina()->getTotal()) >= 15)
+            if($resistsFire || $this->rng->rngSkillRoll($petWithSkills->getStamina()->getTotal()) >= 15)
             {
                 $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% visited the Burnt Forest, and encountered a mass of flaming tentacles! They tried to fight, but were forced to flee...')
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'The Umbra', 'Fighting', 'Heatstroke' ]))
@@ -279,8 +311,8 @@ class BurntForestService
     private function findBurningTree(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $umbraRoll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal());
-        $brawlRoll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getBrawl()->getTotal() + $petWithSkills->getStrength()->getTotal() + $petWithSkills->getDexterity()->getTotal());
+        $umbraRoll = $this->rng->rngSkillRoll($petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal());
+        $brawlRoll = $this->rng->rngSkillRoll($petWithSkills->getBrawl()->getTotal() + $petWithSkills->getStrength()->getTotal() + $petWithSkills->getDexterity()->getTotal());
         $exp = 1;
 
         if($pet->isInGuild(GuildEnum::LightAndShadow))
@@ -396,7 +428,7 @@ class BurntForestService
     private function findTearInTheTapestry(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal());
+        $roll = $this->rng->rngSkillRoll($petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal());
 
         if($roll >= 13)
         {
@@ -464,7 +496,7 @@ class BurntForestService
     private function findScalySquirmingMass(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getBrawl()->getTotal() + $petWithSkills->getStrength()->getTotal() + $petWithSkills->getDexterity()->getTotal());
+        $roll = $this->rng->rngSkillRoll($petWithSkills->getBrawl()->getTotal() + $petWithSkills->getStrength()->getTotal() + $petWithSkills->getDexterity()->getTotal());
 
         $resistsFire = $petWithSkills->getHasProtectionFromHeat()->getTotal() > 0;
 
@@ -472,7 +504,7 @@ class BurntForestService
         {
             $loot = $this->rng->rngNextFromArray([ 'Dark Scales', 'Quinacridone Magenta Dye', 'Quintessence' ]);
 
-            if($resistsFire || $this->rng->rngNextInt(1, 20 + $petWithSkills->getStamina()->getTotal()) >= 15)
+            if($resistsFire || $this->rng->rngSkillRoll($petWithSkills->getStamina()->getTotal()) >= 15)
             {
                 $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% visited the Burnt Forest, and encountered a mass of flaming, scaly tentacles! They beat the tentacles back, and got a Tentacle, and ' . $loot . '!')
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'The Umbra', 'Fighting', 'Heatstroke' ]))
@@ -497,7 +529,7 @@ class BurntForestService
         }
         else
         {
-            if($resistsFire || $this->rng->rngNextInt(1, 20 + $petWithSkills->getStamina()->getTotal()) >= 20)
+            if($resistsFire || $this->rng->rngSkillRoll($petWithSkills->getStamina()->getTotal()) >= 20)
             {
                 $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% visited the Burnt Forest, and encountered a mass of flaming, scaly tentacles! They tried to fight, but were forced to flee...')
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'The Umbra', 'Fighting', 'Heatstroke' ]))

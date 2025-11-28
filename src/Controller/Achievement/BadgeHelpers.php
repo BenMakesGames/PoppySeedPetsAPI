@@ -11,7 +11,6 @@ declare(strict_types=1);
  * You should have received a copy of the GNU General Public License along with The Poppy Seed Pets API. If not, see <https://www.gnu.org/licenses/>.
  */
 
-
 namespace App\Controller\Achievement;
 
 use App\Entity\User;
@@ -584,7 +583,7 @@ final class BadgeHelpers
 
             case BadgeEnum::WhisperStone:
                 $progress = [ 'target' => 1, 'current' => self::getStatTotal($user, [ 'Listened to a Whisper Stone' ], $em, $cache) ];
-                $reward = TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($em, 'Magic Smoke'), 2);
+                $reward = TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($em, 'Quintessence'), 2);
                 break;
 
             case BadgeEnum::HONORIFICABILITUDINITATIBUS:

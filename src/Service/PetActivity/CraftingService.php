@@ -11,10 +11,10 @@ declare(strict_types=1);
  * You should have received a copy of the GNU General Public License along with The Poppy Seed Pets API. If not, see <https://www.gnu.org/licenses/>.
  */
 
-
 namespace App\Service\PetActivity;
 
 use App\Entity\PetActivityLog;
+use App\Enum\ActivityPersonalityEnum;
 use App\Enum\EnumInvalidValueException;
 use App\Enum\HolidayEnum;
 use App\Enum\MeritEnum;
@@ -22,15 +22,13 @@ use App\Enum\PetActivityLogInterestingness;
 use App\Enum\PetActivityLogTagEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
+use App\Enum\StatusEffectEnum;
 use App\Functions\CalendarFunctions;
 use App\Functions\ItemRepository;
 use App\Functions\PetActivityLogFactory;
 use App\Functions\PetActivityLogTagHelpers;
 use App\Functions\SpiceRepository;
-use App\Model\ActivityCallback;
 use App\Model\ComputedPetSkills;
-use App\Model\IActivityCallback;
-use App\Model\PetChanges;
 use App\Service\HouseSimService;
 use App\Service\InventoryService;
 use App\Service\IRandom;
@@ -41,7 +39,7 @@ use App\Service\PetExperienceService;
 use App\Service\WeatherService;
 use Doctrine\ORM\EntityManagerInterface;
 
-class CraftingService
+class CraftingService implements IPetActivity
 {
     public function __construct(
         private readonly InventoryService $inventoryService,
@@ -56,353 +54,343 @@ class CraftingService
     {
     }
 
-    /**
-     * @return IActivityCallback[]
-     */
-    public function getCraftingPossibilities(ComputedPetSkills $petWithSkills): array
+    public function preferredWithFullHouse(): bool { return true; }
+
+    public function groupKey(): string { return 'crafting'; }
+
+    public function groupDesire(ComputedPetSkills $petWithSkills): int
+    {
+        $pet = $petWithSkills->getPet();
+
+        if($pet->hasStatusEffect(StatusEffectEnum::Wereform))
+            return 0;
+
+        $desire = $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getCrafts()->getTotal();
+
+        // when a pet is equipped, the equipment bonus counts twice for affecting a pet's desires
+        if($pet->getTool() && $pet->getTool()->getItem()->getTool())
+            $desire += $pet->getTool()->getItem()->getTool()->getCrafts();
+
+        if($petWithSkills->getPet()->hasActivityPersonality(ActivityPersonalityEnum::CraftingMundane))
+            $desire += 4;
+        else
+            $desire += $this->rng->rngNextInt(1, 4);
+
+        return max(1, (int)round($desire * (1 + $this->rng->rngNextInt(-10, 10) / 100)));
+    }
+
+    public function possibilities(ComputedPetSkills $petWithSkills): array
     {
         $possibilities = [];
-        $now = new \DateTimeImmutable();
 
         if($this->houseSimService->hasInventory('Twu Wuv') && $this->houseSimService->hasInventory('Red Balloon'))
-        {
-            $possibilities[] = new ActivityCallback($this->twuWuvCraftingService->createWedBawwoon(...), 15);
-        }
+            $possibilities[] = $this->twuWuvCraftingService->createWedBawwoon(...);
 
         if($this->houseSimService->hasInventory('Chocolate Bar'))
-        {
-            $weight = CalendarFunctions::isValentinesOrAdjacent($now) ? 80 : 8;
-
-            $possibilities[] = new ActivityCallback($this->makeChocolateTool(...), $weight);
-        }
+            $possibilities[] = $this->makeChocolateTool(...);
 
         if($this->houseSimService->hasInventory('Fluff') || $this->houseSimService->hasInventory('Cobweb'))
-        {
-            $possibilities[] = new ActivityCallback($this->spinFluffOrCobweb(...), 10);
-        }
+            $possibilities[] = $this->spinFluffOrCobweb(...);
 
         if($this->houseSimService->hasInventory('White Cloth'))
         {
             if($this->houseSimService->hasInventory('Quinacridone Magenta Dye'))
             {
                 if($this->houseSimService->hasInventory('Fluff') || $this->houseSimService->hasInventory('Beans'))
-                    $possibilities[] = new ActivityCallback($this->createPeacockPlushy(...), 10);
+                    $possibilities[] = $this->createPeacockPlushy(...);
             }
 
             if($this->houseSimService->hasInventory('String') && $this->houseSimService->hasInventory('Ruby Feather'))
-                $possibilities[] = new ActivityCallback($this->createFeatheredHat(...), 10);
+                $possibilities[] = $this->createFeatheredHat(...);
 
             if($this->houseSimService->hasInventory('Glass Pendulum') && $this->houseSimService->hasInventory('Flute'))
-                $possibilities[] = new ActivityCallback($this->createDecoratedFlute(...), 10);
+                $possibilities[] = $this->createDecoratedFlute(...);
 
             if($this->houseSimService->hasInventory('Stereotypical Bone'))
-                $possibilities[] = new ActivityCallback($this->createTorchFromBone(...), 5);
+                $possibilities[] = $this->createTorchFromBone(...);
         }
 
         if($this->houseSimService->hasInventory('Gold Telescope') && $this->houseSimService->hasInventory('Flying Grappling Hook'))
-            $possibilities[] = new ActivityCallback($this->createLassoscope(...), 10);
+            $possibilities[] = $this->createLassoscope(...);
 
         if($this->houseSimService->hasInventory('Tea Leaves'))
         {
-            $possibilities[] = new ActivityCallback($this->createYellowDyeFromTeaLeaves(...), 10);
+            $possibilities[] = $this->createYellowDyeFromTeaLeaves(...);
 
             if($this->houseSimService->hasInventory('Trowel'))
-                $possibilities[] = new ActivityCallback($this->createTeaTrowel(...), 10);
+                $possibilities[] = $this->createTeaTrowel(...);
         }
 
         if($this->houseSimService->hasInventory('Scales'))
         {
-            $possibilities[] = new ActivityCallback($this->extractFromScales(...), 10);
+            $possibilities[] = $this->extractFromScales(...);
 
             if($this->houseSimService->hasInventory('Talon') && $this->houseSimService->hasInventory('Wooden Sword'))
-                $possibilities[] = new ActivityCallback($this->createSnakebite(...), 10);
+                $possibilities[] = $this->createSnakebite(...);
         }
 
         if($this->houseSimService->hasInventory('Crooked Stick'))
         {
             if($this->houseSimService->hasInventory('Small, Yellow Plastic Bucket'))
-                $possibilities[] = new ActivityCallback($this->stickCraftingService->createNanerPicker(...), 10);
+                $possibilities[] = $this->stickCraftingService->createNanerPicker(...);
 
             if($this->houseSimService->hasInventory('Sunflower'))
-                $possibilities[] = new ActivityCallback($this->stickCraftingService->createSunflowerStick(...), 10);
+                $possibilities[] = $this->stickCraftingService->createSunflowerStick(...);
 
             if($this->houseSimService->hasInventory('Glue') || $this->houseSimService->hasInventory('String'))
-                $possibilities[] = new ActivityCallback($this->stickCraftingService->createWoodenSword(...), 10);
+                $possibilities[] = $this->stickCraftingService->createWoodenSword(...);
 
             if($this->houseSimService->hasInventory('Marshmallows'))
-                $possibilities[] = new ActivityCallback($this->stickCraftingService->createSkeweredMarshmallow(...), 10);
+                $possibilities[] = $this->stickCraftingService->createSkeweredMarshmallow(...);
 
             if($this->houseSimService->hasInventory('String'))
             {
-                $possibilities[] = new ActivityCallback($this->stickCraftingService->createCrookedFishingRod(...), 10);
+                $possibilities[] = $this->stickCraftingService->createCrookedFishingRod(...);
 
                 if($this->houseSimService->hasInventory('Talon'))
-                    $possibilities[] = new ActivityCallback($this->stickCraftingService->createHuntingSpear(...), 10);
+                    $possibilities[] = $this->stickCraftingService->createHuntingSpear(...);
 
                 if($this->houseSimService->hasInventory('Hunting Spear'))
-                    $possibilities[] = new ActivityCallback($this->stickCraftingService->createVeryLongSpear(...), 10);
+                    $possibilities[] = $this->stickCraftingService->createVeryLongSpear(...);
 
                 if($this->houseSimService->hasInventory('Overly-long Spear'))
-                    $possibilities[] = new ActivityCallback($this->stickCraftingService->createRidiculouslyLongSpear(...), 10);
+                    $possibilities[] = $this->stickCraftingService->createRidiculouslyLongSpear(...);
 
                 if($this->houseSimService->hasInventory('Corn') && $this->houseSimService->hasInventory('Rice'))
-                    $possibilities[] = new ActivityCallback($this->stickCraftingService->createHarvestStaff(...), 10);
+                    $possibilities[] = $this->stickCraftingService->createHarvestStaff(...);
 
                 if($this->houseSimService->hasInventory('Red'))
-                    $possibilities[] = new ActivityCallback($this->stickCraftingService->createRedFlail(...), 10);
+                    $possibilities[] = $this->stickCraftingService->createRedFlail(...);
             }
 
             if($this->houseSimService->hasInventory('Cobweb'))
-                $possibilities[] = new ActivityCallback($this->stickCraftingService->createBugCatchersNet(...), 10);
+                $possibilities[] = $this->stickCraftingService->createBugCatchersNet(...);
 
             if($this->houseSimService->hasInventory('Glue') && ($this->houseSimService->hasInventory('Wheat') || $this->houseSimService->hasInventory('Rice')))
-                $possibilities[] = new ActivityCallback($this->stickCraftingService->createStrawBroom(...), 10);
+                $possibilities[] = $this->stickCraftingService->createStrawBroom(...);
 
             if($this->houseSimService->hasInventory('White Cloth'))
-                $possibilities[] = new ActivityCallback($this->stickCraftingService->createFlag(...), 10);
+                $possibilities[] = $this->stickCraftingService->createFlag(...);
 
             if($this->houseSimService->hasInventory('Toadstool') && $this->houseSimService->hasInventory('Quintessence'))
-                $possibilities[] = new ActivityCallback($this->stickCraftingService->createChampignon(...), 10);
+                $possibilities[] = $this->stickCraftingService->createChampignon(...);
 
             if($this->houseSimService->hasInventory('Glass'))
-                $possibilities[] = new ActivityCallback($this->stickCraftingService->createRusticMagnifyingGlass(...), 10);
+                $possibilities[] = $this->stickCraftingService->createRusticMagnifyingGlass(...);
 
             if($this->houseSimService->hasInventory('Sweet Beet') && $this->houseSimService->hasInventory('Glue'))
-                $possibilities[] = new ActivityCallback($this->stickCraftingService->createSweetBeat(...), 10);
+                $possibilities[] = $this->stickCraftingService->createSweetBeat(...);
 
             if($this->houseSimService->hasInventory('Snail Shell') && $this->houseSimService->hasInventory('Glue'))
-                $possibilities[] = new ActivityCallback($this->stickCraftingService->createWhorlStaff(...), 10);
+                $possibilities[] = $this->stickCraftingService->createWhorlStaff(...);
         }
 
         if($this->houseSimService->hasInventory('Whorl Staff') && $this->houseSimService->hasInventory('Quinacridone Magenta Dye'))
-            $possibilities[] = new ActivityCallback($this->createPaintedWhorlStaff(...), 10);
+            $possibilities[] = $this->createPaintedWhorlStaff(...);
 
         if($this->houseSimService->hasInventory('Glue'))
         {
             if($this->houseSimService->hasInventory('White Cloth'))
             {
                 if($this->houseSimService->hasInventory('Fiberglass Flute'))
-                    $possibilities[] = new ActivityCallback($this->createFiberglassPanFlute(...), 11);
+                    $possibilities[] = $this->createFiberglassPanFlute(...);
 
-                $possibilities[] = new ActivityCallback($this->createFabricMache(...), 7);
+                $possibilities[] = $this->createFabricMache(...);
             }
 
             if($this->houseSimService->hasInventory('Gold Triangle', 3))
-                $possibilities[] = new ActivityCallback($this->createGoldTrifecta(...), 10);
+                $possibilities[] = $this->createGoldTrifecta(...);
 
             if($this->houseSimService->hasInventory('Ruler', 2))
-                $possibilities[] = new ActivityCallback($this->createLSquare(...), 10);
+                $possibilities[] = $this->createLSquare(...);
 
             if($this->houseSimService->hasInventory('Cooking Buddy') && $this->houseSimService->hasInventory('Antenna'))
-                $possibilities[] = new ActivityCallback($this->createAlienCookingBuddy(...), 10);
+                $possibilities[] = $this->createAlienCookingBuddy(...);
 
             if($this->houseSimService->hasInventory('Painted Camera') && $this->houseSimService->hasInventory('Antenna'))
-                $possibilities[] = new ActivityCallback($this->createAlienCamera(...), 10);
+                $possibilities[] = $this->createAlienCamera(...);
 
             if($this->houseSimService->hasInventory('Bleached Turkey Head') && $this->houseSimService->hasInventory('Green Dye') && $this->houseSimService->hasInventory('Antenna'))
-                $possibilities[] = new ActivityCallback($this->createChartrurkey(...), 20);
+                $possibilities[] = $this->createChartrurkey(...);
 
             if($this->houseSimService->hasInventory('Iron Sword') && $this->houseSimService->hasInventory('Laser Pointer'))
-                $possibilities[] = new ActivityCallback($this->createLaserGuidedSword(...), 10);
+                $possibilities[] = $this->createLaserGuidedSword(...);
         }
 
         if($this->houseSimService->hasInventory('Antenna'))
         {
             if($this->houseSimService->hasInventory('Cobweb') && $this->houseSimService->hasInventory('Fiberglass Bow'))
-                $possibilities[] = new ActivityCallback($this->createBugBow(...), 10);
+                $possibilities[] = $this->createBugBow(...);
 
             if($this->houseSimService->hasInventory('Alien Tissue'))
-                $possibilities[] = new ActivityCallback($this->createProboscis(...), 10);
+                $possibilities[] = $this->createProboscis(...);
         }
 
         if($this->houseSimService->hasInventory('String'))
         {
             if($this->houseSimService->hasInventory('Naner'))
-                $possibilities[] = new ActivityCallback($this->createBownaner(...), 10);
+                $possibilities[] = $this->createBownaner(...);
 
             if($this->houseSimService->hasInventory('Glass'))
-                $possibilities[] = new ActivityCallback($this->createGlassPendulum(...), 10);
+                $possibilities[] = $this->createGlassPendulum(...);
 
             if($this->houseSimService->hasInventory('Paper') && $this->houseSimService->hasInventory('Silver Key'))
-                $possibilities[] = new ActivityCallback($this->createBenjaminFranklin(...), 10);
+                $possibilities[] = $this->createBenjaminFranklin(...);
 
             if($this->houseSimService->hasInventory('Really Big Leaf'))
-                $possibilities[] = new ActivityCallback($this->createLeafSpear(...), 10);
+                $possibilities[] = $this->createLeafSpear(...);
 
             if($this->houseSimService->hasInventory('L-Square') && $this->houseSimService->hasInventory('Green Dye'))
-                $possibilities[] = new ActivityCallback($this->createRibbelysComposite(...), 10);
+                $possibilities[] = $this->createRibbelysComposite(...);
 
             if(
                 $this->houseSimService->hasInventory('Small Plastic Bucket') ||
                 $this->houseSimService->hasInventory('Small, Yellow Plastic Bucket')
             )
             {
-                $possibilities[] = new ActivityCallback($this->createShortRangeTelephone(...), 10);
+                $possibilities[] = $this->createShortRangeTelephone(...);
             }
 
             if($this->houseSimService->hasInventory('"Rustic" Magnifying Glass') && $this->houseSimService->hasInventory('Black Feathers'))
-                $possibilities[] = new ActivityCallback($this->createCrowsEye(...), 10);
+                $possibilities[] = $this->createCrowsEye(...);
         }
 
         if($this->houseSimService->hasInventory('Gypsum') && $this->houseSimService->hasInventory('Green Dye'))
-            $possibilities[] = new ActivityCallback($this->createGypsumDragon(...), 9);
+            $possibilities[] = $this->createGypsumDragon(...);
 
         if($this->houseSimService->hasInventory('No Right Turns') && $this->houseSimService->hasInventory('Green Dye'))
-            $possibilities[] = new ActivityCallback($this->createWoherCuanNaniNani(...), 9);
+            $possibilities[] = $this->createWoherCuanNaniNani(...);
 
         if($this->houseSimService->hasInventory('Bownaner') && $this->houseSimService->hasInventory('Carrot'))
-            $possibilities[] = new ActivityCallback($this->createEatYourFruitsAndVeggies(...), 10);
+            $possibilities[] = $this->createEatYourFruitsAndVeggies(...);
 
         if($this->houseSimService->hasInventory('Feathers'))
         {
             if($this->houseSimService->hasInventory('Hunting Spear'))
-                $possibilities[] = new ActivityCallback($this->createDecoratedSpear(...), 10);
+                $possibilities[] = $this->createDecoratedSpear(...);
 
             if($this->houseSimService->hasInventory('Yellow Dye'))
             {
                 if($this->houseSimService->hasInventory('Fiberglass Pan Flute'))
-                    $possibilities[] = new ActivityCallback($this->createOrnatePanFlute(...), 10);
+                    $possibilities[] = $this->createOrnatePanFlute(...);
 
                 if($this->houseSimService->hasInventory('Tea Trowel'))
-                    $possibilities[] = new ActivityCallback($this->createOwlTrowel(...), 10);
+                    $possibilities[] = $this->createOwlTrowel(...);
             }
         }
 
         if($this->houseSimService->hasInventory('White Feathers') && $this->houseSimService->hasInventory('Leaf Spear'))
-            $possibilities[] = new ActivityCallback($this->createFishingRecorder(...), 10);
+            $possibilities[] = $this->createFishingRecorder(...);
 
         if($this->houseSimService->hasInventory('Decorated Spear'))
         {
             if($this->houseSimService->hasInventory('Dark Scales'))
-                $possibilities[] = new ActivityCallback($this->createNagatooth(...), 10);
+                $possibilities[] = $this->createNagatooth(...);
 
             if($this->houseSimService->hasInventory('Quintessence'))
-                $possibilities[] = new ActivityCallback($this->createVeilPiercer(...), 10);
+                $possibilities[] = $this->createVeilPiercer(...);
         }
 
         if($this->houseSimService->hasInventory('Crooked Fishing Rod'))
         {
             if($this->houseSimService->hasInventory('Yellow Dye') && $this->houseSimService->hasInventory('Green Dye'))
-                $possibilities[] = new ActivityCallback($this->createPaintedFishingRod(...), 10);
+                $possibilities[] = $this->createPaintedFishingRod(...);
 
             if($this->houseSimService->hasInventory('Carrot'))
-                $possibilities[] = new ActivityCallback($this->createCaroteneStick(...), 10);
+                $possibilities[] = $this->createCaroteneStick(...);
         }
 
         if($this->houseSimService->hasInventory('Plastic Boomerang') && $this->houseSimService->hasInventory('Quinacridone Magenta Dye'))
-            $possibilities[] = new ActivityCallback($this->createPaintedBoomerang(...), 10);
+            $possibilities[] = $this->createPaintedBoomerang(...);
 
         if($this->houseSimService->hasInventory('Yellow Dye'))
         {
             if($this->houseSimService->hasInventory('Plastic Idol'))
-                $possibilities[] = new ActivityCallback($this->createGoldIdol(...), 10);
+                $possibilities[] = $this->createGoldIdol(...);
 
             if($this->houseSimService->hasInventory('Small Plastic Bucket'))
-                $possibilities[] = new ActivityCallback($this->createYellowBucket(...), 10);
+                $possibilities[] = $this->createYellowBucket(...);
 
             if($this->houseSimService->hasInventory('Dumbbell'))
-                $possibilities[] = new ActivityCallback($this->createPaintedDumbbell(...), 10);
+                $possibilities[] = $this->createPaintedDumbbell(...);
 
             if($this->houseSimService->hasInventory('Digital Camera'))
-                $possibilities[] = new ActivityCallback($this->createPaintedCamera(...), 10);
+                $possibilities[] = $this->createPaintedCamera(...);
         }
 
         if($this->houseSimService->hasInventory('Fiberglass'))
-            $possibilities[] = new ActivityCallback($this->createSimpleFiberglassItem(...), 10);
+            $possibilities[] = $this->createSimpleFiberglassItem(...);
 
         if($this->houseSimService->hasInventory('Scythe'))
         {
             if($this->houseSimService->hasInventory('Scythe', 2))
-                $possibilities[] = new ActivityCallback($this->createDoubleScythe(...), 10);
+                $possibilities[] = $this->createDoubleScythe(...);
 
             if($this->houseSimService->hasInventory('Garden Shovel'))
-                $possibilities[] = new ActivityCallback($this->createFarmersMultiTool(...), 10);
+                $possibilities[] = $this->createFarmersMultiTool(...);
         }
 
         if($this->houseSimService->hasInventory('Garden Shovel') && $this->houseSimService->hasInventory('Fish Bones'))
-            $possibilities[] = new ActivityCallback($this->createFishHeadShovel(...), 10);
+            $possibilities[] = $this->createFishHeadShovel(...);
 
         if($this->houseSimService->hasInventory('White Flag'))
         {
             if($this->houseSimService->hasInventory('Yellow Dye'))
-                $possibilities[] = new ActivityCallback($this->createSunFlag(...), 10);
+                $possibilities[] = $this->createSunFlag(...);
 
             if($this->houseSimService->hasInventory('Green Dye'))
-                $possibilities[] = new ActivityCallback($this->createDragonFlag(...), 10);
+                $possibilities[] = $this->createDragonFlag(...);
 
             if($this->houseSimService->hasInventory('String') && $this->houseSimService->hasInventory('Crooked Stick'))
-                $possibilities[] = new ActivityCallback($this->createBindle(...), 10);
+                $possibilities[] = $this->createBindle(...);
 
             if($this->houseSimService->hasInventory('Crooked Fishing Rod'))
-                $possibilities[] = new ActivityCallback($this->createBindle2(...), 10);
+                $possibilities[] = $this->createBindle2(...);
         }
 
         if($this->houseSimService->hasInventory('Sun Flag') && $this->houseSimService->hasInventory('Sunflower Stick'))
-            $possibilities[] = new ActivityCallback($this->createSunSunFlag(...), 10);
+            $possibilities[] = $this->createSunSunFlag(...);
 
         if($this->houseSimService->hasInventory('Plastic'))
         {
             if($this->houseSimService->hasInventory('Smallish Pumpkin') && $this->houseSimService->hasInventory('Crooked Stick'))
-                $possibilities[] = new ActivityCallback($this->createDrumpkin(...), 10);
+                $possibilities[] = $this->createDrumpkin(...);
 
             if($this->houseSimService->hasInventory('Iron Bar'))
-                $possibilities[] = new ActivityCallback($this->createGrabbyArm(...), 10);
+                $possibilities[] = $this->createGrabbyArm(...);
         }
 
         if($this->houseSimService->hasInventory('Rice Flour') && $this->houseSimService->hasInventory('Potato'))
-            $possibilities[] = new ActivityCallback($this->createRicePaper(...), 10);
-
-        $repairWeight = ($petWithSkills->getSmithingBonus()->getTotal() >= 3 || $petWithSkills->getCrafts()->getTotal() >= 5) ? 10 : 1;
+            $possibilities[] = $this->createRicePaper(...);
 
         if($this->houseSimService->hasInventory('Rusty Blunderbuss'))
-            $possibilities[] = new ActivityCallback($this->repairRustyBlunderbuss(...), $repairWeight);
+            $possibilities[] = $this->repairRustyBlunderbuss(...);
 
         if($this->houseSimService->hasInventory('Rusty Rapier'))
-            $possibilities[] = new ActivityCallback($this->repairRustyRapier(...), $repairWeight);
+            $possibilities[] = $this->repairRustyRapier(...);
 
         if($this->houseSimService->hasInventory('Rusted, Busted Mechanism'))
-            $possibilities[] = new ActivityCallback($this->repairOldMechanism(...), $repairWeight);
+            $possibilities[] = $this->repairOldMechanism(...);
 
         if($this->houseSimService->hasInventory('Sun-sun Flag', 2))
-            $possibilities[] = new ActivityCallback($this->createSunSunFlagFlagSon(...), 10);
+            $possibilities[] = $this->createSunSunFlagFlagSon(...);
 
         if($this->houseSimService->hasInventory('Moon Pearl'))
         {
             if($this->houseSimService->hasInventory('Plastic Fishing Rod') && $this->houseSimService->hasInventory('Talon'))
-                $possibilities[] = new ActivityCallback($this->createPaleFlail(...), 10);
+                $possibilities[] = $this->createPaleFlail(...);
         }
 
         if($this->houseSimService->hasInventory('Blue Balloon') && $this->houseSimService->hasInventory('Gold Telescope'))
-            $possibilities[] = new ActivityCallback($this->makeSpyBalloon(...), 10);
+            $possibilities[] = $this->makeSpyBalloon(...);
 
-        return array_merge($possibilities, $this->eventLanternService->getCraftingPossibilities($petWithSkills));
-    }
-
-    /**
-     * @param IActivityCallback[] $possibilities
-     */
-    public function adventure(ComputedPetSkills $petWithSkills, array $possibilities): PetActivityLog
-    {
-        if(count($possibilities) === 0)
-            throw new \InvalidArgumentException('possibilities must contain at least one item.');
-
-        /** @var IActivityCallback $method */
-        $method = $this->rng->rngNextFromArray($possibilities);
-
-        $changes = new PetChanges($petWithSkills->getPet());
-
-        /** @var PetActivityLog $activityLog */
-        $activityLog = $method->getCallable()($petWithSkills);
-
-        $activityLog->setChanges($changes->compare($petWithSkills->getPet()));
-
-        return $activityLog;
+        return array_merge($possibilities, $this->eventLanternService->possibilities($petWithSkills));
     }
 
     public function createTorchFromBone(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getCrafts()->getTotal());
+        $roll = $this->rng->rngSkillRoll($petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getCrafts()->getTotal());
 
         if($roll >= 8)
         {
@@ -439,7 +427,7 @@ class CraftingService
     public function createTeaTrowel(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getCrafts()->getTotal());
+        $roll = $this->rng->rngSkillRoll($petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getCrafts()->getTotal());
 
         if($roll >= 12)
         {
@@ -471,7 +459,7 @@ class CraftingService
     public function createOwlTrowel(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getCrafts()->getTotal());
+        $roll = $this->rng->rngSkillRoll($petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getCrafts()->getTotal());
 
         if($roll >= 16)
         {
@@ -504,7 +492,7 @@ class CraftingService
     public function createSimpleFiberglassItem(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getCrafts()->getTotal());
+        $roll = $this->rng->rngSkillRoll($petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getCrafts()->getTotal());
 
         $item = $this->rng->rngNextFromArray([
             'Fiberglass Flute'
@@ -553,7 +541,7 @@ class CraftingService
     private function createDecoratedFlute(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getCrafts()->getTotal());
+        $roll = $this->rng->rngSkillRoll($petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getCrafts()->getTotal());
 
         if($roll <= 2)
         {
@@ -599,7 +587,7 @@ class CraftingService
     private function createDrumpkin(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal());
+        $roll = $this->rng->rngSkillRoll($petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal());
 
         if($roll <= 2 && $pet->getFood() < 4)
         {
@@ -648,7 +636,7 @@ class CraftingService
     private function createRicePaper(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getCrafts()->getTotal());
+        $roll = $this->rng->rngSkillRoll($petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getCrafts()->getTotal());
 
         if($roll <= 2 && $pet->getFood() < 4)
         {
@@ -700,7 +688,7 @@ class CraftingService
     public function createDecoratedSpear(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getCrafts()->getTotal());
+        $roll = $this->rng->rngSkillRoll($petWithSkills->getDexterity()->getTotal() + $petWithSkills->getCrafts()->getTotal());
 
         if($roll >= 12)
         {
@@ -732,7 +720,7 @@ class CraftingService
     public function createFishingRecorder(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getMusic()->getTotal());
+        $roll = $this->rng->rngSkillRoll($petWithSkills->getDexterity()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getMusic()->getTotal());
 
         if($roll >= 14)
         {
@@ -771,7 +759,7 @@ class CraftingService
     private function createDoubleScythe(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getCrafts()->getTotal());
+        $roll = $this->rng->rngSkillRoll($petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getCrafts()->getTotal());
 
         if($roll >= 14)
         {
@@ -817,7 +805,7 @@ class CraftingService
     private function createFishHeadShovel(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getCrafts()->getTotal());
+        $roll = $this->rng->rngSkillRoll($petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getCrafts()->getTotal());
 
         if($roll >= 14)
         {
@@ -862,7 +850,7 @@ class CraftingService
     private function createFarmersMultiTool(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getCrafts()->getTotal());
+        $roll = $this->rng->rngSkillRoll($petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getCrafts()->getTotal());
 
         if($roll >= 14)
         {
@@ -906,7 +894,7 @@ class CraftingService
 
         $difficulty = $making->getName() === 'String' ? 10 : 13;
 
-        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getCrafts()->getTotal());
+        $roll = $this->rng->rngSkillRoll($petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getCrafts()->getTotal());
 
         if($roll >= $difficulty)
         {
@@ -975,7 +963,7 @@ class CraftingService
             ]));
         }
 
-        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getCrafts()->getTotal());
+        $roll = $this->rng->rngSkillRoll($petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getCrafts()->getTotal());
 
         if($roll <= 2 && $pet->getFood() < 4)
         {
@@ -1047,7 +1035,7 @@ class CraftingService
     private function createYellowDyeFromTeaLeaves(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getNature()->getTotal() + $petWithSkills->getCrafts()->getTotal());
+        $roll = $this->rng->rngSkillRoll($petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getNature()->getTotal() + $petWithSkills->getCrafts()->getTotal());
 
         if($roll <= 4)
         {
@@ -1101,7 +1089,7 @@ class CraftingService
     private function extractFromScales(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getNature()->getTotal() + $petWithSkills->getCrafts()->getTotal());
+        $roll = $this->rng->rngSkillRoll($petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getNature()->getTotal() + $petWithSkills->getCrafts()->getTotal());
         $itemName = $this->rng->rngNextInt(1, 2) === 1 ? 'Green Dye' : 'Glue';
 
         if($roll >= 20)
@@ -1157,7 +1145,7 @@ class CraftingService
     private function createFabricMache(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getCrafts()->getTotal());
+        $roll = $this->rng->rngSkillRoll($petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getCrafts()->getTotal());
 
         if($roll >= 14)
         {
@@ -1221,7 +1209,7 @@ class CraftingService
     private function createGoldTrifecta(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getCrafts()->getTotal());
+        $roll = $this->rng->rngSkillRoll($petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getCrafts()->getTotal());
 
         if($roll >= 13)
         {
@@ -1259,7 +1247,7 @@ class CraftingService
     private function createLSquare(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getCrafts()->getTotal());
+        $roll = $this->rng->rngSkillRoll($petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getCrafts()->getTotal());
 
         if($roll == 1)
         {
@@ -1302,7 +1290,7 @@ class CraftingService
     private function createAlienCookingBuddy(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getCrafts()->getTotal());
+        $roll = $this->rng->rngSkillRoll($petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getCrafts()->getTotal());
 
         if($roll >= 10)
         {
@@ -1340,7 +1328,7 @@ class CraftingService
     private function createAlienCamera(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getCrafts()->getTotal());
+        $roll = $this->rng->rngSkillRoll($petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getCrafts()->getTotal());
 
         if($roll >= 10)
         {
@@ -1375,7 +1363,7 @@ class CraftingService
     private function createChartrurkey(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getCrafts()->getTotal());
+        $roll = $this->rng->rngSkillRoll($petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getCrafts()->getTotal());
 
         if($roll >= 20)
         {
@@ -1411,7 +1399,7 @@ class CraftingService
     private function createBugBow(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + max($petWithSkills->getNature()->getTotal(), $petWithSkills->getCrafts()->getTotal()));
+        $roll = $this->rng->rngSkillRoll($petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + max($petWithSkills->getNature()->getTotal(), $petWithSkills->getCrafts()->getTotal()));
 
         if($roll >= 12)
         {
@@ -1446,7 +1434,7 @@ class CraftingService
     private function createProboscis(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $roll = $this->rng->rngNextInt(1, 20 +
+        $roll = $this->rng->rngSkillRoll(
             $petWithSkills->getIntelligence()->getTotal() +
             $petWithSkills->getDexterity()->getTotal() +
             $petWithSkills->getCrafts()->getTotal()
@@ -1498,7 +1486,11 @@ class CraftingService
     private function createFiberglassPanFlute(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + max($petWithSkills->getMusic()->getTotal(), $petWithSkills->getCrafts()->getTotal()));
+        $roll = $this->rng->rngSkillRoll(
+            $petWithSkills->getIntelligence()->getTotal() +
+            $petWithSkills->getDexterity()->getTotal() +
+            max($petWithSkills->getMusic()->getTotal(), $petWithSkills->getCrafts()->getTotal())
+        );
 
         if($roll == 1)
         {
@@ -1547,7 +1539,7 @@ class CraftingService
     private function createGlassPendulum(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getCrafts()->getTotal());
+        $roll = $this->rng->rngSkillRoll($petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getCrafts()->getTotal());
 
         if($roll <= 2)
         {
@@ -1595,7 +1587,7 @@ class CraftingService
     private function createBownaner(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getDexterity()->getTotal() * 2 + $petWithSkills->getCrafts()->getTotal());
+        $roll = $this->rng->rngSkillRoll($petWithSkills->getDexterity()->getTotal() * 2 + $petWithSkills->getCrafts()->getTotal());
 
         if($roll <= 2 && $pet->getFood() < 4)
         {
@@ -1642,7 +1634,7 @@ class CraftingService
     private function createGypsumDragon(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getCrafts()->getTotal());
+        $roll = $this->rng->rngSkillRoll($petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getCrafts()->getTotal());
 
         if($roll >= 15)
         {
@@ -1679,7 +1671,7 @@ class CraftingService
     {
         $pet = $petWithSkills->getPet();
         $weather = WeatherService::getWeather(new \DateTimeImmutable());
-        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getDexterity()->getTotal() * 2 + $petWithSkills->getCrafts()->getTotal());
+        $roll = $this->rng->rngSkillRoll($petWithSkills->getDexterity()->getTotal() * 2 + $petWithSkills->getCrafts()->getTotal());
 
         if($roll <= 2 && $pet->getFood() < 4)
         {
@@ -1745,7 +1737,7 @@ class CraftingService
     private function createLeafSpear(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getStrength()->getTotal() * 2 + $petWithSkills->getDexterity()->getTotal());
+        $roll = $this->rng->rngSkillRoll($petWithSkills->getStrength()->getTotal() * 2 + $petWithSkills->getDexterity()->getTotal());
 
         if($roll >= 15)
         {
@@ -1787,7 +1779,7 @@ class CraftingService
     private function createBenjaminFranklin(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + max($petWithSkills->getCrafts()->getTotal(), $petWithSkills->getScience()->getTotal()));
+        $roll = $this->rng->rngSkillRoll($petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + max($petWithSkills->getCrafts()->getTotal(), $petWithSkills->getScience()->getTotal()));
 
         if($roll >= 17)
         {
@@ -1825,7 +1817,7 @@ class CraftingService
     private function createShortRangeTelephone(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getCrafts()->getTotal());
+        $roll = $this->rng->rngSkillRoll($petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getCrafts()->getTotal());
 
         if($roll <= 2)
         {
@@ -1894,7 +1886,7 @@ class CraftingService
     private function createCrowsEye(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getCrafts()->getTotal());
+        $roll = $this->rng->rngSkillRoll($petWithSkills->getStamina()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getCrafts()->getTotal());
 
         if($roll <= 2)
         {
@@ -1946,7 +1938,7 @@ class CraftingService
     private function createRibbelysComposite(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getCrafts()->getTotal());
+        $roll = $this->rng->rngSkillRoll($petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getCrafts()->getTotal());
 
         if($roll >= 15)
         {
@@ -1985,7 +1977,7 @@ class CraftingService
     private function createFeatheredHat(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getCrafts()->getTotal());
+        $roll = $this->rng->rngSkillRoll($petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getCrafts()->getTotal());
 
         if($roll >= 13)
         {
@@ -2021,7 +2013,7 @@ class CraftingService
     private function createOrnatePanFlute(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + max($petWithSkills->getCrafts()->getTotal(), $petWithSkills->getMusic()->getTotal()));
+        $roll = $this->rng->rngSkillRoll($petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + max($petWithSkills->getCrafts()->getTotal(), $petWithSkills->getMusic()->getTotal()));
 
         if($roll >= 18)
         {
@@ -2058,7 +2050,7 @@ class CraftingService
     private function createSnakebite(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getCrafts()->getTotal());
+        $roll = $this->rng->rngSkillRoll($petWithSkills->getDexterity()->getTotal() + $petWithSkills->getCrafts()->getTotal());
 
         if($roll <= 2)
         {
@@ -2106,7 +2098,7 @@ class CraftingService
     {
         $pet = $petWithSkills->getPet();
 
-        $umbraCheck = $this->rng->rngNextInt(1, 20 + $petWithSkills->getArcana()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getIntelligence()->getTotal());
+        $umbraCheck = $this->rng->rngSkillRoll($petWithSkills->getArcana()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getIntelligence()->getTotal());
 
         if($umbraCheck < 15)
         {
@@ -2144,7 +2136,7 @@ class CraftingService
     private function createNagatooth(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $craftsCheck = $this->rng->rngNextInt(1, 20 + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getIntelligence()->getTotal());
+        $craftsCheck = $this->rng->rngSkillRoll($petWithSkills->getCrafts()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getIntelligence()->getTotal());
 
         if($craftsCheck < 15)
         {
@@ -2180,7 +2172,7 @@ class CraftingService
     private function createLassoscope(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $craftsCheck = $this->rng->rngNextInt(1, 20 + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getStrength()->getTotal() + $petWithSkills->getDexterity()->getTotal());
+        $craftsCheck = $this->rng->rngSkillRoll($petWithSkills->getCrafts()->getTotal() + $petWithSkills->getStrength()->getTotal() + $petWithSkills->getDexterity()->getTotal());
 
         if($craftsCheck < 20)
         {
@@ -2231,7 +2223,7 @@ class CraftingService
     {
         $pet = $petWithSkills->getPet();
         $weather = WeatherService::getWeather(new \DateTimeImmutable());
-        $craftsCheck = $this->rng->rngNextInt(1, 20 + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal());
+        $craftsCheck = $this->rng->rngSkillRoll($petWithSkills->getCrafts()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal());
 
         if($craftsCheck < 14)
         {
@@ -2448,7 +2440,7 @@ class CraftingService
     private function repairRustyBlunderbuss(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + max($petWithSkills->getCrafts()->getTotal(), $petWithSkills->getSmithingBonus()->getTotal()));
+        $roll = $this->rng->rngSkillRoll($petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + max($petWithSkills->getCrafts()->getTotal(), $petWithSkills->getSmithingBonus()->getTotal()));
 
         if($roll >= 18)
         {
@@ -2480,7 +2472,7 @@ class CraftingService
     private function repairRustyRapier(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + max($petWithSkills->getCrafts()->getTotal(), $petWithSkills->getSmithingBonus()->getTotal()));
+        $roll = $this->rng->rngSkillRoll($petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + max($petWithSkills->getCrafts()->getTotal(), $petWithSkills->getSmithingBonus()->getTotal()));
 
         if($roll >= 14)
         {
@@ -2511,7 +2503,7 @@ class CraftingService
     private function repairOldMechanism(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + min($petWithSkills->getCrafts()->getTotal(), $petWithSkills->getScience()->getTotal()));
+        $roll = $this->rng->rngSkillRoll($petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + min($petWithSkills->getCrafts()->getTotal(), $petWithSkills->getScience()->getTotal()));
 
         if($roll >= 18)
         {
@@ -2551,7 +2543,7 @@ class CraftingService
     private function createLaserGuidedSword(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + max($petWithSkills->getScience()->getTotal(), $petWithSkills->getCrafts()->getTotal()));
+        $roll = $this->rng->rngSkillRoll($petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + max($petWithSkills->getScience()->getTotal(), $petWithSkills->getCrafts()->getTotal()));
 
         if($roll >= 14)
         {
@@ -2604,7 +2596,7 @@ class CraftingService
         $pet = $petWithSkills->getPet();
         $makingItem = ItemRepository::findOneByName($this->em, $making);
 
-        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getCrafts()->getTotal());
+        $roll = $this->rng->rngSkillRoll($petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getCrafts()->getTotal());
 
         if($roll >= 10)
         {
@@ -2641,7 +2633,7 @@ class CraftingService
     private function createSunSunFlag(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getCrafts()->getTotal());
+        $roll = $this->rng->rngSkillRoll($petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getCrafts()->getTotal());
 
         if($roll >= 12)
         {
@@ -2677,7 +2669,7 @@ class CraftingService
     private function createSunSunFlagFlagSon(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getCrafts()->getTotal());
+        $roll = $this->rng->rngSkillRoll($petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getCrafts()->getTotal());
 
         if($roll >= 20)
         {
@@ -2711,7 +2703,7 @@ class CraftingService
     private function createPaleFlail(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getCrafts()->getTotal());
+        $roll = $this->rng->rngSkillRoll($petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getCrafts()->getTotal());
 
         if($roll >= 15)
         {
@@ -2747,7 +2739,7 @@ class CraftingService
     private function createBindle(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getCrafts()->getTotal());
+        $roll = $this->rng->rngSkillRoll($petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getCrafts()->getTotal());
 
         if($pet->hasMerit(MeritEnum::EIDETIC_MEMORY))
         {
@@ -2801,7 +2793,7 @@ class CraftingService
     private function createBindle2(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getCrafts()->getTotal());
+        $roll = $this->rng->rngSkillRoll($petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getCrafts()->getTotal());
 
         if($pet->hasMerit(MeritEnum::EIDETIC_MEMORY))
         {
@@ -2853,7 +2845,7 @@ class CraftingService
     public function createPeacockPlushy(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $craftsCheck = $this->rng->rngNextInt(1, 20 + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getIntelligence()->getTotal());
+        $craftsCheck = $this->rng->rngSkillRoll($petWithSkills->getCrafts()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getIntelligence()->getTotal());
 
         if($craftsCheck >= 13)
         {
@@ -2893,7 +2885,7 @@ class CraftingService
     public function createGrabbyArm(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $craftsCheck = $this->rng->rngNextInt(1, 20 + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getIntelligence()->getTotal());
+        $craftsCheck = $this->rng->rngSkillRoll($petWithSkills->getCrafts()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getIntelligence()->getTotal());
 
         if($craftsCheck >= 12)
         {
@@ -2931,7 +2923,7 @@ class CraftingService
     private function makeSpyBalloon(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $craftsCheck = $this->rng->rngNextInt(1, 20 + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getIntelligence()->getTotal());
+        $craftsCheck = $this->rng->rngSkillRoll($petWithSkills->getCrafts()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getIntelligence()->getTotal());
 
         if($craftsCheck >= 12)
         {

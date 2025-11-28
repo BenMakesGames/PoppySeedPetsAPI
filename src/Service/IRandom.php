@@ -72,4 +72,6 @@ interface IRandom
      * @phpstan-impure
      */
     function rngNextTweakedColor(string $color, int $radius = 12): string;
+
+    function rngSkillRoll(int $bonus);
 }

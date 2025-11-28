@@ -14,24 +14,24 @@ declare(strict_types=1);
 namespace App\Service\PetActivity\Crafting;
 
 use App\Entity\PetActivityLog;
+use App\Enum\ActivityPersonalityEnum;
 use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingness;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
+use App\Enum\StatusEffectEnum;
 use App\Functions\ActivityHelpers;
 use App\Functions\PetActivityLogFactory;
 use App\Functions\PetActivityLogTagHelpers;
-use App\Model\ActivityCallback;
 use App\Model\ComputedPetSkills;
-use App\Model\IActivityCallback;
-use App\Model\PetChanges;
 use App\Service\HouseSimService;
 use App\Service\InventoryService;
 use App\Service\IRandom;
+use App\Service\PetActivity\IPetActivity;
 use App\Service\PetExperienceService;
 use Doctrine\ORM\EntityManagerInterface;
 
-class ElectricalEngineeringService
+class ElectricalEngineeringService implements IPetActivity
 {
     public function __construct(
         private readonly InventoryService $inventoryService,
@@ -41,40 +41,60 @@ class ElectricalEngineeringService
     {
     }
 
-    /**
-     * @return IActivityCallback[]
-     */
-    public function getCraftingPossibilities(ComputedPetSkills $petWithSkills): array
+    public function preferredWithFullHouse(): bool { return true; }
+
+    public function groupKey(): string { return 'electricalEngineering'; }
+
+    public function groupDesire(ComputedPetSkills $petWithSkills): int
     {
         $pet = $petWithSkills->getPet();
 
+        if($pet->hasStatusEffect(StatusEffectEnum::Wereform))
+            return 0;
+
+        $desire = $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getElectronicsBonus()->getTotal();
+
+        // when a pet is equipped, the equipment bonus counts twice for affecting a pet's desires
+        if($pet->getTool() && $pet->getTool()->getItem()->getTool())
+            $desire += $pet->getTool()->getItem()->getTool()->getScience() + $pet->getTool()->getItem()->getTool()->getElectronics();
+
+        if($petWithSkills->getPet()->hasActivityPersonality(ActivityPersonalityEnum::CraftingScience))
+            $desire += 4;
+        else
+            $desire += $this->rng->rngNextInt(1, 4);
+
+        return max(1, (int)round($desire * (1 + $this->rng->rngNextInt(-10, 10) / 100)));
+    }
+
+    public function possibilities(ComputedPetSkills $petWithSkills): array
+    {
         $possibilities = [];
 
         if($this->houseSimService->hasInventory('3D Printer') && $this->houseSimService->hasInventory('Plastic'))
         {
             if($this->houseSimService->hasInventory('Glass') && ($this->houseSimService->hasInventory('Silver Bar') || $this->houseSimService->hasInventory('Gold Bar')))
-                $possibilities[] = new ActivityCallback($this->createLaserPointer(...), 10);
+                $possibilities[] = $this->createLaserPointer(...);
 
             if(($this->houseSimService->hasInventory('Silver Bar') || $this->houseSimService->hasInventory('Iron Bar')) && $this->houseSimService->hasInventory('Magic Smoke'))
-                $possibilities[] = new ActivityCallback($this->createMetalDetector(...), 10);
+                $possibilities[] = $this->createMetalDetector(...);
         }
 
         if($this->houseSimService->hasInventory('Metal Detector (Iron)') || $this->houseSimService->hasInventory('Metal Detector (Silver)') || $this->houseSimService->hasInventory('Metal Detector (Gold)'))
         {
             if($this->houseSimService->hasInventory('Gold Bar') && ($this->houseSimService->hasInventory('Fiberglass') || $this->houseSimService->hasInventory('Fiberglass Flute')))
-                $possibilities[] = new ActivityCallback($this->createSeashellDetector(...), 10);
+                $possibilities[] = $this->createSeashellDetector(...);
         }
 
         if($this->houseSimService->hasInventory('Hash Table'))
         {
             if($this->houseSimService->hasInventory('Laser Pointer') && $this->houseSimService->hasInventory('Bass Guitar'))
-                $possibilities[] = new ActivityCallback($this->createLaserGuitar(...), 10);
+                $possibilities[] = $this->createLaserGuitar(...);
 
             if($this->houseSimService->hasInventory('XOR') && $this->houseSimService->hasInventory('Fiberglass Bow'))
-                $possibilities[] = new ActivityCallback($this->createResonatingBow(...), 10);
+                $possibilities[] = $this->createResonatingBow(...);
 
             if($this->houseSimService->hasInventory('Lightning Sword') && $this->houseSimService->hasInventory('Glass Pendulum'))
-                $possibilities[] = new ActivityCallback($this->createRainbowsaber(...), 10);
+                $possibilities[] = $this->createRainbowsaber(...);
         }
 
         if($this->houseSimService->hasInventory('Lightning in a Bottle'))
@@ -82,51 +102,32 @@ class ElectricalEngineeringService
             if($this->houseSimService->hasInventory('Gold Bar'))
             {
                 if($this->houseSimService->hasInventory('Plastic Boomerang'))
-                    $possibilities[] = new ActivityCallback($this->createBuggerang(...), 10);
+                    $possibilities[] = $this->createBuggerang(...);
             }
         }
 
         if($this->houseSimService->hasInventory('Magic Smoke'))
         {
             if($this->houseSimService->hasInventory('Laser Pointer') && $this->houseSimService->hasInventory('Toy Alien Gun'))
-                $possibilities[] = new ActivityCallback($this->createAlienGun(...), 10);
+                $possibilities[] = $this->createAlienGun(...);
 
             if($this->houseSimService->hasInventory('Lightning Sword') && $this->houseSimService->hasInventory('Alien Tissue'))
-                $possibilities[] = new ActivityCallback($this->createDNA(...), 10);
+                $possibilities[] = $this->createDNA(...);
+
+            if($this->houseSimService->hasInventory('Gold Tuning Fork') && $this->houseSimService->hasInventory('Crooked Stick'))
+                $possibilities[] = $this->createDIYTheremin(...);
         }
 
         if($this->houseSimService->hasInventory('Sylvan Fishing Rod') && $this->houseSimService->hasInventory('Laser Pointer') && $this->houseSimService->hasInventory('Alien Tissue'))
-            $possibilities[] = new ActivityCallback($this->createAlienFishingRod(...), 10);
+            $possibilities[] = $this->createAlienFishingRod(...);
 
         return $possibilities;
-    }
-
-    /**
-     * @param IActivityCallback[] $possibilities
-     */
-    public function adventure(ComputedPetSkills $petWithSkills, array $possibilities): PetActivityLog
-    {
-        if(count($possibilities) === 0)
-            throw new \InvalidArgumentException('possibilities must contain at least one item.');
-
-        $pet = $petWithSkills->getPet();
-
-        $method = $this->rng->rngNextFromArray($possibilities);
-
-        $changes = new PetChanges($pet);
-
-        /** @var PetActivityLog $activityLog */
-        $activityLog = $method->getCallable()($petWithSkills);
-
-        $activityLog->setChanges($changes->compare($pet));
-
-        return $activityLog;
     }
 
     private function createLaserPointer(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getElectronicsBonus()->getTotal());
+        $roll = $this->rng->rngSkillRoll($petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getElectronicsBonus()->getTotal());
 
         $metalToUse = [ 'Silver Bar', 'Gold Bar' ];
 
@@ -180,7 +181,7 @@ class ElectricalEngineeringService
     private function createMetalDetector(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getElectronicsBonus()->getTotal());
+        $roll = $this->rng->rngSkillRoll($petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getElectronicsBonus()->getTotal());
 
         $metalToUse = [ 'Silver Bar', 'Iron Bar' ];
 
@@ -249,7 +250,7 @@ class ElectricalEngineeringService
     private function createSeashellDetector(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getElectronicsBonus()->getTotal());
+        $roll = $this->rng->rngSkillRoll($petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getElectronicsBonus()->getTotal());
 
         if($roll >= 18)
         {
@@ -283,7 +284,7 @@ class ElectricalEngineeringService
     private function createLaserGuitar(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + min($petWithSkills->getPerception()->getTotal(), $petWithSkills->getMusic()->getTotal()) + $petWithSkills->getScience()->getTotal() + $petWithSkills->getElectronicsBonus()->getTotal());
+        $roll = $this->rng->rngSkillRoll($petWithSkills->getIntelligence()->getTotal() + min($petWithSkills->getPerception()->getTotal(), $petWithSkills->getMusic()->getTotal()) + $petWithSkills->getScience()->getTotal() + $petWithSkills->getElectronicsBonus()->getTotal());
 
         if($roll >= 18)
         {
@@ -316,7 +317,7 @@ class ElectricalEngineeringService
     private function createRainbowsaber(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getElectronicsBonus()->getTotal());
+        $roll = $this->rng->rngSkillRoll($petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getElectronicsBonus()->getTotal());
 
         if($roll <= 2)
         {
@@ -366,7 +367,7 @@ class ElectricalEngineeringService
     private function createResonatingBow(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getMusic()->getTotal() + $petWithSkills->getElectronicsBonus()->getTotal());
+        $roll = $this->rng->rngSkillRoll($petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getMusic()->getTotal() + $petWithSkills->getElectronicsBonus()->getTotal());
 
         if($roll >= 18)
         {
@@ -412,7 +413,7 @@ class ElectricalEngineeringService
     private function createAlienFishingRod(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getElectronicsBonus()->getTotal());
+        $roll = $this->rng->rngSkillRoll($petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getElectronicsBonus()->getTotal());
 
         if($roll >= 19)
         {
@@ -445,7 +446,7 @@ class ElectricalEngineeringService
     private function createBuggerang(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getElectronicsBonus()->getTotal());
+        $roll = $this->rng->rngSkillRoll($petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getElectronicsBonus()->getTotal());
 
         if($roll <= 2)
         {
@@ -503,7 +504,7 @@ class ElectricalEngineeringService
     private function createAlienGun(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getElectronicsBonus()->getTotal());
+        $roll = $this->rng->rngSkillRoll($petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getElectronicsBonus()->getTotal());
 
         if($roll <= 2)
         {
@@ -549,7 +550,7 @@ class ElectricalEngineeringService
     private function createDNA(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getElectronicsBonus()->getTotal());
+        $roll = $this->rng->rngSkillRoll($petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getElectronicsBonus()->getTotal());
 
         if($roll <= 2)
         {
@@ -585,6 +586,58 @@ class ElectricalEngineeringService
             ;
 
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::Science ], $activityLog);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::PROGRAM, false);
+        }
+
+        return $activityLog;
+    }
+
+    private function createDIYTheremin(ComputedPetSkills $petWithSkills): PetActivityLog
+    {
+        $pet = $petWithSkills->getPet();
+
+        $roll = $this->rng->rngSkillRoll(
+            $petWithSkills->getIntelligence()->getTotal() +
+            $petWithSkills->getDexterity()->getTotal() +
+            $petWithSkills->getMusic()->getTotal() / 4 +
+            $petWithSkills->getScience()->getTotal() * 3 / 4 +
+            $petWithSkills->getElectronicsBonus()->getTotal()
+        );
+
+        if($roll <= 2)
+        {
+            $pet->increaseSafety(-1);
+
+            $pet->increasePsychedelic($this->rng->rngNextInt(1, 3));
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to make a theremin, but accidentally breathed in a little bit of Magic Smoke! :O')
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Electronics' ]))
+            ;
+
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::Science ], $activityLog);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::PROGRAM, false);
+        }
+        else if($roll >= 18)
+        {
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::PROGRAM, true);
+            $this->houseSimService->getState()->loseItem('Magic Smoke', 1);
+            $this->houseSimService->getState()->loseItem('Gold Tuning Fork', 1);
+            $this->houseSimService->getState()->loseItem('Crooked Stick', 1);
+            $pet->increaseEsteem(2);
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% reshaped a tuning fork into a DIY Theremin!')
+                ->addInterestingness(PetActivityLogInterestingness::HoHum + 20)
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Electronics' ]))
+            ;
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::Science ], $activityLog);
+            $this->inventoryService->petCollectsItem('DIY Theremin', $pet, $pet->getName() . ' engineered this.', $activityLog);
+        }
+        else
+        {
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% wanted to do something cool with a Gold Tuning Fork, but couldn\'t come up with anything concrete...')
+                ->setIcon('icons/activity-logs/confused')
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Electronics' ]))
+            ;
+
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::Science ], $activityLog);
             $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::PROGRAM, false);
         }
 

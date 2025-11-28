@@ -11,7 +11,6 @@ declare(strict_types=1);
  * You should have received a copy of the GNU General Public License along with The Poppy Seed Pets API. If not, see <https://www.gnu.org/licenses/>.
  */
 
-
 namespace App\Service;
 
 use App\Entity\Greenhouse;
@@ -63,11 +62,8 @@ class GreenhouseService
         {
             case BirdBathBirdEnum::Owl:
                 $scroll = $this->rng->rngNextFromArray([
-                    'Behatting Scroll',
-                    'Behatting Scroll',
-                    'Behatting Scroll',
-                    'Renaming Scroll',
-                    'Renaming Scroll',
+                    'Behatting Scroll', 'Behatting Scroll', 'Behatting Scroll',
+                    'Renaming Scroll', 'Renaming Scroll',
                     'Forgetting Scroll',
                 ]);
 
@@ -79,14 +75,9 @@ class GreenhouseService
             case BirdBathBirdEnum::Raven:
                 $this->inventoryService->receiveItem('Black Feathers', $user, $user, 'Left behind by a huge raven that visited ' . $user->getName() . '\'s Bird Bath.', LocationEnum::Home);
                 $this->inventoryService->receiveItem('Black Feathers', $user, $user, 'Left behind by a huge raven that visited ' . $user->getName() . '\'s Bird Bath.', LocationEnum::Home);
-                $extraItem = $this->rng->rngNextFromArray([
-                    'Juice Box',
-                    $this->rng->rngNextFromArray([ 'Winged Key', 'Piece of Cetgueli\'s Map' ]),
-                    $this->rng->rngNextFromArray([ 'Magic Smoke', 'Lightning in a Bottle' ]),
-                ]);
-                $extraInventory = $this->inventoryService->receiveItem($extraItem, $user, $user, 'Left behind by a huge raven that visited ' . $user->getName() . '\'s Bird Bath.', LocationEnum::Home);
-                $message = 'As you approach the raven, it turns to face you. You freeze, and stare at each other for a few seconds before the raven flies off in a flurry of Black Feathers! Also, it apparently left ' . $extraInventory->getItem()->getNameWithArticle() . ' behind? \'Kay...';
-                $activityLogMessage = 'You approached a raven in your birdbath! It flew off, leaving behind some Black Feathers, and ' . $extraInventory->getItem()->getNameWithArticle() . '!';
+                $this->inventoryService->receiveItem('Winged Key', $user, $user, 'Left behind by a huge raven that visited ' . $user->getName() . '\'s Bird Bath.', LocationEnum::Home);
+                $message = 'As you approach the raven, it turns to face you. You freeze, and stare at each other for a few seconds before the raven flies off in a flurry of Black Feathers! Also, it apparently left a Winged Key behind? Huh.';
+                $activityLogMessage = 'You approached a raven in your birdbath! It flew off, leaving behind some Black Feathers, and a Winged Key!';
                 break;
 
             case BirdBathBirdEnum::Toucan:

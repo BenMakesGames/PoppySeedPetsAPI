@@ -16,6 +16,7 @@ namespace App\Service\PetActivity;
 use App\Entity\Pet;
 use App\Entity\PetActivityLog;
 use App\Entity\PetSpecies;
+use App\Enum\ActivityPersonalityEnum;
 use App\Enum\DistractionLocationEnum;
 use App\Enum\FlavorEnum;
 use App\Enum\GuildEnum;
@@ -56,7 +57,7 @@ use App\Service\TransactionService;
 use App\Service\WeatherService;
 use Doctrine\ORM\EntityManagerInterface;
 
-class GatheringService
+class GatheringService implements IPetActivity
 {
     public function __construct(
         private readonly ResponseService $responseService,
@@ -75,7 +76,33 @@ class GatheringService
     {
     }
 
-    public function adventure(ComputedPetSkills $petWithSkills): void
+    public function preferredWithFullHouse(): bool { return false; }
+
+    public function groupKey(): string { return 'gathering'; }
+
+    public function groupDesire(ComputedPetSkills $petWithSkills): int
+    {
+        $pet = $petWithSkills->getPet();
+        $desire = $petWithSkills->getPerception()->getTotal() + $petWithSkills->getNature()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal();
+
+        // when a pet is equipped, the equipment bonus counts twice for affecting a pet's desires
+        if($pet->getTool() && $pet->getTool()->getItem()->getTool())
+            $desire += $pet->getTool()->getItem()->getTool()->getNature() + $pet->getTool()->getItem()->getTool()->getGathering();
+
+        if($petWithSkills->getPet()->hasActivityPersonality(ActivityPersonalityEnum::Gathering))
+            $desire += 4;
+        else
+            $desire += $this->rng->rngNextInt(1, 4);
+
+        return max(1, (int)round($desire * (1 + $this->rng->rngNextInt(-10, 10) / 100)));
+    }
+
+    public function possibilities(ComputedPetSkills $petWithSkills): array
+    {
+        return [ $this->run(...) ];
+    }
+
+    public function run(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
         $maxSkill = 10 + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getNature()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal() - $pet->getAlcohol() - $pet->getPsychedelic();
@@ -84,7 +111,6 @@ class GatheringService
 
         $roll = $this->rng->rngNextInt(1, $maxSkill);
 
-        $activityLog = null;
         $changes = new PetChanges($pet);
 
         switch($roll)
@@ -143,6 +169,7 @@ class GatheringService
                 $activityLog = $this->foundDeepMicroJungle($petWithSkills);
                 break;
             case 24:
+            default:
                 if($this->fieldGuideService->hasUnlocked($pet->getOwner(), 'Île Volcan'))
                     $activityLog = $this->foundOldSettlement($petWithSkills);
                 else if($this->rng->rngNextBool())
@@ -152,13 +179,12 @@ class GatheringService
                 break;
         }
 
-        if($activityLog)
-        {
-            $activityLog->setChanges($changes->compare($pet));
-        }
+        $activityLog->setChanges($changes->compare($pet));
 
         if(AdventureMath::petAttractsBug($this->rng, $pet, 75))
             $this->inventoryService->petAttractsRandomBug($pet);
+
+        return $activityLog;
     }
 
     private function foundAbandonedQuarry(ComputedPetSkills $petWithSkills): PetActivityLog
@@ -466,7 +492,7 @@ class GatheringService
                 $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::Nature ], $activityLog);
                 $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 45), PetActivityStatEnum::GATHER, false);
             }
-            else if($this->rng->rngNextInt(1, 20 + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getStrength()->getTotal() + $petWithSkills->getStealth()->getTotal() + $petWithSkills->getBrawl(false)->getTotal()) >= 15)
+            else if($this->rng->rngSkillRoll($petWithSkills->getDexterity()->getTotal() + $petWithSkills->getStrength()->getTotal() + $petWithSkills->getStealth()->getTotal() + $petWithSkills->getBrawl(false)->getTotal()) >= 15)
             {
                 $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, 'Using their ' . ActivityHelpers::SourceOfLight($petWithSkills) . ', ' . ActivityHelpers::PetName($pet) . ' looked inside a Hollow Log, and found a Huge Toad! They got the jump on it, wrestled it to the ground, and claimed its Toadstool!')
                     ->setIcon('items/fungus/toadstool')
@@ -564,7 +590,7 @@ class GatheringService
 
         $pet = $petWithSkills->getPet();
 
-        if($this->rng->rngNextInt(1, 20 + $petWithSkills->getStealth()->getTotal() + $petWithSkills->getDexterity()->getTotal()) >= 10)
+        if($this->rng->rngSkillRoll($petWithSkills->getStealth()->getTotal() + $petWithSkills->getDexterity()->getTotal()) >= 10)
         {
             $foundPinecone = $this->clock->getMonthAndDay() > 1225;
 
@@ -585,7 +611,7 @@ class GatheringService
 
             $this->inventoryService->petCollectsItem('Egg', $pet, $pet->getName() . ' stole this from a Bird Nest.', $activityLog);
 
-            if($this->rng->rngNextInt(1, 20 + $petWithSkills->getPerception()->getTotal()) >= 10)
+            if($this->rng->rngSkillRoll($petWithSkills->getPerception()->getTotal()) >= 10)
                 $this->inventoryService->petCollectsItem('Fluff', $pet, $pet->getName() . ' stole this from a Bird Nest.', $activityLog);
 
             if($foundPinecone)
@@ -598,7 +624,7 @@ class GatheringService
         }
         else
         {
-            if($this->rng->rngNextInt(1, 20 + $petWithSkills->getStrength()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getBrawl()->getTotal()) >= 15)
+            if($this->rng->rngSkillRoll($petWithSkills->getStrength()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getBrawl()->getTotal()) >= 15)
             {
                 $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to steal an Egg from a Bird Nest, was spotted by a parent bird, and was able to defeat it in combat!')
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Gathering', 'Stealth', 'Fighting' ]))
@@ -632,7 +658,7 @@ class GatheringService
         $loot = [];
         $didWhat = 'found this at a Sandy Beach';
 
-        if($this->rng->rngNextInt(1, 20 + $petWithSkills->getStealth()->getTotal() + $petWithSkills->getDexterity()->getTotal()) < 10)
+        if($this->rng->rngSkillRoll($petWithSkills->getStealth()->getTotal() + $petWithSkills->getDexterity()->getTotal()) < 10)
         {
             $pet->increaseFood(-1);
 
@@ -640,7 +666,7 @@ class GatheringService
             {
                 $loot[] = $this->rng->rngNextFromArray([ 'Fish', 'Crooked Stick', 'Egg' ]);
 
-                if($this->rng->rngNextInt(1, 20 + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getNature()->getTotal()) >= 25)
+                if($this->rng->rngSkillRoll($petWithSkills->getPerception()->getTotal() + $petWithSkills->getNature()->getTotal()) >= 25)
                     $loot[] = $this->rng->rngNextFromArray([ 'Feathers', 'Talon' ]);
 
                 $pet->increaseEsteem($this->rng->rngNextInt(1, 2));
@@ -675,13 +701,13 @@ class GatheringService
 
             if($pet->getTool() && $pet->getTool()->fishingBonus() > 0)
                 $loot[] = 'Fish';
-            else if($this->rng->rngNextInt(1, 20 + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getNature()->getTotal()) >= 15)
+            else if($this->rng->rngSkillRoll($petWithSkills->getPerception()->getTotal() + $petWithSkills->getNature()->getTotal()) >= 15)
                 $loot[] = $this->rng->rngNextFromArray($possibleLoot);
 
             if($this->rng->rngNextInt(1, 20) == 1)
                 $loot[] = 'Secret Seashell';
 
-            if($this->rng->rngNextInt(1, 20 + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getNature()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal()) >= 25)
+            if($this->rng->rngSkillRoll($petWithSkills->getPerception()->getTotal() + $petWithSkills->getNature()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal()) >= 25)
             {
                 $moneys = $this->rng->rngNextInt(4, 12);
                 $this->transactionService->getMoney($pet->getOwner(), $moneys, $pet->getName() . ' found this on a Sandy Beach.');
@@ -735,7 +761,7 @@ class GatheringService
                 $loot[] = 'Orange Bow';
         }
 
-        if($this->rng->rngNextInt(1, 20 + $petWithSkills->getStealth()->getTotal() + $petWithSkills->getDexterity()->getTotal()) < 10)
+        if($this->rng->rngSkillRoll($petWithSkills->getStealth()->getTotal() + $petWithSkills->getDexterity()->getTotal()) < 10)
         {
             $pet->increaseFood(-1);
 
@@ -743,10 +769,10 @@ class GatheringService
             {
                 $loot[] = $this->rng->rngNextFromArray($possibleLoot);
 
-                if($this->rng->rngNextInt(1, 20 + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getNature()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal()) >= 25)
+                if($this->rng->rngSkillRoll($petWithSkills->getPerception()->getTotal() + $petWithSkills->getNature()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal()) >= 25)
                     $loot[] = $this->rng->rngNextFromArray($possibleLoot);
 
-                if($this->rng->rngNextInt(1, 20 + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getNature()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal()) >= 15)
+                if($this->rng->rngSkillRoll($petWithSkills->getPerception()->getTotal() + $petWithSkills->getNature()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal()) >= 15)
                     $loot[] = 'Talon';
 
                 $pet->increaseEsteem($this->rng->rngNextInt(1, 2));
@@ -775,10 +801,10 @@ class GatheringService
         {
             $loot[] = $this->rng->rngNextFromArray($possibleLoot);
 
-            if($this->rng->rngNextInt(1, 20 + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getNature()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal()) >= 15)
+            if($this->rng->rngSkillRoll($petWithSkills->getPerception()->getTotal() + $petWithSkills->getNature()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal()) >= 15)
                 $loot[] = $this->rng->rngNextFromArray($possibleLoot);
 
-            if($this->rng->rngNextInt(1, 20 + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getNature()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal()) >= 25)
+            if($this->rng->rngSkillRoll($petWithSkills->getPerception()->getTotal() + $petWithSkills->getNature()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal()) >= 25)
                 $loot[] = $this->rng->rngNextFromArray([ 'Avocado', 'Red', 'Orange', 'Apricot', 'Yellowy Lime' ]);
 
             $lucky = false;
@@ -932,7 +958,7 @@ class GatheringService
     {
         $pet = $petWithSkills->getPet();
 
-        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getNature()->getTotal() + $petWithSkills->getArcana()->getTotal());
+        $roll = $this->rng->rngSkillRoll($petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getNature()->getTotal() + $petWithSkills->getArcana()->getTotal());
         $success = $roll >= 12;
 
         $pet->increaseSafety($this->rng->rngNextInt(2, 4));
@@ -991,7 +1017,7 @@ class GatheringService
 
         $loot = [];
 
-        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getNature()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal());
+        $roll = $this->rng->rngSkillRoll($petWithSkills->getPerception()->getTotal() + $petWithSkills->getNature()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal());
 
         if($roll >= 12)
         {
@@ -1045,7 +1071,7 @@ class GatheringService
             return $this->gatheringDistractions->adventure($petWithSkills, DistractionLocationEnum::Volcano, 'exploring the island\'s volcano');
 
         $pet = $petWithSkills->getPet();
-        $check = $this->rng->rngNextInt(1, 20 + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getNature()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal());
+        $check = $this->rng->rngSkillRoll($petWithSkills->getPerception()->getTotal() + $petWithSkills->getNature()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal());
 
         if($check < 15)
         {
@@ -1103,7 +1129,7 @@ class GatheringService
 
         $pet = $petWithSkills->getPet();
         $eideticMemory = $pet->hasMerit(MeritEnum::EIDETIC_MEMORY);
-        $check = $this->rng->rngNextInt(1, 20 + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getStrength()->getTotal() + $petWithSkills->getNature()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal() + $petWithSkills->getMiningBonus()->getTotal());
+        $check = $this->rng->rngSkillRoll($petWithSkills->getPerception()->getTotal() + $petWithSkills->getStrength()->getTotal() + $petWithSkills->getNature()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal() + $petWithSkills->getMiningBonus()->getTotal());
 
         if($check >= 15 || $eideticMemory)
         {
@@ -1207,7 +1233,7 @@ class GatheringService
         $foodLoot = [];
         $extraLoot = [];
 
-        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getNature()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal());
+        $roll = $this->rng->rngSkillRoll($petWithSkills->getPerception()->getTotal() + $petWithSkills->getNature()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal());
 
         if($roll >= 16)
         {
@@ -1277,7 +1303,7 @@ class GatheringService
 
         $loot = [];
 
-        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal());
+        $roll = $this->rng->rngSkillRoll($petWithSkills->getPerception()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal());
 
         if($roll >= 15)
         {
