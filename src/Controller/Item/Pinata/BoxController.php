@@ -216,35 +216,34 @@ class BoxController
         }
         else
         {
-            $possibleItems = [
-                'Baker\'s Box',
-                'Fruits & Veggies Box',
-                'Handicrafts Supply Box',
-                'Little Strongbox',
-                'Sandbox',
-                'Jukebox',
-                'Pepperbox',
-                'Juice Box',
-                'Twilight Box',
-                'Nature Box',
-                'Monster Box',
-                'Pizza Box',
-                'Cereal Box',
-                'Hat Box'
-            ];
-
-            if($rng->rngNextInt(1, 20) === 0)
-            {
-                $possibleItems[] = $rng->rngNextFromArray([
+            $possibleItems = $rng->rngNextInt(1, 30) === 0
+                // holiday boxes:
+                ? [
                     '4th of July Box',
                     'New Year Box',
                     'Lunar New Year Box',
                     'Bastille Day Box',
                     'Cinco de Mayo Box',
                     'Awa Odori Box',
-                    // TODO: other holiday boxes
-                ]);
-            }
+                ]
+                // regular-type boxes:
+                : [
+                    'Baker\'s Box',
+                    'Fruits & Veggies Box',
+                    'Handicrafts Supply Box',
+                    'Little Strongbox',
+                    'Sandbox',
+                    'Jukebox',
+                    'Pepperbox',
+                    'Juice Box',
+                    'Twilight Box',
+                    'Nature Box',
+                    'Monster Box',
+                    'Pizza Box',
+                    'Cereal Box',
+                    'Hat Box'
+                ]
+            ;
 
             shuffle($possibleItems);
 
