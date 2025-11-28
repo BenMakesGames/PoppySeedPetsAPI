@@ -767,6 +767,9 @@ class PetActivityService
             ];
         }
 
+        if(count($groupedPossibilities) === 0)
+            return null;
+
         $group = ArrayFunctions::pick_one_weighted($groupedPossibilities, fn($group) => $group['desire']);
 
         return $this->rng->rngNextFromArray($group['possibilities']);
