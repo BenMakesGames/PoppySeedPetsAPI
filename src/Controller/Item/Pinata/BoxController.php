@@ -229,10 +229,9 @@ class BoxController
                 'Nature Box',
                 'Monster Box',
                 'Pizza Box',
+                'Cereal Box',
+                'Hat Box'
             ];
-
-            if($rng->rngNextInt(1, 2) === 0) // TODO: remove this entirely once we get to, like, 20 possible boxes??
-                $possibleItems[] = [ $rng->rngNextFromArray([ 'Cereal Box', 'Hat Box' ]) ];
 
             if($rng->rngNextInt(1, 20) === 0)
             {
