@@ -24,7 +24,6 @@ use App\Functions\ActivityHelpers;
 use App\Functions\PetActivityLogFactory;
 use App\Functions\PetActivityLogTagHelpers;
 use App\Model\ComputedPetSkills;
-use App\Model\PetChanges;
 use App\Service\HouseSimService;
 use App\Service\InventoryService;
 use App\Service\IRandom;
@@ -69,8 +68,6 @@ class ElectricalEngineeringService implements IPetActivity
 
     public function possibilities(ComputedPetSkills $petWithSkills): array
     {
-        $pet = $petWithSkills->getPet();
-
         $possibilities = [];
 
         if($this->houseSimService->hasInventory('3D Printer') && $this->houseSimService->hasInventory('Plastic'))
@@ -116,6 +113,9 @@ class ElectricalEngineeringService implements IPetActivity
 
             if($this->houseSimService->hasInventory('Lightning Sword') && $this->houseSimService->hasInventory('Alien Tissue'))
                 $possibilities[] = $this->createDNA(...);
+
+            if($this->houseSimService->hasInventory('Gold Tuning Fork') && $this->houseSimService->hasInventory('Crooked Stick'))
+                $possibilities[] = $this->createDIYTheremin(...);
         }
 
         if($this->houseSimService->hasInventory('Sylvan Fishing Rod') && $this->houseSimService->hasInventory('Laser Pointer') && $this->houseSimService->hasInventory('Alien Tissue'))
@@ -586,6 +586,58 @@ class ElectricalEngineeringService implements IPetActivity
             ;
 
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::Science ], $activityLog);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::PROGRAM, false);
+        }
+
+        return $activityLog;
+    }
+
+    private function createDIYTheremin(ComputedPetSkills $petWithSkills): PetActivityLog
+    {
+        $pet = $petWithSkills->getPet();
+
+        $roll = $this->rng->rngSkillRoll(
+            $petWithSkills->getIntelligence()->getTotal() +
+            $petWithSkills->getDexterity()->getTotal() +
+            $petWithSkills->getMusic()->getTotal() / 4 +
+            $petWithSkills->getScience()->getTotal() * 3 / 4 +
+            $petWithSkills->getElectronicsBonus()->getTotal()
+        );
+
+        if($roll <= 2)
+        {
+            $pet->increaseSafety(-1);
+
+            $pet->increasePsychedelic($this->rng->rngNextInt(1, 3));
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to make a theremin, but accidentally breathed in a little bit of Magic Smoke! :O')
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Electronics' ]))
+            ;
+
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::Science ], $activityLog);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::PROGRAM, false);
+        }
+        else if($roll >= 18)
+        {
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::PROGRAM, true);
+            $this->houseSimService->getState()->loseItem('Magic Smoke', 1);
+            $this->houseSimService->getState()->loseItem('Gold Tuning Fork', 1);
+            $this->houseSimService->getState()->loseItem('Crooked Stick', 1);
+            $pet->increaseEsteem(2);
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% reshaped a tuning fork into a DIY Theremin!')
+                ->addInterestingness(PetActivityLogInterestingness::HoHum + 20)
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Electronics' ]))
+            ;
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::Science ], $activityLog);
+            $this->inventoryService->petCollectsItem('DIY Theremin', $pet, $pet->getName() . ' engineered this.', $activityLog);
+        }
+        else
+        {
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% wanted to do something cool with a Gold Tuning Fork, but couldn\'t come up with anything concrete...')
+                ->setIcon('icons/activity-logs/confused')
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Electronics' ]))
+            ;
+
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::Science ], $activityLog);
             $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::PROGRAM, false);
         }
 
