@@ -29,7 +29,6 @@ use App\Functions\PetActivityLogFactory;
 use App\Functions\PetActivityLogTagHelpers;
 use App\Functions\SpiceRepository;
 use App\Model\ComputedPetSkills;
-use App\Model\PetChanges;
 use App\Service\HouseSimService;
 use App\Service\InventoryService;
 use App\Service\IRandom;
@@ -83,24 +82,15 @@ class CraftingService implements IPetActivity
     public function possibilities(ComputedPetSkills $petWithSkills): array
     {
         $possibilities = [];
-        $now = new \DateTimeImmutable();
 
         if($this->houseSimService->hasInventory('Twu Wuv') && $this->houseSimService->hasInventory('Red Balloon'))
-        {
             $possibilities[] = $this->twuWuvCraftingService->createWedBawwoon(...);
-        }
 
         if($this->houseSimService->hasInventory('Chocolate Bar'))
-        {
-            $weight = CalendarFunctions::isValentinesOrAdjacent($now) ? 80 : 8;
-
             $possibilities[] = $this->makeChocolateTool(...);
-        }
 
         if($this->houseSimService->hasInventory('Fluff') || $this->houseSimService->hasInventory('Cobweb'))
-        {
             $possibilities[] = $this->spinFluffOrCobweb(...);
-        }
 
         if($this->houseSimService->hasInventory('White Cloth'))
         {

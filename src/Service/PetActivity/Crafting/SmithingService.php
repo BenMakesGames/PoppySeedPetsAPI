@@ -90,7 +90,6 @@ class SmithingService implements IPetActivity
     public function possibilities(ComputedPetSkills $petWithSkills): array
     {
         $pet = $petWithSkills->getPet();
-        $weight = ($pet->getSafety() > 0 || $pet->isInGuild(GuildEnum::Dwarfcraft)) ? 10 : 1;
 
         $possibilities = [];
 

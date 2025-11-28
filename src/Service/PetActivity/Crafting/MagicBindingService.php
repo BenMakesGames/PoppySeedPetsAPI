@@ -371,13 +371,6 @@ class MagicBindingService implements IPetActivity
 
             if($this->houseSimService->hasInventory('Painted Whorl Staff'))
                 $possibilities[] = $this->createGyre(...);
-
-            $magicSmokeWeight = 1;
-        }
-        else
-        {
-            // no quint??
-            $magicSmokeWeight = 6;
         }
 
         if($this->houseSimService->hasInventory('Aos Sí') && $this->houseSimService->hasInventory('Blackonite'))
