@@ -1,6 +1,16 @@
 <?php
 declare(strict_types = 1);
 
+/**
+ * This file is part of the Poppy Seed Pets API.
+ *
+ * The Poppy Seed Pets API is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * The Poppy Seed Pets API is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along with The Poppy Seed Pets API. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 namespace App\Service\PetActivity\Holiday;
 
 use App\Entity\PetActivityLog;
@@ -38,7 +48,7 @@ class HuntTurkeyDragon
 
         $pet->increaseFood(-1);
 
-        $getExtraItem = $this->rng->rngNextInt(1, 20 + $petWithSkills->getNature()->getTotal() + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal()) >= 15;
+        $getExtraItem = $this->rng->rngSkillRoll($petWithSkills->getNature()->getTotal() + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal()) >= 15;
 
         $possibleItems = [
             'Giant Turkey Leg',

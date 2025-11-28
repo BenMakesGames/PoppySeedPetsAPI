@@ -207,7 +207,7 @@ class IcyMoonService implements IPetActivity
     private function findCryovolcano(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal() - $pet->getAlcohol());
+        $roll = $this->rng->rngSkillRoll($petWithSkills->getStamina()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal() - $pet->getAlcohol());
 
         $pet->increaseFood(-1);
 
@@ -265,7 +265,7 @@ class IcyMoonService implements IPetActivity
 
         $pet->increaseFood(-1);
 
-        $roll = $this->rng->rngNextInt(1, 20 + max($petWithSkills->getStrength()->getTotal(), $petWithSkills->getStamina()->getTotal()) + $petWithSkills->getBrawl()->getTotal() - $pet->getAlcohol());
+        $roll = $this->rng->rngSkillRoll(max($petWithSkills->getStrength()->getTotal(), $petWithSkills->getStamina()->getTotal()) + $petWithSkills->getBrawl()->getTotal() - $pet->getAlcohol());
 
         $roll += $petWithSkills->getHasProtectionFromElectricity()->getTotal() * 2;
 
@@ -347,7 +347,7 @@ class IcyMoonService implements IPetActivity
     private function exploreCore(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal() - $pet->getAlcohol());
+        $roll = $this->rng->rngSkillRoll($petWithSkills->getStamina()->getTotal() + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal() - $pet->getAlcohol());
 
         if($petWithSkills->getCanSeeInTheDark()->getTotal() <= 0)
         {

@@ -53,7 +53,7 @@ class WildHedgeMazeService
         $petHasClimbing = $petWithSkills->getClimbingBonus()->getTotal() > 0;
         $avoidedGettingLost = false;
 
-        if($this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal()) < 15)
+        if($this->rng->rngSkillRoll($petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal()) < 15)
         {
             if($petHasEideticMemory || $petHasClimbing)
                 $avoidedGettingLost = true;
@@ -204,7 +204,7 @@ class WildHedgeMazeService
         $loot[] = $this->rng->rngNextFromArray($possibleLoot);
         $loot[] = $this->rng->rngNextFromArray($possibleLoot);
 
-        if($this->rng->rngNextInt(1, 20 + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getNature()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal()) >= 20)
+        if($this->rng->rngSkillRoll($petWithSkills->getPerception()->getTotal() + $petWithSkills->getNature()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal()) >= 20)
             $loot[] = $this->rng->rngNextFromArray($possibleLoot);
 
         if($pet->hasMerit(MeritEnum::LUCKY) && $this->rng->rngNextInt(1, 15) === 1)
@@ -251,7 +251,7 @@ class WildHedgeMazeService
 
         $loot[] = $this->rng->rngNextFromArray($possibleLoot);
 
-        if($this->rng->rngNextInt(1, 20 + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getNature()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal()) >= 25)
+        if($this->rng->rngSkillRoll($petWithSkills->getPerception()->getTotal() + $petWithSkills->getNature()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal()) >= 25)
             $loot[] = $this->rng->rngNextFromArray($possibleLoot);
 
         $lucky = false;

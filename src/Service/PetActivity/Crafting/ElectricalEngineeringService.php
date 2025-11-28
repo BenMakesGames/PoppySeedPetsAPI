@@ -127,7 +127,7 @@ class ElectricalEngineeringService implements IPetActivity
     private function createLaserPointer(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getElectronicsBonus()->getTotal());
+        $roll = $this->rng->rngSkillRoll($petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getElectronicsBonus()->getTotal());
 
         $metalToUse = [ 'Silver Bar', 'Gold Bar' ];
 
@@ -181,7 +181,7 @@ class ElectricalEngineeringService implements IPetActivity
     private function createMetalDetector(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getElectronicsBonus()->getTotal());
+        $roll = $this->rng->rngSkillRoll($petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getElectronicsBonus()->getTotal());
 
         $metalToUse = [ 'Silver Bar', 'Iron Bar' ];
 
@@ -250,7 +250,7 @@ class ElectricalEngineeringService implements IPetActivity
     private function createSeashellDetector(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getElectronicsBonus()->getTotal());
+        $roll = $this->rng->rngSkillRoll($petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getElectronicsBonus()->getTotal());
 
         if($roll >= 18)
         {
@@ -284,7 +284,7 @@ class ElectricalEngineeringService implements IPetActivity
     private function createLaserGuitar(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + min($petWithSkills->getPerception()->getTotal(), $petWithSkills->getMusic()->getTotal()) + $petWithSkills->getScience()->getTotal() + $petWithSkills->getElectronicsBonus()->getTotal());
+        $roll = $this->rng->rngSkillRoll($petWithSkills->getIntelligence()->getTotal() + min($petWithSkills->getPerception()->getTotal(), $petWithSkills->getMusic()->getTotal()) + $petWithSkills->getScience()->getTotal() + $petWithSkills->getElectronicsBonus()->getTotal());
 
         if($roll >= 18)
         {
@@ -317,7 +317,7 @@ class ElectricalEngineeringService implements IPetActivity
     private function createRainbowsaber(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getElectronicsBonus()->getTotal());
+        $roll = $this->rng->rngSkillRoll($petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getElectronicsBonus()->getTotal());
 
         if($roll <= 2)
         {
@@ -367,7 +367,7 @@ class ElectricalEngineeringService implements IPetActivity
     private function createResonatingBow(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getMusic()->getTotal() + $petWithSkills->getElectronicsBonus()->getTotal());
+        $roll = $this->rng->rngSkillRoll($petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getMusic()->getTotal() + $petWithSkills->getElectronicsBonus()->getTotal());
 
         if($roll >= 18)
         {
@@ -413,7 +413,7 @@ class ElectricalEngineeringService implements IPetActivity
     private function createAlienFishingRod(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getElectronicsBonus()->getTotal());
+        $roll = $this->rng->rngSkillRoll($petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getElectronicsBonus()->getTotal());
 
         if($roll >= 19)
         {
@@ -446,7 +446,7 @@ class ElectricalEngineeringService implements IPetActivity
     private function createBuggerang(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getElectronicsBonus()->getTotal());
+        $roll = $this->rng->rngSkillRoll($petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getElectronicsBonus()->getTotal());
 
         if($roll <= 2)
         {
@@ -504,7 +504,7 @@ class ElectricalEngineeringService implements IPetActivity
     private function createAlienGun(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getElectronicsBonus()->getTotal());
+        $roll = $this->rng->rngSkillRoll($petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getElectronicsBonus()->getTotal());
 
         if($roll <= 2)
         {
@@ -550,7 +550,7 @@ class ElectricalEngineeringService implements IPetActivity
     private function createDNA(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getElectronicsBonus()->getTotal());
+        $roll = $this->rng->rngSkillRoll($petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getElectronicsBonus()->getTotal());
 
         if($roll <= 2)
         {

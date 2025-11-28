@@ -292,7 +292,7 @@ class UmbraService implements IPetActivity
     {
         $pet = $petWithSkills->getPet();
 
-        $skill = $this->rng->rngNextInt(1, 20 + $petWithSkills->getGatheringBonus()->getTotal() + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getUmbraBonus()->getTotal());
+        $skill = $this->rng->rngSkillRoll($petWithSkills->getGatheringBonus()->getTotal() + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getUmbraBonus()->getTotal());
 
         if($skill >= 11)
         {
@@ -348,7 +348,7 @@ class UmbraService implements IPetActivity
         $hasEideticMemory = $pet->hasMerit(MeritEnum::EIDETIC_MEMORY);
         $hasRelevantSpirit = $pet->getSpiritCompanion()?->getStar() === SpiritCompanionStarEnum::Altair;
 
-        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getArcana()->getTotal() + $petWithSkills->getUmbraBonus()->getTotal());
+        $roll = $this->rng->rngSkillRoll($petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getArcana()->getTotal() + $petWithSkills->getUmbraBonus()->getTotal());
 
         $rewards = [
             'Quintessence' => 'some',
@@ -420,7 +420,7 @@ class UmbraService implements IPetActivity
 
     private function foundDrizzlyBear(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getStealth()->getTotal());
+        $roll = $this->rng->rngSkillRoll($petWithSkills->getDexterity()->getTotal() + $petWithSkills->getStealth()->getTotal());
         $pet = $petWithSkills->getPet();
 
         $petName = ActivityHelpers::PetName($pet);
@@ -752,16 +752,16 @@ class UmbraService implements IPetActivity
 
         $loot = [ 'Noetala Egg' ];
 
-        if($this->rng->rngNextInt(1, 20 + $petWithSkills->getStealth()->getTotal() + $petWithSkills->getDexterity()->getTotal()) < 15)
+        if($this->rng->rngSkillRoll($petWithSkills->getStealth()->getTotal() + $petWithSkills->getDexterity()->getTotal()) < 15)
         {
             $pet->increaseFood(-1);
 
             if($this->rng->rngNextInt(1, 20) + $petWithSkills->getStrength()->getTotal() + $petWithSkills->getBrawl()->getTotal() >= 20)
             {
-                if($this->rng->rngNextInt(1, 20 + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getArcana()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal()) >= 25)
+                if($this->rng->rngSkillRoll($petWithSkills->getPerception()->getTotal() + $petWithSkills->getArcana()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal()) >= 25)
                     $loot[] = 'Quintessence';
 
-                if($this->rng->rngNextInt(1, 20 + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getArcana()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal()) >= 15)
+                if($this->rng->rngSkillRoll($petWithSkills->getPerception()->getTotal() + $petWithSkills->getArcana()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal()) >= 15)
                     $loot[] = 'Fluff';
 
                 $pet->increaseEsteem(3);
@@ -802,10 +802,10 @@ class UmbraService implements IPetActivity
         else {
             $didWhat = 'stole this from a giant cocoon';
 
-            if($this->rng->rngNextInt(1, 20 + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getArcana()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal()) >= 25)
+            if($this->rng->rngSkillRoll($petWithSkills->getPerception()->getTotal() + $petWithSkills->getArcana()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal()) >= 25)
                 $loot[] = 'Quintessence';
 
-            if($this->rng->rngNextInt(1, 20 + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getArcana()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal()) >= 15)
+            if($this->rng->rngSkillRoll($petWithSkills->getPerception()->getTotal() + $petWithSkills->getArcana()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal()) >= 15)
                 $loot[] = 'Fluff';
 
             $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% stumbled upon Noetala\'s giant cocoon. They snuck around inside for a bit, and made off with ' . ArrayFunctions::list_nice_sorted($loot) . '.')
@@ -890,7 +890,7 @@ class UmbraService implements IPetActivity
         else if($umbraCheck >= 12)
         {
             // realize it's vampires; chance to steal
-            $stealthCheck = $this->rng->rngNextInt(1, 20 + $petWithSkills->getStealth()->getTotal() + $petWithSkills->getDexterity()->getTotal());
+            $stealthCheck = $this->rng->rngSkillRoll($petWithSkills->getStealth()->getTotal() + $petWithSkills->getDexterity()->getTotal());
 
             if($stealthCheck >= 16)
             {
@@ -921,7 +921,7 @@ class UmbraService implements IPetActivity
         }
         else {
             // don't realize; get in a fight
-            $brawlCheck = $this->rng->rngNextInt(1, 20 + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getStrength()->getTotal() + $petWithSkills->getBrawl()->getTotal());
+            $brawlCheck = $this->rng->rngSkillRoll($petWithSkills->getDexterity()->getTotal() + $petWithSkills->getStrength()->getTotal() + $petWithSkills->getBrawl()->getTotal());
 
             if($brawlCheck >= 20)
             {
@@ -1120,7 +1120,7 @@ class UmbraService implements IPetActivity
 
         $didWhat = 'harvested this from a Cursed Garden in the Umbra';
 
-        $skillCheck = $this->rng->rngNextInt(1, 20 + $petWithSkills->getStealth()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getUmbraBonus()->getTotal());
+        $skillCheck = $this->rng->rngSkillRoll($petWithSkills->getStealth()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getUmbraBonus()->getTotal());
 
         if($skillCheck < 15)
         {
@@ -1128,7 +1128,7 @@ class UmbraService implements IPetActivity
 
             if($this->rng->rngNextInt(1, 20) + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getBrawl()->getTotal() + $petWithSkills->getArcana()->getTotal() >= 20)
             {
-                if($this->rng->rngNextInt(1, 20 + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getArcana()->getTotal()) >= 15)
+                if($this->rng->rngSkillRoll($petWithSkills->getPerception()->getTotal() + $petWithSkills->getArcana()->getTotal()) >= 15)
                     $loot[] = 'Quintessence';
 
                 $pet->increaseEsteem($this->rng->rngNextInt(1, 2));
@@ -1156,7 +1156,7 @@ class UmbraService implements IPetActivity
             }
         }
         else {
-            if($this->rng->rngNextInt(1, 20 + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getArcana()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal() + $petWithSkills->getUmbraBonus()->getTotal()) >= 25)
+            if($this->rng->rngSkillRoll($petWithSkills->getPerception()->getTotal() + $petWithSkills->getArcana()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal() + $petWithSkills->getUmbraBonus()->getTotal()) >= 25)
                 $loot[] = $this->rng->rngNextFromArray([ 'Nutmeg', 'Eggplant', 'Silica Grounds' ]);
 
             $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% found a Cursed Garden, and harvested ' . ArrayFunctions::list_nice_sorted($loot) . '.')

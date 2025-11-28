@@ -335,7 +335,7 @@ class FishingService implements IPetActivity
             ;
             $this->inventoryService->petCollectsItem('Fish', $pet, 'From a Muscly Trout that ' . $pet->getName() . ' fished Under a Bridge.', $activityLog);
 
-            if($this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal()) >= 15)
+            if($this->rng->rngSkillRoll($petWithSkills->getIntelligence()->getTotal()) >= 15)
                 $this->inventoryService->petCollectsItem('Scales', $pet, 'From a Muscly Trout that ' . $pet->getName() . ' fished Under a Bridge.', $activityLog);
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::Nature ], $activityLog);
@@ -524,7 +524,7 @@ class FishingService implements IPetActivity
                 ;
                 $this->inventoryService->petCollectsItem('Toad Legs', $pet, 'From a Huge Toad that ' . $pet->getName() . ' fished at a Roadside Creek.', $activityLog);
 
-                if($this->rng->rngNextInt(1, 20 + $petWithSkills->getNature()->getTotal()) >= 15)
+                if($this->rng->rngSkillRoll($petWithSkills->getNature()->getTotal()) >= 15)
                     $this->inventoryService->petCollectsItem('Toadstool', $pet, 'From a Huge Toad that ' . $pet->getName() . ' fished at a Roadside Creek.', $activityLog);
 
                 $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::Nature ], $activityLog);
@@ -553,7 +553,7 @@ class FishingService implements IPetActivity
             // singing fish
             if($this->rng->rngNextInt(1, 10 + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getNature()->getTotal() + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getFishingBonus()->getTotal()) >= 6)
             {
-                $gotMusic = $this->rng->rngNextInt(1, 20 + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getMusic()->getTotal()) >= 10;
+                $gotMusic = $this->rng->rngSkillRoll($petWithSkills->getPerception()->getTotal() + $petWithSkills->getMusic()->getTotal()) >= 10;
 
                 $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% went fishing at a Roadside Creek, and caught a Singing Fish!')
                     ->setIcon($gotMusic ? 'items/music/note' : 'items/tool/fishing-rod/crooked')
@@ -700,7 +700,7 @@ class FishingService implements IPetActivity
 
                 $this->inventoryService->petCollectsItem('Fish', $pet, 'From a Medium Minnow that ' . $pet->getName() . ' fished in a Waterfall Basin.', $activityLog);
 
-                if($this->rng->rngNextInt(1, 20 + $petWithSkills->getNature()->getTotal()) >= 10)
+                if($this->rng->rngSkillRoll($petWithSkills->getNature()->getTotal()) >= 10)
                     $this->inventoryService->petCollectsItem('Fish', $pet, 'From a Medium Minnow that ' . $pet->getName() . ' fished in a Waterfall Basin.', $activityLog);
 
                 $this->creditLackOfReflection($activityLog);
@@ -787,7 +787,7 @@ class FishingService implements IPetActivity
     {
         $pet = $petWithSkills->getPet();
 
-        if($this->rng->rngNextInt(1, 20 + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getNature()->getTotal() + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getFishingBonus()->getTotal()) >= 15)
+        if($this->rng->rngSkillRoll($petWithSkills->getDexterity()->getTotal() + $petWithSkills->getNature()->getTotal() + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getFishingBonus()->getTotal()) >= 15)
         {
             $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% went fishing on some rocks in the ocean, and caught a sea Cucumber.')
                 ->setIcon('items/tool/fishing-rod/crooked')
@@ -822,7 +822,7 @@ class FishingService implements IPetActivity
         $nothingBiting = $this->nothingBiting($pet, 20, 'at a Flooded Paddy Field');
         if($nothingBiting !== null) return $nothingBiting;
 
-        $foundRice = $this->rng->rngNextInt(1, 20 + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getNature()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal()) >= 15;
+        $foundRice = $this->rng->rngSkillRoll($petWithSkills->getPerception()->getTotal() + $petWithSkills->getNature()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal()) >= 15;
         $foundNonLa = $foundRice && ($this->rng->rngNextInt(1, 35) === 1);
 
         if($this->rng->rngNextInt(1, 10 + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getNature()->getTotal() + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getFishingBonus()->getTotal()) >= 10)
@@ -923,7 +923,7 @@ class FishingService implements IPetActivity
         {
             if($this->rng->rngNextInt(1, 4) === 1)
             {
-                if($this->rng->rngNextInt(1, 20 + $petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal()) >= 15)
+                if($this->rng->rngSkillRoll($petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal()) >= 15)
                 {
                     $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% went fishing at a Foggy Lake, caught a Ghost Fish, and harvested Quintessence from it.')
                         ->setIcon('items/resource/quintessence')

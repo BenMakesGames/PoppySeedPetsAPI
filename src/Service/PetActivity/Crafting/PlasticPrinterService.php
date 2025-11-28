@@ -130,7 +130,7 @@ class PlasticPrinterService implements IPetActivity
     public function createPlasticFishingRod(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + max($petWithSkills->getScience()->getTotal(), $petWithSkills->getCrafts()->getTotal()) + $petWithSkills->getNature()->getTotal() - $petWithSkills->getNature()->base);
+        $roll = $this->rng->rngSkillRoll($petWithSkills->getIntelligence()->getTotal() + max($petWithSkills->getScience()->getTotal(), $petWithSkills->getCrafts()->getTotal()) + $petWithSkills->getNature()->getTotal() - $petWithSkills->getNature()->base);
 
         if($roll >= 12)
         {
@@ -162,7 +162,7 @@ class PlasticPrinterService implements IPetActivity
     public function createNonsenserang(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + max($petWithSkills->getScience()->getTotal(), $petWithSkills->getCrafts()->getTotal()));
+        $roll = $this->rng->rngSkillRoll($petWithSkills->getIntelligence()->getTotal() + max($petWithSkills->getScience()->getTotal(), $petWithSkills->getCrafts()->getTotal()));
 
         if($roll >= 14)
         {
@@ -194,14 +194,14 @@ class PlasticPrinterService implements IPetActivity
     public function createEvilFeatherDuster(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + max($petWithSkills->getScience()->getTotal(), $petWithSkills->getCrafts()->getTotal()));
+        $roll = $this->rng->rngSkillRoll($petWithSkills->getIntelligence()->getTotal() + max($petWithSkills->getScience()->getTotal(), $petWithSkills->getCrafts()->getTotal()));
 
         if($roll >= 16)
         {
             $this->houseSimService->getState()->loseItem('Black Feathers', 1);
             $this->houseSimService->getState()->loseItem('Plastic', 1);
 
-            $getExtraStuff = $this->rng->rngNextInt(1, 20 + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal())
+            $getExtraStuff = $this->rng->rngSkillRoll($petWithSkills->getPerception()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal())
                 >= 21
             ;
 
@@ -249,7 +249,7 @@ class PlasticPrinterService implements IPetActivity
     public function createCompass(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + max($petWithSkills->getScience()->getTotal(), $petWithSkills->getCrafts()->getTotal()));
+        $roll = $this->rng->rngSkillRoll($petWithSkills->getIntelligence()->getTotal() + max($petWithSkills->getScience()->getTotal(), $petWithSkills->getCrafts()->getTotal()));
 
         if($roll >= 12)
         {
@@ -279,7 +279,7 @@ class PlasticPrinterService implements IPetActivity
     public function createJumpRope(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + max($petWithSkills->getScience()->getTotal(), $petWithSkills->getCrafts()->getTotal()));
+        $roll = $this->rng->rngSkillRoll($petWithSkills->getIntelligence()->getTotal() + max($petWithSkills->getScience()->getTotal(), $petWithSkills->getCrafts()->getTotal()));
 
         if($roll >= 12)
         {
@@ -317,7 +317,7 @@ class PlasticPrinterService implements IPetActivity
             (int)floor(($petWithSkills->getScience()->getTotal() + $petWithSkills->getCrafts()->getTotal()) / 2)
         ;
 
-        $roll = $this->rng->rngNextInt(1, 20 + $skill);
+        $roll = $this->rng->rngSkillRoll($skill);
 
         if($roll >= 18)
         {
@@ -348,7 +348,7 @@ class PlasticPrinterService implements IPetActivity
     public function createAlienLaser(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + max($petWithSkills->getScience()->getTotal(), $petWithSkills->getCrafts()->getTotal()));
+        $roll = $this->rng->rngSkillRoll($petWithSkills->getIntelligence()->getTotal() + max($petWithSkills->getScience()->getTotal(), $petWithSkills->getCrafts()->getTotal()));
 
         if($roll >= 14)
         {
@@ -378,7 +378,7 @@ class PlasticPrinterService implements IPetActivity
     {
         $pet = $petWithSkills->getPet();
 
-        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + max($petWithSkills->getScience()->getTotal(), $petWithSkills->getCrafts()->getTotal()));
+        $roll = $this->rng->rngSkillRoll($petWithSkills->getIntelligence()->getTotal() + max($petWithSkills->getScience()->getTotal(), $petWithSkills->getCrafts()->getTotal()));
 
         if($roll < 10)
             return $this->printerActingUp($pet);
@@ -431,7 +431,7 @@ class PlasticPrinterService implements IPetActivity
     public function createPlasticIdol(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + max($petWithSkills->getScience()->getTotal(), $petWithSkills->getCrafts()->getTotal()));
+        $roll = $this->rng->rngSkillRoll($petWithSkills->getIntelligence()->getTotal() + max($petWithSkills->getScience()->getTotal(), $petWithSkills->getCrafts()->getTotal()));
 
         if($roll < 13)
             return $this->printerActingUp($pet);
@@ -458,7 +458,7 @@ class PlasticPrinterService implements IPetActivity
     public function createDinoGrabbyArm(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + max($petWithSkills->getScience()->getTotal(), $petWithSkills->getCrafts()->getTotal()));
+        $roll = $this->rng->rngSkillRoll($petWithSkills->getIntelligence()->getTotal() + max($petWithSkills->getScience()->getTotal(), $petWithSkills->getCrafts()->getTotal()));
 
         if($roll >= 13)
         {

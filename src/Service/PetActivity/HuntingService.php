@@ -804,7 +804,7 @@ class HuntingService implements IPetActivity
         {
             $exp = 2;
 
-            $getClothes = $this->rng->rngNextInt(1, 20 + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getBrawl()->getTotal()) >= 20;
+            $getClothes = $this->rng->rngSkillRoll($petWithSkills->getDexterity()->getTotal() + $petWithSkills->getBrawl()->getTotal()) >= 20;
 
             if($getClothes)
             {
@@ -1440,7 +1440,7 @@ class HuntingService implements IPetActivity
         $pet = $petWithSkills->getPet();
 
         $skill = 10 + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getBrawl()->getTotal() + $petWithSkills->getClimbingBonus()->getTotal() * 2;
-        $getExtraItem = $this->rng->rngNextInt(1, 20 + $petWithSkills->getNature()->getTotal() + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal()) >= 15;
+        $getExtraItem = $this->rng->rngSkillRoll($petWithSkills->getNature()->getTotal() + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal()) >= 15;
 
         $pet->increaseFood(-1);
 

@@ -11,7 +11,6 @@ declare(strict_types=1);
  * You should have received a copy of the GNU General Public License along with The Poppy Seed Pets API. If not, see <https://www.gnu.org/licenses/>.
  */
 
-
 namespace App\Service\PetActivity;
 
 use App\Entity\Pet;
@@ -108,7 +107,7 @@ class LeonidsService
         }
         else
         {
-            $stealthCheck = $this->rng->rngNextInt(1, 20 + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getStealth()->getTotal());
+            $stealthCheck = $this->rng->rngSkillRoll($petWithSkills->getDexterity()->getTotal() + $petWithSkills->getStealth()->getTotal());
 
             if($stealthCheck <= 2)
             {
@@ -176,7 +175,7 @@ class LeonidsService
         }
         else
         {
-            $combatRoll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getStrength()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getBrawl()->getTotal());
+            $combatRoll = $this->rng->rngSkillRoll($petWithSkills->getStrength()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getBrawl()->getTotal());
 
             if($combatRoll >= 15)
             {
@@ -211,7 +210,7 @@ class LeonidsService
     {
         $pet = $petWithSkills->getPet();
 
-        $gatheringRoll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getArcana()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal());
+        $gatheringRoll = $this->rng->rngSkillRoll($petWithSkills->getPerception()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getArcana()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal());
 
         if($gatheringRoll >= 10)
         {

@@ -11,7 +11,6 @@ declare(strict_types=1);
  * You should have received a copy of the GNU General Public License along with The Poppy Seed Pets API. If not, see <https://www.gnu.org/licenses/>.
  */
 
-
 namespace App\Service\PetActivity\SpecialLocations;
 
 use App\Entity\Pet;
@@ -200,7 +199,7 @@ class ChocolateMansion
         $loot = [];
         $tags = [];
         $icon = '';
-        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getStrength()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getBrawl(false)->getTotal());
+        $roll = $this->rng->rngSkillRoll($petWithSkills->getStrength()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getBrawl(false)->getTotal());
         $extraInterestingness = 0;
         $deceivedTheVampire = false;
 
@@ -325,7 +324,7 @@ class ChocolateMansion
         $pet = $petWithSkills->getPet();
         $description = $this->getEntryDescription($pet);
 
-        $searchRoll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getStealth()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal());
+        $searchRoll = $this->rng->rngSkillRoll($petWithSkills->getPerception()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getStealth()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal());
         $success = $searchRoll >= 15;
 
         $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::GATHER, $success);
@@ -365,7 +364,7 @@ class ChocolateMansion
 
             $chemistryDescription = 'On one of the tables in the study, %pet:' . $pet->getId() . '.name% saw a table littered with notes, bottles, and chemistry equipment. ';
 
-            $scienceRoll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal());
+            $scienceRoll = $this->rng->rngSkillRoll($petWithSkills->getPerception()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal());
 
             if($scienceRoll <= 2)
             {
@@ -410,7 +409,7 @@ class ChocolateMansion
         $pet = $petWithSkills->getPet();
         $description = $this->getEntryDescription($pet);
 
-        $searchRoll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getPerception()->getTotal() * 2 + $petWithSkills->getStealth()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal());
+        $searchRoll = $this->rng->rngSkillRoll($petWithSkills->getPerception()->getTotal() * 2 + $petWithSkills->getStealth()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal());
         $success = $searchRoll >= 20;
 
         $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::GATHER, $success);
@@ -452,7 +451,7 @@ class ChocolateMansion
         $pet = $petWithSkills->getPet();
         $description = $this->getEntryDescription($pet) . 'They entered a parlor, and looked around for anything interesting. ';
 
-        $searchRoll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getPerception()->getTotal() * 2 + $petWithSkills->getStealth()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal());
+        $searchRoll = $this->rng->rngSkillRoll($petWithSkills->getPerception()->getTotal() * 2 + $petWithSkills->getStealth()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal());
 
         $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::GATHER, true);
 
@@ -481,7 +480,7 @@ class ChocolateMansion
 
             $musicDescription = 'The parlor also had a grand piano with some sheet music on it';
 
-            $musicRoll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getMusic()->getTotal());
+            $musicRoll = $this->rng->rngSkillRoll($petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getMusic()->getTotal());
 
             if($musicRoll <= 2)
             {
@@ -533,7 +532,7 @@ class ChocolateMansion
             $description .= 'They spent some time snooping around the foyer; while there, ';
         }
 
-        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getStealth()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal());
+        $roll = $this->rng->rngSkillRoll($petWithSkills->getPerception()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getStealth()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal());
         $difficulty = 16;
 
         $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::GATHER, $roll >= $difficulty);
@@ -632,7 +631,7 @@ class ChocolateMansion
         }
         else
         {
-            $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getIntelligence()->getTotal());
+            $roll = $this->rng->rngSkillRoll($petWithSkills->getPerception()->getTotal() + $petWithSkills->getIntelligence()->getTotal());
             $success = $roll > 15;
 
             $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::GATHER, $success);
@@ -738,7 +737,7 @@ class ChocolateMansion
         }
         else
         {
-            $combatRoll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getBrawl()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getStamina()->getTotal());
+            $combatRoll = $this->rng->rngSkillRoll($petWithSkills->getBrawl()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getStamina()->getTotal());
             $success = $combatRoll > 15;
 
             $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::GATHER, true);

@@ -234,7 +234,7 @@ class MagicBeanstalkService implements IPetActivity
 
         $meters = $this->rng->rngNextInt(7 + $roll, 6 + $roll * 2) / 2;
 
-        if($this->rng->rngNextInt(1, 20 + $petWithSkills->getStealth()->getTotal() + $petWithSkills->getDexterity()->getTotal()) >= 10)
+        if($this->rng->rngSkillRoll($petWithSkills->getStealth()->getTotal() + $petWithSkills->getDexterity()->getTotal()) >= 10)
         {
             $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% climbed %user:' . $pet->getOwner()->getId() . '.name\'s% magic bean-stalk, getting as high as ~' . $meters . ' meters. There, they found a bird\'s nest, which they raided.')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Magic Beanstalk', 'Stealth' ]))
@@ -242,7 +242,7 @@ class MagicBeanstalkService implements IPetActivity
 
             $this->inventoryService->petCollectsItem('Egg', $pet, $pet->getName() . ' stole this from a Bird Nest.', $activityLog);
 
-            $perceptionRoll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getPerception()->getTotal());
+            $perceptionRoll = $this->rng->rngSkillRoll($petWithSkills->getPerception()->getTotal());
 
             if($perceptionRoll >= 25)
                 $this->inventoryService->petCollectsItem('Black Feathers', $pet, $pet->getName() . ' stole this from a Bird Nest.', $activityLog);
@@ -258,7 +258,7 @@ class MagicBeanstalkService implements IPetActivity
         }
         else if($pet->isInGuild(GuildEnum::HighImpact))
         {
-            if($this->rng->rngNextInt(1, 20 + max($petWithSkills->getStrength()->getTotal(), $petWithSkills->getDexterity()->getTotal()) + $petWithSkills->getBrawl()->getTotal()) >= 10)
+            if($this->rng->rngSkillRoll(max($petWithSkills->getStrength()->getTotal(), $petWithSkills->getDexterity()->getTotal()) + $petWithSkills->getBrawl()->getTotal()) >= 10)
             {
                 $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% climbed %user:' . $pet->getOwner()->getId() . '.name\'s% magic bean-stalk, getting as high as ~' . $meters . ' meters. There, they found a bird\'s nest, guarded by its mother. It seemed a suitable challenge for a member of High Impact, so %pet:' . $pet->getId() . '.name% fought the bird, chased it off, and raided its nest.')
                     ->setIcon('guilds/high-impact')
@@ -268,7 +268,7 @@ class MagicBeanstalkService implements IPetActivity
                 $this->inventoryService->petCollectsItem('Egg', $pet, $pet->getName() . ' stole this from a Bird Nest.', $activityLog);
                 $this->inventoryService->petCollectsItem('Feathers', $pet, $pet->getName() . ' stole this from a Bird Nest.', $activityLog);
 
-                $perceptionRoll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getPerception()->getTotal());
+                $perceptionRoll = $this->rng->rngSkillRoll($petWithSkills->getPerception()->getTotal());
 
                 if($perceptionRoll >= 20)
                     $this->inventoryService->petCollectsItem('Black Feathers', $pet, $pet->getName() . ' stole this from a Bird Nest.', $activityLog);
@@ -368,7 +368,7 @@ class MagicBeanstalkService implements IPetActivity
 
         $meters = $this->rng->rngNextInt(2000, 3000) / 2;
 
-        if($this->rng->rngNextInt(1, 20 + $petWithSkills->getStealth()->getTotal() + $petWithSkills->getDexterity()->getTotal()) >= 18)
+        if($this->rng->rngSkillRoll($petWithSkills->getStealth()->getTotal() + $petWithSkills->getDexterity()->getTotal()) >= 18)
         {
             $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% climbed %user:' . $pet->getOwner()->getId() . '.name\'s% magic bean-stalk, getting as high as ~' . $meters . ' meters! There, they found a white Pegasus\' nest, which they raided.')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Magic Beanstalk', 'Stealth' ]))
@@ -376,7 +376,7 @@ class MagicBeanstalkService implements IPetActivity
 
             $this->inventoryService->petCollectsItem('Egg', $pet, $pet->getName() . ' stole this from a white Pegasus nest.', $activityLog);
 
-            $perceptionRoll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getPerception()->getTotal());
+            $perceptionRoll = $this->rng->rngSkillRoll($petWithSkills->getPerception()->getTotal());
 
             if($perceptionRoll >= 18)
                 $this->inventoryService->petCollectsItem('White Feathers', $pet, $pet->getName() . ' stole this from a white Pegasus nest.', $activityLog);
@@ -408,7 +408,7 @@ class MagicBeanstalkService implements IPetActivity
 
         $meters = $this->rng->rngNextInt(2000, 3000) / 2;
 
-        if($this->rng->rngNextInt(1, 20 + max($petWithSkills->getStrength()->getTotal(), $petWithSkills->getDexterity()->getTotal()) + $petWithSkills->getBrawl()->getTotal()) >= 18)
+        if($this->rng->rngSkillRoll(max($petWithSkills->getStrength()->getTotal(), $petWithSkills->getDexterity()->getTotal()) + $petWithSkills->getBrawl()->getTotal()) >= 18)
         {
             $pet->increaseEsteem($this->rng->rngNextInt(4, 8));
 
@@ -446,7 +446,7 @@ class MagicBeanstalkService implements IPetActivity
 
         $meters = $this->rng->rngNextInt(3200, 3800) / 2;
 
-        if($this->rng->rngNextInt(1, 20 + $petWithSkills->getStrength()->getTotal() + $petWithSkills->getNature()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal()) >= 18)
+        if($this->rng->rngSkillRoll($petWithSkills->getStrength()->getTotal() + $petWithSkills->getNature()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal()) >= 18)
         {
             $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% climbed %user:' . $pet->getOwner()->getId() . '.name\'s% magic bean-stalk, getting as high as ~' . $meters . ' meters! There, they found some Everice stuck to part of the stalk, and pried a piece off.')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Magic Beanstalk', 'Gathering' ]))
@@ -478,7 +478,7 @@ class MagicBeanstalkService implements IPetActivity
 
         $meters = $this->rng->rngNextInt(3200, 3800) / 2;
 
-        if($this->rng->rngNextInt(1, 20 + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal()) >= 20)
+        if($this->rng->rngSkillRoll($petWithSkills->getDexterity()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal()) >= 20)
         {
             if($this->rng->rngNextInt(1, 10) === 1)
             {
@@ -521,7 +521,7 @@ class MagicBeanstalkService implements IPetActivity
     {
         $pet = $petWithSkills->getPet();
 
-        if($this->rng->rngNextInt(1, 20 + $petWithSkills->getStealth()->getTotal() + $petWithSkills->getDexterity()->getTotal()) >= 20)
+        if($this->rng->rngSkillRoll($petWithSkills->getStealth()->getTotal() + $petWithSkills->getDexterity()->getTotal()) >= 20)
         {
             $wheatFlourOrCorn = DateFunctions::isCornMoon($this->clock->now) ? 'Corn' : 'Wheat Flour';
 
@@ -541,7 +541,7 @@ class MagicBeanstalkService implements IPetActivity
                 'Fluff',
             ];
 
-            if($this->rng->rngNextInt(1, 20 + $petWithSkills->getPerception()->getTotal()) >= 20)
+            if($this->rng->rngSkillRoll($petWithSkills->getPerception()->getTotal()) >= 20)
                 $loot = array_merge($loot, $this->rng->rngNextSubsetFromArray($possibleLoot, 2));
             else
                 $loot[] = $this->rng->rngNextFromArray($possibleLoot);

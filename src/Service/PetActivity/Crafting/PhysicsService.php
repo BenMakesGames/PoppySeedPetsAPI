@@ -138,7 +138,7 @@ class PhysicsService implements IPetActivity
     private function createPoisson(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getPhysicsBonus()->getTotal());
+        $roll = $this->rng->rngSkillRoll($petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getPhysicsBonus()->getTotal());
 
         if($roll <= 2)
         {
@@ -200,7 +200,7 @@ class PhysicsService implements IPetActivity
     private function createWormhole(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getPhysicsBonus()->getTotal());
+        $roll = $this->rng->rngSkillRoll($petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getPhysicsBonus()->getTotal());
 
         if($roll <= 2 && $pet->getFood() < 4)
         {
@@ -243,7 +243,7 @@ class PhysicsService implements IPetActivity
     private function createLightningSword(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getPhysicsBonus()->getTotal());
+        $roll = $this->rng->rngSkillRoll($petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getPhysicsBonus()->getTotal());
 
         if($roll <= 2)
         {
@@ -299,7 +299,7 @@ class PhysicsService implements IPetActivity
     private function createLivewire(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getPhysicsBonus()->getTotal());
+        $roll = $this->rng->rngSkillRoll($petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getPhysicsBonus()->getTotal());
 
         if($roll <= 2)
         {
@@ -360,7 +360,7 @@ class PhysicsService implements IPetActivity
         if($this->rng->rngNextInt(1, 200) == 1)
             return $this->doGravityMishapAdventure($pet, 'Bermuda Triangle');
 
-        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getPhysicsBonus()->getTotal());
+        $roll = $this->rng->rngSkillRoll($petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getPhysicsBonus()->getTotal());
 
         if($roll === 1)
         {
@@ -409,7 +409,7 @@ class PhysicsService implements IPetActivity
         if($this->rng->rngNextInt(1, 200) == 1)
             return $this->doGravityMishapAdventure($pet, 'Graviton Gun');
 
-        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getPhysicsBonus()->getTotal());
+        $roll = $this->rng->rngSkillRoll($petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getPhysicsBonus()->getTotal());
 
         if($roll === 1)
         {
@@ -475,7 +475,7 @@ class PhysicsService implements IPetActivity
         if($this->rng->rngNextInt(1, 200) == 1)
             return $this->doGravityMishapAdventure($pet, 'Geodesic Curlicue');
 
-        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getPhysicsBonus()->getTotal());
+        $roll = $this->rng->rngSkillRoll($petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getPhysicsBonus()->getTotal());
 
         if($roll >= 16)
         {
@@ -511,7 +511,7 @@ class PhysicsService implements IPetActivity
     private function siftThroughPlanetaryRing(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal());
+        $roll = $this->rng->rngSkillRoll($petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal());
 
         if($roll >= 16)
         {

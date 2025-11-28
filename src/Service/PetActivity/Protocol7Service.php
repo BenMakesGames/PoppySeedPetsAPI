@@ -193,7 +193,7 @@ class Protocol7Service implements IPetActivity
     {
         $pet = $petWithSkills->getPet();
 
-        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal() + $petWithSkills->getHackingBonus()->getTotal());
+        $roll = $this->rng->rngSkillRoll($petWithSkills->getPerception()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal() + $petWithSkills->getHackingBonus()->getTotal());
 
         if($roll >= 15)
         {
@@ -367,13 +367,13 @@ class Protocol7Service implements IPetActivity
 
         if($pet->isInGuild(GuildEnum::TimesArrow))
         {
-            $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() * 2 + $petWithSkills->getScience()->getTotal());
+            $roll = $this->rng->rngSkillRoll($petWithSkills->getIntelligence()->getTotal() * 2 + $petWithSkills->getScience()->getTotal());
 
             if($pet->hasMerit(MeritEnum::SOOTHING_VOICE))
                 $roll += 2;
         }
         else
-            $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal());
+            $roll = $this->rng->rngSkillRoll($petWithSkills->getDexterity()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal());
 
         $success = $roll >= 10;
 
@@ -436,7 +436,7 @@ class Protocol7Service implements IPetActivity
     {
         $pet = $petWithSkills->getPet();
 
-        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getHackingBonus()->getTotal());
+        $roll = $this->rng->rngSkillRoll($petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getHackingBonus()->getTotal());
 
         $monster = $this->rng->rngNextFromArray([
             [
@@ -483,7 +483,7 @@ class Protocol7Service implements IPetActivity
     {
         $pet = $petWithSkills->getPet();
 
-        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getHackingBonus()->getTotal());
+        $roll = $this->rng->rngSkillRoll($petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getHackingBonus()->getTotal());
 
         $monster = $this->rng->rngNextFromArray([
             [
@@ -570,7 +570,7 @@ class Protocol7Service implements IPetActivity
             ],
         ]);
 
-        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal());
+        $roll = $this->rng->rngSkillRoll($petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal());
 
         if($roll >= 16)
         {
@@ -604,7 +604,7 @@ class Protocol7Service implements IPetActivity
     {
         $pet = $petWithSkills->getPet();
 
-        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getHackingBonus()->getTotal());
+        $roll = $this->rng->rngSkillRoll($petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getHackingBonus()->getTotal());
 
         $monster = $this->rng->rngNextFromArray([
             [
@@ -672,7 +672,7 @@ class Protocol7Service implements IPetActivity
     {
         $pet = $petWithSkills->getPet();
 
-        $check = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getHackingBonus()->getTotal());
+        $check = $this->rng->rngSkillRoll($petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getHackingBonus()->getTotal());
 
         if($check < 15)
         {
@@ -796,11 +796,11 @@ class Protocol7Service implements IPetActivity
 
         if($pet->isInGuild(GuildEnum::Tapestries))
         {
-            $check = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal() + max($petWithSkills->getArcana()->getTotal(), $petWithSkills->getScience()->getTotal()) + $petWithSkills->getHackingBonus()->getTotal());
+            $check = $this->rng->rngSkillRoll($petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal() + max($petWithSkills->getArcana()->getTotal(), $petWithSkills->getScience()->getTotal()) + $petWithSkills->getHackingBonus()->getTotal());
         }
         else
         {
-            $check = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getHackingBonus()->getTotal());
+            $check = $this->rng->rngSkillRoll($petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getHackingBonus()->getTotal());
         }
 
         $lucky = $pet->hasMerit(MeritEnum::LUCKY) && $this->rng->rngNextInt(1, 100) === 1;

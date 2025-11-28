@@ -11,7 +11,6 @@ declare(strict_types=1);
  * You should have received a copy of the GNU General Public License along with The Poppy Seed Pets API. If not, see <https://www.gnu.org/licenses/>.
  */
 
-
 namespace App\Service\PetActivity;
 
 use App\Entity\PetActivityLog;
@@ -73,7 +72,7 @@ class KappaService
 
             $this->inventoryService->petCollectsItem('Shirikodama', $pet, $pet->getName() . ' reclaimed this from a Kappa.', $activityLog);
         }
-        else if($this->rng->rngNextInt(1, 20 + $totalSkill) >= 16)
+        else if($this->rng->rngSkillRoll($totalSkill) >= 16)
         {
             $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, 'While ' . ActivityHelpers::PetName($pet) . ' was thinking about what to do, a Kappa jumped them! It was a tough fight, but ' . ActivityHelpers::PetName($pet) . ' beat the creature back, and reclaimed its stolen Shirikodama! (Their Cucumber was reduced to a pulp in the process.)')
                 ->addInterestingness(PetActivityLogInterestingness::UncommonActivity)

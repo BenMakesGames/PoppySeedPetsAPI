@@ -413,7 +413,7 @@ class MagicBindingService implements IPetActivity
     public function createSnickerblade(ComputedPetSkills  $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $umbraCheck = $this->rng->rngNextInt(1, 20 + $petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getStrength()->getTotal());
+        $umbraCheck = $this->rng->rngSkillRoll($petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getStrength()->getTotal());
 
         if($umbraCheck < 23)
         {
@@ -447,7 +447,7 @@ class MagicBindingService implements IPetActivity
     public function createWickedBroom(ComputedPetSkills  $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $umbraCheck = $this->rng->rngNextInt(1, 20 + $petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal());
+        $umbraCheck = $this->rng->rngSkillRoll($petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal());
 
         if($umbraCheck < 23)
         {
@@ -481,7 +481,7 @@ class MagicBindingService implements IPetActivity
     public function createCrazyHotTorch(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $umbraCheck = $this->rng->rngNextInt(1, 20 + $petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getMagicBindingBonus()->getTotal());
+        $umbraCheck = $this->rng->rngSkillRoll($petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getMagicBindingBonus()->getTotal());
 
         if($umbraCheck <= 2)
         {
@@ -536,7 +536,7 @@ class MagicBindingService implements IPetActivity
     public function createBunchOfDice(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $umbraCheck = $this->rng->rngNextInt(1, 20 + $petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getMagicBindingBonus()->getTotal());
+        $umbraCheck = $this->rng->rngSkillRoll($petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getMagicBindingBonus()->getTotal());
 
         if($umbraCheck < 15)
         {
@@ -607,7 +607,7 @@ class MagicBindingService implements IPetActivity
     public function thaumatoxicCookiesToQuint(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $umbraCheck = $this->rng->rngNextInt(1, 20 + $petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getMagicBindingBonus()->getTotal());
+        $umbraCheck = $this->rng->rngSkillRoll($petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getMagicBindingBonus()->getTotal());
 
         if($umbraCheck < 12)
         {
@@ -684,7 +684,7 @@ class MagicBindingService implements IPetActivity
     public function mermaidEggToQuint(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $umbraCheck = $this->rng->rngNextInt(1, 20 + $petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getMagicBindingBonus()->getTotal());
+        $umbraCheck = $this->rng->rngSkillRoll($petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getMagicBindingBonus()->getTotal());
 
         if($umbraCheck < 12)
         {
@@ -719,7 +719,7 @@ class MagicBindingService implements IPetActivity
     public function createMagicHourglass(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $umbraCheck = $this->rng->rngNextInt(1, 20 + $petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getMagicBindingBonus()->getTotal());
+        $umbraCheck = $this->rng->rngSkillRoll($petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getMagicBindingBonus()->getTotal());
 
         if($umbraCheck < 15)
         {
@@ -765,7 +765,7 @@ class MagicBindingService implements IPetActivity
     public function createNephthys(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $umbraCheck = $this->rng->rngNextInt(1, 20 + $petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getMagicBindingBonus()->getTotal());
+        $umbraCheck = $this->rng->rngSkillRoll($petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getMagicBindingBonus()->getTotal());
 
         if($umbraCheck < 18)
         {
@@ -802,7 +802,7 @@ class MagicBindingService implements IPetActivity
     public function createTemperance(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $umbraCheck = $this->rng->rngNextInt(1, 20 + $petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal() + $petWithSkills->getMagicBindingBonus()->getTotal());
+        $umbraCheck = $this->rng->rngSkillRoll($petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal() + $petWithSkills->getMagicBindingBonus()->getTotal());
 
         if($umbraCheck <= 2)
         {
@@ -850,7 +850,7 @@ class MagicBindingService implements IPetActivity
     private function bindCeremonialTrident(ComputedPetSkills $petWithSkills, array $otherMaterials, string $makes): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $umbraCheck = $this->rng->rngNextInt(1, 20 + $petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getMagicBindingBonus()->getTotal());
+        $umbraCheck = $this->rng->rngSkillRoll($petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getMagicBindingBonus()->getTotal());
 
         if($umbraCheck <= 2)
         {
@@ -926,8 +926,8 @@ class MagicBindingService implements IPetActivity
     public function createIridescentHandCannon(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $umbraCheck = $this->rng->rngNextInt(1, 20 + $petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getMagicBindingBonus()->getTotal());
-        $craftsCheck = $this->rng->rngNextInt(1, 20 + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getIntelligence()->getTotal());
+        $umbraCheck = $this->rng->rngSkillRoll($petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getMagicBindingBonus()->getTotal());
+        $craftsCheck = $this->rng->rngSkillRoll($petWithSkills->getCrafts()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getIntelligence()->getTotal());
 
         if($craftsCheck < 10)
         {
@@ -985,8 +985,8 @@ class MagicBindingService implements IPetActivity
     public function createWarpingWand(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $umbraCheck = $this->rng->rngNextInt(1, 20 + $petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getMagicBindingBonus()->getTotal());
-        $craftsCheck = $this->rng->rngNextInt(1, 20 + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getIntelligence()->getTotal());
+        $umbraCheck = $this->rng->rngSkillRoll($petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getMagicBindingBonus()->getTotal());
+        $craftsCheck = $this->rng->rngSkillRoll($petWithSkills->getCrafts()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getIntelligence()->getTotal());
 
         if($craftsCheck < 12)
         {
@@ -1044,7 +1044,7 @@ class MagicBindingService implements IPetActivity
     public function createInvisibleShovel(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $umbraCheck = $this->rng->rngNextInt(1, 20 + $petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getMagicBindingBonus()->getTotal());
+        $umbraCheck = $this->rng->rngSkillRoll($petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getMagicBindingBonus()->getTotal());
 
         if($umbraCheck < 18)
         {
@@ -1100,8 +1100,8 @@ class MagicBindingService implements IPetActivity
     public function createSmilingWand(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $umbraCheck = $this->rng->rngNextInt(1, 20 + $petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getMagicBindingBonus()->getTotal());
-        $craftsCheck = $this->rng->rngNextInt(1, 20 + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getIntelligence()->getTotal());
+        $umbraCheck = $this->rng->rngSkillRoll($petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getMagicBindingBonus()->getTotal());
+        $craftsCheck = $this->rng->rngSkillRoll($petWithSkills->getCrafts()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getIntelligence()->getTotal());
 
         if($craftsCheck < 10)
         {
@@ -1154,7 +1154,7 @@ class MagicBindingService implements IPetActivity
     public function createGizubisShovel(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $umbraCheck = $this->rng->rngNextInt(1, 20 + $petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getMagicBindingBonus()->getTotal());
+        $umbraCheck = $this->rng->rngSkillRoll($petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getMagicBindingBonus()->getTotal());
 
         if($umbraCheck < 20)
         {
@@ -1191,7 +1191,7 @@ class MagicBindingService implements IPetActivity
     public function createNewMoon(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $umbraCheck = $this->rng->rngNextInt(1, 20 + $petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getMagicBindingBonus()->getTotal());
+        $umbraCheck = $this->rng->rngSkillRoll($petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getMagicBindingBonus()->getTotal());
 
         if($umbraCheck < 20)
         {
@@ -1228,7 +1228,7 @@ class MagicBindingService implements IPetActivity
     public function createNightAndDay(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $umbraCheck = $this->rng->rngNextInt(1, 20 + $petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getMagicBindingBonus()->getTotal());
+        $umbraCheck = $this->rng->rngSkillRoll($petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getMagicBindingBonus()->getTotal());
 
         if($umbraCheck < 20)
         {
@@ -1266,7 +1266,7 @@ class MagicBindingService implements IPetActivity
     public function createSEpee(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $umbraCheck = $this->rng->rngNextInt(1, 20 + $petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getMagicBindingBonus()->getTotal());
+        $umbraCheck = $this->rng->rngSkillRoll($petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getMagicBindingBonus()->getTotal());
 
         if($umbraCheck < 20)
         {
@@ -1304,7 +1304,7 @@ class MagicBindingService implements IPetActivity
     public function createDancingSword(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $umbraCheck = $this->rng->rngNextInt(1, 20 + $petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + max($petWithSkills->getPerception()->getTotal(), (int)ceil($petWithSkills->getMusic()->getTotal() / 4)) + $petWithSkills->getMagicBindingBonus()->getTotal());
+        $umbraCheck = $this->rng->rngSkillRoll($petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + max($petWithSkills->getPerception()->getTotal(), (int)ceil($petWithSkills->getMusic()->getTotal() / 4)) + $petWithSkills->getMagicBindingBonus()->getTotal());
 
         if($umbraCheck === 1)
         {
@@ -1360,7 +1360,7 @@ class MagicBindingService implements IPetActivity
     public function createLightningWand(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $umbraCheck = $this->rng->rngNextInt(1, 20 + $petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getMagicBindingBonus()->getTotal());
+        $umbraCheck = $this->rng->rngSkillRoll($petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getMagicBindingBonus()->getTotal());
 
         if($umbraCheck < 19)
         {
@@ -1398,7 +1398,7 @@ class MagicBindingService implements IPetActivity
     public function createMjolnir(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $umbraCheck = $this->rng->rngNextInt(1, 20 + $petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getMagicBindingBonus()->getTotal());
+        $umbraCheck = $this->rng->rngSkillRoll($petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getMagicBindingBonus()->getTotal());
 
         if($umbraCheck <= 2)
         {
@@ -1483,7 +1483,7 @@ class MagicBindingService implements IPetActivity
     public function createBatmanIGuess(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $umbraCheck = $this->rng->rngNextInt(1, 20 + $petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getMagicBindingBonus()->getTotal());
+        $umbraCheck = $this->rng->rngSkillRoll($petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getMagicBindingBonus()->getTotal());
 
         if($umbraCheck < 24)
         {
@@ -1541,7 +1541,7 @@ class MagicBindingService implements IPetActivity
     public function createWitchsBroom(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $umbraCheck = $this->rng->rngNextInt(1, 20 + $petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getMagicBindingBonus()->getTotal());
+        $umbraCheck = $this->rng->rngSkillRoll($petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getMagicBindingBonus()->getTotal());
 
         if($umbraCheck < 14)
         {
@@ -1600,7 +1600,7 @@ class MagicBindingService implements IPetActivity
     public function createMirror(ComputedPetSkills $petWithSkills, string $makes, string $mirror): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $umbraCheck = $this->rng->rngNextInt(1, 20 + $petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getMagicBindingBonus()->getTotal());
+        $umbraCheck = $this->rng->rngSkillRoll($petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getMagicBindingBonus()->getTotal());
 
         if($umbraCheck <= 2)
         {
@@ -1731,7 +1731,7 @@ class MagicBindingService implements IPetActivity
     public function createArmor(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $umbraCheck = $this->rng->rngNextInt(1, 20 + $petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getMagicBindingBonus()->getTotal());
+        $umbraCheck = $this->rng->rngSkillRoll($petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getMagicBindingBonus()->getTotal());
 
         if($umbraCheck < 18)
         {
@@ -1767,7 +1767,7 @@ class MagicBindingService implements IPetActivity
     public function createWunderbuss(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $umbraCheck = $this->rng->rngNextInt(1, 20 + $petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal() + $petWithSkills->getMagicBindingBonus()->getTotal());
+        $umbraCheck = $this->rng->rngSkillRoll($petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal() + $petWithSkills->getMagicBindingBonus()->getTotal());
 
         $makingItem = ItemRepository::findOneByName($this->em, 'Wunderbuss');
 
@@ -1775,7 +1775,7 @@ class MagicBindingService implements IPetActivity
         {
             $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
 
-            $reRoll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal());
+            $reRoll = $this->rng->rngSkillRoll($petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal());
 
             if($reRoll >= 12)
                 return $this->coinSmithingService->makeGoldCoins($petWithSkills, $makingItem);
@@ -1815,7 +1815,7 @@ class MagicBindingService implements IPetActivity
     public function createRainbowWings(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $umbraCheck = $this->rng->rngNextInt(1, 20 + $petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getMagicBindingBonus()->getTotal());
+        $umbraCheck = $this->rng->rngSkillRoll($petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getMagicBindingBonus()->getTotal());
 
         if($umbraCheck === 1)
         {
@@ -1863,7 +1863,7 @@ class MagicBindingService implements IPetActivity
     public function createFireflyHarp(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $magicBindingCheck = $this->rng->rngNextInt(1, 20 + $petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getMagicBindingBonus()->getTotal());
+        $magicBindingCheck = $this->rng->rngSkillRoll($petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getMagicBindingBonus()->getTotal());
 
         if($magicBindingCheck < 22)
         {
@@ -1899,7 +1899,7 @@ class MagicBindingService implements IPetActivity
     public function createAmbuLance(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $umbraCheck = $this->rng->rngNextInt(1, 20 + $petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getMagicBindingBonus()->getTotal());
+        $umbraCheck = $this->rng->rngSkillRoll($petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getMagicBindingBonus()->getTotal());
 
         $makingItem = ItemRepository::findOneByName($this->em, 'Ambu Lance');
 
@@ -1936,7 +1936,7 @@ class MagicBindingService implements IPetActivity
     public function createRubyeye(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $umbraCheck = $this->rng->rngNextInt(1, 20 + $petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getMagicBindingBonus()->getTotal());
+        $umbraCheck = $this->rng->rngSkillRoll($petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getMagicBindingBonus()->getTotal());
 
         if($umbraCheck < 22)
         {
@@ -1972,7 +1972,7 @@ class MagicBindingService implements IPetActivity
     public function createAstralTuningFork(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $umbraCheck = $this->rng->rngNextInt(1, 20 + $petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getMagicBindingBonus()->getTotal());
+        $umbraCheck = $this->rng->rngSkillRoll($petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getMagicBindingBonus()->getTotal());
 
         if($umbraCheck < 14)
         {
@@ -2025,7 +2025,7 @@ class MagicBindingService implements IPetActivity
     public function createEnchantedCompass(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $umbraCheck = $this->rng->rngNextInt(1, 20 + $petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getMagicBindingBonus()->getTotal());
+        $umbraCheck = $this->rng->rngSkillRoll($petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getMagicBindingBonus()->getTotal());
 
         if($umbraCheck < 14)
         {
@@ -2073,7 +2073,7 @@ class MagicBindingService implements IPetActivity
     public function createWhisperStone(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $umbraCheck = $this->rng->rngNextInt(1, 20 + $petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getMagicBindingBonus()->getTotal());
+        $umbraCheck = $this->rng->rngSkillRoll($petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getMagicBindingBonus()->getTotal());
 
         if($umbraCheck < 14)
         {
@@ -2109,7 +2109,7 @@ class MagicBindingService implements IPetActivity
     public function createWings(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $umbraCheck = $this->rng->rngNextInt(1, 20 + $petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getMagicBindingBonus()->getTotal());
+        $umbraCheck = $this->rng->rngSkillRoll($petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getMagicBindingBonus()->getTotal());
 
         if($umbraCheck < 14)
         {
@@ -2123,7 +2123,7 @@ class MagicBindingService implements IPetActivity
         }
         else // success!
         {
-            $getQuill = 20 < $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getCrafts()->getTotal());
+            $getQuill = 20 < $this->rng->rngSkillRoll($petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getCrafts()->getTotal());
 
             $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::MAGIC_BIND, true);
             $this->houseSimService->getState()->loseItem('Quintessence', 1);
@@ -2167,7 +2167,7 @@ class MagicBindingService implements IPetActivity
     public function createGoldTriskaidecta(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $umbraCheck = $this->rng->rngNextInt(1, 20 + $petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getMagicBindingBonus()->getTotal());
+        $umbraCheck = $this->rng->rngSkillRoll($petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getMagicBindingBonus()->getTotal());
 
         if($umbraCheck <= 2)
         {
@@ -2224,7 +2224,7 @@ class MagicBindingService implements IPetActivity
     public function createSpearmint(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $skillCheck = $this->rng->rngNextInt(1, 20 + min($petWithSkills->getNature()->getTotal(), $petWithSkills->getArcana()->getTotal()) + max($petWithSkills->getDexterity()->getTotal(), $petWithSkills->getPerception()->getTotal()) + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getMagicBindingBonus()->getTotal());
+        $skillCheck = $this->rng->rngSkillRoll(min($petWithSkills->getNature()->getTotal(), $petWithSkills->getArcana()->getTotal()) + max($petWithSkills->getDexterity()->getTotal(), $petWithSkills->getPerception()->getTotal()) + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getMagicBindingBonus()->getTotal());
 
         if($skillCheck < 16)
         {
@@ -2267,7 +2267,7 @@ class MagicBindingService implements IPetActivity
     public function createKokopelli(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $skillCheck = $this->rng->rngNextInt(1, 20 + (int)ceil(($petWithSkills->getArcana()->getTotal() + $petWithSkills->getMusic()->getTotal()) / 2) + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getMagicBindingBonus()->getTotal());
+        $skillCheck = $this->rng->rngSkillRoll((int)ceil(($petWithSkills->getArcana()->getTotal() + $petWithSkills->getMusic()->getTotal()) / 2) + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getMagicBindingBonus()->getTotal());
 
         if($skillCheck < 22)
         {
@@ -2306,8 +2306,8 @@ class MagicBindingService implements IPetActivity
     {
         $pet = $petWithSkills->getPet();
 
-        $craftsCheck = $this->rng->rngNextInt(1, 20 + $petWithSkills->getNature()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getMagicBindingBonus()->getTotal());
-        $umbraCheck = $this->rng->rngNextInt(1, 20 + $petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal());
+        $craftsCheck = $this->rng->rngSkillRoll($petWithSkills->getNature()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getMagicBindingBonus()->getTotal());
+        $umbraCheck = $this->rng->rngSkillRoll($petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal());
 
         if($craftsCheck < 10)
         {
@@ -2359,7 +2359,7 @@ class MagicBindingService implements IPetActivity
     public function createAmbrotypicSolvent(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $skillCheck = $this->rng->rngNextInt(1, 20 + $petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + (int)ceil($petWithSkills->getScience()->getTotal() / 2) + $petWithSkills->getMagicBindingBonus()->getTotal());
+        $skillCheck = $this->rng->rngSkillRoll($petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + (int)ceil($petWithSkills->getScience()->getTotal() / 2) + $petWithSkills->getMagicBindingBonus()->getTotal());
 
         if($pet->hasMerit(MeritEnum::SILVERBLOOD))
             $skillCheck += 5;
@@ -2411,7 +2411,7 @@ class MagicBindingService implements IPetActivity
     public function createMagicCrystalBall(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal() + max($petWithSkills->getArcana()->getTotal(), $petWithSkills->getScience()->getTotal()) + $petWithSkills->getMagicBindingBonus()->getTotal());
+        $roll = $this->rng->rngSkillRoll($petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal() + max($petWithSkills->getArcana()->getTotal(), $petWithSkills->getScience()->getTotal()) + $petWithSkills->getMagicBindingBonus()->getTotal());
 
         if($roll >= 20)
         {
@@ -2448,7 +2448,7 @@ class MagicBindingService implements IPetActivity
     public function createNoetalasEye(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getArcana()->getTotal() + $petWithSkills->getMagicBindingBonus()->getTotal());
+        $roll = $this->rng->rngSkillRoll($petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getArcana()->getTotal() + $petWithSkills->getMagicBindingBonus()->getTotal());
 
         if($roll >= 18)
         {
@@ -2504,7 +2504,7 @@ class MagicBindingService implements IPetActivity
     public function createLotusjar(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + (int)floor(($petWithSkills->getDexterity()->getTotal() + $petWithSkills->getPerception()->getTotal()) / 2) + $petWithSkills->getArcana()->getTotal() + $petWithSkills->getMagicBindingBonus()->getTotal());
+        $roll = $this->rng->rngSkillRoll($petWithSkills->getIntelligence()->getTotal() + (int)floor(($petWithSkills->getDexterity()->getTotal() + $petWithSkills->getPerception()->getTotal()) / 2) + $petWithSkills->getArcana()->getTotal() + $petWithSkills->getMagicBindingBonus()->getTotal());
 
         if($roll >= 24)
         {
@@ -2541,7 +2541,7 @@ class MagicBindingService implements IPetActivity
     public function createCoolMintScepter(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $skillCheck = $this->rng->rngNextInt(1, 20 + $petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() * 2 + $petWithSkills->getMagicBindingBonus()->getTotal());
+        $skillCheck = $this->rng->rngSkillRoll($petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() * 2 + $petWithSkills->getMagicBindingBonus()->getTotal());
 
         if($skillCheck < 16)
         {
@@ -2580,7 +2580,7 @@ class MagicBindingService implements IPetActivity
     public function createMagicPinecone(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $skillCheck = $this->rng->rngNextInt(1, 20 + $petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getMagicBindingBonus()->getTotal());
+        $skillCheck = $this->rng->rngSkillRoll($petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getMagicBindingBonus()->getTotal());
 
         if($skillCheck < 12)
         {
@@ -2619,7 +2619,7 @@ class MagicBindingService implements IPetActivity
     public function createSleet(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $skillCheck = $this->rng->rngNextInt(1, 20 + $petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getMagicBindingBonus()->getTotal());
+        $skillCheck = $this->rng->rngSkillRoll($petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getMagicBindingBonus()->getTotal());
 
         if($skillCheck < 21)
         {
@@ -2673,7 +2673,7 @@ class MagicBindingService implements IPetActivity
     public function createFrostbite(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $skillCheck = $this->rng->rngNextInt(1, 20 + $petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getMagicBindingBonus()->getTotal());
+        $skillCheck = $this->rng->rngSkillRoll($petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getMagicBindingBonus()->getTotal());
 
         if($skillCheck <= 2)
         {
@@ -2724,7 +2724,7 @@ class MagicBindingService implements IPetActivity
     public function createHexicle(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $skillCheck = $this->rng->rngNextInt(1, 20 + $petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getMagicBindingBonus()->getTotal());
+        $skillCheck = $this->rng->rngSkillRoll($petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getMagicBindingBonus()->getTotal());
 
         if($skillCheck <= 2)
         {
@@ -2775,7 +2775,7 @@ class MagicBindingService implements IPetActivity
     public function createMoonPearl(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $umbraCheck = $this->rng->rngNextInt(1, 20 + $petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getMagicBindingBonus()->getTotal());
+        $umbraCheck = $this->rng->rngSkillRoll($petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getMagicBindingBonus()->getTotal());
 
         if($umbraCheck < 10)
         {
@@ -2812,7 +2812,7 @@ class MagicBindingService implements IPetActivity
     public function createAubergineCommander(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $umbraCheck = $this->rng->rngNextInt(1, 20 + $petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getMagicBindingBonus()->getTotal());
+        $umbraCheck = $this->rng->rngSkillRoll($petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getMagicBindingBonus()->getTotal());
 
         if($umbraCheck <= 2)
         {
@@ -2865,7 +2865,7 @@ class MagicBindingService implements IPetActivity
     public function enchantSiderealLeafSpear(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $umbraCheck = $this->rng->rngNextInt(1, 20 + $petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getMagicBindingBonus()->getTotal());
+        $umbraCheck = $this->rng->rngSkillRoll($petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getMagicBindingBonus()->getTotal());
 
         if($umbraCheck < 18)
         {
@@ -2905,7 +2905,7 @@ class MagicBindingService implements IPetActivity
     public function createGenericScroll(ComputedPetSkills $petWithSkills, string $uniqueIngredient, string $scroll): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $umbraCheck = $this->rng->rngNextInt(1, 20 + $petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getMagicBindingBonus()->getTotal());
+        $umbraCheck = $this->rng->rngSkillRoll($petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getMagicBindingBonus()->getTotal());
 
         if($uniqueIngredient == 'Silver Bar' && $pet->hasMerit(MeritEnum::SILVERBLOOD))
             $umbraCheck += 5;
@@ -2960,7 +2960,7 @@ class MagicBindingService implements IPetActivity
     public function createFruitScroll(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $umbraCheck = $this->rng->rngNextInt(1, 20 + $petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getMagicBindingBonus()->getTotal());
+        $umbraCheck = $this->rng->rngSkillRoll($petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getMagicBindingBonus()->getTotal());
 
         $scrollItem = ItemRepository::findOneByName($this->em, 'Scroll of Fruit');
 
@@ -3054,7 +3054,7 @@ class MagicBindingService implements IPetActivity
     public function createMericarp(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $umbraCheck = $this->rng->rngNextInt(1, 20 + $petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getMagicBindingBonus()->getTotal());
+        $umbraCheck = $this->rng->rngSkillRoll($petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getMagicBindingBonus()->getTotal());
 
         if($umbraCheck < 18)
         {
@@ -3091,7 +3091,7 @@ class MagicBindingService implements IPetActivity
     public function createSummoningScroll(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $umbraCheck = $this->rng->rngNextInt(1, 20 + $petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getMagicBindingBonus()->getTotal());
+        $umbraCheck = $this->rng->rngSkillRoll($petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getMagicBindingBonus()->getTotal());
 
         if($umbraCheck < 18)
         {
@@ -3137,7 +3137,7 @@ class MagicBindingService implements IPetActivity
     public function createRussetStaff(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $umbraCheck = $this->rng->rngNextInt(1, 20 + $petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getMagicBindingBonus()->getTotal());
+        $umbraCheck = $this->rng->rngSkillRoll($petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getMagicBindingBonus()->getTotal());
 
         if($umbraCheck < 16)
         {
@@ -3172,7 +3172,7 @@ class MagicBindingService implements IPetActivity
     public function createWhiteEpee(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $umbraCheck = $this->rng->rngNextInt(1, 20 + $petWithSkills->getArcana()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getMagicBindingBonus()->getTotal());
+        $umbraCheck = $this->rng->rngSkillRoll($petWithSkills->getArcana()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getMagicBindingBonus()->getTotal());
 
         if($umbraCheck < 17)
         {
@@ -3207,7 +3207,7 @@ class MagicBindingService implements IPetActivity
     public function createFlyingBindle(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $umbraCheck = $this->rng->rngNextInt(1, 20 + $petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getMagicBindingBonus()->getTotal());
+        $umbraCheck = $this->rng->rngSkillRoll($petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getMagicBindingBonus()->getTotal());
 
         if($umbraCheck < 16)
         {
@@ -3243,7 +3243,7 @@ class MagicBindingService implements IPetActivity
     public function createFlyingGrapplingHook(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $umbraCheck = $this->rng->rngNextInt(1, 20 + $petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getMagicBindingBonus()->getTotal());
+        $umbraCheck = $this->rng->rngSkillRoll($petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getMagicBindingBonus()->getTotal());
 
         if($umbraCheck < 16)
         {
@@ -3278,8 +3278,8 @@ class MagicBindingService implements IPetActivity
     public function createGravelingHook(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $umbraCheck = $this->rng->rngNextInt(1, 20 + $petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getMagicBindingBonus()->getTotal());
-        $scienceCheck = $this->rng->rngNextInt(1, 20 + $petWithSkills->getScience()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal());
+        $umbraCheck = $this->rng->rngSkillRoll($petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getMagicBindingBonus()->getTotal());
+        $scienceCheck = $this->rng->rngSkillRoll($petWithSkills->getScience()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal());
 
         if($umbraCheck < 12 || $scienceCheck < 12)
         {
@@ -3316,7 +3316,7 @@ class MagicBindingService implements IPetActivity
     public function createYggdrasil(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $umbraCheck = $this->rng->rngNextInt(1, 20 + $petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getMagicBindingBonus()->getTotal());
+        $umbraCheck = $this->rng->rngSkillRoll($petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getMagicBindingBonus()->getTotal());
 
         if($umbraCheck < 17)
         {
@@ -3355,8 +3355,8 @@ class MagicBindingService implements IPetActivity
     public function createLullablade(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $umbraCheck = $this->rng->rngNextInt(1, 20 + $petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getMagicBindingBonus()->getTotal());
-        $craftsCheck = $this->rng->rngNextInt(1, 20 + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal());
+        $umbraCheck = $this->rng->rngSkillRoll($petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getMagicBindingBonus()->getTotal());
+        $craftsCheck = $this->rng->rngSkillRoll($petWithSkills->getCrafts()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal());
 
         if($craftsCheck <= 2)
         {
@@ -3408,7 +3408,7 @@ class MagicBindingService implements IPetActivity
     public function createPraxilla(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $umbraCheck = $this->rng->rngNextInt(1, 20 + $petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getMagicBindingBonus()->getTotal());
+        $umbraCheck = $this->rng->rngSkillRoll($petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getMagicBindingBonus()->getTotal());
 
         if($umbraCheck < 19)
         {
@@ -3448,7 +3448,7 @@ class MagicBindingService implements IPetActivity
     public function createCattail(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $umbraCheck = $this->rng->rngNextInt(1, 20 + $petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getMagicBindingBonus()->getTotal());
+        $umbraCheck = $this->rng->rngSkillRoll($petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getMagicBindingBonus()->getTotal());
 
         if($umbraCheck < 16)
         {
@@ -3487,7 +3487,7 @@ class MagicBindingService implements IPetActivity
     public function createMalice(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $umbraCheck = $this->rng->rngNextInt(1, 20 + $petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getMagicBindingBonus()->getTotal());
+        $umbraCheck = $this->rng->rngSkillRoll($petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getMagicBindingBonus()->getTotal());
 
         if($umbraCheck < 20)
         {
@@ -3526,7 +3526,7 @@ class MagicBindingService implements IPetActivity
     public function createGyre(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $umbraCheck = $this->rng->rngNextInt(1, 20 + $petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getMagicBindingBonus()->getTotal());
+        $umbraCheck = $this->rng->rngSkillRoll($petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getMagicBindingBonus()->getTotal());
 
         if($umbraCheck < 20)
         {
@@ -3566,7 +3566,7 @@ class MagicBindingService implements IPetActivity
     public function createMolly(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $umbraCheck = $this->rng->rngNextInt(1, 20 + $petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getMagicBindingBonus()->getTotal());
+        $umbraCheck = $this->rng->rngSkillRoll($petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getMagicBindingBonus()->getTotal());
 
         if($umbraCheck <= 2 && $pet->getFood() < 4)
         {
@@ -3631,7 +3631,7 @@ class MagicBindingService implements IPetActivity
     public function createFimbulvetr(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $skillCheck = $this->rng->rngNextInt(1, 20 + $petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getMagicBindingBonus()->getTotal());
+        $skillCheck = $this->rng->rngSkillRoll($petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getMagicBindingBonus()->getTotal());
 
         if($skillCheck <= 2)
         {
@@ -3682,7 +3682,7 @@ class MagicBindingService implements IPetActivity
     public function createLightningAxe(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal() + $petWithSkills->getMagicBindingBonus()->getTotal());
+        $roll = $this->rng->rngSkillRoll($petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal() + $petWithSkills->getMagicBindingBonus()->getTotal());
 
         if($pet->hasMerit(MeritEnum::SILVERBLOOD))
             $roll += 5;
@@ -3731,7 +3731,7 @@ class MagicBindingService implements IPetActivity
     public function createSunlessMericarp(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getMagicBindingBonus()->getTotal());
+        $roll = $this->rng->rngSkillRoll($petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getMagicBindingBonus()->getTotal());
 
         if($roll >= 22)
         {
@@ -3779,7 +3779,7 @@ class MagicBindingService implements IPetActivity
     public function createTerrorSeed(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getMagicBindingBonus()->getTotal());
+        $roll = $this->rng->rngSkillRoll($petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getMagicBindingBonus()->getTotal());
 
         if($roll === 1)
         {
@@ -3834,7 +3834,7 @@ class MagicBindingService implements IPetActivity
     public function createAosSi(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $skillCheck = $this->rng->rngNextInt(1, 20 + $petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getMagicBindingBonus()->getTotal());
+        $skillCheck = $this->rng->rngSkillRoll($petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getMagicBindingBonus()->getTotal());
 
         if($skillCheck < 20)
         {
@@ -3872,7 +3872,7 @@ class MagicBindingService implements IPetActivity
     public function createBeanSidhe(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $skillCheck = $this->rng->rngNextInt(1, 20 + $petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getMagicBindingBonus()->getTotal());
+        $skillCheck = $this->rng->rngSkillRoll($petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getMagicBindingBonus()->getTotal());
 
         if($skillCheck < 27)
         {
@@ -3909,7 +3909,7 @@ class MagicBindingService implements IPetActivity
     public function createLessHeavyHeavyHammer(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $skillCheck = $this->rng->rngNextInt(1, 20 + $petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getMagicBindingBonus()->getTotal());
+        $skillCheck = $this->rng->rngSkillRoll($petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getMagicBindingBonus()->getTotal());
 
         if($skillCheck < 21)
         {

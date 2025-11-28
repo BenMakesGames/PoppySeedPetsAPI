@@ -215,7 +215,7 @@ class BurntForestService implements IPetActivity
     private function findAWoundedFairy(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal());
+        $roll = $this->rng->rngSkillRoll($petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal());
 
         if($roll >= 11)
         {
@@ -254,7 +254,7 @@ class BurntForestService implements IPetActivity
     private function findSquirmingMass(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getBrawl()->getTotal() + $petWithSkills->getStrength()->getTotal() + $petWithSkills->getDexterity()->getTotal());
+        $roll = $this->rng->rngSkillRoll($petWithSkills->getBrawl()->getTotal() + $petWithSkills->getStrength()->getTotal() + $petWithSkills->getDexterity()->getTotal());
 
         $resistsFire = $petWithSkills->getHasProtectionFromHeat()->getTotal() > 0;
 
@@ -262,7 +262,7 @@ class BurntForestService implements IPetActivity
         {
             $loot = $this->rng->rngNextFromArray([ 'Tentacle', 'Tentacle', 'Quintessence' ]);
 
-            if($resistsFire || $this->rng->rngNextInt(1, 20 + $petWithSkills->getStamina()->getTotal()) >= 10)
+            if($resistsFire || $this->rng->rngSkillRoll($petWithSkills->getStamina()->getTotal()) >= 10)
             {
                 $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% visited the Burnt Forest, and encountered a mass of flaming tentacles! They beat the tentacles back, and got a ' . $loot . '!')
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'The Umbra', 'Fighting', 'Heatstroke' ]))
@@ -285,7 +285,7 @@ class BurntForestService implements IPetActivity
         }
         else
         {
-            if($resistsFire || $this->rng->rngNextInt(1, 20 + $petWithSkills->getStamina()->getTotal()) >= 15)
+            if($resistsFire || $this->rng->rngSkillRoll($petWithSkills->getStamina()->getTotal()) >= 15)
             {
                 $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% visited the Burnt Forest, and encountered a mass of flaming tentacles! They tried to fight, but were forced to flee...')
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'The Umbra', 'Fighting', 'Heatstroke' ]))
@@ -311,8 +311,8 @@ class BurntForestService implements IPetActivity
     private function findBurningTree(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $umbraRoll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal());
-        $brawlRoll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getBrawl()->getTotal() + $petWithSkills->getStrength()->getTotal() + $petWithSkills->getDexterity()->getTotal());
+        $umbraRoll = $this->rng->rngSkillRoll($petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal());
+        $brawlRoll = $this->rng->rngSkillRoll($petWithSkills->getBrawl()->getTotal() + $petWithSkills->getStrength()->getTotal() + $petWithSkills->getDexterity()->getTotal());
         $exp = 1;
 
         if($pet->isInGuild(GuildEnum::LightAndShadow))
@@ -428,7 +428,7 @@ class BurntForestService implements IPetActivity
     private function findTearInTheTapestry(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal());
+        $roll = $this->rng->rngSkillRoll($petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal());
 
         if($roll >= 13)
         {
@@ -496,7 +496,7 @@ class BurntForestService implements IPetActivity
     private function findScalySquirmingMass(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getBrawl()->getTotal() + $petWithSkills->getStrength()->getTotal() + $petWithSkills->getDexterity()->getTotal());
+        $roll = $this->rng->rngSkillRoll($petWithSkills->getBrawl()->getTotal() + $petWithSkills->getStrength()->getTotal() + $petWithSkills->getDexterity()->getTotal());
 
         $resistsFire = $petWithSkills->getHasProtectionFromHeat()->getTotal() > 0;
 
@@ -504,7 +504,7 @@ class BurntForestService implements IPetActivity
         {
             $loot = $this->rng->rngNextFromArray([ 'Dark Scales', 'Quinacridone Magenta Dye', 'Quintessence' ]);
 
-            if($resistsFire || $this->rng->rngNextInt(1, 20 + $petWithSkills->getStamina()->getTotal()) >= 15)
+            if($resistsFire || $this->rng->rngSkillRoll($petWithSkills->getStamina()->getTotal()) >= 15)
             {
                 $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% visited the Burnt Forest, and encountered a mass of flaming, scaly tentacles! They beat the tentacles back, and got a Tentacle, and ' . $loot . '!')
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'The Umbra', 'Fighting', 'Heatstroke' ]))
@@ -529,7 +529,7 @@ class BurntForestService implements IPetActivity
         }
         else
         {
-            if($resistsFire || $this->rng->rngNextInt(1, 20 + $petWithSkills->getStamina()->getTotal()) >= 20)
+            if($resistsFire || $this->rng->rngSkillRoll($petWithSkills->getStamina()->getTotal()) >= 20)
             {
                 $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% visited the Burnt Forest, and encountered a mass of flaming, scaly tentacles! They tried to fight, but were forced to flee...')
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'The Umbra', 'Fighting', 'Heatstroke' ]))
