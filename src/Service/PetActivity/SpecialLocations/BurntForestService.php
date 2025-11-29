@@ -61,6 +61,10 @@ class BurntForestService implements IPetActivity
     public function groupDesire(ComputedPetSkills $petWithSkills): int
     {
         $pet = $petWithSkills->getPet();
+
+        if($pet->getTool()?->getEnchantment()?->getName() !== 'Burnt')
+            return 0;
+
         $desire = $petWithSkills->getStamina()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getArcana()->getTotal() + $petWithSkills->getUmbraBonus()->getTotal();
 
         if($pet->getTool() && $pet->getTool()->getItem()->getTool())

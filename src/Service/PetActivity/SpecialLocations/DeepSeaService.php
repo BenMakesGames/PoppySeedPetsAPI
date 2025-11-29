@@ -63,6 +63,9 @@ class DeepSeaService implements IPetActivity
 
     public function groupDesire(ComputedPetSkills $petWithSkills): int
     {
+        if(!$this->houseSimService->hasInventory('Submarine'))
+            return 0;
+
         $pet = $petWithSkills->getPet();
 
         if($pet->hasStatusEffect(StatusEffectEnum::Wereform))

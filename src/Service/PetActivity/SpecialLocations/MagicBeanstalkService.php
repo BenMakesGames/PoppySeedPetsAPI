@@ -16,6 +16,7 @@ namespace App\Service\PetActivity\SpecialLocations;
 use App\Entity\GreenhousePlant;
 use App\Entity\Pet;
 use App\Entity\PetActivityLog;
+use App\Entity\User;
 use App\Enum\ActivityPersonalityEnum;
 use App\Enum\GuildEnum;
 use App\Enum\MeritEnum;
@@ -57,6 +58,10 @@ class MagicBeanstalkService implements IPetActivity
     public function groupDesire(ComputedPetSkills $petWithSkills): int
     {
         $pet = $petWithSkills->getPet();
+
+        if(!$this->hasMagicBeanStalk($pet->getOwner()))
+            return 0;
+
         $desire = $petWithSkills->getStamina()->getTotal() + $petWithSkills->getNature()->getTotal() + $petWithSkills->getClimbingBonus()->getTotal();
 
         // when a pet is equipped, the equipment bonus counts twice for affecting a pet's desires
@@ -71,17 +76,20 @@ class MagicBeanstalkService implements IPetActivity
         return max(1, (int)round($desire * (1 + $this->rng->rngNextInt(-10, 10) / 100)));
     }
 
-    public function possibilities(ComputedPetSkills $petWithSkills): array
+    private function hasMagicBeanStalk(User $user)
     {
-        $hasMagicBeanstalk = $petWithSkills->getPet()->getOwner()->getGreenhousePlants()->exists(
+        return $user->getGreenhousePlants()->exists(
             fn(int $key, GreenhousePlant $p) =>
                 $p->getPlant()->getName() === 'Magic Beanstalk' &&
                 $p->getIsAdult() &&
                 $p->getProgress() >= 1 &&
                 (new \DateTimeImmutable()) >= $p->getCanNextInteract()
         );
+    }
 
-        if(!$hasMagicBeanstalk)
+    public function possibilities(ComputedPetSkills $petWithSkills): array
+    {
+        if(!$this->hasMagicBeanStalk($petWithSkills->getPet()->getOwner()))
             return [];
 
         return [ $this->run(...) ];

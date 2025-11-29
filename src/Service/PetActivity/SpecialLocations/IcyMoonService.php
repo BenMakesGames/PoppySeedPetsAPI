@@ -61,6 +61,9 @@ class IcyMoonService implements IPetActivity
 
     public function groupDesire(ComputedPetSkills $petWithSkills): int
     {
+        if(!$this->houseSimService->hasInventory('Icy Moon'))
+            return 0;
+
         $pet = $petWithSkills->getPet();
 
         if($pet->hasStatusEffect(StatusEffectEnum::Wereform))
@@ -82,7 +85,7 @@ class IcyMoonService implements IPetActivity
 
     public function possibilities(ComputedPetSkills $petWithSkills): array
     {
-        if(!$this->houseSimService->hasInventory('Submarine'))
+        if(!$this->houseSimService->hasInventory('Icy Moon'))
             return [];
 
         return [ $this->run(...) ];
