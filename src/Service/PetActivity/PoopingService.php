@@ -11,7 +11,6 @@ declare(strict_types=1);
  * You should have received a copy of the GNU General Public License along with The Poppy Seed Pets API. If not, see <https://www.gnu.org/licenses/>.
  */
 
-
 namespace App\Service\PetActivity;
 
 use App\Entity\Pet;
@@ -47,7 +46,7 @@ class PoopingService
             ->addInterestingness(PetActivityLogInterestingness::ActivityUsingMerit)
         ;
 
-        PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::PoopedShedOrBathed, $activityLog);
+        PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::PoopedShedVommedOrBathed, $activityLog);
     }
 
     public function poopDarkMatter(Pet $pet): PetActivityLog
@@ -72,7 +71,7 @@ class PoopingService
             $this->inventoryService->petCollectsItem('Dark Matter', $pet, $pet->getName() . ' pooped this.', $activityLog);
         }
 
-        PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::PoopedShedOrBathed, $activityLog);
+        PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::PoopedShedVommedOrBathed, $activityLog);
 
         return $activityLog;
     }

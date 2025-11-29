@@ -101,7 +101,7 @@ final class PetBadgeHelpers
         PetBadgeEnum::MintedMoneys => 'When life gives you lemons, just mint your own money! %pet.name% gets the Mint (the Moneys Kind) badge.',
         PetBadgeEnum::ReturnedAShirikodama => 'There isn\'t a shirikodama postal service to give %pet.name% the Shirikodama Courier badge, but they get it anyway. Somehow. Don\'t worry about it.',
         PetBadgeEnum::DefeatedAWerecreatureWithSilver => 'For super-effective use of silver against a werecreature, %pet.name% received the Type-advantaged badge.',
-        PetBadgeEnum::PoopedShedOrBathed => 'Life - so messy! %pet.name% got the Definitely Alive badge.',
+        PetBadgeEnum::PoopedShedVommedOrBathed => 'Life - so messy! %pet.name% got the Definitely Alive badge.',
         PetBadgeEnum::FishedAtTheIsleOfRetreatingTeeth => 'Fascinating place! Fascinating enough to warrant the Fish Teeth badge!',
         PetBadgeEnum::ExtractQuintFromCookies => 'This is one of the very few times a pet might be said to cook food, and deserving of the Quintessential Cooking badge!',
         PetBadgeEnum::StruggledWithA3DPrinter => 'So frustrating! Perhaps receiving the More Dimensions, More Problems badge will make %pet.name% feel a little better?',

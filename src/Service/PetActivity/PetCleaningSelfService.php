@@ -11,7 +11,6 @@ declare(strict_types=1);
  * You should have received a copy of the GNU General Public License along with The Poppy Seed Pets API. If not, see <https://www.gnu.org/licenses/>.
  */
 
-
 namespace App\Service\PetActivity;
 
 use App\Entity\Greenhouse;
@@ -156,7 +155,7 @@ class PetCleaningSelfService
             ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Eating', 'Gourmand' ]))
         ;
 
-        PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::PoopedShedOrBathed, $activityLog);
+        PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::PoopedShedVommedOrBathed, $activityLog);
     }
 
     /**
@@ -167,7 +166,7 @@ class PetCleaningSelfService
         $pet->increaseEsteem($this->rng->rngNextInt(2, 4));
         $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% spends some time cleaning the ' . $itemOnBody . ' off their body. The rain made it go much faster!');
 
-        PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::PoopedShedOrBathed, $activityLog);
+        PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::PoopedShedVommedOrBathed, $activityLog);
 
         $this->inventoryService->petCollectsItem($itemOnBody, $pet, $pet->getName() . ' cleaned this off their body with the help of the rain...', $activityLog);
 
@@ -184,7 +183,7 @@ class PetCleaningSelfService
         $pet->increaseEsteem($this->rng->rngNextInt(2, 4));
         $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% spends some time cleaning the ' . $itemOnBody . ' off their body...');
 
-        PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::PoopedShedOrBathed, $activityLog);
+        PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::PoopedShedVommedOrBathed, $activityLog);
 
         $this->inventoryService->petCollectsItem($itemOnBody, $pet, $pet->getName() . ' cleaned this off their body...', $activityLog);
 
