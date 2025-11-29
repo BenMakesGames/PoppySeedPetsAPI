@@ -53,6 +53,29 @@ class PregnancyService
     {
     }
 
+    /**
+     * @return bool `true` if the pet gave birth; `false` otherwise.
+     */
+    public function advancePetPregnancy(Pet $pet): bool
+    {
+        $pregnancy = $pet->getPregnancy();
+
+        if(!$pregnancy)
+            return false;
+
+        if($pet->getFood() < 0) $pregnancy->increaseAffection(-1);
+        if($pet->getSafety() < 0 && $this->rng->rngNextInt(1, 2) === 1) $pregnancy->increaseAffection(-1);
+        if($pet->getLove() < 0 && $this->rng->rngNextInt(1, 3) === 1) $pregnancy->increaseAffection(-1);
+        if($pet->getEsteem() < 0 && $this->rng->rngNextInt(1, 4) === 1) $pregnancy->increaseAffection(-1);
+
+        if($pregnancy->getGrowth() < PetBaby::PREGNANCY_DURATION)
+            return false;
+
+        $this->giveBirth($pet);
+
+        return true;
+    }
+
     public function getPregnant(Pet $pet1, Pet $pet2): void
     {
         if(
@@ -136,7 +159,7 @@ class PregnancyService
         return $this->rng->rngNextFromArray($species);
     }
 
-    public function giveBirth(Pet $pet): void
+    private function giveBirth(Pet $pet): void
     {
         $user = $pet->getOwner();
         $pregnancy = $pet->getPregnancy()

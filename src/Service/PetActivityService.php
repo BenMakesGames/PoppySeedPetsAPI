@@ -11,7 +11,6 @@ declare(strict_types=1);
  * You should have received a copy of the GNU General Public License along with The Poppy Seed Pets API. If not, see <https://www.gnu.org/licenses/>.
  */
 
-
 namespace App\Service;
 
 use App\Entity\LunchboxItem;
@@ -29,7 +28,6 @@ use App\Enum\PetBadgeEnum;
 use App\Enum\PetSkillEnum;
 use App\Enum\StatusEffectEnum;
 use App\Enum\UnlockableFeatureEnum;
-use App\Enum\UserStat;
 use App\Functions\ActivityHelpers;
 use App\Functions\ArrayFunctions;
 use App\Functions\CalendarFunctions;
@@ -45,7 +43,6 @@ use App\Model\FoodWithSpice;
 use App\Model\PetChanges;
 use App\Model\PetChangesSummary;
 use App\Service\PetActivity\CachingMeritAdventureService;
-use App\Service\PetActivity\DokiDokiService;
 use App\Service\PetActivity\DreamingAndDaydreamingService;
 use App\Service\PetActivity\EatingService;
 use App\Service\PetActivity\FatedAdventureService;
@@ -55,22 +52,12 @@ use App\Service\PetActivity\GivingTreeGatheringService;
 use App\Service\PetActivity\GuildService;
 use App\Service\PetActivity\Holiday\HuntTurkeyDragon;
 use App\Service\PetActivity\IPetActivity;
-use App\Service\PetActivity\JumpRopeService;
-use App\Service\PetActivity\KappaService;
 use App\Service\PetActivity\LetterService;
-use App\Service\PetActivity\MortarOrPestleService;
 use App\Service\PetActivity\PetCleaningSelfService;
 use App\Service\PetActivity\PetSummonedAwayService;
-use App\Service\PetActivity\PhilosophersStoneService;
 use App\Service\PetActivity\PoopingService;
 use App\Service\PetActivity\PregnancyService;
-use App\Service\PetActivity\SpecialLocations\Caerbannog;
-use App\Service\PetActivity\SpecialLocations\ChocolateMansion;
-use App\Service\PetActivity\SpecialLocations\FructalPlaneService;
-use App\Service\PetActivity\SpecialLocations\HeartDimensionService;
-use App\Service\PetActivity\SpecialLocations\LostInTownService;
-use App\Service\PetActivity\SportsBallActivityService;
-use App\Service\PetActivity\TreasureMapService;
+use App\Service\PetActivity\ToolAdventures;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
 
@@ -80,15 +67,12 @@ class PetActivityService
         private readonly Clock $clock,
         private readonly EntityManagerInterface $em,
         private readonly ResponseService $responseService,
-        private readonly HeartDimensionService $heartDimensionService,
-        private readonly UserStatsService $userStatsRepository,
         private readonly GenericAdventureService $genericAdventureService,
         private readonly PetSummonedAwayService $petSummonedAwayService,
         private readonly PoopingService $poopingService,
         private readonly GivingTreeGatheringService $givingTreeGatheringService,
         private readonly PregnancyService $pregnancyService,
         private readonly IRandom $rng,
-        private readonly ChocolateMansion $chocolateMansion,
         private readonly PetExperienceService $petExperienceService,
         private readonly DreamingAndDaydreamingService $dreamingAndDaydreamingService,
         private readonly EatingService $eatingService,
@@ -96,22 +80,13 @@ class PetActivityService
         private readonly GuildService $guildService,
         private readonly InventoryService $inventoryService,
         private readonly LetterService $letterService,
-        private readonly Caerbannog $caerbannog,
-        private readonly TreasureMapService $treasureMapService,
         private readonly HouseSimService $houseSimService,
         private readonly CravingService $cravingService,
-        private readonly PhilosophersStoneService $philosophersStoneService,
-        private readonly KappaService $kappaService,
         private readonly FatedAdventureService $fatedAdventureService,
         private readonly PetCleaningSelfService $petCleaningSelfService,
         private readonly CachingMeritAdventureService $cachingMeritAdventureService,
-        private readonly JumpRopeService $jumpRopeService,
-        private readonly DokiDokiService $dokiDokiService,
-        private readonly LostInTownService $lostInTownService,
-        private readonly FructalPlaneService $fructalPlaneService,
-        private readonly MortarOrPestleService $mortarOrPestleService,
-        private readonly SportsBallActivityService $sportsBallActivityService,
         private readonly HuntTurkeyDragon $huntTurkeyDragon,
+        private readonly ToolAdventures $toolAdventures,
         /**
          * @var iterable<IPetActivity>
          */
@@ -128,166 +103,29 @@ class PetActivityService
         if(!$pet->isAtHome())
             throw new \InvalidArgumentException('Trying to run activities for a pet that is not at home! (Ben did something horrible; please let him know.)');
 
-        if($pet->getHouseTime()->getActivityTime() < 60)
+        if(!$pet->getHouseTime() || $pet->getHouseTime()->getActivityTime() < 60)
             throw new \InvalidArgumentException('Trying to run activities for a pet that does not have enough time! (Ben did something horrible; please let him know.)');
 
         $this->responseService->setReloadPets();
 
-        if($pet->getTool() && $pet->getTool()->canBeNibbled() && $this->rng->rngNextInt(1, 10) === 1)
-        {
-            $changes = new PetChangesSummary();
-            $changes->food = '+';
+        if($pet->hasMerit(MeritEnum::HYPERCHROMATIC))
+            $this->doHyperchromaticTweak($pet);
 
-            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% nibbled on their ' . InventoryModifierFunctions::getNameWithModifiers($pet->getTool()) . '.')
-                ->setIcon('icons/activity-logs/just-the-fork')
-                ->setChanges($changes)
-                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Eating' ]))
-            ;
-        }
-        else
-            $pet->increaseFood(-1);
-
-        if($pet->getJunk() > 0)
-            $pet->increaseJunk(-1);
-
-        if($pet->getPoison() > 0 && $pet->getAlcohol() === 0 && $pet->getCaffeine() === 0 && $pet->getPsychedelic() === 0)
-            $pet->increasePoison(-1);
-
-        if($pet->getAlcohol() > 0)
-        {
-            $pet->increaseAlcohol(-1);
-
-            if($pet->hasMerit(MeritEnum::IRON_STOMACH))
-            {
-                if($this->rng->rngNextInt(1, 2) === 1)
-                    $pet->increasePoison(1);
-            }
-            else
-                $pet->increasePoison(1);
-        }
-
-        if($pet->getCaffeine() > 0)
-        {
-            $pet->increaseCaffeine(-1);
-
-            if($pet->hasMerit(MeritEnum::IRON_STOMACH))
-            {
-                if($this->rng->rngNextInt(1, 4) === 1)
-                    $pet->increasePoison(1);
-            }
-            else
-            {
-                if($this->rng->rngNextInt(1, 2) === 1)
-                    $pet->increasePoison(1);
-            }
-        }
-
-        if($pet->getPsychedelic() > 0)
-        {
-            $pet->increasePsychedelic(-1);
-
-            if($pet->hasMerit(MeritEnum::IRON_STOMACH))
-                $pet->increasePoison(1);
-            else
-                $pet->increasePoison(2);
-        }
-
-        $safetyRestingPoint = $pet->hasMerit(MeritEnum::NOTHING_TO_FEAR) ? 8 : 0;
-
-        if($pet->getSafety() > $safetyRestingPoint && $this->rng->rngNextInt(1, 2) === 1)
-            $pet->increaseSafety(-1);
-        else if($pet->getSafety() < $safetyRestingPoint)
-            $pet->increaseSafety(1);
-
-        $loveRestingPoint = $pet->hasMerit(MeritEnum::EVERLASTING_LOVE) ? 8 : 0;
-
-        if($pet->getLove() > $loveRestingPoint && $this->rng->rngNextInt(1, 2) === 1)
-            $pet->increaseLove(-1);
-        else if($pet->getLove() < $loveRestingPoint && $this->rng->rngNextInt(1, 2) === 1)
-            $pet->increaseLove(1);
-
-        $esteemRestingPoint = $pet->hasMerit(MeritEnum::NEVER_EMBARRASSED) ? 8 : 0;
-
-        if($pet->getEsteem() > $esteemRestingPoint)
-            $pet->increaseEsteem(-1);
-        else if($pet->getEsteem() < $esteemRestingPoint && $this->rng->rngNextInt(1, 2) === 1)
-            $pet->increaseEsteem(1);
+        $this->updatePetNeeds($pet);
 
         $this->cravingService->maybeRemoveCraving($pet);
 
-        $pregnancy = $pet->getPregnancy();
+        if($this->pregnancyService->advancePetPregnancy($pet))
+            return;
 
-        if($pregnancy)
-        {
-            if($pet->getFood() < 0) $pregnancy->increaseAffection(-1);
-            if($pet->getSafety() < 0 && $this->rng->rngNextInt(1, 2) === 1) $pregnancy->increaseAffection(-1);
-            if($pet->getLove() < 0 && $this->rng->rngNextInt(1, 3) === 1) $pregnancy->increaseAffection(-1);
-            if($pet->getEsteem() < 0 && $this->rng->rngNextInt(1, 4) === 1) $pregnancy->increaseAffection(-1);
+        if($this->processPoison($pet))
+            return;
 
-            if($pregnancy->getGrowth() >= PetBaby::PREGNANCY_DURATION)
-            {
-                $this->pregnancyService->giveBirth($pet);
-                return;
-            }
-        }
-
-        if($pet->getPoison() > 0)
-        {
-            if($this->rng->rngNextInt(6, 24) < $pet->getPoison())
-            {
-                $changes = new PetChanges($pet);
-
-                $safetyVom = (int)ceil($pet->getPoison() / 4);
-
-                $pet->increasePoison(-$this->rng->rngNextInt((int)ceil($pet->getPoison() / 4), (int)ceil($pet->getPoison() * 3 / 4)));
-                if($pet->getAlcohol() > 0) $pet->increaseAlcohol(-$this->rng->rngNextInt(1, (int)ceil($pet->getAlcohol() / 2)));
-                if($pet->getPsychedelic() > 0) $pet->increasePsychedelic(-$this->rng->rngNextInt(1, (int)ceil($pet->getPsychedelic() / 2)));
-                if($pet->getCaffeine() > 0) $pet->increaseFood(-$this->rng->rngNextInt(1, (int)ceil($pet->getCaffeine() / 2)));
-                if($pet->getJunk() > 0) $pet->increaseJunk(-$this->rng->rngNextInt(1, (int)ceil($pet->getJunk() / 2)));
-                if($pet->getFood() > 0) $pet->increaseFood(-$this->rng->rngNextInt(1, (int)ceil($pet->getFood() / 2)));
-
-                $pet->increaseSafety(-$this->rng->rngNextInt(1, $safetyVom));
-                $pet->increaseEsteem(-$this->rng->rngNextInt(1, $safetyVom));
-
-                $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(15, 30), PetActivityStatEnum::OTHER, null);
-
-                $log = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% threw up :(')
-                    ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ PetActivityLogTagEnum::Sick ]))
-                    ->setChanges($changes->compare($pet));
-
-                PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::PoopedShedOrBathed, $log);
-
-                return;
-            }
-        }
-
-        if($this->poop($pet))
-        {
+        if($this->petCanPoop($pet))
             $this->poopingService->poopDarkMatter($pet);
-        }
 
         if($pet->hasMerit(MeritEnum::SHEDS) && $this->rng->rngNextInt(1, 180) === 1)
-        {
             $this->poopingService->shed($pet);
-        }
-
-        if($pet->hasMerit(MeritEnum::HYPERCHROMATIC))
-        {
-            if($this->rng->rngNextInt(1, 250) === 1)
-            {
-                $pet
-                    ->setColorA(ColorFunctions::RGB2Hex($this->rng->rngNextInt(0, 255), $this->rng->rngNextInt(0, 255), $this->rng->rngNextInt(0, 255)))
-                    ->setColorB(ColorFunctions::RGB2Hex($this->rng->rngNextInt(0, 255), $this->rng->rngNextInt(0, 255), $this->rng->rngNextInt(0, 255)))
-                ;
-            }
-            else
-            {
-                $pet
-                    ->setColorA($this->rng->rngNextTweakedColor($pet->getColorA(), 4))
-                    ->setColorB($this->rng->rngNextTweakedColor($pet->getColorB(), 4))
-                ;
-            }
-        }
 
         $petWithSkills = $pet->getComputedSkills();
 
@@ -297,100 +135,8 @@ class PetActivityService
             return;
         }
 
-        $hunger = $this->rng->rngNextInt(0, 4);
-
-        if($pet->getFood() + $pet->getJunk() < $hunger && count($pet->getLunchboxItems()) > 0)
-        {
-            $petChanges = new PetChanges($pet);
-
-            /** @var LunchboxItem[] $sortedLunchboxItems */
-            $sortedLunchboxItems = $pet->getLunchboxItems()->filter(function(LunchboxItem $i) {
-                return $i->getInventoryItem()->getItem()->getFood() !== null;
-            })->toArray();
-
-            // sorted from most-delicious to least-delicious
-            usort($sortedLunchboxItems, function(LunchboxItem $a, LunchboxItem $b) use($pet) {
-                $aFood = new FoodWithSpice($a->getInventoryItem()->getItem(), $a->getInventoryItem()->getSpice());
-                $bFood = new FoodWithSpice($b->getInventoryItem()->getItem(), $b->getInventoryItem()->getSpice());
-
-                $aValue = EatingService::getFavoriteFlavorStrength($pet, $aFood) + $aFood->love;
-                $bValue = EatingService::getFavoriteFlavorStrength($pet, $bFood) + $bFood->love;
-
-                if($aValue === $bValue)
-                    return $bFood->food <=> $aFood->food;
-                else
-                    return $bValue <=> $aValue;
-            });
-
-            $namesOfItemsEaten = [];
-            $namesOfItemsSkipped = [];
-            $itemsLeftInLunchbox = count($sortedLunchboxItems);
-
-            while($pet->getFood() < $hunger && count($sortedLunchboxItems) > 0)
-            {
-                $itemToEat = array_shift($sortedLunchboxItems);
-
-                $food = new FoodWithSpice($itemToEat->getInventoryItem()->getItem(), $itemToEat->getInventoryItem()->getSpice());
-
-                $ateIt = $this->eatingService->doEat($pet, $food, null);
-
-                if($ateIt)
-                {
-                    $namesOfItemsEaten[] = $food->name;
-
-                    $pet->removeLunchboxItem($itemToEat);
-
-                    $this->em->remove($itemToEat);
-                    $this->em->remove($itemToEat->getInventoryItem());
-
-                    $itemsLeftInLunchbox--;
-                }
-                else
-                    $namesOfItemsSkipped[] = $food->name;
-            }
-
-            if(count($namesOfItemsEaten) > 0)
-            {
-                $this->responseService->setReloadInventory();
-
-                $message = '%pet:' . $pet->getId() . '.name% ate ' . ArrayFunctions::list_nice($namesOfItemsEaten) . ' out of their lunchbox.';
-
-                if(count($namesOfItemsSkipped) > 0)
-                    $message .= ' (' . ArrayFunctions::list_nice($namesOfItemsSkipped) . ' really isn\'t appealing right now, though.)';
-            }
-            else
-            {
-                // none were eaten, but ew know the lunchbox has items in it, therefore items were skipped!
-                $message = '%pet:' . $pet->getId() . '.name% looked in their lunchbox for something to eat, but ' . ArrayFunctions::list_nice($namesOfItemsSkipped) . ' really isn\'t appealing right now.';
-            }
-
-            if($itemsLeftInLunchbox === 0)
-                $message .= ' Their lunchbox is now empty!';
-
-            $lunchboxLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, $message)
-                ->setIcon('icons/activity-logs/lunchbox')
-                ->setChanges($petChanges->compare($pet))
-                ->addInterestingness($itemsLeftInLunchbox === 0 ? PetActivityLogInterestingness::LunchboxEmpty : 1)
-            ;
-
-            PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::EmptiedTheirLunchbox, $lunchboxLog);
-        }
-
-        if($pet->hasStatusEffect(StatusEffectEnum::Wereform))
-        {
-            if($this->rng->rngNextInt(1, 10) === 1)
-                $pet->removeStatusEffect($pet->getStatusEffect(StatusEffectEnum::Wereform));
-        }
-        else
-        {
-            if(
-                $pet->hasStatusEffect(StatusEffectEnum::BittenByAWerecreature) &&
-                $this->rng->rngNextInt(1, max(20, 50 + $pet->getFood() + $pet->getSafety() * 2 + $pet->getLove() + $pet->getEsteem())) === 1
-            )
-            {
-                StatusEffectHelpers::applyStatusEffect($this->em, $pet, StatusEffectEnum::Wereform, 1);
-            }
-        }
+        $this->maybeEatOutOfLunchbox($pet);
+        $this->maybeDoWereformTransformation($pet);
 
         if($pet->hasMerit(MeritEnum::CACHING) && $pet->getFullnessPercent() < -0.25)
         {
@@ -490,7 +236,7 @@ class PetActivityService
         if($this->discoverNewFeature($pet))
             return;
 
-        if($this->considerToolsWhichLeadToAdventure($petWithSkills))
+        if($this->toolAdventures->maybeDoToolAdventure($petWithSkills))
             return;
 
         if($this->rng->rngNextInt(1, $hasEventPersonality ? 48 : 50) === 1)
@@ -532,202 +278,6 @@ class PetActivityService
         $activityLog = $activity($petWithSkills);
 
         $activityLog->setChanges($changes->compare($pet));
-    }
-
-    private function considerToolsWhichLeadToAdventure(ComputedPetSkills $petWithSkills): bool
-    {
-        $pet = $petWithSkills->getPet();
-        $tool = $pet->getTool();
-
-        if(!$tool)
-            return false;
-
-        switch($tool->getItem()->getName())
-        {
-            case '"Gold" Idol':
-                $this->treasureMapService->doGoldIdol($pet);
-                return true;
-
-            case '5-leaf Clover':
-                $this->treasureMapService->doLeprechaun($petWithSkills);
-                return true;
-
-            case 'Aubergine Commander':
-                if($this->rng->rngNextInt(1, 80) === 1)
-                {
-                    $this->treasureMapService->doEggplantCurse($pet);
-                    return true;
-                }
-                break;
-
-            case 'Carrot Key':
-                $this->caerbannog->adventure($petWithSkills);
-                return true;
-
-            case 'Ceremony of Fire':
-                if($this->rng->rngNextInt(1, 20) == 1)
-                {
-                    $this->philosophersStoneService->seekVesicaHydrargyrum($petWithSkills);
-                    return true;
-                }
-                break;
-
-            case 'Cetgueli\'s Treasure Map':
-                $this->treasureMapService->doCetguelisTreasureMap($petWithSkills);
-                return true;
-
-            case 'Chocolate Key':
-                $this->chocolateMansion->adventure($petWithSkills);
-                return true;
-
-            case 'Cucumber':
-                $this->kappaService->doHuntKappa($petWithSkills);
-                return true;
-
-            case 'Diffie-H Key':
-                $this->treasureMapService->doUseDiffieHKey($pet);
-                return true;
-
-            case 'Fimbulvetr':
-                if($this->rng->rngNextInt(1, 20) == 1)
-                {
-                    $this->philosophersStoneService->seekMetatronsFire($petWithSkills);
-                    return true;
-                }
-                break;
-
-            case 'Fruit Fly on a String':
-                $this->treasureMapService->doFruitHunting($pet);
-                return true;
-
-            case 'Green Sportsball Ball':
-                $this->sportsBallActivityService->doGreenSportsballBall($petWithSkills);
-                return true;
-
-            case 'Heartstone':
-                if(!$this->heartDimensionService->canAdventure($pet))
-                {
-                    $this->heartDimensionService->notEnoughAffectionAdventure($pet);
-                    return true;
-                }
-                else if($this->rng->rngNextInt(1, 100) <= $this->heartDimensionService->chanceOfHeartDimensionAdventure($pet))
-                {
-                    $this->heartDimensionService->adventure($petWithSkills);
-                    return true;
-                }
-
-                break;
-
-            case 'Jump Rope':
-                if($this->rng->rngNextInt(1, 4) == 1)
-                {
-                    $this->jumpRopeService->adventure($petWithSkills);
-                    return true;
-                }
-                break;
-
-            case 'Large Radish':
-                $this->dokiDokiService->adventure($petWithSkills);
-                return true;
-
-            case 'Mortar or Pestle':
-                if($this->mortarOrPestleService->findTheOtherBit($petWithSkills->getPet()))
-                    return true;
-                break;
-
-            case 'Orange Sportsball Ball':
-                $this->sportsBallActivityService->doOrangeSportsballBall($petWithSkills);
-                return true;
-
-            case 'Saucepan':
-                if($this->rng->rngNextInt(1, 10) === 1)
-                {
-                    $this->treasureMapService->doCookSomething($pet);
-                    return true;
-                }
-
-                break;
-
-            case 'Shirikodama':
-                $this->kappaService->doReturnShirikodama($petWithSkills);
-                return true;
-
-            case 'Skewered Marshmallow':
-                if($this->rng->rngNextInt(1, 10) == 1)
-                {
-                    $this->treasureMapService->doToastSkeweredMarshmallow($pet);
-                    return true;
-                }
-                break;
-
-            case 'Snickerblade':
-                if($this->rng->rngNextInt(1, 20) == 1)
-                {
-                    $this->philosophersStoneService->seekEarthsEgg($petWithSkills);
-                    return true;
-                }
-                break;
-
-            case 'Sportsball Oar':
-                $this->sportsBallActivityService->doSportsballOar($petWithSkills);
-                return true;
-
-            case 'Sportsball Pin':
-                $this->sportsBallActivityService->doSportsballPin($petWithSkills);
-                return true;
-
-            case 'Winged Key':
-                $this->treasureMapService->doAbundantiasVault($pet);
-                return true;
-
-            case 'Woher Cuán Nani-nani':
-                $this->lostInTownService->adventure($petWithSkills);
-                return true;
-
-            case 'Silver Keyblade':
-            case 'Gold Keyblade':
-                if($pet->getFood() > 0 && $this->rng->rngNextInt(1, 10) === 1)
-                {
-                    $this->treasureMapService->doKeybladeTower($petWithSkills);
-                    return true;
-                }
-
-                break;
-
-            case 'Rainbow Dolphin Plushy':
-            case 'Sneqo Plushy':
-            case 'Bulbun Plushy':
-            case 'Peacock Plushy':
-            case 'Phoenix Plushy':
-            case '"Roy" Plushy':
-                if($this->rng->rngNextInt(1, 6) === 1 || $this->userStatsRepository->getStatValue($pet->getOwner(), UserStat::TradedWithTheFluffmonger) === 0)
-                {
-                    $this->treasureMapService->doFluffmongerTrade($pet);
-                    return true;
-                }
-
-                break;
-        }
-
-        if($tool->getEnchantment())
-        {
-            switch($tool->getEnchantment()->getName())
-            {
-                case 'Searing':
-                    if($this->rng->rngNextInt(1, 20) == 1)
-                    {
-                        if($this->philosophersStoneService->seekMerkabaOfAir($petWithSkills))
-                            return true;
-                    }
-                    break;
-
-                case 'Gooder':
-                    $this->fructalPlaneService->adventure($petWithSkills);
-                    return true;
-            }
-        }
-
-        return false;
     }
 
     private function doNothing(ComputedPetSkills $petWithSkills): PetActivityLog
@@ -775,7 +325,7 @@ class PetActivityService
         return $this->rng->rngNextFromArray($group['possibilities']);
     }
 
-    private function poop(Pet $pet): bool
+    private function petCanPoop(Pet $pet): bool
     {
         if($pet->hasMerit(MeritEnum::BLACK_HOLE_TUM) && $this->rng->rngNextInt(1, 180) === 1)
             return true;
@@ -942,5 +492,240 @@ class PetActivityService
         $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::UMBRA, true);
 
         return $activityLog;
+    }
+
+    private function updatePetNeeds(Pet $pet): void
+    {
+        if($pet->getTool() && $pet->getTool()->canBeNibbled() && $this->rng->rngNextInt(1, 10) === 1)
+        {
+            $changes = new PetChangesSummary();
+            $changes->food = '+';
+
+            PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% nibbled on their ' . InventoryModifierFunctions::getNameWithModifiers($pet->getTool()) . '.')
+                ->setIcon('icons/activity-logs/just-the-fork')
+                ->setChanges($changes)
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Eating' ]))
+            ;
+        }
+        else
+            $pet->increaseFood(-1);
+
+        if($pet->getJunk() > 0)
+            $pet->increaseJunk(-1);
+
+        if($pet->getPoison() > 0 && $pet->getAlcohol() === 0 && $pet->getCaffeine() === 0 && $pet->getPsychedelic() === 0)
+            $pet->increasePoison(-1);
+
+        if($pet->getAlcohol() > 0)
+        {
+            $pet->increaseAlcohol(-1);
+
+            if($pet->hasMerit(MeritEnum::IRON_STOMACH))
+            {
+                if($this->rng->rngNextInt(1, 2) === 1)
+                    $pet->increasePoison(1);
+            }
+            else
+                $pet->increasePoison(1);
+        }
+
+        if($pet->getCaffeine() > 0)
+        {
+            $pet->increaseCaffeine(-1);
+
+            if($pet->hasMerit(MeritEnum::IRON_STOMACH))
+            {
+                if($this->rng->rngNextInt(1, 4) === 1)
+                    $pet->increasePoison(1);
+            }
+            else
+            {
+                if($this->rng->rngNextInt(1, 2) === 1)
+                    $pet->increasePoison(1);
+            }
+        }
+
+        if($pet->getPsychedelic() > 0)
+        {
+            $pet->increasePsychedelic(-1);
+
+            if($pet->hasMerit(MeritEnum::IRON_STOMACH))
+                $pet->increasePoison(1);
+            else
+                $pet->increasePoison(2);
+        }
+
+        $safetyRestingPoint = $pet->hasMerit(MeritEnum::NOTHING_TO_FEAR) ? 8 : 0;
+
+        if($pet->getSafety() > $safetyRestingPoint && $this->rng->rngNextInt(1, 2) === 1)
+            $pet->increaseSafety(-1);
+        else if($pet->getSafety() < $safetyRestingPoint)
+            $pet->increaseSafety(1);
+
+        $loveRestingPoint = $pet->hasMerit(MeritEnum::EVERLASTING_LOVE) ? 8 : 0;
+
+        if($pet->getLove() > $loveRestingPoint && $this->rng->rngNextInt(1, 2) === 1)
+            $pet->increaseLove(-1);
+        else if($pet->getLove() < $loveRestingPoint && $this->rng->rngNextInt(1, 2) === 1)
+            $pet->increaseLove(1);
+
+        $esteemRestingPoint = $pet->hasMerit(MeritEnum::NEVER_EMBARRASSED) ? 8 : 0;
+
+        if($pet->getEsteem() > $esteemRestingPoint)
+            $pet->increaseEsteem(-1);
+        else if($pet->getEsteem() < $esteemRestingPoint && $this->rng->rngNextInt(1, 2) === 1)
+            $pet->increaseEsteem(1);
+    }
+
+    private function doHyperchromaticTweak(Pet $pet): void
+    {
+        if($this->rng->rngNextInt(1, 250) === 1)
+        {
+            $pet
+                ->setColorA(ColorFunctions::RGB2Hex($this->rng->rngNextInt(0, 255), $this->rng->rngNextInt(0, 255), $this->rng->rngNextInt(0, 255)))
+                ->setColorB(ColorFunctions::RGB2Hex($this->rng->rngNextInt(0, 255), $this->rng->rngNextInt(0, 255), $this->rng->rngNextInt(0, 255)))
+            ;
+        }
+        else
+        {
+            $pet
+                ->setColorA($this->rng->rngNextTweakedColor($pet->getColorA(), 4))
+                ->setColorB($this->rng->rngNextTweakedColor($pet->getColorB(), 4))
+            ;
+        }
+    }
+
+    private function processPoison(Pet $pet): bool
+    {
+        if($pet->getPoison() <= 0)
+            return false;
+
+        if($this->rng->rngNextInt(6, 24) >= $pet->getPoison())
+            return false;
+
+        $changes = new PetChanges($pet);
+
+        $safetyVom = (int)ceil($pet->getPoison() / 4);
+
+        $pet->increasePoison(-$this->rng->rngNextInt((int)ceil($pet->getPoison() / 4), (int)ceil($pet->getPoison() * 3 / 4)));
+        if($pet->getAlcohol() > 0) $pet->increaseAlcohol(-$this->rng->rngNextInt(1, (int)ceil($pet->getAlcohol() / 2)));
+        if($pet->getPsychedelic() > 0) $pet->increasePsychedelic(-$this->rng->rngNextInt(1, (int)ceil($pet->getPsychedelic() / 2)));
+        if($pet->getCaffeine() > 0) $pet->increaseFood(-$this->rng->rngNextInt(1, (int)ceil($pet->getCaffeine() / 2)));
+        if($pet->getJunk() > 0) $pet->increaseJunk(-$this->rng->rngNextInt(1, (int)ceil($pet->getJunk() / 2)));
+        if($pet->getFood() > 0) $pet->increaseFood(-$this->rng->rngNextInt(1, (int)ceil($pet->getFood() / 2)));
+
+        $pet->increaseSafety(-$this->rng->rngNextInt(1, $safetyVom));
+        $pet->increaseEsteem(-$this->rng->rngNextInt(1, $safetyVom));
+
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(15, 30), PetActivityStatEnum::OTHER, null);
+
+        $log = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% threw up :(')
+            ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ PetActivityLogTagEnum::Sick ]))
+            ->setChanges($changes->compare($pet));
+
+        PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::PoopedShedVommedOrBathed, $log);
+
+        return true;
+    }
+
+    private function maybeEatOutOfLunchbox(Pet $pet): void
+    {
+        $hunger = $this->rng->rngNextInt(0, 4);
+
+        if($pet->getFood() + $pet->getJunk() >= $hunger || count($pet->getLunchboxItems()) <= 0)
+            return;
+
+        $petChanges = new PetChanges($pet);
+
+        /** @var LunchboxItem[] $sortedLunchboxItems */
+        $sortedLunchboxItems = $pet->getLunchboxItems()->filter(function(LunchboxItem $i) {
+            return $i->getInventoryItem()->getItem()->getFood() !== null;
+        })->toArray();
+
+        // sorted from most-delicious to least-delicious
+        usort($sortedLunchboxItems, function(LunchboxItem $a, LunchboxItem $b) use($pet) {
+            $aFood = new FoodWithSpice($a->getInventoryItem()->getItem(), $a->getInventoryItem()->getSpice());
+            $bFood = new FoodWithSpice($b->getInventoryItem()->getItem(), $b->getInventoryItem()->getSpice());
+
+            $aValue = EatingService::getFavoriteFlavorStrength($pet, $aFood) + $aFood->love;
+            $bValue = EatingService::getFavoriteFlavorStrength($pet, $bFood) + $bFood->love;
+
+            if($aValue === $bValue)
+                return $bFood->food <=> $aFood->food;
+            else
+                return $bValue <=> $aValue;
+        });
+
+        $namesOfItemsEaten = [];
+        $namesOfItemsSkipped = [];
+        $itemsLeftInLunchbox = count($sortedLunchboxItems);
+
+        while($pet->getFood() < $hunger && count($sortedLunchboxItems) > 0)
+        {
+            $itemToEat = array_shift($sortedLunchboxItems);
+
+            $food = new FoodWithSpice($itemToEat->getInventoryItem()->getItem(), $itemToEat->getInventoryItem()->getSpice());
+
+            $ateIt = $this->eatingService->doEat($pet, $food, null);
+
+            if($ateIt)
+            {
+                $namesOfItemsEaten[] = $food->name;
+
+                $pet->removeLunchboxItem($itemToEat);
+
+                $this->em->remove($itemToEat);
+                $this->em->remove($itemToEat->getInventoryItem());
+
+                $itemsLeftInLunchbox--;
+            }
+            else
+                $namesOfItemsSkipped[] = $food->name;
+        }
+
+        if(count($namesOfItemsEaten) > 0)
+        {
+            $this->responseService->setReloadInventory();
+
+            $message = '%pet:' . $pet->getId() . '.name% ate ' . ArrayFunctions::list_nice($namesOfItemsEaten) . ' out of their lunchbox.';
+
+            if(count($namesOfItemsSkipped) > 0)
+                $message .= ' (' . ArrayFunctions::list_nice($namesOfItemsSkipped) . ' really isn\'t appealing right now, though.)';
+        }
+        else
+        {
+            // none were eaten, but we know the lunchbox has items in it, therefore items were skipped!
+            $message = '%pet:' . $pet->getId() . '.name% looked in their lunchbox for something to eat, but ' . ArrayFunctions::list_nice($namesOfItemsSkipped) . ' really isn\'t appealing right now.';
+        }
+
+        if($itemsLeftInLunchbox === 0)
+            $message .= ' Their lunchbox is now empty!';
+
+        $lunchboxLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, $message)
+            ->setIcon('icons/activity-logs/lunchbox')
+            ->setChanges($petChanges->compare($pet))
+            ->addInterestingness($itemsLeftInLunchbox === 0 ? PetActivityLogInterestingness::LunchboxEmpty : 1)
+        ;
+
+        PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::EmptiedTheirLunchbox, $lunchboxLog);
+    }
+
+    private function maybeDoWereformTransformation(Pet $pet): void
+    {
+        if($pet->hasStatusEffect(StatusEffectEnum::Wereform))
+        {
+            if($this->rng->rngNextInt(1, 10) === 1)
+                $pet->removeStatusEffect($pet->getStatusEffect(StatusEffectEnum::Wereform));
+        }
+        else
+        {
+            if(
+                $pet->hasStatusEffect(StatusEffectEnum::BittenByAWerecreature) &&
+                $this->rng->rngNextInt(1, max(20, 50 + $pet->getFood() + $pet->getSafety() * 2 + $pet->getLove() + $pet->getEsteem())) === 1
+            )
+            {
+                StatusEffectHelpers::applyStatusEffect($this->em, $pet, StatusEffectEnum::Wereform, 1);
+            }
+        }
     }
 }

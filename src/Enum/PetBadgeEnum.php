@@ -48,7 +48,7 @@ final class PetBadgeEnum
     public const string MintedMoneys = 'mintedMoneys';
     public const string ReturnedAShirikodama = 'returnedAShirikodama';
     public const string DefeatedAWerecreatureWithSilver = 'defeatedAWerecreatureWithSilver';
-    public const string PoopedShedOrBathed = 'poopedShedOrBathed';
+    public const string PoopedShedVommedOrBathed = 'poopedShedOrBathed';
     public const string FishedAtTheIsleOfRetreatingTeeth = 'fishedAtTheIsleOfRetreatingTeeth';
     public const string ExtractQuintFromCookies = 'extractQuintFromCookies';
     public const string StruggledWithA3DPrinter = 'struggledWithA3DPrinter';

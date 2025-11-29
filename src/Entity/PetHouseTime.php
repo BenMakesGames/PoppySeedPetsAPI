@@ -11,7 +11,6 @@ declare(strict_types=1);
  * You should have received a copy of the GNU General Public License along with The Poppy Seed Pets API. If not, see <https://www.gnu.org/licenses/>.
  */
 
-
 namespace App\Entity;
 
 use App\Functions\NumberFunctions;
@@ -71,7 +70,7 @@ class PetHouseTime
         return $this;
     }
 
-    public function getActivityTime(): ?int
+    public function getActivityTime(): int
     {
         return $this->activityTime;
     }
@@ -91,7 +90,7 @@ class PetHouseTime
         return $this;
     }
 
-    public function getSocialEnergy(): ?int
+    public function getSocialEnergy(): int
     {
         return $this->socialEnergy;
     }
@@ -113,12 +112,12 @@ class PetHouseTime
         return $this;
     }
 
-    public function getTimeSpent(): ?int
+    public function getTimeSpent(): int
     {
         return $this->timeSpent;
     }
 
-    public function getCanAttemptSocialHangoutAfter(): ?\DateTimeImmutable
+    public function getCanAttemptSocialHangoutAfter(): \DateTimeImmutable
     {
         return $this->canAttemptSocialHangoutAfter;
     }

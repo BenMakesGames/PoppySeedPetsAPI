@@ -112,48 +112,17 @@ class BurntForestService implements IPetActivity
 
         $changes = new PetChanges($pet);
 
-        switch($roll)
+        $activityLog = match ($roll)
         {
-            case 1:
-            case 2:
-            case 3:
-                $activityLog = $this->failToFindAnything($petWithSkills);
-                break;
-
-            case 4:
-            case 5:
-                $activityLog = $this->findAWoundedFairy($petWithSkills);
-                break;
-
-            case 6:
-                $activityLog = $this->findABitOfCharcoal($petWithSkills);
-                break;
-
-            case 7:
-                $activityLog = $this->findSquirmingMass($petWithSkills);
-                break;
-
-            case 8:
-            case 9:
-                $activityLog = $this->findBurningTree($petWithSkills);
-                break;
-
-            case 10:
-            case 11:
-                $activityLog = $this->findTearInTheTapestry($petWithSkills);
-                break;
-
-            case 12:
-            case 13:
-                $activityLog = $this->breakToolBonus($pet);
-                break;
-
-            case 14:
-            case 15:
-            default:
-                $activityLog = $this->findScalySquirmingMass($petWithSkills);
-                break;
-        }
+            1, 2, 3 => $this->failToFindAnything($petWithSkills),
+            4, 5 => $this->findAWoundedFairy($petWithSkills),
+            6 => $this->findABitOfCharcoal($petWithSkills),
+            7 => $this->findSquirmingMass($petWithSkills),
+            8, 9 => $this->findBurningTree($petWithSkills),
+            10, 11 => $this->findTearInTheTapestry($petWithSkills),
+            12, 13 => $this->breakToolBonus($pet),
+            default => $this->findScalySquirmingMass($petWithSkills),
+        };
 
         $activityLog
             ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [

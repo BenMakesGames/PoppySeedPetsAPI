@@ -15,7 +15,6 @@ declare(strict_types=1);
 namespace App\Command;
 
 use App\Service\TraderService;
-use Symfony\Component\Console\Input\InputArgument;
 
 class TestEtalocohcDaysCommand extends PoppySeedPetsCommand
 {
