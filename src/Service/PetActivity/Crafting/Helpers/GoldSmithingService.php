@@ -512,7 +512,7 @@ class GoldSmithingService
         $pet = $petWithSkills->getPet();
         $roll = $this->rng->rngSkillRoll($petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getCrafts()->getTotal());
 
-        if($roll === 1)
+        if($roll === 1 && $petWithSkills->getHasProtectionFromHeat()->getTotal() <= 0)
         {
             $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::SMITH, false);
             $pet->increaseEsteem(-1);
