@@ -476,7 +476,7 @@ class MagicBindingService implements IPetActivity
         $pet = $petWithSkills->getPet();
         $umbraCheck = $this->rng->rngSkillRoll($petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getMagicBindingBonus()->getTotal());
 
-        if($umbraCheck <= 2)
+        if($umbraCheck <= 2 && $petWithSkills->getHasProtectionFromHeat()->getTotal() <= 0)
         {
             $pet->increaseEsteem(-1);
             $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to enchant a Stereotypical Torch, but the torch flared up, and %pet:' . $pet->getId() . '.name% got burned! :(')

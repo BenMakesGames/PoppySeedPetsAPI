@@ -98,7 +98,7 @@ class IronSmithingService
         $pet = $petWithSkills->getPet();
         $roll = $this->rng->rngSkillRoll($petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal());
 
-        if($roll <= 2)
+        if($roll <= 2 && $petWithSkills->getHasProtectionFromHeat()->getTotal() <= 0)
         {
             $pet->increaseSafety(-$this->rng->rngNextInt(2, 24));
 
@@ -162,7 +162,7 @@ class IronSmithingService
 
         $roll = $this->rng->rngSkillRoll($petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal());
 
-        if($roll <= 2)
+        if($roll <= 2 && $petWithSkills->getHasProtectionFromHeat()->getTotal() <= 0)
         {
             $pet->increaseSafety(-$this->rng->rngNextInt(2, 24));
 
@@ -647,7 +647,7 @@ class IronSmithingService
         $pet = $petWithSkills->getPet();
         $roll = $this->rng->rngSkillRoll($petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal());
 
-        if($roll <= 2)
+        if($roll <= 2 && $petWithSkills->getHasProtectionFromHeat()->getTotal() <= 0)
         {
             $pet->increaseSafety(-$this->rng->rngNextInt(2, 24));
             $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to make an iron shield, but got burned while trying! :(')

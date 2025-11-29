@@ -736,7 +736,7 @@ class SmithingService implements IPetActivity
         $pet = $petWithSkills->getPet();
         $roll = $this->rng->rngSkillRoll($petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal());
 
-        if($roll <= 2)
+        if($roll <= 2 && $petWithSkills->getHasProtectionFromHeat()->getTotal() <= 0)
         {
             $pet->increaseSafety(-$this->rng->rngNextInt(2, 12));
             $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to make Glass, but got burned while trying! :(')
@@ -873,7 +873,7 @@ class SmithingService implements IPetActivity
 
         $roll = $this->rng->rngSkillRoll($petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal());
 
-        if($roll <= 2)
+        if($roll <= 2 && $petWithSkills->getHasProtectionFromHeat()->getTotal() <= 0)
         {
 
             $pet->increaseSafety(-$this->rng->rngNextInt(2, 12));
@@ -1587,7 +1587,7 @@ class SmithingService implements IPetActivity
         $pet = $petWithSkills->getPet();
         $roll = $this->rng->rngSkillRoll($petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal());
 
-        if($roll === 1)
+        if($roll === 1 && $petWithSkills->getHasProtectionFromHeat()->getTotal() <= 0)
         {
             $pet->increaseSafety(-$this->rng->rngNextInt(2, 24));
             $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to refine some Charcoal, but got burned while trying! :(')
@@ -1669,7 +1669,7 @@ class SmithingService implements IPetActivity
         $pet = $petWithSkills->getPet();
         $roll = $this->rng->rngSkillRoll($petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal());
 
-        if($roll <= 2)
+        if($roll <= 2 && $petWithSkills->getHasProtectionFromHeat()->getTotal() <= 0)
         {
             $pet->increaseSafety(-$this->rng->rngNextInt(2, 24));
 
@@ -1716,7 +1716,7 @@ class SmithingService implements IPetActivity
         if($pet->hasMerit(MeritEnum::SILVERBLOOD))
             $roll += 5;
 
-        if($roll <= 2)
+        if($roll <= 2 && $petWithSkills->getHasProtectionFromHeat()->getTotal() <= 0)
         {
             $pet->increaseSafety(-$this->rng->rngNextInt(2, 12));
             $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to refine some Silver Ore, but got burned while trying! :(')
@@ -1758,7 +1758,7 @@ class SmithingService implements IPetActivity
         $pet = $petWithSkills->getPet();
         $roll = $this->rng->rngSkillRoll($petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal());
 
-        if($roll <= 2)
+        if($roll <= 2 && $petWithSkills->getHasProtectionFromHeat()->getTotal() <= 0)
         {
             $pet->increaseSafety(-$this->rng->rngNextInt(2, 8));
             $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to refine some Gold Ore, but got burned while trying! :(')
