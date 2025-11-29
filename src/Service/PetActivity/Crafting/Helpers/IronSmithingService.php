@@ -46,11 +46,11 @@ class IronSmithingService
         $pet = $petWithSkills->getPet();
         $roll = $this->rng->rngSkillRoll($petWithSkills->getDexterity()->getTotal() + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal());
 
-        if($roll <= 2)
+        if($roll <= 2 && $petWithSkills->getHasProtectionFromHeat()->getTotal() <= 0)
         {
             $pet->increaseSafety(-$this->rng->rngNextInt(2, 24));
 
-            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to extend the blade of a Laser-guided Sword, but got burnt while trying! :(')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to extend the blade of a Laser-guided Sword, but got burned while trying! :(')
                 ->setIcon('icons/activity-logs/burn')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Smithing' ]))
             ;
