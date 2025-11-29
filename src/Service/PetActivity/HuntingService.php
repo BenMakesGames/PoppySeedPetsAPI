@@ -42,7 +42,6 @@ use App\Functions\PetActivityLogTagHelpers;
 use App\Functions\StatusEffectHelpers;
 use App\Functions\UserQuestRepository;
 use App\Model\ComputedPetSkills;
-use App\Model\PetChanges;
 use App\Service\Clock;
 use App\Service\FieldGuideService;
 use App\Service\InventoryService;
