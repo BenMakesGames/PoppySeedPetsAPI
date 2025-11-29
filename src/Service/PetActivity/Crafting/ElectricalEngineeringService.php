@@ -599,8 +599,8 @@ class ElectricalEngineeringService implements IPetActivity
         $roll = $this->rng->rngSkillRoll(
             $petWithSkills->getIntelligence()->getTotal() +
             $petWithSkills->getDexterity()->getTotal() +
-            $petWithSkills->getMusic()->getTotal() / 4 +
-            $petWithSkills->getScience()->getTotal() * 3 / 4 +
+            (int)round($petWithSkills->getMusic()->getTotal() / 4) +
+            (int)round($petWithSkills->getScience()->getTotal() * 3 / 4) +
             $petWithSkills->getElectronicsBonus()->getTotal()
         );
 
