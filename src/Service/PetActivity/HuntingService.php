@@ -109,9 +109,6 @@ class HuntingService implements IPetActivity
 
         $roll = $this->rng->rngNextInt(1, $maxSkill);
 
-        $activityLog = null;
-        $changes = new PetChanges($pet);
-
         if(DateFunctions::moonPhase($this->clock->now) === MoonPhaseEnum::FullMoon && $this->rng->rngNextInt(1, 100) === 1)
             $activityLog = $this->werecreatureEncounterService->encounterWerecreature($petWithSkills, 'hunting', [ 'Hunting' ]);
         else
@@ -183,7 +180,7 @@ class HuntingService implements IPetActivity
                     else if($pet->hasStatusEffect(StatusEffectEnum::BittenByAVampire))
                         $activityLog = $this->huntedSatyr($petWithSkills);
                     else
-                        $this->huntedPaperGolem($petWithSkills); // fallback, in case none of the above are good
+                        $activityLog = $this->huntedPaperGolem($petWithSkills); // fallback, in case none of the above are good
                     break;
                 case 20:
                     $activityLog = $this->huntedPaperGolem($petWithSkills);
@@ -200,8 +197,6 @@ class HuntingService implements IPetActivity
                     break;
             }
         }
-
-        $activityLog->setChanges($changes->compare($pet));
 
         if(AdventureMath::petAttractsBug($this->rng, $pet, 100))
             $this->inventoryService->petAttractsRandomBug($pet);
