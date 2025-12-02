@@ -25,11 +25,11 @@ use App\Enum\StatusEffectEnum;
 use App\Functions\ActivityHelpers;
 use App\Functions\AdventureMath;
 use App\Functions\ItemRepository;
+use App\Functions\NumberFunctions;
 use App\Functions\PetActivityLogFactory;
 use App\Functions\PetActivityLogTagHelpers;
 use App\Functions\PetBadgeHelpers;
 use App\Model\ComputedPetSkills;
-use App\Model\PetChanges;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\PetExperienceService;
@@ -97,10 +97,7 @@ class Protocol7Service implements IPetActivity
 
         $maxSkill = 10 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getHackingBonus()->getTotal() - $pet->getAlcohol() * 2;
 
-        // protocol 7 is weird; we do a modulo here.
-        // we don't do "distraction" encounters for protocol 7; instead, we rely on the modulo, which has the
-        // effect of making lower-ranked encounters more common than higher ones for higher-level pets.
-        $roll = $this->rng->rngNextInt(0, max(1, $maxSkill)) % 20;
+        $roll = $this->rng->rngNextInt(0, NumberFunctions::clamp($maxSkill, 1, 19));
 
         switch($roll)
         {
@@ -173,13 +170,12 @@ class Protocol7Service implements IPetActivity
 
         $exp = (int)ceil($roll / 10);
 
-        if($pet->hasMerit(MeritEnum::EIDETIC_MEMORY) || $this->rng->rngNextInt(1, 3) === 1)
-            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% accessed Project-E, but got distracted playing a minigame!');
-        else
-            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% accessed Project-E, but got lost.');
+        $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, ActivityHelpers::PetName($pet) . ' accessed Project-E, but got distracted by Noisome Adverts.');
 
         $this->petExperienceService->gainExp($pet, $exp, [ PetSkillEnum::Science ], $activityLog);
         $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::PROTOCOL_7, false);
+
+        $this->inventoryService->petCollectsItem('Noisome Advert', $pet, 'This item pushed itself on ' . $pet->getName() . ' while they were trying to explore Project-E.', $activityLog);
 
         $activityLog
             ->setIcon('icons/activity-logs/confused')
@@ -561,12 +557,28 @@ class Protocol7Service implements IPetActivity
                 'loot' => [ 'Imaginary Number' ],
             ],
             [
-                'subject' => 'about blockchains',
+                'subject' => 'about encryption algorithms',
                 'loot' => [ 'Password', 'Hash Table', 'Cryptocurrency Wallet' ],
             ],
             [
                 'subject' => 'about city planning',
                 'loot' => [ 'Traffic Light', 'Traffic Cone' ],
+            ],
+            [
+                'subject' => 'about the history of food',
+                'loot' => [ 'Aging Powder', 'Plain Yogurt', 'Rice', 'Vinegar' ],
+            ],
+            [
+                'subject' => 'about music theory',
+                'loot' => [ 'Music Note' ],
+            ],
+            [
+                'subject' => 'about evolution',
+                'loot' => [ 'Scales', 'Fluff', 'Fish Bones', 'Talon' ],
+            ],
+            [
+                'subject' => 'about cosmology',
+                'loot' => [ 'Gravitational Waves', 'Photon', 'Dark Matter' ],
             ],
         ]);
 
