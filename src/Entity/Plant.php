@@ -29,42 +29,45 @@ class Plant
     private ?int $id = null;
 
     #[ORM\Column(type: 'string', length: 40)]
-    private string $sproutImage;
+    private string $sproutImage = '';
 
     #[ORM\Column(type: 'string', length: 40)]
-    private string $mediumImage;
+    private string $mediumImage = '';
 
     #[ORM\Column(type: 'string', length: 40)]
-    private string $adultImage;
+    private string $adultImage = '';
 
     #[ORM\Column(type: 'string', length: 40)]
-    private string $harvestableImage;
+    private string $harvestableImage = '';
 
     #[ORM\OneToOne(targetEntity: Item::class, mappedBy: 'plant')]
     private Item $item;
 
     #[ORM\Column(type: 'integer')]
-    private int $timeToAdult;
+    private int $timeToAdult = 0;
 
     #[ORM\Column(type: 'integer')]
-    private int $timeToFruit;
+    private int $timeToFruit = 0;
 
     #[Groups(["greenhousePlant"])]
     #[ORM\Column(type: 'string', length: 20)]
     private string $type = 'earth';
 
+    /**
+     * @var Collection<int, PlantYield>
+     */
     #[ORM\OneToMany(targetEntity: 'App\Entity\PlantYield', mappedBy: 'plant', orphanRemoval: true)]
-    private $plantYields;
+    private Collection $plantYields;
 
     #[Groups(["greenhousePlant"])]
     #[ORM\Column(type: 'string', length: 40, unique: true)]
-    private string $name;
+    private string $name = '';
 
     #[ORM\ManyToOne(targetEntity: FieldGuideEntry::class)]
-    private $fieldGuideEntry;
+    private ?FieldGuideEntry $fieldGuideEntry = null;
 
     #[ORM\Column(type: 'boolean')]
-    private bool $noPollinators;
+    private bool $noPollinators = false;
 
     public function __construct()
     {
@@ -76,7 +79,7 @@ class Plant
         return $this->id;
     }
 
-    public function getSproutImage(): ?string
+    public function getSproutImage(): string
     {
         return $this->sproutImage;
     }
@@ -88,7 +91,7 @@ class Plant
         return $this;
     }
 
-    public function getMediumImage(): ?string
+    public function getMediumImage(): string
     {
         return $this->mediumImage;
     }
@@ -100,7 +103,7 @@ class Plant
         return $this;
     }
 
-    public function getAdultImage(): ?string
+    public function getAdultImage(): string
     {
         return $this->adultImage;
     }
@@ -112,7 +115,7 @@ class Plant
         return $this;
     }
 
-    public function getHarvestableImage(): ?string
+    public function getHarvestableImage(): string
     {
         return $this->harvestableImage;
     }
@@ -142,7 +145,7 @@ class Plant
         return $this;
     }
 
-    public function getTimeToAdult(): ?int
+    public function getTimeToAdult(): int
     {
         return $this->timeToAdult;
     }
@@ -154,7 +157,7 @@ class Plant
         return $this;
     }
 
-    public function getTimeToFruit(): ?int
+    public function getTimeToFruit(): int
     {
         return $this->timeToFruit;
     }
@@ -233,7 +236,7 @@ class Plant
         return $this;
     }
 
-    public function getNoPollinators(): ?bool
+    public function getNoPollinators(): bool
     {
         return $this->noPollinators;
     }
