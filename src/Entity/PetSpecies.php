@@ -15,6 +15,7 @@ declare(strict_types=1);
 namespace App\Entity;
 
 use App\Enum\PetPregnancyStyleEnum;
+use App\Enum\SerializationGroupEnum;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -33,7 +34,7 @@ class PetSpecies
     /** @phpstan-ignore property.unusedType */
     private ?int $id = null;
 
-    #[Groups(["myPet", "petEncyclopedia", "petShelterPet", "zoologistCatalog", "typeahead"])]
+    #[Groups(["myPet", "petEncyclopedia", "petShelterPet", "zoologistCatalog", "typeahead", SerializationGroupEnum::PET_PUBLIC_PROFILE])]
     #[ORM\Column(type: 'string', length: 40, unique: true)]
     private string $name;
 
