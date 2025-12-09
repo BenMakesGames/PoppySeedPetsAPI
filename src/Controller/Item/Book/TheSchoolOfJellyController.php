@@ -102,7 +102,7 @@ _Francene._ The tea wants ſugar, and after being fully mixt, muſt you add some
 
 _Katy._ I very well apprehend what you ſay, but to what purpoſe has tea all theſe things?
 
-_Francene._ Yes marry does it, for it is this very thing which giveth the delight I all this while have been talking of. For when the Agar-Agar has been added, and the mixture cools, it becomeſ a Coffee Jelly, which is the greateſt pleaſure imaginable.
+_Francene._ Yes marry does it, for it is this very thing which giveth the delight I all this while have been talking of. For when the Agar-Agar has been added, and the mixture cools, it becomes a Coffee Jelly, which is the greateſt pleaſure imaginable.
 
 _Katy._ Lord Couſin, what ſtrange things do you tell me. But ſtill I am not ſatisfied, ſure there is more to be done with the Agar-Agar?
 
