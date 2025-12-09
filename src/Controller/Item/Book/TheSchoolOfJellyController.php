@@ -82,9 +82,9 @@ _Francene._ Why then in ſhort, 'tis this, a young Maid can without any cost or 
 
 _Katy._ Oh, good Couſin, what a mind have I to know what these ſweetmeats are, and how to make them.
 
-_Francene._ Be not to haſty and you ſhall know all, did you never see a jelly?
+_Francene._ Be not to haſty and you ſhall know all, did you never ſee a jelly?
 
-_Katy._ I never ſaw a jelly in my life, I have ſeen ſmall green patches in the sea?
+_Katy._ I never ſaw a jelly in my life, I have ſeen ſmall green patches in the ſea?
 
 _Francene._ No, that will not do, these ſmall patcheſ which the Wiſe of uſ call Algae, you muſt prepare into Agar-Agar before ſeeing any jelly.
 
@@ -94,7 +94,7 @@ _Francene._ Dear Couſin, I love thee too well to keep thee longer in ignorance,
 
 _Katy._ Yes once I saw a man drinking, he ſeeing me look at him turned himſelf towards me, and the thing he had in his hand, appeared to be like a cup of dark liquid, which I thought by ſmell to be of Coffee Beans.
 
-_Francene._ I am juſt now going to tell you things which will ſeem a great deal more strange unto you.
+_Francene._ I am juſt now going to tell you things which will ſeem a great deal more ſtrange unto you.
 
 _Katy._ You oblige me infinitely.
 
