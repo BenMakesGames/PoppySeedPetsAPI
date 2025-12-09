@@ -11,7 +11,6 @@ declare(strict_types=1);
  * You should have received a copy of the GNU General Public License along with The Poppy Seed Pets API. If not, see <https://www.gnu.org/licenses/>.
  */
 
-
 namespace App\Controller\Item\Book;
 
 use App\Controller\Item\ItemControllerHelpers;
@@ -38,7 +37,6 @@ class CandyMakersCookbookController
         ItemControllerHelpers::validateInventoryAllowingLibrary($user, $inventory, 'candyMakerCookbook/#/upload');
 
         $message = $cookingService->showRecipeNamesToCookingBuddy($user, [
-            'Agar-agar',
             'Corn Syrup',
             'Red Juice, and Pectin',
             'Orange Juice, and Pectin',
@@ -69,15 +67,7 @@ class CandyMakersCookbookController
             'Yellow Gummies (with Corn Syrup)',
             'Green Gummies (Melowatern)',
             'Green Gummies (Honeydont)',
-            'Orange Gummies (with Agar-agar)',
-            'Red Gummies (with Agar-agar)',
-            'Blue Gummies (with Agar-agar)',
-            'Purple Gummies (with Agar-agar)',
-            'Yellow Gummies (with Agar-agar)',
-            'Green Gummies (Melowatern & Agar-agar)',
-            'Green Gummies (Honeydont & Agar-agar)',
             'Apricot Gummies (using Corn Syrup)',
-            'Apricot Gummies (using Agar-Agar)',
             'Dandelion Syrup',
         ]);
 
@@ -98,7 +88,6 @@ class CandyMakersCookbookController
 
 #### Basic Ingredients
 
-* Agar-agar
 * Corn Syrup
 * Pectin
 * Sugar
@@ -117,14 +106,6 @@ class CandyMakersCookbookController
 * Soft Fruit Gummies
 
 ## Basic Ingredients
-
-#### Agar-agar
-
-Boiling Algae breaks up the cell walls. As it all cools, the fibrous chains we call Agar-agar are formed!
-
-Let it dry, grind it up, and you\'ve got yourself some Agar-agar powder!
-
-<small>(For those of you trying these recipes in real life, it\'s probably actually more complicated than that... sorry...)</small>
 
 #### Corn Syrup
 
@@ -241,7 +222,7 @@ It\'s the easiest thing!
 Combine the following:
 * Fruit (berries, melon, orange, etc)
 * Sugar
-* Corn Syrup, or Agar-agar
+* Corn Syrup
 ');
     }
 }

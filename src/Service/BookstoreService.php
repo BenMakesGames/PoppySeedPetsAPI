@@ -275,6 +275,11 @@ class BookstoreService
                 $bookPrices['Milk: The Book'] = 30;
             }
 
+            if($cookedSomething->getValue() >= 150)
+            {
+                $bookPrices['The School of Jelly'] = 15;
+            }
+
             if($cookedSomething->getValue() >= 200)
             {
                 $bookPrices['Fried'] = 25;
