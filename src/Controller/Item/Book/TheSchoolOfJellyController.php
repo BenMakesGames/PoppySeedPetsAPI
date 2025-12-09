@@ -110,7 +110,7 @@ _Francene._ Liſten then. Blueberries, Apricots, Pamplemouſse and other like fr
 
 _Katy._ Pray Couſin, ſince you have taken the pains to inſtruct me thus far, leave me not in any ignorance, and therefore inform me what else may be done with the Agar-Agar.
 
-_Francene._ Yes, another, for even the Wormſ of the Earth may be uſed to create a flavourſome ſweetmeat.
+_Francene._ Yes, another, for even the Worms of the Earth may be uſed to create a flavourſome ſweetmeat.
 
 _Katy._ That's a new way, it ſeems this pleaſure ha's many forms.
 
@@ -160,7 +160,7 @@ _Katy._ How do I make Coffee Bean Tea?
 
 _Francene._ Truly, that will require little more time then the putting on of my Scafe, so I will do this, provided, when I have done you will keep me no longer.
 
-_Katy._ Let me have your inſtructions, who are ſo great a Miſtriſs in the art of jelly?
+_Katy._ Let me have your inſtructions, who are ſo great a Miſtriſs in the art of jelly.
 
 _Francene._ Take no more than ſome Coffee Beans, preparing them directly, and from this you will produce enough for two cups of Coffee Bean Tea, and in following my other inſtructions of which you ſurely must remember, two Coffee Jellies.
 
