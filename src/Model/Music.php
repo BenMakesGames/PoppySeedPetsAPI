@@ -540,5 +540,11 @@ class Music
 
         // If It Makes You Happy, by Sherly Crow
         'If it makes you haaapyyyyy... it can\'t be that baaaaa-a-a-aaad... if it makes you haaapyyyyy... then why the hell are you sooo saaad...',
+
+        // The Fate of Ophelia, by Taylor Swift
+        '\'Tis locked inside my memory, and only you possess the key. No longer drowning and deceived, all because you came for me...',
+
+        // Power, by Kove
+        'You gotta\' feel the power! Taking you up - in your soul! Just feel the music! Lifting you up from inside! Play it with me now!',
     ];
 }
