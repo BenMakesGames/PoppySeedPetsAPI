@@ -1,0 +1,4279 @@
+parameters:
+	ignoreErrors:
+		-
+			message: '#^Method App\\Command\\CalculateDailyMarketItemAveragesCommand\:\:insert\(\) has parameter \$sqlRows with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Command/CalculateDailyMarketItemAveragesCommand.php
+
+		-
+			message: '#^Cannot access offset ''qty'' on array\<string, mixed\>\|false\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 2
+			path: src/Command/CalculateDailyStatsCommand.php
+
+		-
+			message: '#^Method App\\Command\\CalculateDailyStatsCommand\:\:getAverages\(\) should return array\{total_users\: int, total_moneys\: int\} but returns array\<string, mixed\>\|false\.$#'
+			identifier: return.type
+			count: 1
+			path: src/Command/CalculateDailyStatsCommand.php
+
+		-
+			message: '#^Method App\\Command\\CalculateDailyStatsCommand\:\:getLifeTime\(\) should return array\{total_users\: int, total_moneys\: int\} but returns array\<string, mixed\>\|false\.$#'
+			identifier: return.type
+			count: 1
+			path: src/Command/CalculateDailyStatsCommand.php
+
+		-
+			message: '#^Method App\\Command\\CalculateDailyStatsCommand\:\:getNewPlayerCount\(\) should return array\{new_users\: int\} but returns array\<string, mixed\>\|false\.$#'
+			identifier: return.type
+			count: 1
+			path: src/Command/CalculateDailyStatsCommand.php
+
+		-
+			message: '#^Parameter \#1 \$string of function trim expects string, string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Command/CreateHollowEarthTileCommand.php
+
+		-
+			message: '#^Parameter \#1 \$type of method App\\Entity\\HollowEarthTileCard\:\:setType\(\) expects App\\Entity\\HollowEarthTileType, App\\Entity\\HollowEarthTileType\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Command/CreateHollowEarthTileCommand.php
+
+		-
+			message: '#^Method App\\Command\\CreateMonstersOfTheWeekCommand\:\:selectPrizeItem\(\) should return App\\Entity\\Item but returns App\\Entity\\Item\|null\.$#'
+			identifier: return.type
+			count: 1
+			path: src/Command/CreateMonstersOfTheWeekCommand.php
+
+		-
+			message: '#^Offset int might not exist on array\{0\?\: App\\Enum\\MonsterOfTheWeekEnum\:\:Dionysus, 1\?\: App\\Enum\\MonsterOfTheWeekEnum\:\:Anhur, 2\?\: App\\Enum\\MonsterOfTheWeekEnum\:\:Boshinogami, 3\?\: App\\Enum\\MonsterOfTheWeekEnum\:\:Huehuecoyotl, 4\?\: App\\Enum\\MonsterOfTheWeekEnum\:\:Cardea, 5\?\: App\\Enum\\MonsterOfTheWeekEnum\:\:EiriPersona, 6\?\: App\\Enum\\MonsterOfTheWeekEnum\:\:VafAndNir\}\.$#'
+			identifier: offsetAccess.notFound
+			count: 1
+			path: src/Command/CreateMonstersOfTheWeekCommand.php
+
+		-
+			message: '#^Method Doctrine\\DBAL\\Statement\:\:executeStatement\(\) invoked with 1 parameter, 0 required\.$#'
+			identifier: arguments.count
+			count: 1
+			path: src/Command/DeleteOneSidedRelationshipsCommand.php
+
+		-
+			message: '#^Call to an undefined method object\:\:getId\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: src/Command/ExportItemCommand.php
+
+		-
+			message: '#^Parameter \#1 \$string of function addslashes expects string, string\|false given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Command/ExportItemCommand.php
+
+		-
+			message: '#^Parameter \#2 \$entity of method App\\Command\\ExportItemCommand\:\:generateSql\(\) expects object, App\\Entity\\ItemFood\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Command/ExportItemCommand.php
+
+		-
+			message: '#^Cannot call method getId\(\) on App\\Entity\\SurveyQuestion\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Command/ExportSurveyAnswersCommand.php
+
+		-
+			message: '#^Method App\\Command\\ExportSurveyAnswersCommand\:\:arrayToCSVLine\(\) has parameter \$values with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Command/ExportSurveyAnswersCommand.php
+
+		-
+			message: '#^Method App\\Command\\ExportSurveyAnswersCommand\:\:exportAnswers\(\) has parameter \$row with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Command/ExportSurveyAnswersCommand.php
+
+		-
+			message: '#^Method App\\Command\\ExportSurveyAnswersCommand\:\:exportUsers\(\) has parameter \$ids with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Command/ExportSurveyAnswersCommand.php
+
+		-
+			message: '#^Method App\\Command\\ExportSurveyAnswersCommand\:\:exportUsers\(\) has parameter \$questionColumns with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Command/ExportSurveyAnswersCommand.php
+
+		-
+			message: '#^Cannot access property \$value on string\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: src/Command/FixMismatchedRelationshipsCommand.php
+
+		-
+			message: '#^Offset 0 does not exist on array\<string, mixed\>\.$#'
+			identifier: offsetAccess.notFound
+			count: 3
+			path: src/Command/FixMismatchedRelationshipsCommand.php
+
+		-
+			message: '#^Offset 8 does not exist on array\<string, mixed\>\.$#'
+			identifier: offsetAccess.notFound
+			count: 3
+			path: src/Command/FixMismatchedRelationshipsCommand.php
+
+		-
+			message: '#^Method App\\Command\\PoppySeedPetsCommand\:\:askChoice\(\) has parameter \$choices with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Command/PoppySeedPetsCommand.php
+
+		-
+			message: '#^Method App\\Command\\PoppySeedPetsCommand\:\:askChoice\(\) has parameter \$defaultValue with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: src/Command/PoppySeedPetsCommand.php
+
+		-
+			message: '#^Property App\\Command\\PoppySeedPetsCommand\:\:\$questionHelper \(Symfony\\Component\\Console\\Helper\\QuestionHelper\) does not accept Symfony\\Component\\Console\\Helper\\HelperInterface\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: src/Command/PoppySeedPetsCommand.php
+
+		-
+			message: '#^Parameter \#1 \$json of function GuzzleHttp\\json_decode expects string, string\|false given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Command/TestJsonLogicParserCommand.php
+
+		-
+			message: '#^Call to function is_array\(\) with array will always evaluate to true\.$#'
+			identifier: function.alreadyNarrowedType
+			count: 1
+			path: src/Command/UpdateHollowEarthTileEventCommand.php
+
+		-
+			message: '#^Cannot access an offset on int\|list\<string\>\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: src/Command/UpdateHollowEarthTileEventCommand.php
+
+		-
+			message: '#^Cannot call method getNameWithArticle\(\) on App\\Entity\\Item\|null\.$#'
+			identifier: method.nonObject
+			count: 2
+			path: src/Command/UpdateHollowEarthTileEventCommand.php
+
+		-
+			message: '#^Method App\\Command\\UpdateHollowEarthTileEventCommand\:\:createBasicEvent\(\) has parameter \$event with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Command/UpdateHollowEarthTileEventCommand.php
+
+		-
+			message: '#^Method App\\Command\\UpdateHollowEarthTileEventCommand\:\:createChooseOneEvent\(\) has parameter \$event with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Command/UpdateHollowEarthTileEventCommand.php
+
+		-
+			message: '#^Method App\\Command\\UpdateHollowEarthTileEventCommand\:\:createEvent\(\) has parameter \$event with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Command/UpdateHollowEarthTileEventCommand.php
+
+		-
+			message: '#^Method App\\Command\\UpdateHollowEarthTileEventCommand\:\:createExpGain\(\) has parameter \$event with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Command/UpdateHollowEarthTileEventCommand.php
+
+		-
+			message: '#^Method App\\Command\\UpdateHollowEarthTileEventCommand\:\:createItemsReceived\(\) has parameter \$event with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Command/UpdateHollowEarthTileEventCommand.php
+
+		-
+			message: '#^Method App\\Command\\UpdateHollowEarthTileEventCommand\:\:createMoveToEvent\(\) has parameter \$event with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Command/UpdateHollowEarthTileEventCommand.php
+
+		-
+			message: '#^Method App\\Command\\UpdateHollowEarthTileEventCommand\:\:createNeedAdjustments\(\) has parameter \$event with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Command/UpdateHollowEarthTileEventCommand.php
+
+		-
+			message: '#^Method App\\Command\\UpdateHollowEarthTileEventCommand\:\:createPayItemAndMoneysEvent\(\) has parameter \$event with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Command/UpdateHollowEarthTileEventCommand.php
+
+		-
+			message: '#^Method App\\Command\\UpdateHollowEarthTileEventCommand\:\:createPayItemEvent\(\) has parameter \$event with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Command/UpdateHollowEarthTileEventCommand.php
+
+		-
+			message: '#^Method App\\Command\\UpdateHollowEarthTileEventCommand\:\:createPayMoneysEvent\(\) has parameter \$event with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Command/UpdateHollowEarthTileEventCommand.php
+
+		-
+			message: '#^Method App\\Command\\UpdateHollowEarthTileEventCommand\:\:createPetChallengeEvent\(\) has parameter \$event with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Command/UpdateHollowEarthTileEventCommand.php
+
+		-
+			message: '#^Method App\\Command\\UpdateHollowEarthTileEventCommand\:\:createTestedSkills\(\) has parameter \$event with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Command/UpdateHollowEarthTileEventCommand.php
+
+		-
+			message: '#^Parameter \#1 \$value of function count expects array\|Countable, int\|list\<string\> given\.$#'
+			identifier: argument.type
+			count: 2
+			path: src/Command/UpdateHollowEarthTileEventCommand.php
+
+		-
+			message: '#^Parameter \#2 \$array of function implode expects array, int\|list\<string\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Command/UpdateHollowEarthTileEventCommand.php
+
+		-
+			message: '#^Parameter \#2 \$haystack of function array_search expects array, int\|list\<string\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Command/UpdateHollowEarthTileEventCommand.php
+
+		-
+			message: '#^Parameter \#2 \$defaultValue of method App\\Command\\PoppySeedPetsCommand\:\:askBool\(\) expects bool, bool\|null given\.$#'
+			identifier: argument.type
+			count: 3
+			path: src/Command/UpsertItemCommand.php
+
+		-
+			message: '#^Parameter \#2 \$defaultValue of method App\\Command\\PoppySeedPetsCommand\:\:askInt\(\) expects int, int\|null given\.$#'
+			identifier: argument.type
+			count: 2
+			path: src/Command/UpsertItemCommand.php
+
+		-
+			message: '#^Parameter \#1 \$object of method Doctrine\\Persistence\\ObjectManager\:\:remove\(\) expects object, App\\Entity\\PlantYield\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Command/UpsertPlantCommand.php
+
+		-
+			message: '#^Parameter \#1 \$plantYield of method App\\Entity\\Plant\:\:removePlantYield\(\) expects App\\Entity\\PlantYield, App\\Entity\\PlantYield\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Command/UpsertPlantCommand.php
+
+		-
+			message: '#^Parameter \#1 \$strings of static method App\\Functions\\ArrayFunctions\:\:list_nice\(\) expects iterable\<string\>, array\<int\|string\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Command/UpsertPlantCommand.php
+
+		-
+			message: '#^Parameter \#1 \$yield of method App\\Command\\UpsertPlantCommand\:\:editYield\(\) expects App\\Entity\\PlantYield, App\\Entity\\PlantYield\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Command/UpsertPlantCommand.php
+
+		-
+			message: '#^Parameter \#1 \$yieldItem of method App\\Command\\UpsertPlantCommand\:\:editYieldItem\(\) expects App\\Entity\\PlantYieldItem, App\\Entity\\PlantYieldItem\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Command/UpsertPlantCommand.php
+
+		-
+			message: '#^Parameter \#2 \$defaultValue of method App\\Command\\PoppySeedPetsCommand\:\:askInt\(\) expects int, int\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Command/UpsertPlantCommand.php
+
+		-
+			message: '#^Method App\\Command\\ViewMonsterFoodsCommand\:\:showInfo\(\) has parameter \$everyItem with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Command/ViewMonsterFoodsCommand.php
+
+		-
+			message: '#^Parameter \#2 \$userId of static method App\\Functions\\UserStyleFunctions\:\:findCurrent\(\) expects int, int\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/Account/GetAccountController.php
+
+		-
+			message: '#^Method App\\Controller\\Account\\GetByIdController\:\:getLinks\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Controller/Account/GetByIdController.php
+
+		-
+			message: '#^Parameter \#2 \$userId of static method App\\Functions\\UserStyleFunctions\:\:findCurrent\(\) expects int, int\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/Account/GetByIdController.php
+
+		-
+			message: '#^Parameter \#2 \$userId of static method App\\Functions\\UserStyleFunctions\:\:findCurrent\(\) expects int, int\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/Account/LogInController.php
+
+		-
+			message: '#^Parameter \#1 \$badge of static method App\\Controller\\Achievement\\BadgeHelpers\:\:getBadgeProgress\(\) expects string, int\|string given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/Achievement/Available.php
+
+		-
+			message: '#^Method App\\Controller\\Achievement\\BadgeHelpers\:\:getBadgeProgress\(\) should return array\{badge\: string, progress\: array\{target\: int, current\: int\}, done\: bool, reward\: App\\Model\\TraderOfferCostOrYield\} but returns array\{badge\: ''AccountAge365''\|''Achievements10''\|''Achievements100''\|''Achievements110''\|''Achievements120''\|''Achievements130''\|''Achievements140''\|''Achievements150''\|''Achievements20''\|''Achievements30''\|''Achievements40''\|''Achievements50''\|''Achievements60''\|''Achievements70''\|''Achievements80''\|''Achievements90''\|''ApricotFestival1''\|''ApricotFestival10''\|''BaabblesOpened1''\|''BaabblesOpened10''\|''BaabblesOpened100''\|''BaabblesOpened1000''\|''BoxBoxBoxBox''\|''Composted10''\|''Composted100''\|''Composted1000''\|''Cooked10''\|''Cooked100''\|''Cooked1000''\|''Cooked10000''\|''CookingBuddyRecipes…''\|''DefeatedNoetalasWin…''\|''DefeatedSummonedMon…''\|''DragonVaseDipping10''\|''FedAnts10''\|''FedAntsAndBees10''\|''FedBees10''\|''FedCentipedes10''\|''FertilizedHarvested…''\|''FertilizedPlant10''\|''FertilizedPlant100''\|''FertilizedPlant1000''\|''FieldGuide10''\|''FieldGuide20''\|''FireplaceFuel10''\|''FireplaceFuel100''\|''FireplaceFuel1000''\|''FireplaceFuel10000''\|''GreatSpiritBoshinog…''\|''GreatSpiritCardeasL…''\|''GreatSpiritDionysus…''\|''GreatSpiritEiriPers…''\|''GreatSpiritHuehueco…''\|''GreatSpiritHunterOf…''\|''GreatSpiritMajorRew…''\|''GreatSpiritMinorRew…''\|''GreatSpiritModerate…''\|''HarvestedPlant10''\|''HarvestedPlant100''\|''HarvestedPlant1000''\|''HeartstoneDimension…''\|''HollowEarthTravel10''\|''HollowEarthTravel100''\|''HollowEarthTravel10…''\|''Honorificabilitudin…''\|''HorribleEggplant1''\|''HorribleEggplant10''\|''HotPotatoTossed1''\|''HotPotatoTossed10''\|''HotPotatoTossed100''\|''HotPotDipping10''\|''IceMangoes10''\|''LongestFire10080''\|''LongestFire1440''\|''LongestFire60''\|''MaxPets4''\|''MisreadScroll1''\|''MoneysSpent10''\|''MoneysSpent100''\|''MoneysSpent1000''\|''MoneysSpent10000''\|''MoneysSpent100000''\|''Museum100''\|''Museum1000''\|''Museum1100''\|''Museum1200''\|''Museum200''\|''Museum300''\|''Museum400''\|''Museum500''\|''Museum600''\|''Museum700''\|''Museum800''\|''Museum900''\|''OpenedBoxBox1''\|''OpenedBoxBox10''\|''OpenedCanOfFood10''\|''OpenedCanOfFood100''\|''OpenedCerealBox''\|''OpenedCerealBoxCanO…''\|''OpenedHatBox1''\|''OpenedHatBox10''\|''OpenedPaperBag10''\|''OpenedPaperBag100''\|''OpenedPlasticBottle…''\|''Petted10''\|''Petted100''\|''Petted1000''\|''Petted10000''\|''PlazaBox1''\|''PlazaBox10''\|''PlazaBox100''\|''ReadScroll1''\|''ReadScroll10''\|''ReadScroll100''\|''Recycled10''\|''Recycled100''\|''Recycled1000''\|''Recycled10000''\|''SouffleStartler''\|''TowerOfTrials1''\|''TowerOfTrials10''\|''TowerOfTrials100''\|''TreasuresGivenToDra…''\|''TrophiesEarned1''\|''TrophiesEarned10''\|''TrophiesEarned100''\|''UnlockedHattierStyl…''\|''WeekdayCoins1''\|''WeekdayCoins7''\|''WhisperStone''\|''WorkerBees1000''\|''WorkerBees10000''\|''Zoologist10''\|''Zoologist100''\|''Zoologist20''\|''Zoologist30''\|''Zoologist40''\|''Zoologist50''\|''Zoologist60''\|''Zoologist70''\|''Zoologist80''\|''Zoologist90'', progress\: array\{target\: 1\|2\|3\|4\|5\|7\|10\|20\|30\|40\|50\|60\|70\|80\|90\|100\|110\|120\|130\|140\|150\|200\|300\|365\|400\|500\|600\|700\|800\|900\|1000\|1100\|1200\|1440\|10000\|10080\|100000, current\: int\|false\}, done\: bool, reward\: App\\Model\\TraderOfferCostOrYield\}\.$#'
+			identifier: return.type
+			count: 1
+			path: src/Controller/Achievement/BadgeHelpers.php
+
+		-
+			message: '#^Method App\\Controller\\Achievement\\BadgeHelpers\:\:getCompletedBadges\(\) has parameter \$badgeNames with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Controller/Achievement/BadgeHelpers.php
+
+		-
+			message: '#^Method App\\Controller\\Achievement\\BadgeHelpers\:\:getStatTotal\(\) has parameter \$statNames with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Controller/Achievement/BadgeHelpers.php
+
+		-
+			message: '#^Method App\\Controller\\Achievement\\BadgeHelpers\:\:getUnlockedFeatures\(\) has parameter \$featureNames with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Controller/Achievement/BadgeHelpers.php
+
+		-
+			message: '#^Cannot call method getName\(\) on App\\Entity\\Item\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Controller/Achievement/Claim.php
+
+		-
+			message: '#^Match arm comparison between App\\Enum\\CostOrYieldTypeEnum\:\:RecyclingPoints and App\\Enum\\CostOrYieldTypeEnum\:\:RecyclingPoints is always true\.$#'
+			identifier: match.alwaysTrue
+			count: 1
+			path: src/Controller/Achievement/Claim.php
+
+		-
+			message: '#^Parameter \#1 \$item of method App\\Service\\InventoryService\:\:receiveItem\(\) expects App\\Entity\\Item\|string, App\\Entity\\Item\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/Achievement/Claim.php
+
+		-
+			message: '#^Binary operation "\." between ''/'' and array\|bool\|float\|int\|string\|UnitEnum\|null results in an error\.$#'
+			identifier: binaryOp.invalid
+			count: 1
+			path: src/Controller/Article/AdminOnly.php
+
+		-
+			message: '#^Parameter \#2 \$subject of function preg_match expects string, string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/Article/AdminOnly.php
+
+		-
+			message: '#^Cannot access property \$ingredients on App\\Model\\Recipe\|null\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: src/Controller/CookingBuddy/PrepareRecipeFromMemory.php
+
+		-
+			message: '#^Cannot access property \$inventory on App\\Model\\PrepareRecipeResults\|null\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: src/Controller/CookingBuddy/PrepareRecipeFromMemory.php
+
+		-
+			message: '#^Cannot access property \$name on App\\Model\\Recipe\|null\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: src/Controller/CookingBuddy/PrepareRecipeFromMemory.php
+
+		-
+			message: '#^Parameter \#3 \$recipe of method App\\Service\\CookingService\:\:prepareRecipeWithCookingBuddy\(\) expects App\\Model\\Recipe, App\\Model\\Recipe\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/CookingBuddy/PrepareRecipeFromMemory.php
+
+		-
+			message: '#^Parameter \#4 \$dragon of static method App\\Functions\\DragonHelpers\:\:createDragonResponse\(\) expects App\\Entity\\Dragon, App\\Entity\\Dragon\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/Dragon/AssignHelperController.php
+
+		-
+			message: '#^Parameter \#4 \$dragon of static method App\\Functions\\DragonHelpers\:\:createDragonResponse\(\) expects App\\Entity\\Dragon, App\\Entity\\Dragon\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/Dragon/MakeOfferingController.php
+
+		-
+			message: '#^Call to an undefined method Doctrine\\Persistence\\ObjectRepository\<App\\Entity\\PetSpecies\>\:\:createQueryBuilder\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: src/Controller/Encyclopedia/GetSpeciesByFamilyController.php
+
+		-
+			message: '#^Cannot call method getFood\(\) on App\\Entity\\ItemFood\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Controller/Fireplace/FeedWhelpController.php
+
+		-
+			message: '#^Cannot call method getSpicy\(\) on App\\Entity\\ItemFood\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Controller/Fireplace/FeedWhelpController.php
+
+		-
+			message: '#^Possibly invalid array key type float\|int\.$#'
+			identifier: offsetAccess.invalidOffset
+			count: 1
+			path: src/Controller/Fireplace/LookInStockingController.php
+
+		-
+			message: '#^Cannot access offset ''hasBubblegum'' on array\|ArrayObject\|bool\|float\|int\|string\|null\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: src/Controller/Greenhouse/GetGreenhouseController.php
+
+		-
+			message: '#^Cannot call method getHelper\(\) on App\\Entity\\Greenhouse\|null\.$#'
+			identifier: method.nonObject
+			count: 2
+			path: src/Controller/Greenhouse/HarvestPlantController.php
+
+		-
+			message: '#^Cannot call method increaseMaxPlants\(\) on App\\Entity\\Greenhouse\|null\.$#'
+			identifier: method.nonObject
+			count: 2
+			path: src/Controller/Greenhouse/HarvestPlantController.php
+
+		-
+			message: '#^Cannot call method setBees2DismissedOn\(\) on App\\Entity\\Greenhouse\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Controller/Greenhouse/HarvestPlantController.php
+
+		-
+			message: '#^Cannot call method setBeesDismissedOn\(\) on App\\Entity\\Greenhouse\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Controller/Greenhouse/HarvestPlantController.php
+
+		-
+			message: '#^Cannot call method setButterfliesDismissedOn\(\) on App\\Entity\\Greenhouse\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Controller/Greenhouse/HarvestPlantController.php
+
+		-
+			message: '#^Parameter \#1 \$min of method App\\Service\\IRandom\:\:rngNextInt\(\) expects int, int\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/Greenhouse/HarvestPlantController.php
+
+		-
+			message: '#^Parameter \#2 \$inclusiveMax of method App\\Service\\IRandom\:\:rngNextInt\(\) expects int, int\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/Greenhouse/HarvestPlantController.php
+
+		-
+			message: '#^Binary operation "\+" between int\|string\|false and 1 results in an error\.$#'
+			identifier: binaryOp.invalid
+			count: 1
+			path: src/Controller/Greenhouse/UpdatePlantOrderController.php
+
+		-
+			message: '#^Parameter \#1 \$owner of method App\\Entity\\Inventory\:\:changeOwner\(\) expects App\\Entity\\User, App\\Entity\\User\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/Halloween/GiveCandyToTrickOrTreaterController.php
+
+		-
+			message: '#^Cannot call method getName\(\) on App\\Entity\\Aura\|null\.$#'
+			identifier: method.nonObject
+			count: 2
+			path: src/Controller/Hattier/ApplyAuraController.php
+
+		-
+			message: '#^Comparison operation "\<" between 1\|2\|15\|25\|50\|75\|100\|150\|200 and 1 is always false\.$#'
+			identifier: smaller.alwaysFalse
+			count: 1
+			path: src/Controller/Hattier/BuyFromIllusionistController.php
+
+		-
+			message: '#^Strict comparison using \=\=\= between ''bloodWine'' and ''bloodWine'' will always evaluate to true\.$#'
+			identifier: identical.alwaysTrue
+			count: 1
+			path: src/Controller/Hattier/BuyFromIllusionistController.php
+
+		-
+			message: '#^Cannot call method getCurrentAction\(\) on App\\Entity\\HollowEarthPlayer\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Controller/HollowEarth/ChangeTileGoodsController.php
+
+		-
+			message: '#^Cannot call method getCurrentTile\(\) on App\\Entity\\HollowEarthPlayer\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Controller/HollowEarth/ChangeTileGoodsController.php
+
+		-
+			message: '#^Cannot call method getMovesRemaining\(\) on App\\Entity\\HollowEarthPlayer\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Controller/HollowEarth/ChangeTileGoodsController.php
+
+		-
+			message: '#^Cannot call method getComputedSkills\(\) on App\\Entity\\Pet\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Controller/HollowEarth/PlayController.php
+
+		-
+			message: '#^Method App\\Controller\\HollowEarth\\PlayController\:\:continueActingChooseOne\(\) has parameter \$action with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Controller/HollowEarth/PlayController.php
+
+		-
+			message: '#^Method App\\Controller\\HollowEarth\\PlayController\:\:continueActingPayItem\(\) has parameter \$action with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Controller/HollowEarth/PlayController.php
+
+		-
+			message: '#^Method App\\Controller\\HollowEarth\\PlayController\:\:continueActingPayItemAndMoney\(\) has parameter \$action with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Controller/HollowEarth/PlayController.php
+
+		-
+			message: '#^Method App\\Controller\\HollowEarth\\PlayController\:\:continueActingPayMoney\(\) has parameter \$action with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Controller/HollowEarth/PlayController.php
+
+		-
+			message: '#^Method App\\Controller\\HollowEarth\\PlayController\:\:continueActingPetChallenge\(\) has parameter \$action with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Controller/HollowEarth/PlayController.php
+
+		-
+			message: '#^Negated boolean expression is always false\.$#'
+			identifier: booleanNot.alwaysFalse
+			count: 2
+			path: src/Controller/HollowEarth/TradesController.php
+
+		-
+			message: '#^Parameter \#1 \$amber of method App\\Entity\\HollowEarthPlayer\:\:increaseAmber\(\) expects int, float\|int given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/HollowEarth/TradesController.php
+
+		-
+			message: '#^Parameter \#1 \$fruit of method App\\Entity\\HollowEarthPlayer\:\:increaseFruit\(\) expects int, float\|int given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/HollowEarth/TradesController.php
+
+		-
+			message: '#^Parameter \#1 \$incense of method App\\Entity\\HollowEarthPlayer\:\:increaseIncense\(\) expects int, float\|int given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/HollowEarth/TradesController.php
+
+		-
+			message: '#^Parameter \#1 \$jade of method App\\Entity\\HollowEarthPlayer\:\:increaseJade\(\) expects int, float\|int given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/HollowEarth/TradesController.php
+
+		-
+			message: '#^Parameter \#1 \$salt of method App\\Entity\\HollowEarthPlayer\:\:increaseSalt\(\) expects int, float\|int given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/HollowEarth/TradesController.php
+
+		-
+			message: '#^Strict comparison using \=\=\= between 6 and 6 will always evaluate to true\.$#'
+			identifier: identical.alwaysTrue
+			count: 1
+			path: src/Controller/Inventory/MoveController.php
+
+		-
+			message: '#^Parameter \#2 \$userId of static method App\\Service\\InventoryService\:\:countInventory\(\) expects int, int\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/Item/Blueprint/FishStatueBlueprintController.php
+
+		-
+			message: '#^Method App\\Controller\\Item\\Book\\LeChocolatController\:\:getRecipes\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Controller/Item/Book/LeChocolatController.php
+
+		-
+			message: '#^Parameter \#3 \$species of method App\\Service\\PetFactory\:\:createPet\(\) expects App\\Entity\\PetSpecies, App\\Entity\\PetSpecies\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/Item/BugController.php
+
+		-
+			message: '#^Cannot call method increaseMaxWaterPlants\(\) on App\\Entity\\Greenhouse\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Controller/Item/CeremonyOfSandAndSeaController.php
+
+		-
+			message: '#^Cannot call method setGreetings\(\) on App\\Entity\\Dragon\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Controller/Item/DragonTongueController.php
+
+		-
+			message: '#^Parameter \#1 \$dragon of static method App\\Controller\\Item\\DragonTongueController\:\:wordsAreEquivalent\(\) expects App\\Entity\\Dragon, App\\Entity\\Dragon\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/Item/DragonTongueController.php
+
+		-
+			message: '#^Cannot call method setSocialEnergy\(\) on App\\Entity\\PetHouseTime\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Controller/Item/EggController.php
+
+		-
+			message: '#^Negated boolean expression is always false\.$#'
+			identifier: booleanNot.alwaysFalse
+			count: 3
+			path: src/Controller/Item/EggController.php
+
+		-
+			message: '#^Method App\\Controller\\Item\\DustingLocation\:\:__construct\(\) has parameter \$loot with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Controller/Item/EvilFeatherDuster.php
+
+		-
+			message: '#^Cannot call method getName\(\) on App\\Entity\\Aura\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Controller/Item/FireworkController.php
+
+		-
+			message: '#^Cannot call method increaseMaxPlants\(\) on App\\Entity\\Greenhouse\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Controller/Item/GizbuisShovelController.php
+
+		-
+			message: '#^Parameter \#2 \$itemId of method App\\Service\\InventoryService\:\:loseItem\(\) expects int, int\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/Item/GoldRingController.php
+
+		-
+			message: '#^Parameter \#2 \$userId of static method App\\Service\\InventoryService\:\:countInventory\(\) expects int, int\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/Item/GoldRingController.php
+
+		-
+			message: '#^Parameter \#3 \$itemId of static method App\\Service\\InventoryService\:\:countInventory\(\) expects int, int\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/Item/GoldRingController.php
+
+		-
+			message: '#^Parameter \#2 \$userId of static method App\\Service\\InventoryService\:\:countInventory\(\) expects int, int\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/Item/MothController.php
+
+		-
+			message: '#^Parameter \#3 \$itemId of static method App\\Service\\InventoryService\:\:countInventory\(\) expects int, int\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/Item/MothController.php
+
+		-
+			message: '#^Parameter \#2 \$timestamp of function date expects int\|null, int\|false given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/Item/Note/CreepyMaskDayController.php
+
+		-
+			message: '#^Cannot call method setSocialEnergy\(\) on App\\Entity\\PetHouseTime\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Controller/Item/PetAlteration/ForgettingScrollController.php
+
+		-
+			message: '#^Parameter \#2 \$callback of function array_filter expects \(callable\(int\|string\)\: bool\)\|null, Closure\(string\)\: bool given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/Item/PetAlteration/ForgettingScrollController.php
+
+		-
+			message: '#^Parameter \#1 \$statusEffect of method App\\Entity\\Pet\:\:removeStatusEffect\(\) expects App\\Entity\\StatusEffect, App\\Entity\\StatusEffect\|null given\.$#'
+			identifier: argument.type
+			count: 3
+			path: src/Controller/Item/PetAlteration/WerebaneController.php
+
+		-
+			message: '#^Parameter \#2 \$itemGroup of static method App\\Service\\InventoryService\:\:getRandomItemFromItemGroup\(\) expects App\\Entity\\ItemGroup, App\\Entity\\ItemGroup\|null given\.$#'
+			identifier: argument.type
+			count: 4
+			path: src/Controller/Item/Pinata/BoosterPackController.php
+
+		-
+			message: '#^Parameter \#2 \$itemGroup of static method App\\Service\\InventoryService\:\:getRandomItemFromItemGroup\(\) expects App\\Entity\\ItemGroup, App\\Entity\\ItemGroup\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/Item/Pinata/BoxController.php
+
+		-
+			message: '#^Unable to resolve the template type T in call to method App\\Service\\IRandom\:\:rngNextFromArray\(\)$#'
+			identifier: argument.templateType
+			count: 1
+			path: src/Controller/Item/Pinata/PizzaBoxController.php
+
+		-
+			message: '#^Parameter \#2 \$userId of static method App\\Service\\InventoryService\:\:countInventory\(\) expects int, int\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/Item/Pinata/RecoveredArchiveController.php
+
+		-
+			message: '#^Method App\\Controller\\Item\\Pinata\\SeekingClaymoreController\:\:generateResponse\(\) has parameter \$items with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Controller/Item/Pinata/SeekingClaymoreController.php
+
+		-
+			message: '#^Method App\\Controller\\Item\\Pinata\\SeekingClaymoreController\:\:receiveItems\(\) has parameter \$items with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Controller/Item/Pinata/SeekingClaymoreController.php
+
+		-
+			message: '#^Unable to resolve the template type T in call to method App\\Service\\IRandom\:\:rngNextSubsetFromArray\(\)$#'
+			identifier: argument.templateType
+			count: 1
+			path: src/Controller/Item/Scroll/SandwichController.php
+
+		-
+			message: '#^Cannot call method getSpicy\(\) on App\\Entity\\ItemFood\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Controller/Item/SpicyKonpeitoController.php
+
+		-
+			message: '#^Cannot call method getMaxDarkPlants\(\) on App\\Entity\\Greenhouse\|null\.$#'
+			identifier: method.nonObject
+			count: 2
+			path: src/Controller/Item/TwilightFertilizerController.php
+
+		-
+			message: '#^Cannot call method increaseMaxDarkPlants\(\) on App\\Entity\\Greenhouse\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Controller/Item/TwilightFertilizerController.php
+
+		-
+			message: '#^Cannot call method getItem\(\) on App\\Entity\\Inventory\|null\.$#'
+			identifier: method.nonObject
+			count: 5
+			path: src/Controller/Market/BuyController.php
+
+		-
+			message: '#^Cannot call method getLocation\(\) on App\\Entity\\Inventory\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Controller/Market/BuyController.php
+
+		-
+			message: '#^Cannot call method getOwner\(\) on App\\Entity\\Inventory\|null\.$#'
+			identifier: method.nonObject
+			count: 3
+			path: src/Controller/Market/BuyController.php
+
+		-
+			message: '#^Parameter \#1 \$item of method App\\Service\\MarketService\:\:transferItemToPlayer\(\) expects App\\Entity\\Inventory, App\\Entity\\Inventory\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/Market/BuyController.php
+
+		-
+			message: '#^Parameter \#1 \$item of static method App\\Functions\\InventoryModifierFunctions\:\:getNameWithModifiers\(\) expects App\\Entity\\Inventory, App\\Entity\\Inventory\|null given\.$#'
+			identifier: argument.type
+			count: 2
+			path: src/Controller/Market/BuyController.php
+
+		-
+			message: '#^Parameter \#1 \$itemForSale of method App\\Service\\MarketService\:\:logExchange\(\) expects App\\Entity\\Inventory, App\\Entity\\Inventory\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/Market/BuyController.php
+
+		-
+			message: '#^Parameter \#2 \$amount of method App\\Service\\TransactionService\:\:getMoney\(\) expects int, int\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/Market/BuyController.php
+
+		-
+			message: '#^Parameter \#2 \$amount of method App\\Service\\TransactionService\:\:spendMoney\(\) expects int, int\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/Market/BuyController.php
+
+		-
+			message: '#^Parameter \#2 \$price of method App\\Service\\MarketService\:\:logExchange\(\) expects int, int\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/Market/BuyController.php
+
+		-
+			message: '#^Parameter \#4 \$sellPrice of method App\\Service\\MarketService\:\:transferItemToPlayer\(\) expects int, int\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/Market/BuyController.php
+
+		-
+			message: '#^Parameter \#1 \$sellPrice of static method App\\Entity\\InventoryForSale\:\:calculateBuyPrice\(\) expects int, int\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/MarketBid/CreateBidController.php
+
+		-
+			message: '#^Cannot call method getId\(\) on App\\Entity\\User\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Controller/MarketBid/DeleteBidController.php
+
+		-
+			message: '#^Cannot call method getName\(\) on App\\Entity\\Item\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Controller/MarketBid/DeleteBidController.php
+
+		-
+			message: '#^Cannot call method getCommunityTotal\(\) on App\\Entity\\MonsterOfTheWeek\|null\.$#'
+			identifier: method.nonObject
+			count: 3
+			path: src/Controller/MonsterOfTheWeek/ClaimRewardsController.php
+
+		-
+			message: '#^Cannot call method getEasyPrize\(\) on App\\Entity\\MonsterOfTheWeek\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Controller/MonsterOfTheWeek/ClaimRewardsController.php
+
+		-
+			message: '#^Cannot call method getEndDate\(\) on App\\Entity\\MonsterOfTheWeek\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Controller/MonsterOfTheWeek/ClaimRewardsController.php
+
+		-
+			message: '#^Cannot call method getHardPrize\(\) on App\\Entity\\MonsterOfTheWeek\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Controller/MonsterOfTheWeek/ClaimRewardsController.php
+
+		-
+			message: '#^Cannot call method getLevel\(\) on App\\Entity\\MonsterOfTheWeek\|null\.$#'
+			identifier: method.nonObject
+			count: 3
+			path: src/Controller/MonsterOfTheWeek/ClaimRewardsController.php
+
+		-
+			message: '#^Cannot call method getMediumPrize\(\) on App\\Entity\\MonsterOfTheWeek\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Controller/MonsterOfTheWeek/ClaimRewardsController.php
+
+		-
+			message: '#^Cannot call method getMonster\(\) on App\\Entity\\MonsterOfTheWeek\|null\.$#'
+			identifier: method.nonObject
+			count: 6
+			path: src/Controller/MonsterOfTheWeek/ClaimRewardsController.php
+
+		-
+			message: '#^Match arm comparison between App\\Enum\\MonsterOfTheWeekEnum\:\:VafAndNir and App\\Enum\\MonsterOfTheWeekEnum\:\:VafAndNir is always true\.$#'
+			identifier: match.alwaysTrue
+			count: 3
+			path: src/Controller/MonsterOfTheWeek/ClaimRewardsController.php
+
+		-
+			message: '#^Match expression does not handle remaining value\: string$#'
+			identifier: match.unhandled
+			count: 1
+			path: src/Controller/MonsterOfTheWeek/ClaimRewardsController.php
+
+		-
+			message: '#^Cannot call method getCommunityTotal\(\) on App\\Entity\\MonsterOfTheWeek\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Controller/MonsterOfTheWeek/ContributeController.php
+
+		-
+			message: '#^Cannot call method getId\(\) on App\\Entity\\MonsterOfTheWeek\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Controller/MonsterOfTheWeek/ContributeController.php
+
+		-
+			message: '#^Cannot call method getMonster\(\) on App\\Entity\\MonsterOfTheWeek\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Controller/MonsterOfTheWeek/ContributeController.php
+
+		-
+			message: '#^Cannot call method isCurrent\(\) on App\\Entity\\MonsterOfTheWeek\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Controller/MonsterOfTheWeek/ContributeController.php
+
+		-
+			message: '#^Parameter \#1 \$monsterOfTheWeek of method App\\Entity\\MonsterOfTheWeekContribution\:\:setMonsterOfTheWeek\(\) expects App\\Entity\\MonsterOfTheWeek, App\\Entity\\MonsterOfTheWeek\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/MonsterOfTheWeek/ContributeController.php
+
+		-
+			message: '#^Cannot call method getEndDate\(\) on App\\Entity\\MonsterOfTheWeek\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Controller/MonsterOfTheWeek/GetFoodController.php
+
+		-
+			message: '#^Cannot call method getMonster\(\) on App\\Entity\\MonsterOfTheWeek\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Controller/MonsterOfTheWeek/GetFoodController.php
+
+		-
+			message: '#^Cannot call method getStartDate\(\) on App\\Entity\\MonsterOfTheWeek\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Controller/MonsterOfTheWeek/GetFoodController.php
+
+		-
+			message: '#^Match arm comparison between App\\Enum\\MonsterOfTheWeekEnum\:\:VafAndNir and App\\Enum\\MonsterOfTheWeekEnum\:\:VafAndNir is always true\.$#'
+			identifier: match.alwaysTrue
+			count: 7
+			path: src/Controller/MonsterOfTheWeek/MonsterOfTheWeekHelpers.php
+
+		-
+			message: '#^Method App\\Controller\\MonsterOfTheWeek\\MonsterOfTheWeekHelpers\:\:getBasePrizeValues\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Controller/MonsterOfTheWeek/MonsterOfTheWeekHelpers.php
+
+		-
+			message: '#^Method App\\Controller\\MonsterOfTheWeek\\MonsterOfTheWeekHelpers\:\:getCommunityContributionLevel\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: src/Controller/MonsterOfTheWeek/MonsterOfTheWeekHelpers.php
+
+		-
+			message: '#^Method App\\Controller\\MonsterOfTheWeek\\MonsterOfTheWeekHelpers\:\:getEasyPrizes\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Controller/MonsterOfTheWeek/MonsterOfTheWeekHelpers.php
+
+		-
+			message: '#^Method App\\Controller\\MonsterOfTheWeek\\MonsterOfTheWeekHelpers\:\:getHardPrizes\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Controller/MonsterOfTheWeek/MonsterOfTheWeekHelpers.php
+
+		-
+			message: '#^Method App\\Controller\\MonsterOfTheWeek\\MonsterOfTheWeekHelpers\:\:getMediumPrizes\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Controller/MonsterOfTheWeek/MonsterOfTheWeekHelpers.php
+
+		-
+			message: '#^Right side of && is always true\.$#'
+			identifier: booleanAnd.rightAlwaysTrue
+			count: 3
+			path: src/Controller/MonsterOfTheWeek/MonsterOfTheWeekHelpers.php
+
+		-
+			message: '#^Parameter \#2 \$user_string of function hash_equals expects string, string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/Patreon/LiveUpdatesController.php
+
+		-
+			message: '#^Method App\\Controller\\Pet\\DaycareController\:\:takePetOutOfDaycare\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: src/Controller/Pet/DaycareController.php
+
+		-
+			message: '#^Offset int\|string might not exist on array\{umbra\: ''\#9900FF'', smith\: ''\#FFCC00'', plasticprint\: ''\#FFFFFF'', craft\: ''\#FF6600'', magicbind\: ''\#FF00FF'', gather\: ''\#33CC00'', protocol7\: ''\#336600'', program\: ''\#000000'', \.\.\.\}\.$#'
+			identifier: offsetAccess.notFound
+			count: 5
+			path: src/Controller/Pet/GetActivityStatsController.php
+
+		-
+			message: '#^Offset int\|string might not exist on array\{umbra\: ''Umbra'', smith\: ''Smithing'', plasticprint\: ''3D Printer'', craft\: ''Crafting'', magicbind\: ''Magic\-binding'', gather\: ''Gathering'', protocol7\: ''Protocol 7'', program\: ''Programming'', \.\.\.\}\.$#'
+			identifier: offsetAccess.notFound
+			count: 5
+			path: src/Controller/Pet/GetActivityStatsController.php
+
+		-
+			message: '#^Method App\\Controller\\Pet\\LogsController\:\:findLogsForPetByDate\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Controller/Pet/LogsController.php
+
+		-
+			message: '#^Parameter \#3 \$year of static method App\\Controller\\Pet\\LogsController\:\:findLogsForPetByDate\(\) expects int, int\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/Pet/LogsController.php
+
+		-
+			message: '#^Parameter \#1 \$owner of method App\\Entity\\Pet\:\:setOwner\(\) expects App\\Entity\\User, App\\Entity\\User\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/Pet/ReleaseController.php
+
+		-
+			message: '#^Cannot call method getId\(\) on App\\Entity\\Guild\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Controller/Pet/SelfReflectionController.php
+
+		-
+			message: '#^Cannot call method getName\(\) on App\\Entity\\Guild\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Controller/Pet/SelfReflectionController.php
+
+		-
+			message: '#^Offset ''bff''\|''broke up''\|''dislike''\|''friend''\|''friendly rival''\|''fwb''\|''mate'' might not exist on array\{friend\: ''friends'', bff\: ''BFFs'', fwb\: ''FWBs'', mate\: ''dating''\}\.$#'
+			identifier: offsetAccess.notFound
+			count: 2
+			path: src/Controller/Pet/SelfReflectionController.php
+
+		-
+			message: '#^Parameter \#2 \$relationships of method App\\Service\\Typeahead\\PetRelationshipTypeaheadService\:\:setParameters\(\) expects array\<string\>, array\<int, App\\Enum\\RelationshipEnum\:\:BrokeUp\|App\\Enum\\RelationshipEnum\:\:Dislike\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/Pet/SelfReflectionController.php
+
+		-
+			message: '#^Strict comparison using \=\=\= between ''Balance'' and ''Balance'' will always evaluate to true\.$#'
+			identifier: identical.alwaysTrue
+			count: 1
+			path: src/Controller/Pet/TalentAndExpertiseController.php
+
+		-
+			message: '#^Strict comparison using \=\=\= between ''Moderation'' and ''Moderation'' will always evaluate to true\.$#'
+			identifier: identical.alwaysTrue
+			count: 1
+			path: src/Controller/Pet/TalentAndExpertiseController.php
+
+		-
+			message: '#^Cannot call method add\(\) on DateTimeImmutable\|false\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Controller/StarKindred/GetById.php
+
+		-
+			message: '#^Parameter \#2 \$userId of static method App\\Functions\\UserStyleFunctions\:\:findCurrent\(\) expects int, int\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/Style/SaveCurrentController.php
+
+		-
+			message: '#^Parameter \#1 \$backgroundColor of method App\\Entity\\UserStyle\:\:setBackgroundColor\(\) expects string, string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/Style/SetCurrentController.php
+
+		-
+			message: '#^Parameter \#1 \$bonusAndSpiceColor of method App\\Entity\\UserStyle\:\:setBonusAndSpiceColor\(\) expects string, string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/Style/SetCurrentController.php
+
+		-
+			message: '#^Parameter \#1 \$bonusAndSpiceSelectedColor of method App\\Entity\\UserStyle\:\:setBonusAndSpiceSelectedColor\(\) expects string, string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/Style/SetCurrentController.php
+
+		-
+			message: '#^Parameter \#1 \$buttonTextColor of method App\\Entity\\UserStyle\:\:setButtonTextColor\(\) expects string, string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/Style/SetCurrentController.php
+
+		-
+			message: '#^Parameter \#1 \$dialogLinkColor of method App\\Entity\\UserStyle\:\:setDialogLinkColor\(\) expects string, string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/Style/SetCurrentController.php
+
+		-
+			message: '#^Parameter \#1 \$gainColor of method App\\Entity\\UserStyle\:\:setGainColor\(\) expects string, string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/Style/SetCurrentController.php
+
+		-
+			message: '#^Parameter \#1 \$inputBackgroundColor of method App\\Entity\\UserStyle\:\:setInputBackgroundColor\(\) expects string, string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/Style/SetCurrentController.php
+
+		-
+			message: '#^Parameter \#1 \$inputTextColor of method App\\Entity\\UserStyle\:\:setInputTextColor\(\) expects string, string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/Style/SetCurrentController.php
+
+		-
+			message: '#^Parameter \#1 \$linkAndButtonColor of method App\\Entity\\UserStyle\:\:setLinkAndButtonColor\(\) expects string, string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/Style/SetCurrentController.php
+
+		-
+			message: '#^Parameter \#1 \$primaryColor of method App\\Entity\\UserStyle\:\:setPrimaryColor\(\) expects string, string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/Style/SetCurrentController.php
+
+		-
+			message: '#^Parameter \#1 \$speechBubbleBackgroundColor of method App\\Entity\\UserStyle\:\:setSpeechBubbleBackgroundColor\(\) expects string, string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/Style/SetCurrentController.php
+
+		-
+			message: '#^Parameter \#1 \$tabBarBackgroundColor of method App\\Entity\\UserStyle\:\:setTabBarBackgroundColor\(\) expects string, string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/Style/SetCurrentController.php
+
+		-
+			message: '#^Parameter \#1 \$textColor of method App\\Entity\\UserStyle\:\:setTextColor\(\) expects string, string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/Style/SetCurrentController.php
+
+		-
+			message: '#^Parameter \#1 \$textOnPrimaryColor of method App\\Entity\\UserStyle\:\:setTextOnPrimaryColor\(\) expects string, string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/Style/SetCurrentController.php
+
+		-
+			message: '#^Parameter \#1 \$warningColor of method App\\Entity\\UserStyle\:\:setWarningColor\(\) expects string, string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/Style/SetCurrentController.php
+
+		-
+			message: '#^Parameter \#2 \$userId of static method App\\Functions\\UserStyleFunctions\:\:findCurrent\(\) expects int, int\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/Style/SetCurrentController.php
+
+		-
+			message: '#^Parameter \#1 \$backgroundColor of method App\\Entity\\UserStyle\:\:setBackgroundColor\(\) expects string, string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/Style/ShareController.php
+
+		-
+			message: '#^Parameter \#1 \$bonusAndSpiceColor of method App\\Entity\\UserStyle\:\:setBonusAndSpiceColor\(\) expects string, string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/Style/ShareController.php
+
+		-
+			message: '#^Parameter \#1 \$bonusAndSpiceSelectedColor of method App\\Entity\\UserStyle\:\:setBonusAndSpiceSelectedColor\(\) expects string, string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/Style/ShareController.php
+
+		-
+			message: '#^Parameter \#1 \$buttonTextColor of method App\\Entity\\UserStyle\:\:setButtonTextColor\(\) expects string, string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/Style/ShareController.php
+
+		-
+			message: '#^Parameter \#1 \$dialogLinkColor of method App\\Entity\\UserStyle\:\:setDialogLinkColor\(\) expects string, string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/Style/ShareController.php
+
+		-
+			message: '#^Parameter \#1 \$gainColor of method App\\Entity\\UserStyle\:\:setGainColor\(\) expects string, string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/Style/ShareController.php
+
+		-
+			message: '#^Parameter \#1 \$inputBackgroundColor of method App\\Entity\\UserStyle\:\:setInputBackgroundColor\(\) expects string, string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/Style/ShareController.php
+
+		-
+			message: '#^Parameter \#1 \$inputTextColor of method App\\Entity\\UserStyle\:\:setInputTextColor\(\) expects string, string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/Style/ShareController.php
+
+		-
+			message: '#^Parameter \#1 \$linkAndButtonColor of method App\\Entity\\UserStyle\:\:setLinkAndButtonColor\(\) expects string, string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/Style/ShareController.php
+
+		-
+			message: '#^Parameter \#1 \$primaryColor of method App\\Entity\\UserStyle\:\:setPrimaryColor\(\) expects string, string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/Style/ShareController.php
+
+		-
+			message: '#^Parameter \#1 \$speechBubbleBackgroundColor of method App\\Entity\\UserStyle\:\:setSpeechBubbleBackgroundColor\(\) expects string, string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/Style/ShareController.php
+
+		-
+			message: '#^Parameter \#1 \$tabBarBackgroundColor of method App\\Entity\\UserStyle\:\:setTabBarBackgroundColor\(\) expects string, string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/Style/ShareController.php
+
+		-
+			message: '#^Parameter \#1 \$textColor of method App\\Entity\\UserStyle\:\:setTextColor\(\) expects string, string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/Style/ShareController.php
+
+		-
+			message: '#^Parameter \#1 \$textOnPrimaryColor of method App\\Entity\\UserStyle\:\:setTextOnPrimaryColor\(\) expects string, string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/Style/ShareController.php
+
+		-
+			message: '#^Parameter \#1 \$warningColor of method App\\Entity\\UserStyle\:\:setWarningColor\(\) expects string, string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/Style/ShareController.php
+
+		-
+			message: '#^Parameter \#2 \$userId of static method App\\Functions\\UserStyleFunctions\:\:findCurrent\(\) expects int, int\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/Style/ShareController.php
+
+		-
+			message: '#^Property App\\Entity\\Article\:\:\$author \(App\\Entity\\User\) does not accept App\\Entity\\User\|null\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: src/Entity/Article.php
+
+		-
+			message: '#^Property App\\Entity\\Article\:\:\$designGoals with generic interface Doctrine\\Common\\Collections\\Collection does not specify its types\: TKey, T$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Entity/Article.php
+
+		-
+			message: '#^Method App\\Entity\\Beehive\:\:getHoneycombProgress\(\) should return int but returns float\.$#'
+			identifier: return.type
+			count: 1
+			path: src/Entity/Beehive.php
+
+		-
+			message: '#^Method App\\Entity\\Beehive\:\:getMiscProgress\(\) should return int but returns float\.$#'
+			identifier: return.type
+			count: 1
+			path: src/Entity/Beehive.php
+
+		-
+			message: '#^Method App\\Entity\\Beehive\:\:getRoyalJellyProgress\(\) should return int but returns float\.$#'
+			identifier: return.type
+			count: 1
+			path: src/Entity/Beehive.php
+
+		-
+			message: '#^Property App\\Entity\\Beehive\:\:\$user has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: src/Entity/Beehive.php
+
+		-
+			message: '#^Property App\\Entity\\DailyMarketItemAverage\:\:\$date has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: src/Entity/DailyMarketItemAverage.php
+
+		-
+			message: '#^Property App\\Entity\\DailyMarketItemAverage\:\:\$item \(App\\Entity\\Item\) does not accept App\\Entity\\Item\|null\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: src/Entity/DailyMarketItemAverage.php
+
+		-
+			message: '#^Method App\\Entity\\DailyStats\:\:getUnlockedTrader1Day\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: src/Entity/DailyStats.php
+
+		-
+			message: '#^Method App\\Entity\\DailyStats\:\:setUnlockedTrader1Day\(\) has parameter \$unlockedTrader1Day with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: src/Entity/DailyStats.php
+
+		-
+			message: '#^Property App\\Entity\\DesignGoal\:\:\$articles has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: src/Entity/DesignGoal.php
+
+		-
+			message: '#^Property App\\Entity\\DesignGoal\:\:\$description has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: src/Entity/DesignGoal.php
+
+		-
+			message: '#^Property App\\Entity\\DesignGoal\:\:\$name has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: src/Entity/DesignGoal.php
+
+		-
+			message: '#^Method App\\Entity\\Dragon\:\:getGreetings\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Entity/Dragon.php
+
+		-
+			message: '#^Method App\\Entity\\Dragon\:\:getThanks\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Entity/Dragon.php
+
+		-
+			message: '#^Method App\\Entity\\Dragon\:\:setGreetings\(\) has parameter \$greetings with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Entity/Dragon.php
+
+		-
+			message: '#^Method App\\Entity\\Dragon\:\:setThanks\(\) has parameter \$thanks with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Entity/Dragon.php
+
+		-
+			message: '#^Property App\\Entity\\Dragon\:\:\$greetings type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Entity/Dragon.php
+
+		-
+			message: '#^Property App\\Entity\\Dragon\:\:\$thanks type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Entity/Dragon.php
+
+		-
+			message: '#^Method App\\Entity\\Fireplace\:\:getStocking\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: src/Entity/Fireplace.php
+
+		-
+			message: '#^Method App\\Entity\\GreenhousePlant\:\:getImage\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: src/Entity/GreenhousePlant.php
+
+		-
+			message: '#^Property App\\Entity\\Guild\:\:\$starterTool \(App\\Entity\\Item\) does not accept App\\Entity\\Item\|null\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: src/Entity/Guild.php
+
+		-
+			message: '#^Cannot call method getJuniorTitle\(\) on App\\Entity\\Guild\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Entity/GuildMembership.php
+
+		-
+			message: '#^Cannot call method getMasterTitle\(\) on App\\Entity\\Guild\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Entity/GuildMembership.php
+
+		-
+			message: '#^Cannot call method getMemberTitle\(\) on App\\Entity\\Guild\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Entity/GuildMembership.php
+
+		-
+			message: '#^Cannot call method getSeniorTitle\(\) on App\\Entity\\Guild\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Entity/GuildMembership.php
+
+		-
+			message: '#^Method App\\Entity\\HollowEarthPlayer\:\:getAction\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: src/Entity/HollowEarthPlayer.php
+
+		-
+			message: '#^Method App\\Entity\\HollowEarthPlayer\:\:getCurrentAction\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Entity/HollowEarthPlayer.php
+
+		-
+			message: '#^Method App\\Entity\\HollowEarthPlayer\:\:setCurrentAction\(\) has parameter \$currentAction with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Entity/HollowEarthPlayer.php
+
+		-
+			message: '#^Property App\\Entity\\HollowEarthPlayer\:\:\$currentAction type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Entity/HollowEarthPlayer.php
+
+		-
+			message: '#^Property App\\Entity\\HollowEarthPlayerTile\:\:\$card has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: src/Entity/HollowEarthPlayerTile.php
+
+		-
+			message: '#^Method App\\Entity\\HollowEarthTile\:\:getGoods\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Entity/HollowEarthTile.php
+
+		-
+			message: '#^Method App\\Entity\\HollowEarthTile\:\:setGoods\(\) has parameter \$goods with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Entity/HollowEarthTile.php
+
+		-
+			message: '#^Property App\\Entity\\HollowEarthTile\:\:\$card has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: src/Entity/HollowEarthTile.php
+
+		-
+			message: '#^Property App\\Entity\\HollowEarthTile\:\:\$goods type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Entity/HollowEarthTile.php
+
+		-
+			message: '#^Property App\\Entity\\HollowEarthTile\:\:\$types has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: src/Entity/HollowEarthTile.php
+
+		-
+			message: '#^Method App\\Entity\\HollowEarthTileCard\:\:getEvent\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Entity/HollowEarthTileCard.php
+
+		-
+			message: '#^Method App\\Entity\\HollowEarthTileCard\:\:setEvent\(\) has parameter \$event with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Entity/HollowEarthTileCard.php
+
+		-
+			message: '#^Property App\\Entity\\HollowEarthTileCard\:\:\$event type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Entity/HollowEarthTileCard.php
+
+		-
+			message: '#^Cannot call method getHat\(\) on App\\Entity\\Pet\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Entity/Inventory.php
+
+		-
+			message: '#^Cannot call method getTool\(\) on App\\Entity\\Pet\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Entity/Inventory.php
+
+		-
+			message: '#^Cannot call method setHat\(\) on App\\Entity\\Pet\|null\.$#'
+			identifier: method.nonObject
+			count: 2
+			path: src/Entity/Inventory.php
+
+		-
+			message: '#^Cannot call method setTool\(\) on App\\Entity\\Pet\|null\.$#'
+			identifier: method.nonObject
+			count: 2
+			path: src/Entity/Inventory.php
+
+		-
+			message: '#^Negated boolean expression is always false\.$#'
+			identifier: booleanNot.alwaysFalse
+			count: 1
+			path: src/Entity/Inventory.php
+
+		-
+			message: '#^Property App\\Entity\\InventoryForSale\:\:\$sellPrice \(int\|null\) is never assigned null so it can be removed from the property type\.$#'
+			identifier: property.unusedType
+			count: 1
+			path: src/Entity/InventoryForSale.php
+
+		-
+			message: '#^Method App\\Entity\\Item\:\:getUseActions\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Entity/Item.php
+
+		-
+			message: '#^Method App\\Entity\\Item\:\:setUseActions\(\) has parameter \$useActions with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Entity/Item.php
+
+		-
+			message: '#^Property App\\Entity\\Item\:\:\$inventory is unused\.$#'
+			identifier: property.unused
+			count: 1
+			path: src/Entity/Item.php
+
+		-
+			message: '#^Property App\\Entity\\Item\:\:\$museumDonations is unused\.$#'
+			identifier: property.unused
+			count: 1
+			path: src/Entity/Item.php
+
+		-
+			message: '#^Property App\\Entity\\Item\:\:\$useActions type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Entity/Item.php
+
+		-
+			message: '#^Method App\\Entity\\ItemFood\:\:getModifiers\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Entity/ItemFood.php
+
+		-
+			message: '#^Cannot call method getHat\(\) on App\\Entity\\Item\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Entity/ItemHat.php
+
+		-
+			message: '#^Cannot call method setHat\(\) on App\\Entity\\Item\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Entity/ItemHat.php
+
+		-
+			message: '#^Property App\\Entity\\ItemHat\:\:\$item has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: src/Entity/ItemHat.php
+
+		-
+			message: '#^Method App\\Entity\\ItemTool\:\:getModifiers\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Entity/ItemTool.php
+
+		-
+			message: '#^Property App\\Entity\\ItemTool\:\:\$enchantment has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: src/Entity/ItemTool.php
+
+		-
+			message: '#^Property App\\Entity\\Letter\:\:\$attachment has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: src/Entity/Letter.php
+
+		-
+			message: '#^Property App\\Entity\\Letter\:\:\$bonus has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: src/Entity/Letter.php
+
+		-
+			message: '#^Property App\\Entity\\Letter\:\:\$fieldGuideEntry has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: src/Entity/Letter.php
+
+		-
+			message: '#^Property App\\Entity\\Letter\:\:\$sender has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: src/Entity/Letter.php
+
+		-
+			message: '#^Property App\\Entity\\Letter\:\:\$spice has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: src/Entity/Letter.php
+
+		-
+			message: '#^Property App\\Entity\\MarketBid\:\:\$item \(App\\Entity\\Item\) does not accept App\\Entity\\Item\|null\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: src/Entity/MarketBid.php
+
+		-
+			message: '#^Property App\\Entity\\MarketBid\:\:\$user \(App\\Entity\\User\) does not accept App\\Entity\\User\|null\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: src/Entity/MarketBid.php
+
+		-
+			message: '#^Method App\\Entity\\MonthlyStoryAdventure\:\:isREMIX\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: src/Entity/MonthlyStoryAdventure.php
+
+		-
+			message: '#^Property App\\Entity\\MonthlyStoryAdventure\:\:\$steps with generic interface Doctrine\\Common\\Collections\\Collection does not specify its types\: TKey, T$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Entity/MonthlyStoryAdventure.php
+
+		-
+			message: '#^Method App\\Entity\\MuseumItem\:\:getComments\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Entity/MuseumItem.php
+
+		-
+			message: '#^Method App\\Entity\\MuseumItem\:\:setComments\(\) has parameter \$comments with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Entity/MuseumItem.php
+
+		-
+			message: '#^Property App\\Entity\\MuseumItem\:\:\$comments has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: src/Entity/MuseumItem.php
+
+		-
+			message: '#^Property App\\Entity\\ParkEvent\:\:\$participants with generic interface Doctrine\\Common\\Collections\\Collection does not specify its types\: TKey, T$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Entity/ParkEvent.php
+
+		-
+			message: '#^Binary operation "\|" between int\|string and int\|string results in an error\.$#'
+			identifier: binaryOp.invalid
+			count: 1
+			path: src/Entity/Pet.php
+
+		-
+			message: '#^Cannot call method getName\(\) on App\\Entity\\Guild\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Entity/Pet.php
+
+		-
+			message: '#^Cannot call method getTimeSpent\(\) on App\\Entity\\PetHouseTime\|null\.$#'
+			identifier: method.nonObject
+			count: 2
+			path: src/Entity/Pet.php
+
+		-
+			message: '#^Method App\\Entity\\Pet\:\:assignActivityPersonality\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: src/Entity/Pet.php
+
+		-
+			message: '#^Method App\\Entity\\Pet\:\:assignAffectionExpressions\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: src/Entity/Pet.php
+
+		-
+			message: '#^Method App\\Entity\\Pet\:\:getMinFood\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: src/Entity/Pet.php
+
+		-
+			message: '#^Method App\\Entity\\Pet\:\:getNeeds\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: src/Entity/Pet.php
+
+		-
+			message: '#^Method App\\Entity\\Pet\:\:getPetActivityLogMerits\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Entity/Pet.php
+
+		-
+			message: '#^Method App\\Entity\\Pet\:\:getStatuses\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Entity/Pet.php
+
+		-
+			message: '#^Property App\\Entity\\Pet\:\:\$fatheredPets with generic interface Doctrine\\Common\\Collections\\Collection does not specify its types\: TKey, T$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Entity/Pet.php
+
+		-
+			message: '#^Property App\\Entity\\Pet\:\:\$groups with generic interface Doctrine\\Common\\Collections\\Collection does not specify its types\: TKey, T$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Entity/Pet.php
+
+		-
+			message: '#^Property App\\Entity\\Pet\:\:\$merits with generic interface Doctrine\\Common\\Collections\\Collection does not specify its types\: TKey, T$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Entity/Pet.php
+
+		-
+			message: '#^Property App\\Entity\\Pet\:\:\$motheredPets with generic interface Doctrine\\Common\\Collections\\Collection does not specify its types\: TKey, T$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Entity/Pet.php
+
+		-
+			message: '#^Property App\\Entity\\Pet\:\:\$parkEventOrder is never read, only written\.$#'
+			identifier: property.onlyWritten
+			count: 1
+			path: src/Entity/Pet.php
+
+		-
+			message: '#^Property App\\Entity\\Pet\:\:\$petRelationships with generic interface Doctrine\\Common\\Collections\\Collection does not specify its types\: TKey, T$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Entity/Pet.php
+
+		-
+			message: '#^Property App\\Entity\\Pet\:\:\$statusEffects with generic interface Doctrine\\Common\\Collections\\Collection does not specify its types\: TKey, T$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Entity/Pet.php
+
+		-
+			message: '#^Method App\\Entity\\PetBaby\:\:getParent\(\) should return App\\Entity\\Pet but returns App\\Entity\\Pet\|null\.$#'
+			identifier: return.type
+			count: 1
+			path: src/Entity/PetBaby.php
+
+		-
+			message: '#^Property App\\Entity\\PetBaby\:\:\$parent \(App\\Entity\\Pet\|null\) is never assigned null so it can be removed from the property type\.$#'
+			identifier: property.unusedType
+			count: 1
+			path: src/Entity/PetBaby.php
+
+		-
+			message: '#^Match arm comparison between App\\Enum\\PetGroupTypeEnum\:\:Sportsball and App\\Enum\\PetGroupTypeEnum\:\:Sportsball is always true\.$#'
+			identifier: match.alwaysTrue
+			count: 2
+			path: src/Entity/PetGroup.php
+
+		-
+			message: '#^Property App\\Entity\\PetGroup\:\:\$members with generic interface Doctrine\\Common\\Collections\\Collection does not specify its types\: TKey, T$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Entity/PetGroup.php
+
+		-
+			message: '#^Method App\\Entity\\PetQuest\:\:__construct\(\) has parameter \$value with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: src/Entity/PetQuest.php
+
+		-
+			message: '#^Method App\\Entity\\PetQuest\:\:getValue\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: src/Entity/PetQuest.php
+
+		-
+			message: '#^Method App\\Entity\\PetQuest\:\:setValue\(\) has parameter \$value with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: src/Entity/PetQuest.php
+
+		-
+			message: '#^Property App\\Entity\\PetQuest\:\:\$value has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: src/Entity/PetQuest.php
+
+		-
+			message: '#^Match arm comparison between App\\Enum\\RelationshipEnum\:\:Mate and App\\Enum\\RelationshipEnum\:\:Mate is always true\.$#'
+			identifier: match.alwaysTrue
+			count: 1
+			path: src/Entity/PetRelationship.php
+
+		-
+			message: '#^Property App\\Entity\\PetSpecies\:\:\$pets is never read, only written\.$#'
+			identifier: property.onlyWritten
+			count: 1
+			path: src/Entity/PetSpecies.php
+
+		-
+			message: '#^Property App\\Entity\\PetSpecies\:\:\$sheds is never written, only read\.$#'
+			identifier: property.onlyRead
+			count: 1
+			path: src/Entity/PetSpecies.php
+
+		-
+			message: '#^Cannot call method getPlant\(\) on App\\Entity\\Item\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Entity/Plant.php
+
+		-
+			message: '#^Cannot call method setPlant\(\) on App\\Entity\\Item\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Entity/Plant.php
+
+		-
+			message: '#^Property App\\Entity\\Plant\:\:\$item \(App\\Entity\\Item\) does not accept App\\Entity\\Item\|null\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: src/Entity/Plant.php
+
+		-
+			message: '#^Property App\\Entity\\PlantYield\:\:\$items with generic interface Doctrine\\Common\\Collections\\Collection does not specify its types\: TKey, T$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Entity/PlantYield.php
+
+		-
+			message: '#^Property App\\Entity\\PlantYield\:\:\$plant \(App\\Entity\\Plant\) does not accept App\\Entity\\Plant\|null\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: src/Entity/PlantYield.php
+
+		-
+			message: '#^Property App\\Entity\\PlantYieldItem\:\:\$plantYield has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: src/Entity/PlantYieldItem.php
+
+		-
+			message: '#^Property App\\Entity\\SpiritCompanion\:\:\$fatheredPets with generic interface Doctrine\\Common\\Collections\\Collection does not specify its types\: TKey, T$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Entity/SpiritCompanion.php
+
+		-
+			message: '#^Property App\\Entity\\Story\:\:\$firstSection has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: src/Entity/Story.php
+
+		-
+			message: '#^Property App\\Entity\\Story\:\:\$title has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: src/Entity/Story.php
+
+		-
+			message: '#^Method App\\Entity\\StorySection\:\:getChoices\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Entity/StorySection.php
+
+		-
+			message: '#^Method App\\Entity\\StorySection\:\:setChoices\(\) has parameter \$choices with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Entity/StorySection.php
+
+		-
+			message: '#^Property App\\Entity\\StorySection\:\:\$choices has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: src/Entity/StorySection.php
+
+		-
+			message: '#^Property App\\Entity\\SurveyQuestion\:\:\$survey \(App\\Entity\\Survey\) does not accept App\\Entity\\Survey\|null\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: src/Entity/SurveyQuestion.php
+
+		-
+			message: '#^Method App\\Entity\\User\:\:getUserIdentifier\(\) should return non\-empty\-string but returns string\.$#'
+			identifier: return.type
+			count: 1
+			path: src/Entity/User.php
+
+		-
+			message: '#^Method App\\Entity\\User\:\:setRoles\(\) has parameter \$roles with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Entity/User.php
+
+		-
+			message: '#^Parameter \#1 \$owner of method App\\Entity\\GreenhousePlant\:\:setOwner\(\) expects App\\Entity\\User, null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Entity/User.php
+
+		-
+			message: '#^Property App\\Entity\\User\:\:\$followedBy is unused\.$#'
+			identifier: property.unused
+			count: 1
+			path: src/Entity/User.php
+
+		-
+			message: '#^Method App\\Entity\\UserMenuOrder\:\:getMenuOrder\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Entity/UserMenuOrder.php
+
+		-
+			message: '#^Method App\\Entity\\UserMenuOrder\:\:setMenuOrder\(\) has parameter \$menuOrder with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Entity/UserMenuOrder.php
+
+		-
+			message: '#^Property App\\Entity\\UserMenuOrder\:\:\$menuOrder type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Entity/UserMenuOrder.php
+
+		-
+			message: '#^Method App\\Entity\\UserQuest\:\:__construct\(\) has parameter \$value with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: src/Entity/UserQuest.php
+
+		-
+			message: '#^Method App\\Entity\\UserQuest\:\:getValue\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: src/Entity/UserQuest.php
+
+		-
+			message: '#^Method App\\Entity\\UserQuest\:\:setValue\(\) has parameter \$value with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: src/Entity/UserQuest.php
+
+		-
+			message: '#^Property App\\Entity\\UserQuest\:\:\$value has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: src/Entity/UserQuest.php
+
+		-
+			message: '#^Method App\\Entity\\UserSubscription\:\:getTier\(\) should return string but returns string\|null\.$#'
+			identifier: return.type
+			count: 1
+			path: src/Entity/UserSubscription.php
+
+		-
+			message: '#^Method App\\Enum\\ActivityPersonalityEnum\:\:getRandomValue\(\) should return string but returns int\|string\.$#'
+			identifier: return.type
+			count: 1
+			path: src/Enum/ActivityPersonalityEnum.php
+
+		-
+			message: '#^Method App\\Enum\\BadgeEnum\:\:getRandomValue\(\) should return string but returns int\|string\.$#'
+			identifier: return.type
+			count: 1
+			path: src/Enum/BadgeEnum.php
+
+		-
+			message: '#^Method App\\Enum\\HollowEarthActionTypeEnum\:\:getRandomValue\(\) should return string but returns int\|string\.$#'
+			identifier: return.type
+			count: 1
+			path: src/Enum/HollowEarthActionTypeEnum.php
+
+		-
+			message: '#^Method App\\Enum\\HollowEarthRequiredActionEnum\:\:getRandomValue\(\) should return string but returns int\|string\.$#'
+			identifier: return.type
+			count: 1
+			path: src/Enum/HollowEarthRequiredActionEnum.php
+
+		-
+			message: '#^Method App\\Enum\\LocationEnum\:\:getRandomValue\(\) should return string but returns int\|string\.$#'
+			identifier: return.type
+			count: 1
+			path: src/Enum/LocationEnum.php
+
+		-
+			message: '#^Method App\\Enum\\MeritEnum\:\:getRandomValue\(\) should return string but returns int\|string\.$#'
+			identifier: return.type
+			count: 1
+			path: src/Enum/MeritEnum.php
+
+		-
+			message: '#^Method App\\Enum\\ParkEventTypeEnum\:\:getRandomValue\(\) should return string but returns int\|string\.$#'
+			identifier: return.type
+			count: 1
+			path: src/Enum/ParkEventTypeEnum.php
+
+		-
+			message: '#^Method App\\Enum\\PatreonTierEnum\:\:getRandomValue\(\) should return string but returns int\|string\.$#'
+			identifier: return.type
+			count: 1
+			path: src/Enum/PatreonTierEnum.php
+
+		-
+			message: '#^Method App\\Enum\\PetActivityLogTagEnum\:\:getRandomValue\(\) should return string but returns int\|string\.$#'
+			identifier: return.type
+			count: 1
+			path: src/Enum/PetActivityLogTagEnum.php
+
+		-
+			message: '#^Method App\\Enum\\PetActivityStatEnum\:\:getRandomValue\(\) should return string but returns int\|string\.$#'
+			identifier: return.type
+			count: 1
+			path: src/Enum/PetActivityStatEnum.php
+
+		-
+			message: '#^Method App\\Enum\\PetBadgeEnum\:\:getRandomValue\(\) should return string but returns int\|string\.$#'
+			identifier: return.type
+			count: 1
+			path: src/Enum/PetBadgeEnum.php
+
+		-
+			message: '#^Method App\\Enum\\PetLocationEnum\:\:getRandomValue\(\) should return string but returns int\|string\.$#'
+			identifier: return.type
+			count: 1
+			path: src/Enum/PetLocationEnum.php
+
+		-
+			message: '#^Method App\\Enum\\PetSkillEnum\:\:getRandomValue\(\) should return string but returns int\|string\.$#'
+			identifier: return.type
+			count: 1
+			path: src/Enum/PetSkillEnum.php
+
+		-
+			message: '#^Method App\\Enum\\PlantTypeEnum\:\:getRandomValue\(\) should return string but returns int\|string\.$#'
+			identifier: return.type
+			count: 1
+			path: src/Enum/PlantTypeEnum.php
+
+		-
+			message: '#^Method App\\Enum\\PlayerActivityLogTagEnum\:\:getRandomValue\(\) should return string but returns int\|string\.$#'
+			identifier: return.type
+			count: 1
+			path: src/Enum/PlayerActivityLogTagEnum.php
+
+		-
+			message: '#^Method App\\Enum\\SerializationGroupEnum\:\:getRandomValue\(\) should return string but returns int\|string\.$#'
+			identifier: return.type
+			count: 1
+			path: src/Enum/SerializationGroupEnum.php
+
+		-
+			message: '#^Method App\\Enum\\StorySectionStyleEnum\:\:getRandomValue\(\) should return string but returns int\|string\.$#'
+			identifier: return.type
+			count: 1
+			path: src/Enum/StorySectionStyleEnum.php
+
+		-
+			message: '#^Cannot access offset 0 on callable\(\)\: mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: src/EventSubscriber/ControllerActionSubscriber.php
+
+		-
+			message: '#^Cannot access offset 1 on callable\(\)\: mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: src/EventSubscriber/ControllerActionSubscriber.php
+
+		-
+			message: '#^Parameter \#1 \$objectOrMethod of class ReflectionMethod constructor expects object\|string, class\-string\|false given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/EventSubscriber/ControllerActionSubscriber.php
+
+		-
+			message: '#^Call to an undefined method Symfony\\Component\\Security\\Core\\User\\UserInterface\:\:getId\(\)\.$#'
+			identifier: method.notFound
+			count: 2
+			path: src/EventSubscriber/OneNonIdempotentRequestPerUserSubscriber.php
+
+		-
+			message: '#^Method App\\Functions\\ArrayFunctions\:\:average\(\) has parameter \$values with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Functions/ArrayFunctions.php
+
+		-
+			message: '#^Method App\\Functions\\ArrayFunctions\:\:except\(\) has parameter \$toExclude with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Functions/ArrayFunctions.php
+
+		-
+			message: '#^Method App\\Functions\\ArrayFunctions\:\:except\(\) has parameter \$values with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Functions/ArrayFunctions.php
+
+		-
+			message: '#^Method App\\Functions\\ArrayFunctions\:\:except\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Functions/ArrayFunctions.php
+
+		-
+			message: '#^Method App\\Functions\\ArrayFunctions\:\:list_nice\(\) should return string but returns string\|false\.$#'
+			identifier: return.type
+			count: 1
+			path: src/Functions/ArrayFunctions.php
+
+		-
+			message: '#^Method App\\Functions\\ArrayFunctions\:\:list_nice_sorted\(\) has parameter \$strings with no value type specified in iterable type iterable\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Functions/ArrayFunctions.php
+
+		-
+			message: '#^Parameter \#1 \$value of function count expects array\|Countable, iterable\<string\> given\.$#'
+			identifier: argument.type
+			count: 3
+			path: src/Functions/ArrayFunctions.php
+
+		-
+			message: '#^Cannot call method format\(\) on DateTimeImmutable\|false\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Functions/CalendarFunctions.php
+
+		-
+			message: '#^Method App\\Functions\\CalendarFunctions\:\:getEventData\(\) should return array\<App\\Enum\\HolidayEnum\> but returns array\<App\\Enum\\HolidayEnum\|string\>\.$#'
+			identifier: return.type
+			count: 1
+			path: src/Functions/CalendarFunctions.php
+
+		-
+			message: '#^Method App\\Functions\\ColorFunctions\:\:Hex2RGB\(\) should return array\{r\: int, g\: int, b\: int\} but returns array\{r\: float\|int, g\: int\<\-255, 255\>, b\: int\<\-255, 255\>\}\.$#'
+			identifier: return.type
+			count: 1
+			path: src/Functions/ColorFunctions.php
+
+		-
+			message: '#^Cannot call method setTime\(\) on DateTimeImmutable\|false\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Functions/DateFunctions.php
+
+		-
+			message: '#^Cannot access offset ''treasureCount'' on array\|ArrayObject\|bool\|float\|int\|string\|null\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: src/Functions/DragonHelpers.php
+
+		-
+			message: '#^Method App\\Functions\\DragonHelpers\:\:createDragonResponse\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Functions/DragonHelpers.php
+
+		-
+			message: '#^Method App\\Functions\\DragonHelpers\:\:createDragonResponse\(\) should return array but returns array\|ArrayObject\.$#'
+			identifier: return.type
+			count: 1
+			path: src/Functions/DragonHelpers.php
+
+		-
+			message: '#^Method App\\Functions\\GroupNameGenerator\:\:generateNameFromParts\(\) has parameter \$dictionary with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Functions/GroupNameGenerator.php
+
+		-
+			message: '#^Method App\\Functions\\GroupNameGenerator\:\:generateNameFromParts\(\) has parameter \$parts with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Functions/GroupNameGenerator.php
+
+		-
+			message: '#^Method App\\Functions\\InMemoryCache\:\:get\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: src/Functions/InMemoryCache.php
+
+		-
+			message: '#^Property App\\Functions\\InMemoryCache\:\:\$cache has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: src/Functions/InMemoryCache.php
+
+		-
+			message: '#^Method App\\Functions\\ItemRepository\:\:getIdByName\(\) should return int but returns float\|int\<min, \-1\>\|int\<1, max\>\|string\|true\.$#'
+			identifier: return.type
+			count: 1
+			path: src/Functions/ItemRepository.php
+
+		-
+			message: '#^Method App\\Functions\\JewishCalendarFunctions\:\:getJewishHoliday\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Functions/JewishCalendarFunctions.php
+
+		-
+			message: '#^Method App\\Functions\\NumberFunctions\:\:findDivisors\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Functions/NumberFunctions.php
+
+		-
+			message: '#^Method App\\Functions\\ProfanityFilterFunctions\:\:filter\(\) should return string but returns string\|null\.$#'
+			identifier: return.type
+			count: 1
+			path: src/Functions/ProfanityFilterFunctions.php
+
+		-
+			message: '#^Parameter \#3 \$subject of function preg_replace expects array\<float\|int\|string\>\|string, string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Functions/ProfanityFilterFunctions.php
+
+		-
+			message: '#^Method App\\Functions\\SimpleDb\:\:query\(\) has parameter \$parameters with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Functions/SimpleDb.php
+
+		-
+			message: '#^Method App\\Functions\\SimpleStatement\:\:getResults\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Functions/SimpleDb.php
+
+		-
+			message: '#^Method App\\Functions\\SimpleStatement\:\:mapResults\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Functions/SimpleDb.php
+
+		-
+			message: '#^Parameter \#1 \$string of function strlen expects string, string\|false given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Functions/StringFunctions.php
+
+		-
+			message: '#^Method App\\Functions\\UserMenuFunctions\:\:updateUserMenuSortOrder\(\) has parameter \$order with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Functions/UserMenuFunctions.php
+
+		-
+			message: '#^Method App\\Functions\\UserQuestRepository\:\:findOrCreate\(\) has parameter \$default with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: src/Functions/UserQuestRepository.php
+
+		-
+			message: '#^Property App\\Functions\\UserQuestRepository\:\:\$userQuestPerRequestCache type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Functions/UserQuestRepository.php
+
+		-
+			message: '#^Property App\\Functions\\UserUnlockedFeatureHelpers\:\:\$createdThisRequest type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Functions/UserUnlockedFeatureHelpers.php
+
+		-
+			message: '#^Property App\\Model\\FilterResults\:\:\$results type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Model/FilterResults.php
+
+		-
+			message: '#^Cannot call method getAlcohol\(\) on App\\Entity\\ItemFood\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Model/FoodWithSpice.php
+
+		-
+			message: '#^Cannot call method getCaffeine\(\) on App\\Entity\\ItemFood\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Model/FoodWithSpice.php
+
+		-
+			message: '#^Cannot call method getChanceForBonusItem\(\) on App\\Entity\\ItemFood\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Model/FoodWithSpice.php
+
+		-
+			message: '#^Cannot call method getContainsTentacles\(\) on App\\Entity\\ItemFood\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Model/FoodWithSpice.php
+
+		-
+			message: '#^Cannot call method getFood\(\) on App\\Entity\\ItemFood\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Model/FoodWithSpice.php
+
+		-
+			message: '#^Cannot call method getGrantedSkill\(\) on App\\Entity\\ItemFood\|null\.$#'
+			identifier: method.nonObject
+			count: 2
+			path: src/Model/FoodWithSpice.php
+
+		-
+			message: '#^Cannot call method getGrantedStatusEffect\(\) on App\\Entity\\ItemFood\|null\.$#'
+			identifier: method.nonObject
+			count: 2
+			path: src/Model/FoodWithSpice.php
+
+		-
+			message: '#^Cannot call method getGrantedStatusEffectDuration\(\) on App\\Entity\\ItemFood\|null\.$#'
+			identifier: method.nonObject
+			count: 2
+			path: src/Model/FoodWithSpice.php
+
+		-
+			message: '#^Cannot call method getGrantsSelfReflection\(\) on App\\Entity\\ItemFood\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Model/FoodWithSpice.php
+
+		-
+			message: '#^Cannot call method getJunk\(\) on App\\Entity\\ItemFood\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Model/FoodWithSpice.php
+
+		-
+			message: '#^Cannot call method getLeftovers\(\) on App\\Entity\\ItemFood\|null\.$#'
+			identifier: method.nonObject
+			count: 2
+			path: src/Model/FoodWithSpice.php
+
+		-
+			message: '#^Cannot call method getLove\(\) on App\\Entity\\ItemFood\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Model/FoodWithSpice.php
+
+		-
+			message: '#^Cannot call method getPsychedelic\(\) on App\\Entity\\ItemFood\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Model/FoodWithSpice.php
+
+		-
+			message: '#^Cannot call method getRandomFlavor\(\) on App\\Entity\\ItemFood\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Model/FoodWithSpice.php
+
+		-
+			message: '#^Cannot call method getchemically\(\) on App\\Entity\\ItemFood\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Model/FoodWithSpice.php
+
+		-
+			message: '#^Cannot call method getcreamy\(\) on App\\Entity\\ItemFood\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Model/FoodWithSpice.php
+
+		-
+			message: '#^Cannot call method getearthy\(\) on App\\Entity\\ItemFood\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Model/FoodWithSpice.php
+
+		-
+			message: '#^Cannot call method getfatty\(\) on App\\Entity\\ItemFood\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Model/FoodWithSpice.php
+
+		-
+			message: '#^Cannot call method getfishy\(\) on App\\Entity\\ItemFood\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Model/FoodWithSpice.php
+
+		-
+			message: '#^Cannot call method getfloral\(\) on App\\Entity\\ItemFood\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Model/FoodWithSpice.php
+
+		-
+			message: '#^Cannot call method getfruity\(\) on App\\Entity\\ItemFood\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Model/FoodWithSpice.php
+
+		-
+			message: '#^Cannot call method getmeaty\(\) on App\\Entity\\ItemFood\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Model/FoodWithSpice.php
+
+		-
+			message: '#^Cannot call method getoniony\(\) on App\\Entity\\ItemFood\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Model/FoodWithSpice.php
+
+		-
+			message: '#^Cannot call method getplanty\(\) on App\\Entity\\ItemFood\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Model/FoodWithSpice.php
+
+		-
+			message: '#^Cannot call method getspicy\(\) on App\\Entity\\ItemFood\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Model/FoodWithSpice.php
+
+		-
+			message: '#^Cannot call method gettannic\(\) on App\\Entity\\ItemFood\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Model/FoodWithSpice.php
+
+		-
+			message: '#^Parameter \#1 \$food of class App\\Model\\BonusItemChance constructor expects App\\Entity\\ItemFood, App\\Entity\\ItemFood\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Model/FoodWithSpice.php
+
+		-
+			message: '#^Property App\\Model\\FoodWithSpice\:\:\$food \(int\) does not accept int\|null\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: src/Model/FoodWithSpice.php
+
+		-
+			message: '#^Property App\\Model\\FoodWithSpice\:\:\$grantedSkills type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Model/FoodWithSpice.php
+
+		-
+			message: '#^Property App\\Model\\FoodWithSpice\:\:\$love \(int\) does not accept int\|null\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: src/Model/FoodWithSpice.php
+
+		-
+			message: '#^Parameter \#1 \$key of function array_key_exists expects int\|string, int\|null given\.$#'
+			identifier: argument.type
+			count: 5
+			path: src/Model/HouseSim.php
+
+		-
+			message: '#^Property App\\Model\\HouseSim\:\:\$itemQuantitiesByItemId type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Model/HouseSim.php
+
+		-
+			message: '#^Method App\\Model\\MonthlyStoryAdventure\\AdventureResult\:\:__construct\(\) has parameter \$loot with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Model/MonthlyStoryAdventure/AdventureResult.php
+
+		-
+			message: '#^Cannot call method getName\(\) on App\\Entity\\Item\|null\.$#'
+			identifier: method.nonObject
+			count: 2
+			path: src/Model/TraderOffer.php
+
+		-
+			message: '#^Strict comparison using \=\=\= between App\\Enum\\CostOrYieldTypeEnum\:\:RecyclingPoints and App\\Enum\\CostOrYieldTypeEnum\:\:RecyclingPoints will always evaluate to true\.$#'
+			identifier: identical.alwaysTrue
+			count: 1
+			path: src/Model/TraderOffer.php
+
+		-
+			message: '#^Method App\\Model\\WeatherData\:\:isRaining\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: src/Model/WeatherData.php
+
+		-
+			message: '#^Parameter \#1 \$min \(0\) of function random_int expects lower number than parameter \#2 \$max \(int\<\-1, max\>\)\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Security/CryptographicFunctions.php
+
+		-
+			message: '#^Method App\\Security\\SessionAuthenticator\:\:getSessionIdOrThrow\(\) should return string but returns float\|int\<min, \-1\>\|int\<1, max\>\|string\|true\.$#'
+			identifier: return.type
+			count: 1
+			path: src/Security/SessionAuthenticator.php
+
+		-
+			message: '#^Parameter \#1 \$string of function strlen expects string, bool\|float\|int\|string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Security/SessionAuthenticator.php
+
+		-
+			message: '#^Parameter \#1 \$string of function substr expects string, string\|null given\.$#'
+			identifier: argument.type
+			count: 2
+			path: src/Security/SessionAuthenticator.php
+
+		-
+			message: '#^Method App\\Serializer\\PetActivityLogNormalizer\:\:normalize\(\) has parameter \$context with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Serializer/PetActivityLogNormalizer.php
+
+		-
+			message: '#^Method App\\Serializer\\PetActivityLogNormalizer\:\:normalize\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Serializer/PetActivityLogNormalizer.php
+
+		-
+			message: '#^Method App\\Serializer\\PetActivityLogNormalizer\:\:normalize\(\) return type with generic class ArrayObject does not specify its types\: TKey, TValue$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Serializer/PetActivityLogNormalizer.php
+
+		-
+			message: '#^Method App\\Serializer\\PetActivityLogNormalizer\:\:supportsNormalization\(\) has parameter \$context with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Serializer/PetActivityLogNormalizer.php
+
+		-
+			message: '#^Parameter \#2 \$array of function array_key_exists expects array, array\|ArrayObject\|bool\|float\|int\|string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Serializer/PetActivityLogNormalizer.php
+
+		-
+			message: '#^Cannot access offset ''numberOfPets'' on array\|ArrayObject\|bool\|float\|int\|string\|null\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: src/Serializer/PetSpeciesNormalizer.php
+
+		-
+			message: '#^Method App\\Serializer\\PetSpeciesNormalizer\:\:normalize\(\) has parameter \$context with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Serializer/PetSpeciesNormalizer.php
+
+		-
+			message: '#^Method App\\Serializer\\PetSpeciesNormalizer\:\:normalize\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Serializer/PetSpeciesNormalizer.php
+
+		-
+			message: '#^Method App\\Serializer\\PetSpeciesNormalizer\:\:normalize\(\) return type with generic class ArrayObject does not specify its types\: TKey, TValue$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Serializer/PetSpeciesNormalizer.php
+
+		-
+			message: '#^Method App\\Serializer\\PetSpeciesNormalizer\:\:supportsNormalization\(\) has parameter \$context with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Serializer/PetSpeciesNormalizer.php
+
+		-
+			message: '#^Cannot access offset ''comment'' on array\|ArrayObject\|bool\|float\|int\|string\|null\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 2
+			path: src/Serializer/UserFieldGuideEntryNormalizer.php
+
+		-
+			message: '#^Method App\\Serializer\\UserFieldGuideEntryNormalizer\:\:normalize\(\) has parameter \$context with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Serializer/UserFieldGuideEntryNormalizer.php
+
+		-
+			message: '#^Method App\\Serializer\\UserFieldGuideEntryNormalizer\:\:normalize\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Serializer/UserFieldGuideEntryNormalizer.php
+
+		-
+			message: '#^Method App\\Serializer\\UserFieldGuideEntryNormalizer\:\:normalize\(\) return type with generic class ArrayObject does not specify its types\: TKey, TValue$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Serializer/UserFieldGuideEntryNormalizer.php
+
+		-
+			message: '#^Method App\\Serializer\\UserFieldGuideEntryNormalizer\:\:supportsNormalization\(\) has parameter \$context with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Serializer/UserFieldGuideEntryNormalizer.php
+
+		-
+			message: '#^Method App\\Serializer\\UserLetterNormalizer\:\:normalize\(\) has parameter \$context with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Serializer/UserLetterNormalizer.php
+
+		-
+			message: '#^Method App\\Serializer\\UserLetterNormalizer\:\:normalize\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Serializer/UserLetterNormalizer.php
+
+		-
+			message: '#^Method App\\Serializer\\UserLetterNormalizer\:\:normalize\(\) return type with generic class ArrayObject does not specify its types\: TKey, TValue$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Serializer/UserLetterNormalizer.php
+
+		-
+			message: '#^Method App\\Serializer\\UserLetterNormalizer\:\:supportsNormalization\(\) has parameter \$context with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Serializer/UserLetterNormalizer.php
+
+		-
+			message: '#^Parameter \#2 \$array of function array_key_exists expects array, array\|ArrayObject\|bool\|float\|int\|string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Serializer/UserLetterNormalizer.php
+
+		-
+			message: '#^Cannot access offset ''following'' on array\|ArrayObject\|bool\|float\|int\|string\|null\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: src/Serializer/UserNormalizer.php
+
+		-
+			message: '#^Cannot access offset ''unreadLetters'' on array\|ArrayObject\|bool\|float\|int\|string\|null\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: src/Serializer/UserNormalizer.php
+
+		-
+			message: '#^Method App\\Serializer\\UserNormalizer\:\:normalize\(\) has parameter \$context with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Serializer/UserNormalizer.php
+
+		-
+			message: '#^Method App\\Serializer\\UserNormalizer\:\:normalize\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Serializer/UserNormalizer.php
+
+		-
+			message: '#^Method App\\Serializer\\UserNormalizer\:\:normalize\(\) return type with generic class ArrayObject does not specify its types\: TKey, TValue$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Serializer/UserNormalizer.php
+
+		-
+			message: '#^Method App\\Serializer\\UserNormalizer\:\:supportsNormalization\(\) has parameter \$context with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Serializer/UserNormalizer.php
+
+		-
+			message: '#^Binary operation "\-" between bool\|float\|int\|string\|null and 1 results in an error\.$#'
+			identifier: binaryOp.invalid
+			count: 1
+			path: src/Service/AdoptionService.php
+
+		-
+			message: '#^Method App\\Service\\AdoptionService\:\:getSeasonalColors\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Service/AdoptionService.php
+
+		-
+			message: '#^Cannot call method getFloral\(\) on App\\Entity\\ItemFood\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Service/BeehiveService.php
+
+		-
+			message: '#^Cannot call method getFruity\(\) on App\\Entity\\ItemFood\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Service/BeehiveService.php
+
+		-
+			message: '#^Cannot call method getLove\(\) on App\\Entity\\ItemFood\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Service/BeehiveService.php
+
+		-
+			message: '#^Cannot call method getPlanty\(\) on App\\Entity\\ItemFood\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Service/BeehiveService.php
+
+		-
+			message: '#^Method App\\Service\\BeehiveService\:\:findFlowers\(\) has parameter \$inventoryIds with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Service/BeehiveService.php
+
+		-
+			message: '#^Method App\\Service\\BookstoreService\:\:getCafe\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Service/BookstoreService.php
+
+		-
+			message: '#^Method App\\Service\\BookstoreService\:\:getGames\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Service/BookstoreService.php
+
+		-
+			message: '#^Method App\\Service\\BookstoreService\:\:getRenamingScrollCost\(\) should return int but returns float\|int\<250, max\>\.$#'
+			identifier: return.type
+			count: 1
+			path: src/Service/BookstoreService.php
+
+		-
+			message: '#^Method App\\Service\\BookstoreService\:\:getResponseData\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Service/BookstoreService.php
+
+		-
+			message: '#^Method App\\Service\\BookstoreService\:\:serializeShopInventory\(\) has parameter \$inventory with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Service/BookstoreService.php
+
+		-
+			message: '#^Parameter \#2 \$itemId of method App\\Service\\InventoryService\:\:loseItem\(\) expects int, int\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Service/BookstoreService.php
+
+		-
+			message: '#^Method App\\Service\\CacheHelper\:\:getOrCompute\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: src/Service/CacheHelper.php
+
+		-
+			message: '#^Cannot access offset 0 on list\<string\>\|false\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: src/Service/CommentFormatter.php
+
+		-
+			message: '#^Cannot call method getName\(\) on App\\Entity\\User\|null\.$#'
+			identifier: method.nonObject
+			count: 3
+			path: src/Service/CommentFormatter.php
+
+		-
+			message: '#^Cannot call method getname\(\) on App\\Entity\\Pet\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Service/CommentFormatter.php
+
+		-
+			message: '#^Cannot call method getname\(\) on App\\Entity\\User\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Service/CommentFormatter.php
+
+		-
+			message: '#^Cannot access property \$name on App\\Model\\Recipe\|null\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: src/Service/CookingService.php
+
+		-
+			message: '#^Cannot access property \$quantity on App\\Model\\ItemQuantity\|null\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: src/Service/CookingService.php
+
+		-
+			message: '#^Method App\\Service\\CookingService\:\:prepareRecipe\(\) has parameter \$inventory with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Service/CookingService.php
+
+		-
+			message: '#^Parameter \#1 \$key of function array_key_exists expects int\|string, int\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Service/CookingService.php
+
+		-
+			message: '#^Parameter \#2 \$recipe of method App\\Service\\CookingService\:\:prepareRecipe\(\) expects App\\Model\\Recipe, App\\Model\\Recipe\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Service/CookingService.php
+
+		-
+			message: '#^Cannot call method isSatisfied\(\) on App\\Entity\\PetCraving\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Service/CravingService.php
+
+		-
+			message: '#^Method App\\Service\\CravingService\:\:getRandomCravingItemGroup\(\) should return App\\Entity\\ItemGroup but returns App\\Entity\\ItemGroup\|null\.$#'
+			identifier: return.type
+			count: 1
+			path: src/Service/CravingService.php
+
+		-
+			message: '#^Parameter \#1 \$object of method Doctrine\\Persistence\\ObjectManager\:\:remove\(\) expects object, App\\Entity\\PetCraving\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Service/CravingService.php
+
+		-
+			message: '#^Cannot call method getGems\(\) on App\\Entity\\ItemTreasure\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Service/DragonService.php
+
+		-
+			message: '#^Cannot call method getGold\(\) on App\\Entity\\ItemTreasure\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Service/DragonService.php
+
+		-
+			message: '#^Cannot call method getName\(\) on App\\Entity\\Pet\|null\.$#'
+			identifier: method.nonObject
+			count: 3
+			path: src/Service/DragonService.php
+
+		-
+			message: '#^Cannot call method getSilver\(\) on App\\Entity\\ItemTreasure\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Service/DragonService.php
+
+		-
+			message: '#^Property App\\Service\\FieldGuideService\:\:\$userEntryPerRequestCache type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Service/FieldGuideService.php
+
+		-
+			message: '#^Method App\\Service\\Filter\\Filterer\:\:__construct\(\) has parameter \$filterCallbacks with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Service/Filter/Filterer.php
+
+		-
+			message: '#^Method App\\Service\\Filter\\Filterer\:\:__construct\(\) has parameter \$filtersWithoutCallbacks with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Service/Filter/Filterer.php
+
+		-
+			message: '#^Method App\\Service\\Filter\\Filterer\:\:__construct\(\) has parameter \$orderByMap with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Service/Filter/Filterer.php
+
+		-
+			message: '#^Method App\\Service\\Filter\\Filterer\:\:cacheKey\(\) has parameter \$filters with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Service/Filter/Filterer.php
+
+		-
+			message: '#^Parameter \#3 \$orderBy of static method App\\Service\\Filter\\Filterer\:\:cacheKey\(\) expects string, int\|string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Service/Filter/Filterer.php
+
+		-
+			message: '#^Property App\\Service\\Filter\\Filterer\:\:\$filterMap type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Service/Filter/Filterer.php
+
+		-
+			message: '#^Property App\\Service\\Filter\\Filterer\:\:\$filterWithoutCallbackMap type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Service/Filter/Filterer.php
+
+		-
+			message: '#^Property App\\Service\\Filter\\Filterer\:\:\$orderByMap type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Service/Filter/Filterer.php
+
+		-
+			message: '#^Call to an undefined method Doctrine\\Persistence\\ObjectRepository\<App\\Entity\\Inventory\>\:\:createQueryBuilder\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: src/Service/Filter/InventoryFilterService.php
+
+		-
+			message: '#^Method App\\Service\\Filter\\InventoryFilterService\:\:filterName\(\) has parameter \$filters with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Service/Filter/InventoryFilterService.php
+
+		-
+			message: '#^Property App\\Service\\Filter\\InventoryFilterService\:\:\$repository with generic interface Doctrine\\Persistence\\ObjectRepository does not specify its types\: T$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Service/Filter/InventoryFilterService.php
+
+		-
+			message: '#^Call to an undefined method Doctrine\\Persistence\\ObjectRepository\<App\\Entity\\Item\>\:\:createQueryBuilder\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: src/Service/Filter/ItemFilterService.php
+
+		-
+			message: '#^Method App\\Service\\Filter\\ItemFilterService\:\:filterName\(\) has parameter \$filters with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Service/Filter/ItemFilterService.php
+
+		-
+			message: '#^Property App\\Service\\Filter\\ItemFilterService\:\:\$repository with generic interface Doctrine\\Persistence\\ObjectRepository does not specify its types\: T$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Service/Filter/ItemFilterService.php
+
+		-
+			message: '#^Call to an undefined method Doctrine\\Persistence\\ObjectRepository\<App\\Entity\\MarketListing\>\:\:createQueryBuilder\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: src/Service/Filter/MarketFilterService.php
+
+		-
+			message: '#^Method App\\Service\\Filter\\MarketFilterService\:\:filterName\(\) has parameter \$filters with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Service/Filter/MarketFilterService.php
+
+		-
+			message: '#^Call to an undefined method Doctrine\\Persistence\\ObjectRepository\<App\\Entity\\PetActivityLog\>\:\:createQueryBuilder\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: src/Service/Filter/PetActivityLogsFilterService.php
+
+		-
+			message: '#^Property App\\Service\\Filter\\PetActivityLogsFilterService\:\:\$repository with generic interface Doctrine\\Persistence\\ObjectRepository does not specify its types\: T$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Service/Filter/PetActivityLogsFilterService.php
+
+		-
+			message: '#^Call to an undefined method Doctrine\\Persistence\\ObjectRepository\<App\\Entity\\Pet\>\:\:createQueryBuilder\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: src/Service/Filter/PetFilterService.php
+
+		-
+			message: '#^Method App\\Service\\Filter\\PetFilterService\:\:filterName\(\) has parameter \$filters with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Service/Filter/PetFilterService.php
+
+		-
+			message: '#^Call to an undefined method Doctrine\\Persistence\\ObjectRepository\<App\\Entity\\PetRelationship\>\:\:createQueryBuilder\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: src/Service/Filter/PetRelationshipFilterService.php
+
+		-
+			message: '#^Property App\\Service\\Filter\\PetRelationshipFilterService\:\:\$repository with generic interface Doctrine\\Persistence\\ObjectRepository does not specify its types\: T$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Service/Filter/PetRelationshipFilterService.php
+
+		-
+			message: '#^Method App\\Service\\FireplaceService\:\:findFuel\(\) has parameter \$inventoryIds with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Service/FireplaceService.php
+
+		-
+			message: '#^Method App\\Service\\GreenhouseService\:\:getGreenhouseResponseData\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Service/GreenhouseService.php
+
+		-
+			message: '#^Method App\\Service\\GreenhouseService\:\:getGreenhouseResponseData\(\) should return array\{greenhouse\: App\\Entity\\Greenhouse, weeds\: string\|null, plants\: array\<App\\Entity\\GreenhousePlant\>, fertilizer\: array\} but returns array\{greenhouse\: App\\Entity\\Greenhouse\|null, weeds\: string\|null, plants\: list\<App\\Entity\\GreenhousePlant\>, fertilizer\: array\|ArrayObject\|bool\|float\|int\|string\|null\}\.$#'
+			identifier: return.type
+			count: 1
+			path: src/Service/GreenhouseService.php
+
+		-
+			message: '#^Strict comparison using \=\=\= between App\\Enum\\PollinatorEnum\:\:Butterflies and App\\Enum\\PollinatorEnum\:\:Butterflies will always evaluate to true\.$#'
+			identifier: identical.alwaysTrue
+			count: 1
+			path: src/Service/GreenhouseService.php
+
+		-
+			message: '#^Method App\\Service\\GrocerService\:\:computeInventory\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Service/GrocerService.php
+
+		-
+			message: '#^Method App\\Service\\GrocerService\:\:createInventoryData\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Service/GrocerService.php
+
+		-
+			message: '#^Method App\\Service\\GrocerService\:\:getInventory\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Service/GrocerService.php
+
+		-
+			message: '#^Cannot call method getName\(\) on App\\Entity\\Aura\|null\.$#'
+			identifier: method.nonObject
+			count: 3
+			path: src/Service/HattierService.php
+
+		-
+			message: '#^Method App\\Service\\HattierService\:\:getAurasAvailable\(\) should return array\<array\{id\: int\|null, unlockedOn\: DateTimeImmutable\|null, comment\: string\|null, name\: string, aura\: App\\Entity\\Enchantment\|null\}\> but returns array\<array\{id\: int\|null, unlockedOn\: DateTimeImmutable, comment\: string, name\: string, aura\: App\\Entity\\Aura\|null\}\|array\{id\: null, unlockedOn\: null, comment\: null, name\: string, aura\: null\}\>\.$#'
+			identifier: return.type
+			count: 1
+			path: src/Service/HattierService.php
+
+		-
+			message: '#^Parameter \#1 \$unlockedOn of method App\\Entity\\UserUnlockedAura\:\:setUnlockedOn\(\) expects DateTimeImmutable, DateTimeImmutable\|false given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Service/HattierService.php
+
+		-
+			message: '#^Property App\\Service\\HattierService\:\:\$userAurasPerRequestCache \(array\<string, App\\Entity\\UserUnlockedAura\>\) does not accept array\<string, App\\Entity\\UserUnlockedAura\|null\>\.$#'
+			identifier: assign.propertyType
+			count: 2
+			path: src/Service/HattierService.php
+
+		-
+			message: '#^Strict comparison using \=\=\= between App\\Entity\\UserUnlockedAura and null will always evaluate to false\.$#'
+			identifier: identical.alwaysFalse
+			count: 2
+			path: src/Service/HattierService.php
+
+		-
+			message: '#^Cannot call method getName\(\) on App\\Entity\\Pet\|null\.$#'
+			identifier: method.nonObject
+			count: 4
+			path: src/Service/HollowEarthService.php
+
+		-
+			message: '#^Cannot call method increaseesteem\(\) on App\\Entity\\Pet\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Service/HollowEarthService.php
+
+		-
+			message: '#^Cannot call method increasefood\(\) on App\\Entity\\Pet\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Service/HollowEarthService.php
+
+		-
+			message: '#^Cannot call method increaselove\(\) on App\\Entity\\Pet\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Service/HollowEarthService.php
+
+		-
+			message: '#^Cannot call method increasesafety\(\) on App\\Entity\\Pet\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Service/HollowEarthService.php
+
+		-
+			message: '#^Method App\\Service\\HollowEarthService\:\:createTrade\(\) has parameter \$cost with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Service/HollowEarthService.php
+
+		-
+			message: '#^Method App\\Service\\HollowEarthService\:\:createTrade\(\) has parameter \$items with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Service/HollowEarthService.php
+
+		-
+			message: '#^Method App\\Service\\HollowEarthService\:\:createTrade\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Service/HollowEarthService.php
+
+		-
+			message: '#^Method App\\Service\\HollowEarthService\:\:doImmediateEvent\(\) has parameter \$event with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Service/HollowEarthService.php
+
+		-
+			message: '#^Method App\\Service\\HollowEarthService\:\:getAllCardIdsOnMap\(\) should return array\<int\> but returns list\<int\|null\>\.$#'
+			identifier: return.type
+			count: 1
+			path: src/Service/HollowEarthService.php
+
+		-
+			message: '#^Method App\\Service\\HollowEarthService\:\:getCardAuthor\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Service/HollowEarthService.php
+
+		-
+			message: '#^Method App\\Service\\HollowEarthService\:\:getDice\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Service/HollowEarthService.php
+
+		-
+			message: '#^Method App\\Service\\HollowEarthService\:\:getMap\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Service/HollowEarthService.php
+
+		-
+			message: '#^Method App\\Service\\HollowEarthService\:\:getResponseData\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Service/HollowEarthService.php
+
+		-
+			message: '#^Method App\\Service\\HollowEarthService\:\:getTrade\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: src/Service/HollowEarthService.php
+
+		-
+			message: '#^Method App\\Service\\HollowEarthService\:\:getTrades\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Service/HollowEarthService.php
+
+		-
+			message: '#^Method App\\Service\\HollowEarthService\:\:serializeItem\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Service/HollowEarthService.php
+
+		-
+			message: '#^Parameter \#1 \$key of function array_key_exists expects int\|string, int\|null given\.$#'
+			identifier: argument.type
+			count: 2
+			path: src/Service/HollowEarthService.php
+
+		-
+			message: '#^Parameter \#1 \$pet of class App\\Model\\PetChanges constructor expects App\\Entity\\Pet, App\\Entity\\Pet\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Service/HollowEarthService.php
+
+		-
+			message: '#^Parameter \#1 \$pet of method App\\Model\\PetChanges\:\:compare\(\) expects App\\Entity\\Pet, App\\Entity\\Pet\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Service/HollowEarthService.php
+
+		-
+			message: '#^Parameter \#1 \$pet of method App\\Service\\PetExperienceService\:\:gainExp\(\) expects App\\Entity\\Pet, App\\Entity\\Pet\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Service/HollowEarthService.php
+
+		-
+			message: '#^Parameter \#2 \$pet of method App\\Service\\HollowEarthService\:\:receiveItems\(\) expects App\\Entity\\Pet, App\\Entity\\Pet\|null given\.$#'
+			identifier: argument.type
+			count: 2
+			path: src/Service/HollowEarthService.php
+
+		-
+			message: '#^Parameter \#2 \$pet of method App\\Service\\InventoryService\:\:petCollectsItem\(\) expects App\\Entity\\Pet, App\\Entity\\Pet\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Service/HollowEarthService.php
+
+		-
+			message: '#^Parameter \#2 \$pet of static method App\\Functions\\PetActivityLogFactory\:\:createReadLog\(\) expects App\\Entity\\Pet, App\\Entity\\Pet\|null given\.$#'
+			identifier: argument.type
+			count: 2
+			path: src/Service/HollowEarthService.php
+
+		-
+			message: '#^Parameter \#2 \$pet of static method App\\Functions\\PetBadgeHelpers\:\:awardBadgeAndLog\(\) expects App\\Entity\\Pet, App\\Entity\\Pet\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Service/HollowEarthService.php
+
+		-
+			message: '#^Parameter \#2 \$pet of static method App\\Functions\\StatusEffectHelpers\:\:applyStatusEffect\(\) expects App\\Entity\\Pet, App\\Entity\\Pet\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Service/HollowEarthService.php
+
+		-
+			message: '#^Parameter \#4 \$activityLog of method App\\Service\\PetExperienceService\:\:gainExp\(\) expects App\\Entity\\PetActivityLog, App\\Entity\\PetActivityLog\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Service/HollowEarthService.php
+
+		-
+			message: '#^Cannot call method getActivityTime\(\) on App\\Entity\\PetHouseTime\|null\.$#'
+			identifier: method.nonObject
+			count: 4
+			path: src/Service/HouseService.php
+
+		-
+			message: '#^Cannot call method getCanAttemptSocialHangoutAfter\(\) on App\\Entity\\PetHouseTime\|null\.$#'
+			identifier: method.nonObject
+			count: 2
+			path: src/Service/HouseService.php
+
+		-
+			message: '#^Cannot call method getSocialEnergy\(\) on App\\Entity\\PetHouseTime\|null\.$#'
+			identifier: method.nonObject
+			count: 3
+			path: src/Service/HouseService.php
+
+		-
+			message: '#^Property App\\Service\\HouseSimService\:\:\$petIdsThatRanSocialTime type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Service/HouseSimService.php
+
+		-
+			message: '#^Cannot call method getItem\(\) on App\\Entity\\Inventory\|null\.$#'
+			identifier: method.nonObject
+			count: 2
+			path: src/Service/InventoryService.php
+
+		-
+			message: '#^Method App\\Service\\JsonLogicParserService\:\:evaluate\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: src/Service/JsonLogicParserService.php
+
+		-
+			message: '#^Method App\\Service\\JsonLogicParserService\:\:evaluate\(\) has parameter \$expression with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: src/Service/JsonLogicParserService.php
+
+		-
+			message: '#^Cannot call method getName\(\) on App\\Entity\\User\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Service/MarketService.php
+
+		-
+			message: '#^Parameter \#2 \$newOwner of method App\\Service\\MarketService\:\:transferItemToPlayer\(\) expects App\\Entity\\User, App\\Entity\\User\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Service/MarketService.php
+
+		-
+			message: '#^Parameter \#2 \$user of static method App\\Service\\InventoryService\:\:countTotalInventory\(\) expects App\\Entity\\User, App\\Entity\\User\|null given\.$#'
+			identifier: argument.type
+			count: 3
+			path: src/Service/MarketService.php
+
+		-
+			message: '#^Parameter \$inventoryId of class App\\Entity\\DailyMarketInventoryTransaction constructor expects int, int\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Service/MarketService.php
+
+		-
+			message: '#^Method App\\Service\\MuseumService\:\:getGiftShopInventory\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Service/MuseumService.php
+
+		-
+			message: '#^Property App\\Service\\MuseumService\:\:\$donatedItemsThisRequest type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Service/MuseumService.php
+
+		-
+			message: '#^Parameter \#3 \$comment of method App\\Service\\InventoryService\:\:petCollectsItem\(\) expects string, string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Service/ParkEvent/KinBallService.php
+
+		-
+			message: '#^Property App\\Service\\ParkEvent\\KinBallService\:\:\$activeTeams type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Service/ParkEvent/KinBallService.php
+
+		-
+			message: '#^Property App\\Service\\ParkEvent\\KinBallService\:\:\$teamPoints type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Service/ParkEvent/KinBallService.php
+
+		-
+			message: '#^Property App\\Service\\ParkEvent\\KinBallService\:\:\$teamWins type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Service/ParkEvent/KinBallService.php
+
+		-
+			message: '#^Comparison operation "\<\=" between int\<\-4, 0\> and 0 is always true\.$#'
+			identifier: smallerOrEqual.alwaysTrue
+			count: 1
+			path: src/Service/ParkEvent/TriDChessService.php
+
+		-
+			message: '#^Offset int\|null might not exist on array\<int, App\\Entity\\Pet\>\.$#'
+			identifier: offsetAccess.notFound
+			count: 3
+			path: src/Service/ParkEvent/TriDChessService.php
+
+		-
+			message: '#^Offset int\|null might not exist on array\<int, int\>\.$#'
+			identifier: offsetAccess.notFound
+			count: 3
+			path: src/Service/ParkEvent/TriDChessService.php
+
+		-
+			message: '#^Property App\\Service\\ParkEvent\\TriDChessService\:\:\$defeatedBy \(array\<int, App\\Entity\\Pet\>\) does not accept array\<int\|string, App\\Entity\\Pet\>\.$#'
+			identifier: assign.propertyType
+			count: 2
+			path: src/Service/ParkEvent/TriDChessService.php
+
+		-
+			message: '#^Property App\\Service\\ParkEvent\\TriDChessService\:\:\$wins \(array\<int, int\>\) does not accept array\<int\|string, int\>\.$#'
+			identifier: assign.propertyType
+			count: 3
+			path: src/Service/ParkEvent/TriDChessService.php
+
+		-
+			message: '#^Cannot call method setLockedToOwner\(\) on App\\Entity\\Inventory\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Service/ParkService.php
+
+		-
+			message: '#^Method App\\Service\\ParkService\:\:petCollectsRandomBalloon\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Service/ParkService.php
+
+		-
+			message: '#^Parameter \#1 \$key of function array_key_exists expects int\|string, int\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Service/ParkService.php
+
+		-
+			message: '#^Method App\\Service\\PetActivity\\Crafting\\EventLanternService\:\:possibilities\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Service/PetActivity/Crafting/EventLanternService.php
+
+		-
+			message: '#^Method App\\Service\\PetActivity\\Crafting\\MagicBindingService\:\:bindCeremonialTrident\(\) has parameter \$otherMaterials with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Service/PetActivity/Crafting/MagicBindingService.php
+
+		-
+			message: '#^Method App\\Service\\PetActivity\\Crafting\\MagicBindingService\:\:doMagicMirrorMaze\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Service/PetActivity/Crafting/MagicBindingService.php
+
+		-
+			message: '#^Strict comparison using \=\=\= between ''Fabric Mâché Basket'' and ''Fabric Mâché Basket'' will always evaluate to true\.$#'
+			identifier: identical.alwaysTrue
+			count: 1
+			path: src/Service/PetActivity/CraftingService.php
+
+		-
+			message: '#^Parameter \#3 \$stats of method App\\Service\\PetExperienceService\:\:gainExp\(\) expects array\<string\>, array\<int\|string\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Service/PetActivity/Daydreams/NoodleDaydream.php
+
+		-
+			message: '#^Parameter \#1 \$statusEffect of method App\\Entity\\Pet\:\:removeStatusEffect\(\) expects App\\Entity\\StatusEffect, App\\Entity\\StatusEffect\|null given\.$#'
+			identifier: argument.type
+			count: 5
+			path: src/Service/PetActivity/DreamingAndDaydreamingService.php
+
+		-
+			message: '#^Method App\\Service\\PetActivity\\DreamingService\:\:applyMadlib\(\) has parameter \$replacements with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Service/PetActivity/DreamingService.php
+
+		-
+			message: '#^Method App\\Service\\PetActivity\\DreamingService\:\:findRandomDream\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Service/PetActivity/DreamingService.php
+
+		-
+			message: '#^Method App\\Service\\PetActivity\\DreamingService\:\:generateReplacementsDictionary\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Service/PetActivity/DreamingService.php
+
+		-
+			message: '#^Parameter \#1 \$statusEffect of method App\\Entity\\Pet\:\:removeStatusEffect\(\) expects App\\Entity\\StatusEffect, App\\Entity\\StatusEffect\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Service/PetActivity/EatingService.php
+
+		-
+			message: '#^Parameter \#2 \$itemGroup of static method App\\Service\\InventoryService\:\:getRandomItemFromItemGroup\(\) expects App\\Entity\\ItemGroup, App\\Entity\\ItemGroup\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Service/PetActivity/EatingService.php
+
+		-
+			message: '#^Method App\\Service\\PetActivity\\GatheringDistractionService\:\:getPossibleDistractions\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Service/PetActivity/GatheringDistractionService.php
+
+		-
+			message: '#^Cannot call method setLockedToOwner\(\) on App\\Entity\\Inventory\|null\.$#'
+			identifier: method.nonObject
+			count: 2
+			path: src/Service/PetActivity/GatheringHolidayAdventureService.php
+
+		-
+			message: '#^Match arm comparison between App\\Enum\\GatheringHolidayEnum\:\:LunarNewYear and App\\Enum\\GatheringHolidayEnum\:\:LunarNewYear is always true\.$#'
+			identifier: match.alwaysTrue
+			count: 1
+			path: src/Service/PetActivity/GatheringHolidayAdventureService.php
+
+		-
+			message: '#^Strict comparison using \=\=\= between App\\Enum\\GatheringHolidayEnum\:\:LunarNewYear and App\\Enum\\GatheringHolidayEnum\:\:LunarNewYear will always evaluate to true\.$#'
+			identifier: identical.alwaysTrue
+			count: 1
+			path: src/Service/PetActivity/GatheringHolidayAdventureService.php
+
+		-
+			message: '#^Cannot call method setEnchantment\(\) on App\\Entity\\Inventory\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Service/PetActivity/GatheringService.php
+
+		-
+			message: '#^Parameter \#3 \$species of method App\\Service\\PetFactory\:\:createPet\(\) expects App\\Entity\\PetSpecies, App\\Entity\\PetSpecies\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Service/PetActivity/GatheringService.php
+
+		-
+			message: '#^Cannot call method setLockedToOwner\(\) on App\\Entity\\Inventory\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Service/PetActivity/GenericAdventureService.php
+
+		-
+			message: '#^Cannot call method increaseReputation\(\) on App\\Entity\\GuildMembership\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Service/PetActivity/GivingTreeGatheringService.php
+
+		-
+			message: '#^Cannot call method getGuild\(\) on App\\Entity\\GuildMembership\|null\.$#'
+			identifier: method.nonObject
+			count: 3
+			path: src/Service/PetActivity/GizubisGardenService.php
+
+		-
+			message: '#^Cannot call method getName\(\) on App\\Entity\\Guild\|null\.$#'
+			identifier: method.nonObject
+			count: 3
+			path: src/Service/PetActivity/GizubisGardenService.php
+
+		-
+			message: '#^Cannot call method getTitle\(\) on App\\Entity\\GuildMembership\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Service/PetActivity/GizubisGardenService.php
+
+		-
+			message: '#^Cannot call method increaseReputation\(\) on App\\Entity\\GuildMembership\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Service/PetActivity/GizubisGardenService.php
+
+		-
+			message: '#^Cannot call method getGuild\(\) on App\\Entity\\GuildMembership\|null\.$#'
+			identifier: method.nonObject
+			count: 31
+			path: src/Service/PetActivity/GuildService.php
+
+		-
+			message: '#^Cannot call method getLevel\(\) on App\\Entity\\GuildMembership\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Service/PetActivity/GuildService.php
+
+		-
+			message: '#^Cannot call method getName\(\) on App\\Entity\\Guild\|null\.$#'
+			identifier: method.nonObject
+			count: 29
+			path: src/Service/PetActivity/GuildService.php
+
+		-
+			message: '#^Cannot call method getName\(\) on App\\Entity\\Item\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Service/PetActivity/GuildService.php
+
+		-
+			message: '#^Cannot call method getRank\(\) on App\\Entity\\GuildMembership\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Service/PetActivity/GuildService.php
+
+		-
+			message: '#^Cannot call method getReputation\(\) on App\\Entity\\GuildMembership\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Service/PetActivity/GuildService.php
+
+		-
+			message: '#^Cannot call method getStarterTool\(\) on App\\Entity\\Guild\|null\.$#'
+			identifier: method.nonObject
+			count: 2
+			path: src/Service/PetActivity/GuildService.php
+
+		-
+			message: '#^Cannot call method getTitle\(\) on App\\Entity\\GuildMembership\|null\.$#'
+			identifier: method.nonObject
+			count: 2
+			path: src/Service/PetActivity/GuildService.php
+
+		-
+			message: '#^Cannot call method increaseReputation\(\) on App\\Entity\\GuildMembership\|null\.$#'
+			identifier: method.nonObject
+			count: 9
+			path: src/Service/PetActivity/GuildService.php
+
+		-
+			message: '#^Method App\\Service\\PetActivity\\GuildService\:\:joinGuild\(\) has parameter \$possibilities with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Service/PetActivity/GuildService.php
+
+		-
+			message: '#^Parameter \#1 \$item of method App\\Service\\InventoryService\:\:petCollectsItem\(\) expects App\\Entity\\Item\|string, App\\Entity\\Item\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Service/PetActivity/GuildService.php
+
+		-
+			message: '#^Parameter \#1 \$statusEffect of method App\\Entity\\Pet\:\:removeStatusEffect\(\) expects App\\Entity\\StatusEffect, App\\Entity\\StatusEffect\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Service/PetActivity/GuildService.php
+
+		-
+			message: '#^Parameter \#2 \$guild of class App\\Entity\\GuildMembership constructor expects App\\Entity\\Guild, App\\Entity\\Guild\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Service/PetActivity/GuildService.php
+
+		-
+			message: '#^Binary operation "\-" between float\|int\<2, max\>\|string and int results in an error\.$#'
+			identifier: binaryOp.invalid
+			count: 1
+			path: src/Service/PetActivity/Holiday/AwaOdoriService.php
+
+		-
+			message: '#^Cannot call method increaseReputation\(\) on App\\Entity\\GuildMembership\|null\.$#'
+			identifier: method.nonObject
+			count: 3
+			path: src/Service/PetActivity/HuntingService.php
+
+		-
+			message: '#^Cannot call method increaseReputation\(\) on App\\Entity\\GuildMembership\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Service/PetActivity/LeonidsService.php
+
+		-
+			message: '#^Binary operation "\-" between bool\|float\|int\<min, \-1\>\|int\<1, max\>\|string\|null and 1 results in an error\.$#'
+			identifier: binaryOp.invalid
+			count: 1
+			path: src/Service/PetActivity/PetCleaningSelfService.php
+
+		-
+			message: '#^Parameter \#1 \$statusEffect of method App\\Entity\\Pet\:\:removeStatusEffect\(\) expects App\\Entity\\StatusEffect, App\\Entity\\StatusEffect\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Service/PetActivity/PetCleaningSelfService.php
+
+		-
+			message: '#^Cannot call method changeItem\(\) on App\\Entity\\Inventory\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Service/PetActivity/PhilosophersStoneService.php
+
+		-
+			message: '#^Cannot call method getFullItemName\(\) on App\\Entity\\Inventory\|null\.$#'
+			identifier: method.nonObject
+			count: 4
+			path: src/Service/PetActivity/PhilosophersStoneService.php
+
+		-
+			message: '#^Cannot call method setEnchantment\(\) on App\\Entity\\Inventory\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Service/PetActivity/PhilosophersStoneService.php
+
+		-
+			message: '#^Cannot call method getName\(\) on App\\Entity\\Pet\|null\.$#'
+			identifier: method.nonObject
+			count: 2
+			path: src/Service/PetActivity/PregnancyService.php
+
+		-
+			message: '#^Parameter \#1 \$name of static method App\\Service\\PetActivity\\PregnancyService\:\:isForbiddenCombinedName\(\) expects string, string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Service/PetActivity/PregnancyService.php
+
+		-
+			message: '#^Parameter \#1 \$string of function mb_convert_case expects string, string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Service/PetActivity/PregnancyService.php
+
+		-
+			message: '#^Parameter \#3 \$subject of function str_replace expects array\<string\>\|string, string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Service/PetActivity/PregnancyService.php
+
+		-
+			message: '#^Cannot call method increaseReputation\(\) on App\\Entity\\GuildMembership\|null\.$#'
+			identifier: method.nonObject
+			count: 4
+			path: src/Service/PetActivity/Protocol7Service.php
+
+		-
+			message: '#^Method App\\Service\\PetActivity\\Relationship\\LoveService\:\:getAncestorIds\(\) should return array\<int\> but returns array\<int, int\|null\>\.$#'
+			identifier: return.type
+			count: 1
+			path: src/Service/PetActivity/Relationship/LoveService.php
+
+		-
+			message: '#^Method App\\Service\\PetActivity\\Relationship\\RelationshipChangeService\:\:determineWhoChangesTheirMind\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Service/PetActivity/Relationship/RelationshipChangeService.php
+
+		-
+			message: '#^Offset ''bff''\|''broke up''\|''dislike''\|''friend''\|''friendly rival''\|''fwb''\|''mate'' might not exist on array\{dislike\: ''break up entirely'', ''friendly rival''\: ''just be friendly…'', friend\: ''just be friends'', bff\: ''just be BFFs'', fwb\: ''just be friends,…'', mate\: ''date''\}\.$#'
+			identifier: offsetAccess.notFound
+			count: 3
+			path: src/Service/PetActivity/Relationship/RelationshipChangeService.php
+
+		-
+			message: '#^Offset ''bff''\|''broke up''\|''dislike''\|''friend''\|''friendly rival''\|''fwb''\|''mate'' might not exist on array\{dislike\: ''break up entirely'', friend\: ''just be friends'', bff\: ''just be BFFs'', fwb\: ''just be friends,…'', ''friendly rival''\: ''just be friendly…'', mate\: ''date''\}\.$#'
+			identifier: offsetAccess.notFound
+			count: 7
+			path: src/Service/PetActivity/Relationship/RelationshipChangeService.php
+
+		-
+			message: '#^Offset ''bff''\|''broke up''\|''dislike''\|''friend''\|''friendly rival''\|''fwb''\|''mate'' might not exist on array\{dislike\: ''break up'', ''friendly rival''\: ''be friendly rivals'', friend\: ''be friends'', bff\: ''be BFFs'', fwb\: ''be FWBs'', mate\: ''date''\}\.$#'
+			identifier: offsetAccess.notFound
+			count: 6
+			path: src/Service/PetActivity/Relationship/RelationshipChangeService.php
+
+		-
+			message: '#^Offset ''bff''\|''broke up''\|''dislike''\|''friend''\|''friendly rival''\|''fwb''\|''mate'' might not exist on array\{dislike\: ''breaking up entirely'', ''friendly rival''\: ''being friendly…'', friend\: ''being friends'', bff\: ''being BFFs'', fwb\: ''being FWBs'', mate\: ''dating''\}\.$#'
+			identifier: offsetAccess.notFound
+			count: 2
+			path: src/Service/PetActivity/Relationship/RelationshipChangeService.php
+
+		-
+			message: '#^Cannot call method setSocialEnergy\(\) on App\\Entity\\PetHouseTime\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Service/PetActivity/SagaSagaService.php
+
+		-
+			message: '#^Cannot call method getEnchantment\(\) on App\\Entity\\Inventory\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Service/PetActivity/SpecialLocations/BurntForestService.php
+
+		-
+			message: '#^Cannot call method getFullItemName\(\) on App\\Entity\\Inventory\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Service/PetActivity/SpecialLocations/BurntForestService.php
+
+		-
+			message: '#^Cannot call method getItem\(\) on App\\Entity\\Inventory\|null\.$#'
+			identifier: method.nonObject
+			count: 2
+			path: src/Service/PetActivity/SpecialLocations/BurntForestService.php
+
+		-
+			message: '#^Cannot call method getName\(\) on App\\Entity\\Enchantment\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Service/PetActivity/SpecialLocations/BurntForestService.php
+
+		-
+			message: '#^Cannot call method increaseReputation\(\) on App\\Entity\\GuildMembership\|null\.$#'
+			identifier: method.nonObject
+			count: 3
+			path: src/Service/PetActivity/SpecialLocations/BurntForestService.php
+
+		-
+			message: '#^Cannot call method setEnchantment\(\) on App\\Entity\\Inventory\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Service/PetActivity/SpecialLocations/BurntForestService.php
+
+		-
+			message: '#^Left side of && is always true\.$#'
+			identifier: booleanAnd.leftAlwaysTrue
+			count: 1
+			path: src/Service/PetActivity/SpecialLocations/BurntForestService.php
+
+		-
+			message: '#^Cannot call method increaseReputation\(\) on App\\Entity\\GuildMembership\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Service/PetActivity/SpecialLocations/DeepSeaService.php
+
+		-
+			message: '#^Cannot call method getFullItemName\(\) on App\\Entity\\Inventory\|null\.$#'
+			identifier: method.nonObject
+			count: 2
+			path: src/Service/PetActivity/SpecialLocations/FructalPlaneService.php
+
+		-
+			message: '#^Cannot call method setEnchantment\(\) on App\\Entity\\Inventory\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Service/PetActivity/SpecialLocations/FructalPlaneService.php
+
+		-
+			message: '#^Offset ''message'' might not exist on array\{stat\: ''brawl''\|''crafts''\|''music'', value\: int, message\: non\-falsy\-string\}\|null\.$#'
+			identifier: offsetAccess.notFound
+			count: 1
+			path: src/Service/PetActivity/SpecialLocations/HeartDimensionService.php
+
+		-
+			message: '#^Offset ''stat'' might not exist on array\{stat\: ''brawl''\|''crafts''\|''music'', value\: int, message\: non\-falsy\-string\}\|null\.$#'
+			identifier: offsetAccess.notFound
+			count: 1
+			path: src/Service/PetActivity/SpecialLocations/HeartDimensionService.php
+
+		-
+			message: '#^Cannot call method increaseReputation\(\) on App\\Entity\\GuildMembership\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Service/PetActivity/SpecialLocations/IcyMoonService.php
+
+		-
+			message: '#^Cannot call method increaseReputation\(\) on App\\Entity\\GuildMembership\|null\.$#'
+			identifier: method.nonObject
+			count: 2
+			path: src/Service/PetActivity/SpecialLocations/MagicBeanstalkService.php
+
+		-
+			message: '#^Method App\\Service\\PetActivity\\SpecialLocations\\MagicBeanstalkService\:\:hasMagicBeanStalk\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: src/Service/PetActivity/SpecialLocations/MagicBeanstalkService.php
+
+		-
+			message: '#^Cannot call method changeItem\(\) on App\\Entity\\Inventory\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Service/PetActivity/SportsBallActivityService.php
+
+		-
+			message: '#^Match arm comparison between ''defeat'' and ''defeat'' is always true\.$#'
+			identifier: match.alwaysTrue
+			count: 1
+			path: src/Service/PetActivity/SportsBallActivityService.php
+
+		-
+			message: '#^Match arm comparison between ''miss'' and ''miss'' is always true\.$#'
+			identifier: match.alwaysTrue
+			count: 2
+			path: src/Service/PetActivity/SportsBallActivityService.php
+
+		-
+			message: '#^Method App\\Service\\PetActivity\\StrangeUmbralEncounters\:\:getRandomWildlifeEncounter\(\) should return array\{description\: string, skills\: array\<App\\Enum\\PetSkillEnum\>\} but returns array\{description\: non\-falsy\-string, skills\: array\{0\: ''arcana'', 1\?\: ''stealth''\}\}\.$#'
+			identifier: return.type
+			count: 1
+			path: src/Service/PetActivity/StrangeUmbralEncounters.php
+
+		-
+			message: '#^Parameter \#3 \$stats of method App\\Service\\PetExperienceService\:\:gainExp\(\) expects array\<string\>, array\<App\\Enum\\PetSkillEnum\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Service/PetActivity/StrangeUmbralEncounters.php
+
+		-
+			message: '#^Cannot call method changeItem\(\) on App\\Entity\\Inventory\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Service/PetActivity/TreasureMapService.php
+
+		-
+			message: '#^Cannot call method getItem\(\) on App\\Entity\\Inventory\|null\.$#'
+			identifier: method.nonObject
+			count: 5
+			path: src/Service/PetActivity/TreasureMapService.php
+
+		-
+			message: '#^Cannot call method setLockedToOwner\(\) on App\\Entity\\Inventory\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Service/PetActivity/TreasureMapService.php
+
+		-
+			message: '#^Match arm comparison between App\\Enum\\FlavorEnum\:\:Chemically and App\\Enum\\FlavorEnum\:\:Chemically is always true\.$#'
+			identifier: match.alwaysTrue
+			count: 1
+			path: src/Service/PetActivity/TreasureMapService.php
+
+		-
+			message: '#^Parameter \#1 \$item of static method App\\Functions\\InventoryModifierFunctions\:\:getNameWithModifiers\(\) expects App\\Entity\\Inventory, App\\Entity\\Inventory\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Service/PetActivity/TreasureMapService.php
+
+		-
+			message: '#^Right side of && is always true\.$#'
+			identifier: booleanAnd.rightAlwaysTrue
+			count: 1
+			path: src/Service/PetActivity/TreasureMapService.php
+
+		-
+			message: '#^Cannot call method getItem\(\) on App\\Entity\\Inventory\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Service/PetActivity/UmbraService.php
+
+		-
+			message: '#^Cannot call method getName\(\) on App\\Entity\\SpiritCompanion\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Service/PetActivity/UmbraService.php
+
+		-
+			message: '#^Cannot call method increaseReputation\(\) on App\\Entity\\GuildMembership\|null\.$#'
+			identifier: method.nonObject
+			count: 2
+			path: src/Service/PetActivity/UmbraService.php
+
+		-
+			message: '#^Parameter \#3 \$stats of method App\\Service\\PetExperienceService\:\:gainExp\(\) expects array\<string\>, array\<int\|string\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Service/PetActivity/UmbraService.php
+
+		-
+			message: '#^Parameter \#1 \$statusEffect of method App\\Entity\\Pet\:\:removeStatusEffect\(\) expects App\\Entity\\StatusEffect, App\\Entity\\StatusEffect\|null given\.$#'
+			identifier: argument.type
+			count: 3
+			path: src/Service/PetActivityService.php
+
+		-
+			message: '#^Cannot call method setLockedToOwner\(\) on App\\Entity\\Inventory\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Service/PetExperienceService.php
+
+		-
+			message: '#^Cannot call method spendActivityTime\(\) on App\\Entity\\PetHouseTime\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Service/PetExperienceService.php
+
+		-
+			message: '#^Cannot call method spendSocialEnergy\(\) on App\\Entity\\PetHouseTime\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Service/PetExperienceService.php
+
+		-
+			message: '#^Method App\\Service\\PetExperienceService\:\:forceIncreaseSkill\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: src/Service/PetExperienceService.php
+
+		-
+			message: '#^Parameter \#1 \$statusEffect of method App\\Entity\\Pet\:\:removeStatusEffect\(\) expects App\\Entity\\StatusEffect, App\\Entity\\StatusEffect\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Service/PetExperienceService.php
+
+		-
+			message: '#^Match arm comparison between App\\Enum\\PetGroupTypeEnum\:\:Sportsball and App\\Enum\\PetGroupTypeEnum\:\:Sportsball is always true\.$#'
+			identifier: match.alwaysTrue
+			count: 1
+			path: src/Service/PetGroupService.php
+
+		-
+			message: '#^Cannot call method getLastHangOut\(\) on App\\Entity\\SpiritCompanion\|null\.$#'
+			identifier: method.nonObject
+			count: 2
+			path: src/Service/PetSocialActivityService.php
+
+		-
+			message: '#^Cannot call method getSocialEnergy\(\) on App\\Entity\\PetHouseTime\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Service/PetSocialActivityService.php
+
+		-
+			message: '#^Cannot call method setCanAttemptSocialHangoutAfter\(\) on App\\Entity\\PetHouseTime\|null\.$#'
+			identifier: method.nonObject
+			count: 2
+			path: src/Service/PetSocialActivityService.php
+
+		-
+			message: '#^Cannot call method setSocialEnergy\(\) on App\\Entity\\PetHouseTime\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Service/PetSocialActivityService.php
+
+		-
+			message: '#^Cannot call method toArray\(\) on array\<App\\Entity\\PetGroup\>\|Doctrine\\Common\\Collections\\Collection\<int, App\\Entity\\PetGroup\>\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Service/PetSocialActivityService.php
+
+		-
+			message: '#^Parameter \#1 \$key of function array_key_exists expects int\|string, int\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Service/PetSocialActivityService.php
+
+		-
+			message: '#^Method App\\Service\\RecyclingService\:\:recycleInventory\(\) should return array\<int\> but returns array\<int\|null\>\.$#'
+			identifier: return.type
+			count: 1
+			path: src/Service/RecyclingService.php
+
+		-
+			message: '#^Cannot access offset ''access_token'' on array\|bool\|float\|int\|object\|string\|null\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: src/Service/RedditService.php
+
+		-
+			message: '#^Cannot access offset ''menu'' on array\|ArrayObject\|bool\|float\|int\|string\|null\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: src/Service/ResponseService.php
+
+		-
+			message: '#^Method App\\Service\\ResponseService\:\:error\(\) has parameter \$messages with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Service/ResponseService.php
+
+		-
+			message: '#^Method App\\Service\\ResponseService\:\:injectUserData\(\) has parameter \$responseData with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Service/ResponseService.php
+
+		-
+			message: '#^Method App\\Service\\ResponseService\:\:itemActionSuccess\(\) has parameter \$data with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Service/ResponseService.php
+
+		-
+			message: '#^Parameter \#1 \$id of class App\\Service\\FlashMessage constructor expects int, int\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Service/ResponseService.php
+
+		-
+			message: '#^Parameter \#2 \$delegate of static method App\\Functions\\ArrayFunctions\:\:unique\(\) expects callable\(App\\Service\\FlashMessage\)\: bool, Closure\(App\\Service\\FlashMessage\)\: string given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Service/ResponseService.php
+
+		-
+			message: '#^Property App\\Service\\FlashMessage\:\:\$createdItems type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Service/ResponseService.php
+
+		-
+			message: '#^Property App\\Service\\FlashMessage\:\:\$equippedItem type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Service/ResponseService.php
+
+		-
+			message: '#^Match arm comparison between App\\Enum\\StoryAdventureTypeEnum\:\:RemixTreasureRoom and App\\Enum\\StoryAdventureTypeEnum\:\:RemixTreasureRoom is always true\.$#'
+			identifier: match.alwaysTrue
+			count: 1
+			path: src/Service/StarKindred/StarKindredAdventureService.php
+
+		-
+			message: '#^Argument of an invalid type array\|null supplied for foreach, only iterables are supported\.$#'
+			identifier: foreach.nonIterable
+			count: 1
+			path: src/Service/StoryService.php
+
+		-
+			message: '#^Method App\\Service\\StoryService\:\:choiceContainsExit\(\) has parameter \$choice with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Service/StoryService.php
+
+		-
+			message: '#^Method App\\Service\\StoryService\:\:choiceIsChoosable\(\) has parameter \$choice with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Service/StoryService.php
+
+		-
+			message: '#^Method App\\Service\\StoryService\:\:choiceIsEnabled\(\) has parameter \$choice with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Service/StoryService.php
+
+		-
+			message: '#^Method App\\Service\\StoryService\:\:choiceIsVisible\(\) has parameter \$choice with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Service/StoryService.php
+
+		-
+			message: '#^Method App\\Service\\StoryService\:\:interpretAction\(\) has parameter \$action with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Service/StoryService.php
+
+		-
+			message: '#^Method App\\Service\\StoryService\:\:interpretActions\(\) has parameter \$actions with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Service/StoryService.php
+
+		-
+			message: '#^Method App\\Service\\StoryService\:\:payAnyCosts\(\) has parameter \$choice with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Service/StoryService.php
+
+		-
+			message: '#^Parameter \#2 \$itemId of method App\\Service\\InventoryService\:\:loseItem\(\) expects int, int\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Service/StoryService.php
+
+		-
+			message: '#^Method App\\Service\\SurveyService\:\:getSurveyQuestionAnswers\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Service/SurveyService.php
+
+		-
+			message: '#^Cannot call method format\(\) on DateTimeImmutable\|false\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Service/TraderService.php
+
+		-
+			message: '#^Cannot call method getId\(\) on App\\Entity\\Item\|null\.$#'
+			identifier: method.nonObject
+			count: 2
+			path: src/Service/TraderService.php
+
+		-
+			message: '#^Cannot call method getName\(\) on App\\Entity\\Item\|null\.$#'
+			identifier: method.nonObject
+			count: 2
+			path: src/Service/TraderService.php
+
+		-
+			message: '#^Parameter \#1 \$item of method App\\Service\\InventoryService\:\:receiveItem\(\) expects App\\Entity\\Item\|string, App\\Entity\\Item\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Service/TraderService.php
+
+		-
+			message: '#^Parameter \#2 \$itemId of method App\\Service\\InventoryService\:\:loseItem\(\) expects int, int\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Service/TraderService.php
+
+		-
+			message: '#^Parameter \#2 \$userId of static method App\\Service\\InventoryService\:\:countInventory\(\) expects int, int\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Service/TraderService.php
+
+		-
+			message: '#^Parameter \#3 \$itemId of static method App\\Service\\InventoryService\:\:countInventory\(\) expects int, int\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Service/TraderService.php
+
+		-
+			message: '#^Type mixed in generic type Doctrine\\ORM\\EntityRepository\<mixed\> in PHPDoc type for property App\\Service\\Typeahead\\TypeaheadService\:\:\$repository is not subtype of template type T of object of class Doctrine\\ORM\\EntityRepository\.$#'
+			identifier: generics.notSubtype
+			count: 1
+			path: src/Service/Typeahead/TypeaheadService.php
+
+		-
+			message: '#^Parameter \#1 \$num of function dechex expects int, float\|int\<0, 255\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Service/Xoshiro.php
+
+		-
+			message: '#^Parameter \#1 \$actualJson of method PHPUnit\\Framework\\Assert\:\:assertJson\(\) expects string, string\|false given\.$#'
+			identifier: argument.type
+			count: 1
+			path: tests/Functions/JsonResponseFactoryTest.php
+
+		-
+			message: '#^Parameter \#1 \$json of function json_decode expects string, string\|false given\.$#'
+			identifier: argument.type
+			count: 1
+			path: tests/Functions/JsonResponseFactoryTest.php
+
+		-
+			message: '#^Method Service\\ValidateHollowEarthAdventuresTest\:\:validateItemNames\(\) has parameter \$itemNames with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: tests/Service/ValidateHollowEarthAdventuresTest.php
+
+		-
+			message: '#^Method Service\\ValidateHollowEarthAdventuresTest\:\:validateItemNamesAreLegit\(\) has parameter \$event with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: tests/Service/ValidateHollowEarthAdventuresTest.php
+
+		-
+			message: '#^Method Service\\ValidateHollowEarthAdventuresTest\:\:validatePetChallenge\(\) has parameter \$petChallenge with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: tests/Service/ValidateHollowEarthAdventuresTest.php
+
+		-
+			message: '#^Method Service\\ValidateHollowEarthAdventuresTest\:\:validatePetChallengesAreLegit\(\) has parameter \$event with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: tests/Service/ValidateHollowEarthAdventuresTest.php
+
+		-
+			message: '#^Parameter \#2 \$adventureName of static method Service\\ValidateHollowEarthAdventuresTest\:\:validateItemNamesAreLegit\(\) expects string, string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: tests/Service/ValidateHollowEarthAdventuresTest.php
+
+		-
+			message: '#^Parameter \#2 \$adventureName of static method Service\\ValidateHollowEarthAdventuresTest\:\:validatePetChallengesAreLegit\(\) expects string, string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: tests/Service/ValidateHollowEarthAdventuresTest.php
