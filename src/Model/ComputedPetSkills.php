@@ -11,7 +11,6 @@ declare(strict_types=1);
  * You should have received a copy of the GNU General Public License along with The Poppy Seed Pets API. If not, see <https://www.gnu.org/licenses/>.
  */
 
-
 namespace App\Model;
 
 use App\Entity\Pet;
@@ -401,7 +400,7 @@ class ComputedPetSkills
     {
         $skill = new TotalPetSkill();
         $skill->base = $this->pet->getSexDrive();
-        $skill->tool = $this->pet->getTool() ? $this->pet->getTool()->sexDriveBonus() : 0;
+        $skill->tool = $this->pet->getTool()?->sexDriveBonus() ?? 0;
         $skill->statusEffects =
             ($this->pet->hasStatusEffect(StatusEffectEnum::Wereform) ? 1 : 0) +
             ($this->pet->hasStatusEffect(StatusEffectEnum::Moonstruck) ? 2 : 0);

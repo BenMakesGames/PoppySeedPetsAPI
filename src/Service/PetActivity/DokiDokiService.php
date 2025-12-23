@@ -11,15 +11,12 @@ declare(strict_types=1);
  * You should have received a copy of the GNU General Public License along with The Poppy Seed Pets API. If not, see <https://www.gnu.org/licenses/>.
  */
 
-
 namespace App\Service\PetActivity;
 
 use App\Entity\PetActivityLog;
-use App\Entity\PetBadge;
 use App\Enum\PetActivityLogInterestingness;
 use App\Enum\PetActivityLogTagEnum;
 use App\Enum\PetActivityStatEnum;
-use App\Enum\PetBadgeEnum;
 use App\Enum\PetSkillEnum;
 use App\Exceptions\UnreachableException;
 use App\Functions\ActivityHelpers;
@@ -28,7 +25,6 @@ use App\Functions\ArrayFunctions;
 use App\Functions\EquipmentFunctions;
 use App\Functions\PetActivityLogFactory;
 use App\Functions\PetActivityLogTagHelpers;
-use App\Functions\PetBadgeHelpers;
 use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
 use App\Service\InventoryService;

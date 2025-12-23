@@ -11,7 +11,6 @@ declare(strict_types=1);
  * You should have received a copy of the GNU General Public License along with The Poppy Seed Pets API. If not, see <https://www.gnu.org/licenses/>.
  */
 
-
 namespace App\Functions;
 
 use App\Entity\Pet;
@@ -152,5 +151,16 @@ final class PetColorFunctions
             ColorFunctions::HSL2Hex($h, $s, $l),
             ColorFunctions::HSL2Hex($h2, $s2, $l2)
         ];
+    }
+
+    public static function adjustHue(string $hexColor, float $amount): string
+    {
+        $hsl = ColorFunctions::Hex2HSL($hexColor);
+
+        $h = $hsl['h'] + $amount;
+        while($h > 1) $h -= 1;
+        while($h < 0) $h += 1;
+
+        return ColorFunctions::HSL2Hex($h, $hsl['s'], $hsl['l']);
     }
 }

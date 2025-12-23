@@ -11,7 +11,6 @@ declare(strict_types=1);
  * You should have received a copy of the GNU General Public License along with The Poppy Seed Pets API. If not, see <https://www.gnu.org/licenses/>.
  */
 
-
 namespace App\Entity;
 
 use App\Enum\EnumInvalidValueException;
@@ -58,6 +57,9 @@ class Inventory
     #[Groups(["myInventory"])]
     private \DateTimeImmutable $modifiedOn;
 
+    /**
+     * @var string[]
+     */
     #[ORM\Column(type: 'json')]
     #[Groups(["myInventory", "fireplaceMantle"])]
     private array $comments = [];
@@ -79,8 +81,8 @@ class Inventory
     #[Groups(["myInventory"])]
     private bool $lockedToOwner = false;
 
-    #[ORM\OneToOne(targetEntity: 'App\Entity\LunchboxItem', mappedBy: 'inventoryItem', cascade: ['remove'])]
-    private $lunchboxItem;
+    #[ORM\OneToOne(targetEntity: LunchboxItem::class, mappedBy: 'inventoryItem', cascade: ['remove'])]
+    private ?LunchboxItem $lunchboxItem = null;
 
     #[ORM\ManyToOne(targetEntity: Enchantment::class)]
     #[Groups(["myInventory", "itemEncyclopedia", "marketItem", "fireplaceFuel", "greenhouseFertilizer", "myPet", "fireplaceMantle", "dragonTreasure", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails"])]
@@ -212,6 +214,9 @@ class Inventory
         return $this;
     }
 
+    /**
+     * @return string[]
+     */
     public function getComments(): array
     {
         return $this->comments;
@@ -335,48 +340,48 @@ class Inventory
     public function providesLight(): bool
     {
         return
-            ($this->getItem()->getTool() && $this->getItem()->getTool()->getProvidesLight()) ||
-            ($this->getEnchantment() && $this->getEnchantment()->getEffects()->getProvidesLight())
+            $this->getItem()->getTool()?->getProvidesLight() ||
+            $this->getEnchantment()?->getEffects()->getProvidesLight()
         ;
     }
 
     public function protectsFromHeat(): bool
     {
         return
-            ($this->getItem()->getTool() && $this->getItem()->getTool()->getProtectionFromHeat()) ||
-            ($this->getEnchantment() && $this->getEnchantment()->getEffects()->getProtectionFromHeat())
+            $this->getItem()->getTool()?->getProtectionFromHeat() ||
+            $this->getEnchantment()?->getEffects()->getProtectionFromHeat()
         ;
     }
 
     public function sexDriveBonus(): int
     {
         return
-            ($this->getItem()->getTool() ? $this->getItem()->getTool()->getSexDrive() : 0) +
-            ($this->getEnchantment() ? $this->getEnchantment()->getEffects()->getSexDrive() : 0)
+            ($this->getItem()->getTool()?->getSexDrive() ?? 0) +
+            ($this->getEnchantment()?->getEffects()->getSexDrive() ?? 0)
         ;
     }
 
     public function natureBonus(): int
     {
         return
-            ($this->getItem()->getTool() ? $this->getItem()->getTool()->getNature() : 0) +
-            ($this->getEnchantment() ? $this->getEnchantment()->getEffects()->getNature() : 0)
+            ($this->getItem()->getTool()?->getNature() ?? 0) +
+            ($this->getEnchantment()?->getEffects()->getNature() ?? 0)
         ;
     }
 
     public function stealthBonus(): int
     {
         return
-            ($this->getItem()->getTool() ? $this->getItem()->getTool()->getStealth() : 0) +
-            ($this->getEnchantment() ? $this->getEnchantment()->getEffects()->getStealth() : 0)
+            ($this->getItem()->getTool()?->getStealth() ?? 0) +
+            ($this->getEnchantment()?->getEffects()->getStealth() ?? 0)
         ;
     }
 
     public function rangedOnly(): bool
     {
         return
-            ($this->getItem()->getTool() ? $this->getItem()->getTool()->getIsRanged() : 0) ||
-            ($this->getEnchantment() && $this->getEnchantment()->getEffects()->getIsRanged())
+            $this->getItem()->getTool()?->getIsRanged() ||
+            $this->getEnchantment()?->getEffects()->getIsRanged()
         ;
     }
 
@@ -386,160 +391,160 @@ class Inventory
             return 0;
 
         return
-            ($this->getItem()->getTool() ? $this->getItem()->getTool()->getBrawl() : 0) +
-            ($this->getEnchantment() ? $this->getEnchantment()->getEffects()->getBrawl() : 0)
+            ($this->getItem()->getTool()?->getBrawl() ?? 0) +
+            ($this->getEnchantment()?->getEffects()->getBrawl() ?? 0)
         ;
     }
 
     public function craftsBonus(): int
     {
         return
-            ($this->getItem()->getTool() ? $this->getItem()->getTool()->getCrafts() : 0) +
-            ($this->getEnchantment() ? $this->getEnchantment()->getEffects()->getCrafts() : 0)
+            ($this->getItem()->getTool()?->getCrafts() ?? 0) +
+            ($this->getEnchantment()?->getEffects()->getCrafts() ?? 0)
         ;
     }
 
     public function arcanaBonus(): int
     {
         return
-            ($this->getItem()->getTool() ? $this->getItem()->getTool()->getArcana() : 0) +
-            ($this->getEnchantment() ? $this->getEnchantment()->getEffects()->getArcana() : 0)
+            ($this->getItem()->getTool()?->getArcana() ?? 0) +
+            ($this->getEnchantment()?->getEffects()->getArcana() ?? 0)
         ;
     }
 
     public function fishingBonus(): int
     {
         return
-            ($this->getItem()->getTool() ? $this->getItem()->getTool()->getFishing() : 0) +
-            ($this->getEnchantment() ? $this->getEnchantment()->getEffects()->getFishing() : 0)
+            ($this->getItem()->getTool()?->getFishing() ?? 0) +
+            ($this->getEnchantment()?->getEffects()->getFishing() ?? 0)
         ;
     }
 
     public function musicBonus(): int
     {
         return
-            ($this->getItem()->getTool() ? $this->getItem()->getTool()->getMusic() : 0) +
-            ($this->getEnchantment() ? $this->getEnchantment()->getEffects()->getMusic() : 0)
+            ($this->getItem()->getTool()?->getMusic() ?? 0) +
+            ($this->getEnchantment()?->getEffects()->getMusic() ?? 0)
         ;
     }
 
     public function smithingBonus(): int
     {
         return
-            ($this->getItem()->getTool() ? $this->getItem()->getTool()->getSmithing() : 0) +
-            ($this->getEnchantment() ? $this->getEnchantment()->getEffects()->getSmithing() : 0)
+            ($this->getItem()->getTool()?->getSmithing() ?? 0) +
+            ($this->getEnchantment()?->getEffects()->getSmithing() ?? 0)
         ;
     }
 
     public function gatheringBonus(): int
     {
         return
-            ($this->getItem()->getTool() ? $this->getItem()->getTool()->getGathering() : 0) +
-            ($this->getEnchantment() ? $this->getEnchantment()->getEffects()->getGathering() : 0)
+            ($this->getItem()->getTool()?->getGathering() ?? 0) +
+            ($this->getEnchantment()?->getEffects()->getGathering() ?? 0)
         ;
     }
 
     public function scienceBonus(): int
     {
         return
-            ($this->getItem()->getTool() ? $this->getItem()->getTool()->getScience() : 0) +
-            ($this->getEnchantment() ? $this->getEnchantment()->getEffects()->getScience() : 0)
+            ($this->getItem()->getTool()?->getScience() ?? 0) +
+            ($this->getEnchantment()?->getEffects()->getScience() ?? 0)
         ;
     }
 
     public function climbingBonus(): int
     {
         return
-            ($this->getItem()->getTool() ? $this->getItem()->getTool()->getClimbing() : 0) +
-            ($this->getEnchantment() ? $this->getEnchantment()->getEffects()->getClimbing() : 0)
+            ($this->getItem()->getTool()?->getClimbing() ?? 0) +
+            ($this->getEnchantment()?->getEffects()->getClimbing() ?? 0)
         ;
     }
 
     public function physicsBonus(): int
     {
         return
-            ($this->getItem()->getTool() ? $this->getItem()->getTool()->getPhysics() : 0) +
-            ($this->getEnchantment() ? $this->getEnchantment()->getEffects()->getPhysics() : 0)
+            ($this->getItem()->getTool()?->getPhysics() ?? 0) +
+            ($this->getEnchantment()?->getEffects()->getPhysics() ?? 0)
         ;
     }
 
     public function electronicsBonus(): int
     {
         return
-            ($this->getItem()->getTool() ? $this->getItem()->getTool()->getElectronics() : 0) +
-            ($this->getEnchantment() ? $this->getEnchantment()->getEffects()->getElectronics() : 0)
+            ($this->getItem()->getTool()?->getElectronics() ?? 0) +
+            ($this->getEnchantment()?->getEffects()->getElectronics() ?? 0)
         ;
     }
 
     public function hackingBonus(): int
     {
         return
-            ($this->getItem()->getTool() ? $this->getItem()->getTool()->getHacking() : 0) +
-            ($this->getEnchantment() ? $this->getEnchantment()->getEffects()->getHacking() : 0)
+            ($this->getItem()->getTool()?->getHacking() ?? 0) +
+            ($this->getEnchantment()?->getEffects()->getHacking() ?? 0)
         ;
     }
 
     public function umbraBonus(): int
     {
         return
-            ($this->getItem()->getTool() ? $this->getItem()->getTool()->getUmbra() : 0) +
-            ($this->getEnchantment() ? $this->getEnchantment()->getEffects()->getUmbra() : 0)
+            ($this->getItem()->getTool()?->getUmbra() ?? 0) +
+            ($this->getEnchantment()?->getEffects()->getUmbra() ?? 0)
         ;
     }
 
     public function magicBindingBonus(): int
     {
         return
-            ($this->getItem()->getTool() ? $this->getItem()->getTool()->getMagicBinding() : 0) +
-            ($this->getEnchantment() ? $this->getEnchantment()->getEffects()->getMagicBinding() : 0)
+            ($this->getItem()->getTool()?->getMagicBinding() ?? 0) +
+            ($this->getEnchantment()?->getEffects()->getMagicBinding() ?? 0)
         ;
     }
 
     public function miningBonus(): int
     {
         return
-            ($this->getItem()->getTool() ? $this->getItem()->getTool()->getMining() : 0) +
-            ($this->getEnchantment() ? $this->getEnchantment()->getEffects()->getMining() : 0)
+            ($this->getItem()->getTool()?->getMining() ?? 0) +
+            ($this->getEnchantment()?->getEffects()->getMining() ?? 0)
         ;
     }
 
     public function focusesSkill(string $skill): bool
     {
         return
-            ($this->getItem()->getTool() && $this->getItem()->getTool()->getFocusSkill() === $skill) ||
-            ($this->getEnchantment() && $this->getEnchantment()->getEffects()->getFocusSkill() === $skill)
+            ($this->getItem()->getTool()?->getFocusSkill() === $skill) ||
+            ($this->getEnchantment()?->getEffects()->getFocusSkill() === $skill)
         ;
     }
 
     public function increasesPooping(): int
     {
         return
-            (($this->getItem()->getTool() && $this->getItem()->getTool()->getIncreasesPooping()) ? 1 : 0) +
-            (($this->getEnchantment() && $this->getEnchantment()->getEffects()->getIncreasesPooping()) ? 1 : 0)
+            ($this->getItem()->getTool()?->getIncreasesPooping() ? 1 : 0) +
+            ($this->getEnchantment()?->getEffects()->getIncreasesPooping() ? 1 : 0)
         ;
     }
 
     public function canBeNibbled(): bool
     {
         return
-            ($this->getItem()->getTool() && $this->getItem()->getTool()->getCanBeNibbled()) ||
-            ($this->getEnchantment() && $this->getEnchantment()->getEffects()->getCanBeNibbled())
+            $this->getItem()->getTool()?->getCanBeNibbled() ||
+            $this->getEnchantment()?->getEffects()->getCanBeNibbled()
         ;
     }
 
     public function isDreamcatcher(): bool
     {
         return
-            ($this->getItem()->getTool() && $this->getItem()->getTool()->getDreamcatcher()) ||
-            ($this->getEnchantment() && $this->getEnchantment()->getEffects()->getDreamcatcher())
+            $this->getItem()->getTool()?->getDreamcatcher() ||
+            $this->getEnchantment()?->getEffects()->getDreamcatcher()
         ;
     }
 
     public function isGrayscaling(): bool
     {
         return
-            ($this->getItem()->getTool() && $this->getItem()->getTool()->getIsGrayscaling()) ||
-            ($this->getEnchantment() && $this->getEnchantment()->getEffects()->getIsGrayscaling())
+            $this->getItem()->getTool()?->getIsGrayscaling() ||
+            $this->getEnchantment()?->getEffects()->getIsGrayscaling()
         ;
     }
 
@@ -551,8 +556,8 @@ class Inventory
     public function socialEnergyModifier(): int
     {
         return
-            ($this->getItem()->getTool() && $this->getItem()->getTool()->getSocialEnergyModifier()) +
-            ($this->getEnchantment() ? $this->getEnchantment()->getEffects()->getSocialEnergyModifier() : 0)
+            ($this->getItem()->getTool()?->getSocialEnergyModifier() ?? 0) +
+            ($this->getEnchantment()?->getEffects()->getSocialEnergyModifier() ?? 0)
         ;
     }
 
@@ -577,7 +582,7 @@ class Inventory
     {
         $value = $this->getItem()->getFertilizer();
 
-        if($this->getSpice() && $this->getSpice()->getEffects())
+        if($this->getSpice()?->getEffects())
         {
             $value += $this->getSpice()->getEffects()->getFood();
             $value += $this->getSpice()->getEffects()->getLove();
