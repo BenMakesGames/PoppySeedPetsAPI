@@ -51,6 +51,7 @@
         "twig/twig": "^3.0"
     },
     "require-dev": {
+        "friendsofphp/php-cs-fixer": "^3.92",
         "phpstan/phpstan": "^2.1",
         "phpstan/phpstan-doctrine": "^2.0",
         "phpstan/phpstan-symfony": "^2.0",
@@ -89,6 +90,7 @@
         "symfony/polyfill-php56": "*"
     },
     "scripts": {
+        "php-cs-fixer-dry-run": "php-cs-fixer fix --dry-run --diff --verbose",
         "auto-scripts": {
             "cache:clear": "symfony-cmd",
             "assets:install %PUBLIC_DIR%": "symfony-cmd"
@@ -101,7 +103,6 @@
         ]
     },
     "conflict": {
-        "friendsofphp/php-cs-fixer": "*",
         "symfony/symfony": "*"
     },
     "extra": {
