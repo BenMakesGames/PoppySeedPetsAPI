@@ -56,10 +56,10 @@ class ResonatingBowController
             throw new PSPPetNotFoundException();
 
         $color = mb_strtoupper(mb_trim($request->request->getAlpha('color')));
-        $hueShift = $request->request->getInt('shift');
+        $hueShift = $request->request->getInt('hueShift');
 
-        if($hueShift < -5 || $hueShift > 5)
-            throw new PSPFormValidationException('Hue shift must be between -10 and 10');
+        if($hueShift < -3 || $hueShift > 3 || $hueShift === 0)
+            throw new PSPFormValidationException('Hue shift must be between -3 and 3. (And not 0 - that would be silly and a waste.)');
 
         if($pet->hasStatusEffect(StatusEffectEnum::BittenByAVampire) && !$pet->hasMerit(MeritEnum::BLUSH_OF_LIFE))
             throw new PSPInvalidOperationException('It seems ' . $pet->getName() . '\'s vampire bite is preventing this from working!');
@@ -74,26 +74,26 @@ class ResonatingBowController
         }
 
         if($color === 'A')
-            $pet->setColorA(PetColorFunctions::adjustHue($pet->getColorA(), $hueShift / 50));
+            $pet->setColorA(PetColorFunctions::adjustHue($pet->getColorA(), $hueShift / 30));
         else if($color === 'B')
-            $pet->setColorB(PetColorFunctions::adjustHue($pet->getColorB(), $hueShift / 50));
+            $pet->setColorB(PetColorFunctions::adjustHue($pet->getColorB(), $hueShift / 30));
         else
             throw new PSPFormValidationException('You forgot to choose which color to recolor!');
-
-        $responseService->addFlashMessage($pet->getName() . ' has been chromatically altered!');
 
         $deleted = $rng->rngNextInt(1, 10) === 1;
 
         if($deleted)
         {
-            $comment = 'This was once a Resonating Bow.';
-
             $inventory
-                ->changeItem(ItemRepository::findOneByName($em, 'Resonating Bow'))
-                ->addComment($comment)
+                ->changeItem(ItemRepository::findOneByName($em, 'Fiberglass Bow'))
+                ->addComment('This was once a Resonating Bow.')
                 ->setModifiedOn()
             ;
+
+            $responseService->addFlashMessage($pet->getName() . ' has been chromatically altered! Unfortunately, a resonance feedback loop caused all the bow\'s pretty colors to freak out and explode in a flash of light. Now it\'s just a regular ol\' Fiberglass Bow again - darn :(');
         }
+        else
+            $responseService->addFlashMessage($pet->getName() . ' has been chromatically altered!');
 
         $rainbowEye = EnchantmentRepository::findOneByName($em, 'Rainboweye');
 
