@@ -26,6 +26,7 @@ class Music
         'Na naaaaaaa... na-na-na-na-na, na naaaaa... na-na na na-na naaaaaaa...',
         'Every day, every night, let\'s do the royal rainbow - yes! The cosmic message of looove!',
         'I love you, iki ga tomaru kurai sou... I miss you, tsuyoku dakishimete itsumademo...',
+        'Your sound, your wave, your thought, your spark, your touch, your wall, your sense...',
 
         // Sesame Street
         'Manha-manha - do dooooo d-do-do.... manha-manha - do do-do do...',
@@ -263,8 +264,9 @@ class Music
         // GitHub CoPilot??
         'I\'m not afraid of the future; I\'m not afraid of the past. I\'m not afraid of letting go, and letting my illusions last.',
 
-        // Imogen Heap, Hide and Seek
+        // Imogen Heap
         'Ransom notes keep falling out your mouth mid-sweet talk, newspaper word cut-outs...',
+        'Inside out. Upside-down, twisting beside myself. Stop that now - you\'re as close as it gets without touching me...',
 
         // Darren Korb, Setting Sail/Coming Home
         'I dig my hole, you build a wall. I dig my hole, you build a wall. One day that wall is gonna fa-a-all.',
@@ -292,8 +294,9 @@ class Music
         // Out of my Mind, by Jamie Berry
         'I keep thinkin\' \'bou-- \'bou-- \'bou-- \'bou-- \'bou-- \'bou-- out of my mi-- mi-- mi-- mi-- mi-- mi-- I keep thinkin\'!',
 
-        // Truly, by Delerium
+        // Delerium
         'So truuuuuuly, if there is liiight then I wanna see-ee-ee i-i-it... nooowww that I know what I am lookin\' fooorrr...',
+        'She\'s tired smiling madlyyy... until silence becomes very silently, a noise in her miiind...',
 
         // Danger! (High Voltage)
         'Danger! Danger! High voltage! When we touch; when we kiss; when we touch; when we kiss!!',
@@ -426,8 +429,9 @@ class Music
         // Cobrastyle, by Teddybers
         'My style is di bom digi bom di deng di deng digi-digi (oh-oh, oh-oh, oh-oh-oh-o-oh!)',
 
-        // Girl Anachronism, by Dresden Dolls
+        // Dresden Dolls
         'I am not so serious, this passion is a plagiarism. I might join your century, but only on a rare occasion...',
+        'Coin. Operated boy. Sitting on the shelf. He is just a toy. But I turn him on. And he comes to life. Automatic joy. That is why I want. A. Coin. Operated boy.',
 
         // Kick It, by The Breakfastaz
         'Ki-- ki-- kick it now... Kick it, kick it now... Ki-- ki-- kick it now... Kick it, kick it now...',
@@ -485,6 +489,9 @@ class Music
         // Starscapes, by TwoThirds & Feint
         'Hard to saaaaaaaaaaaaaaaaaaaaaaaave... hard to sa-a, a a-a, a a-a, a a-a, a a-a, a a-a, a a-a, a a-a...',
 
+        // Snake Eyes, by Feint
+        'Caaan\'t you seee... eeeverythiiing... iiis a meeess... when you hiiide... all the liiies... that you thoouught... you could buuurrryyy...',
+
         // Makeba
         'Ooo-ee! Makeba, Makeba ma qué bella, can I get a "ooo-ee!" Makeba, makes my body dance for yoouu.',
 
@@ -501,7 +508,7 @@ class Music
         'Abracadabra, amor-oo-nana! Abracadabra, morta-oo-gaga!',
 
         // The Walker, by Fitz and the Tantrums
-        'Oh! Here we gooo! Feel it in my soul! Really need it - need it - so go!',
+        'OH! Here we gooo! Feel it in my soul! Really need it - need it - so GO!',
 
         // Danger! High Voltage, by Electric Six
         'Danger, danger! High voltage-- when we touch! When we kiss! When we touch! When we kiss! Lover!',
@@ -538,7 +545,7 @@ class Music
         // Our Lips Are Sealed, by the Go-Go's
         'Can you hear theeem? They talk about us. Telling liiees, well that\'s no surprise...',
 
-        // If It Makes You Happy, by Sherly Crow
+        // If It Makes You Happy, by Sheryl Crow
         'If it makes you haaapyyyyy... it can\'t be that baaaaa-a-a-aaad... if it makes you haaapyyyyy... then why the hell are you sooo saaad...',
 
         // The Fate of Ophelia, by Taylor Swift
@@ -546,5 +553,14 @@ class Music
 
         // Power, by Kove
         'You gotta\' feel the power! Taking you up - in your soul! Just feel the music! Lifting you up from inside! Play it with me now!',
+
+        // Kokokara, kokokara
+        'Koko karaaa hajime yo-oooouuuu... sekaiiii wo mi ni yukoouuuu...',
+
+        // Young Blood, by The Naked and Famous
+        'We lie beneath the stars at niiight... our hands gripping each other tiiight... you keep my secrets hope to diiie... promises - swear them to the skyyy!',
+
+        // Low Rider, by War
+        'Low. Ri. Der don\'t use no gas, now... Low. Ri. Der don\'t drive too fast...',
     ];
 }
