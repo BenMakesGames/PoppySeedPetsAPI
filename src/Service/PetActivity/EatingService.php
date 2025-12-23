@@ -102,7 +102,7 @@ class EatingService
 
         $favoriteFlavorStrength = $food->{$pet->getFavoriteFlavor()->value};
 
-        if($randomFlavor !== null && $randomFlavor === $pet->getFavoriteFlavor())
+        if($randomFlavor === $pet->getFavoriteFlavor())
             $favoriteFlavorStrength += $food->randomFlavor;
 
         if($pet->hasMerit(MeritEnum::LOLLIGOVORE))

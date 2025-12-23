@@ -21,6 +21,7 @@ use App\Enum\PetActivityLogTagEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
 use App\Enum\StatusEffectEnum;
+use App\Functions\ActivityHelpers;
 use App\Functions\CalendarFunctions;
 use App\Functions\PetActivityLogFactory;
 use App\Functions\PetActivityLogTagHelpers;
@@ -304,6 +305,9 @@ class SmithingService implements IPetActivity
 
         if($this->houseSimService->hasInventory('Iron Sword'))
         {
+            if($this->houseSimService->hasInventory('Lotusjar') && $this->houseSimService->hasInventory('Antlers'))
+                $possibilities[] = $this->createBladeOfTheGlade(...);
+
             if($this->houseSimService->hasInventory('Whisk'))
                 $possibilities[] = $this->createCulinaryKnife(...);
 
@@ -357,6 +361,43 @@ class SmithingService implements IPetActivity
         }
 
         return $possibilities;
+    }
+
+    public function createBladeOfTheGlade(ComputedPetSkills $petWithSkills): PetActivityLog
+    {
+        $pet = $petWithSkills->getPet();
+        $roll = $this->rng->rngSkillRoll(max($petWithSkills->getDexterity()->getTotal(), $petWithSkills->getIntelligence()->getTotal()) + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal());
+
+        if($roll >= 26)
+        {
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 75), PetActivityStatEnum::SMITH, true);
+            $this->houseSimService->getState()->loseItem('Iron Sword', 1);
+            $this->houseSimService->getState()->loseItem('Lotusjar', 1);
+            $this->houseSimService->getState()->loseItem('Antlers', 1);
+
+            $pet->increaseEsteem(6);
+
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, ActivityHelpers::PetName($pet) . ' smithed a Blade of the Glade!')
+                ->setIcon('items/tool/sword/glade-blade')
+                ->addInterestingness(PetActivityLogInterestingness::HoHum + 26)
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Smithing' ]))
+            ;
+            $this->inventoryService->petCollectsItem('Blade of the Glade', $pet, $pet->getName() . ' created this by setting a Lotusjar into an Iron Sword... with an Antler hilt for extra style!', $activityLog);
+
+            $this->petExperienceService->gainExp($pet, 4, [ PetSkillEnum::Crafts ], $activityLog);
+        }
+        else
+        {
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, ActivityHelpers::PetName($pet) . ' had an idea for a cool sword made with Antlers, but couldn\'t quite get all the details ironed out...')
+                ->setIcon('icons/activity-logs/confused')
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Smithing' ]))
+            ;
+
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::Crafts ], $activityLog);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::SMITH, false);
+        }
+
+        return $activityLog;
     }
 
     public function createTriColorScissors(ComputedPetSkills $petWithSkills): PetActivityLog
