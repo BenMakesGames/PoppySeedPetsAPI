@@ -11,7 +11,6 @@ declare(strict_types=1);
  * You should have received a copy of the GNU General Public License along with The Poppy Seed Pets API. If not, see <https://www.gnu.org/licenses/>.
  */
 
-
 namespace App\Controller\Item\PetAlteration;
 
 use App\Controller\Item\ItemControllerHelpers;
@@ -86,15 +85,7 @@ class IridescentHandCannonController
         else
             throw new PSPFormValidationException('You forgot to choose which color to recolor!');
 
-        if($pet->hasMerit(MeritEnum::HYPERCHROMATIC))
-        {
-            $responseService->addFlashMessage($pet->getName() . ' has been chromatically altered! (It seems their Hyperchromaticism was blasted away by the cannon, as well!)');
-            $pet->removeMerit(MeritRepository::findOneByName($em, MeritEnum::HYPERCHROMATIC));
-        }
-        else
-        {
-            $responseService->addFlashMessage($pet->getName() . ' has been chromatically altered!');
-        }
+        $responseService->addFlashMessage($pet->getName() . ' has been chromatically altered!');
 
         $deleted = $rng->rngNextInt(1, 10) === 1;
 
