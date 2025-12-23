@@ -30,8 +30,11 @@ final class Version20251209052108 extends AbstractMigration
             `name` = 'Garaetteok',
             description='I mean, I _guess_ you could call them "Korean Rice Cakes". But that seems less fun.'
         WHERE `item`.`id` = 1278;
+        UPDATE known_recipes SET 
+            recipe='Garaetteok' 
+        WHERE recipe='Korean Rice Cakes';
         EOSQL);
-        UPDATE known_recipes SET recipe='Garaetteok' WHERE recipe='Korean Rice Cakes'
+        
     }
 
     public function down(Schema $schema): void
