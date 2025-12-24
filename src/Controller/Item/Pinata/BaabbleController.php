@@ -103,7 +103,12 @@ class BaabbleController
         $em->remove($inventory);
 
         foreach($items as $itemName)
-            $inventoryService->receiveItem($itemName, $user, $createdBy, 'Found inside a ' . $inventory->getItem()->getName() . '.', $location, $lockedToOwner);
+        {
+            $receivedItem = $inventoryService->receiveItem($itemName, $user, $createdBy, 'Found inside a ' . $inventory->getItem()->getName() . '.', $location, $lockedToOwner);
+
+            if($inventory->getSpice() && $receivedItem->getItem()->getFood())
+                $receivedItem->setSpice($inventory->getSpice());
+        }
 
         $em->flush();
 
@@ -159,7 +164,12 @@ class BaabbleController
         $em->remove($inventory);
 
         foreach($items as $itemName)
-            $inventoryService->receiveItem($itemName, $user, $createdBy, 'Found inside a ' . $inventory->getItem()->getName() . '.', $location, $lockedToOwner);
+        {
+            $receivedItem = $inventoryService->receiveItem($itemName, $user, $createdBy, 'Found inside a ' . $inventory->getItem()->getName() . '.', $location, $lockedToOwner);
+
+            if($inventory->getSpice() && $receivedItem->getItem()->getFood())
+                $receivedItem->setSpice($inventory->getSpice());
+        }
 
         $em->flush();
 
@@ -215,7 +225,12 @@ class BaabbleController
         $em->remove($inventory);
 
         foreach($items as $itemName)
-            $inventoryService->receiveItem($itemName, $user, $createdBy, 'Found inside a ' . $inventory->getItem()->getName() . '.', $location, $lockedToOwner);
+        {
+            $receivedItem = $inventoryService->receiveItem($itemName, $user, $createdBy, 'Found inside a ' . $inventory->getItem()->getName() . '.', $location, $lockedToOwner);
+
+            if($inventory->getSpice() && $receivedItem->getItem()->getFood())
+                $receivedItem->setSpice($inventory->getSpice());
+        }
 
         $em->flush();
 
@@ -274,7 +289,12 @@ class BaabbleController
         $em->remove($inventory);
 
         foreach($items as $itemName)
-            $inventoryService->receiveItem($itemName, $user, $createdBy, 'Found inside a ' . $inventory->getItem()->getName() . '.', $location, $lockedToOwner);
+        {
+            $receivedItem = $inventoryService->receiveItem($itemName, $user, $createdBy, 'Found inside a ' . $inventory->getItem()->getName() . '.', $location, $lockedToOwner);
+
+            if($inventory->getSpice() && $receivedItem->getItem()->getFood())
+                $receivedItem->setSpice($inventory->getSpice());
+        }
 
         $em->flush();
 

@@ -684,6 +684,7 @@ final class RecipeRepository
             new Recipe('Spaghetti with Meatless Meatballs', '350:1,1230:1', '1231:1', 0),
             new Recipe('Spanish Tortilla (with Butter)', '7:1,14:1,65:1,437:1', '1241:2', 0),
             new Recipe('Spanish Tortilla (with Oil)', '7:1,14:1,195:1,437:1', '1241:2', 0),
+            new Recipe('Species Transmigration Serum', '1502:2', '358:1', 0),
             new Recipe('Spicy Chocolate Bar', '12:1,23:1,248:1', '326:2', 0),
             new Recipe('Spicy Deep-fried Toad Legs (Creamy Milk)', '13:1,16:1,38:1,195:1,248:1', '375:3', 0),
             new Recipe('Spicy Deep-fried Toad Legs (Egg)', '14:1,16:1,38:1,195:1,248:1', '375:3', 0),
