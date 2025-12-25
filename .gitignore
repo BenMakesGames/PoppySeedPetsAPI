@@ -1,3 +1,5 @@
+/.idea
+/.claude/settings.local.json
 
 ###> symfony/framework-bundle ###
 /.env.local
@@ -18,8 +20,6 @@
 ###> symfony/web-server-bundle ###
 /.web-server-pid
 ###< symfony/web-server-bundle ###
-/.idea
-/deploy
 
 ###> friendsofphp/php-cs-fixer ###
 /.php-cs-fixer.cache
