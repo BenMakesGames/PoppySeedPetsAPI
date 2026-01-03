@@ -17,6 +17,8 @@ use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
 use App\Enum\UserStat;
 use App\Functions\ArrayFunctions;
+use App\Functions\EnchantmentRepository;
+use App\Service\HattierService;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\ResponseService;
@@ -34,8 +36,8 @@ class MusicController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function invokeMusicScroll(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, IRandom $rng,
-        UserStatsService $userStatsRepository, EntityManagerInterface $em,
-        UserAccessor $userAccessor
+        UserStatsService $userStatsRepository, EntityManagerInterface $em, UserAccessor $userAccessor,
+        HattierService $hattierService
     ): JsonResponse
     {
         $user = $userAccessor->getUserOrThrow();
@@ -66,10 +68,19 @@ class MusicController
         $itemList = array_map(fn(Inventory $i) => $i->getItem()->getName(), $newInventory);
         sort($itemList);
 
+        $message = 'You read the scroll perfectly, summoning ' . ArrayFunctions::list_nice($itemList) . '.';
+
+        $treble = EnchantmentRepository::findOneByName($em, 'Treble');
+
+        if(!$hattierService->userHasUnlocked($user, $treble))
+        {
+            $hattierService->playerUnlockAura($user, $treble, 'You unlocked this by reading a Scroll of Songs!');
+
+            $message .= ' (Also: a new, musical aura is available for you at the Hattier\'s!)';
+        }
+
         $em->flush();
 
-        $responseService->addFlashMessage('You read the scroll perfectly, summoning ' . ArrayFunctions::list_nice($itemList) . '.');
-
-        return $responseService->itemActionSuccess(null, [ 'itemDeleted' => true ]);
+        return $responseService->itemActionSuccess($message, [ 'itemDeleted' => true ]);
     }
 }
