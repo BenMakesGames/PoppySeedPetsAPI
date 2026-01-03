@@ -24,6 +24,42 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 
 class BoxHelpers
 {
+    public static function countRemoveAndFlush(
+        UserStatsService $userStatsRepository, User $user, Inventory $inventory,
+        ResponseService $responseService, EntityManagerInterface $em
+    ): void
+    {
+        $userStatsRepository->incrementStat($user, 'Opened ' . $inventory->getItem()->getNameWithArticle());
+
+        $em->remove($inventory);
+
+        $em->flush();
+
+        $responseService->setReloadInventory();
+    }
+
+    /**
+     * @param Inventory[] $newInventory
+     */
+    public static function createResponse(
+        ResponseService $responseService,
+        array $newInventory,
+        string $messagePrefix,
+        ?string $messageSuffix = null
+    ): JsonResponse
+    {
+        $itemList = array_map(fn(Inventory $i) => InventoryModifierFunctions::getNameWithModifiers($i), $newInventory);
+        sort($itemList);
+
+        $itemListText = ArrayFunctions::list_nice($itemList);
+        $fullMessage = "$messagePrefix $itemListText.";
+
+        if($messageSuffix)
+            $fullMessage .= ' ' . $messageSuffix;
+
+        return $responseService->itemActionSuccess($fullMessage, [ 'itemDeleted' => true ]);
+    }
+
     /**
      * @param Inventory[] $newInventory
      */
@@ -33,17 +69,8 @@ class BoxHelpers
         ResponseService $responseService, EntityManagerInterface $em
     ): JsonResponse
     {
-        $userStatsRepository->incrementStat($user, 'Opened ' . $inventory->getItem()->getNameWithArticle());
+        self::countRemoveAndFlush($userStatsRepository, $user, $inventory, $responseService, $em);
 
-        $itemList = array_map(fn(Inventory $i) => InventoryModifierFunctions::getNameWithModifiers($i), $newInventory);
-        sort($itemList);
-
-        $em->remove($inventory);
-
-        $em->flush();
-
-        $responseService->setReloadInventory();
-
-        return $responseService->itemActionSuccess($messagePrefix . ' ' . ArrayFunctions::list_nice($itemList) . '.', [ 'itemDeleted' => true ]);
+        return self::createResponse($responseService, $newInventory, $messagePrefix);
     }
 }

@@ -23,6 +23,7 @@ use App\Enum\PetSkillEnum;
 use App\Exceptions\PSPNotFoundException;
 use App\Functions\ArrayFunctions;
 use App\Functions\DateFunctions;
+use App\Functions\EnchantmentRepository;
 use App\Functions\InventoryHelpers;
 use App\Functions\ItemRepository;
 use App\Functions\PetActivityLogFactory;
@@ -30,6 +31,7 @@ use App\Functions\SpiceRepository;
 use App\Functions\UserQuestRepository;
 use App\Model\PetChanges;
 use App\Service\Clock;
+use App\Service\HattierService;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\PetExperienceService;
@@ -267,7 +269,7 @@ class BoxController
     public function openCerealBox(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, IRandom $rng,
         UserStatsService $userStatsRepository, EntityManagerInterface $em, Clock $clock,
-        UserAccessor $userAccessor
+        UserAccessor $userAccessor, HattierService $hattierService
     ): JsonResponse
     {
         $user = $userAccessor->getUserOrThrow();
@@ -290,7 +292,18 @@ class BoxController
         for($i = 0; $i < 7; $i++)
             $newInventory[] = $inventoryService->receiveItem($rng->rngNextFromArray([ 'Corn', $wheatOrCorn, 'Rice' ]), $user, $user, $message, $location, $inventory->getLockedToOwner());
 
-        return BoxHelpers::countRemoveFlushAndRespond('Opening the box revealed', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em);
+        $breakfast = EnchantmentRepository::findOneByName($em, 'Breakfast');
+        $messageSuffix = null;
+
+        if(!$hattierService->userHasUnlocked($user, $breakfast))
+        {
+            $hattierService->playerUnlockAura($user, $breakfast, 'You unlocked this by opening a Cereal Box!');
+            $messageSuffix = ' (Also, some colorful loops fall out?! A new aura is available for you at the Hattier\'s!)';
+        }
+
+        BoxHelpers::countRemoveAndFlush($userStatsRepository, $user, $inventory, $responseService, $em);
+
+        return BoxHelpers::createResponse($responseService, $newInventory, 'Opening the box revealed', $messageSuffix);
     }
 
     #[Route("/bakers/{inventory}/open", methods: ["POST"])]
