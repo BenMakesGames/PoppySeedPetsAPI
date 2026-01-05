@@ -1207,12 +1207,12 @@ class BoxController
         $possibleItems = [
             'Chocolate Bar', 'Chocolate Sword', 'Chocolate Cake Pops', 'Chocolate Meringue', 'Chocolate Syrup',
             'Chocolate Toffee Matzah', 'Chocolate-covered Honeycomb', 'Chocolate-frosted Donut',
-            'Mini Chocolate Chip Cookies', 'Slice of Chocolate Cream Pie', 'Chocolate Key'
+            'Mini Chocolate Chip Cookies', 'Slice of Chocolate Cream Pie', 'Chocolate Key', 'Chocolate Teapot'
         ];
 
         $userStatsRepository->incrementStat($user, 'Looted ' . $box->getItem()->getNameWithArticle());
 
-        $numberOfItems = $rng->rngNextInt(2, 4);
+        $numberOfItems = $rng->rngNextInt(2, 6);
 
         for($i = 0; $i < $numberOfItems; $i++)
         {
@@ -1226,9 +1226,14 @@ class BoxController
             'Onion Rings', 'Iron Sword',
         ];
 
-        $grossItem = $inventoryService->receiveItem($rng->rngNextFromArray($possibleGrossItems), $user, $box->getCreatedBy(), $user->getName() . ' found inside ' . $box->getItem()->getNameWithArticle() . '.', $location, $lockedToOwner);
-        $grossItem->setSpice(SpiceRepository::findOneByName($em, 'Chocolate-covered'));
-        $lootNames[] = 'a Chocolate-covered ' . $grossItem->getItem()->getName();
+        $grossItems = $numberOfItems == 2 ? 2 : 1;
+
+        for($i = 0; $i < $grossItems; $i++)
+        {
+            $grossItem = $inventoryService->receiveItem($rng->rngNextFromArray($possibleGrossItems), $user, $box->getCreatedBy(), $user->getName() . ' found inside ' . $box->getItem()->getNameWithArticle() . '.', $location, $lockedToOwner);
+            $grossItem->setSpice(SpiceRepository::findOneByName($em, 'Chocolate-covered'));
+            $lootNames[] = 'a Chocolate-covered ' . $grossItem->getItem()->getName();
+        }
 
         $em->remove($box);
 

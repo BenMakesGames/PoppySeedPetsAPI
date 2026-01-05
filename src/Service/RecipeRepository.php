@@ -252,6 +252,7 @@ final class RecipeRepository
             new Recipe('Exclusive Ore (from Iron Ore)', '88:1,281:1', '1487:1', 0),
             new Recipe('Exclusive Ore (from Silver Ore)', '90:1,281:1', '1487:1', 0),
             new Recipe('Falafel', '7:1,170:1,195:1', '1086:2', 0),
+            new Recipe('Fancy Teapot', '1430:1,1505:1', '1486:1', 0),
             new Recipe('Fermented Fish Onigiri', '17:1,140:1,200:1', '309:3', 0),
             new Recipe('Fermented Fish', '10:1,33:1', '200:2', 0),
             new Recipe('Fiberglass', '40:1,142:1', '143:1', 300),
