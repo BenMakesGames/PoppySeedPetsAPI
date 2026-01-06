@@ -1172,7 +1172,7 @@ class BoxController
     public function openChocolateChest(
         Inventory $box, ResponseService $responseService, InventoryService $inventoryService,
         UserStatsService $userStatsRepository, EntityManagerInterface $em, IRandom $rng,
-        UserAccessor $userAccessor
+        UserAccessor $userAccessor, HattierService $hattierService
     ): JsonResponse
     {
         $user = $userAccessor->getUserOrThrow();
@@ -1240,6 +1240,14 @@ class BoxController
         sort($lootNames);
 
         $description .= 'Inside the chest, you find ' . ArrayFunctions::list_nice($lootNames) . '!';
+
+        $cocoa = EnchantmentRepository::findOneByName($em, 'Cocoa');
+
+        if(!$hattierService->userHasUnlocked($user, $cocoa))
+        {
+            $hattierService->playerUnlockAura($user, $cocoa, 'You unlocked this by opening a Chocolate Chest!');
+            $description .= ' (Also, a new, chocolate aura is available for you at the Hattier\'s!)';
+        }
 
         $em->flush();
 

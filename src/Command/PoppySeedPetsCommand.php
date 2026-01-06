@@ -120,7 +120,7 @@ abstract class PoppySeedPetsCommand extends Command
             return $answer;
         });
 
-        return trim($this->ask($question));
+        return mb_trim($this->ask($question));
     }
 
     protected function askFloat(string $prompt, float $defaultValue, ?callable $constraint = null): float

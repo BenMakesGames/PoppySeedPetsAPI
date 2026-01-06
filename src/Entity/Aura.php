@@ -46,6 +46,12 @@ class Aura
     #[ORM\Column(type: 'float')]
     private float $centerY = 0.5;
 
+    public function __construct(string $name, string $image)
+    {
+        $this->name = $name;
+        $this->image = $image;
+    }
+
     public function getId(): ?int
     {
         return $this->id;

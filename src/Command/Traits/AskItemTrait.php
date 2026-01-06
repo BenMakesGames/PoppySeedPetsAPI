@@ -27,7 +27,7 @@ trait AskItemTrait
             $question = new Question($prompt, null);
 
         $question->setValidator(function($itemName) {
-            $itemName = trim($itemName);
+            $itemName = mb_trim($itemName);
 
             if($itemName === '' || $itemName === '~')
                 throw new \RuntimeException('Must select an item.');
@@ -46,7 +46,7 @@ trait AskItemTrait
             $question = new Question($prompt . ' (~)', null);
 
         $question->setValidator(function($itemName) {
-            $itemName = $itemName === null ? '~' : trim($itemName);
+            $itemName = $itemName === null ? '~' : mb_trim($itemName);
 
             if($itemName === '~') return null;
 

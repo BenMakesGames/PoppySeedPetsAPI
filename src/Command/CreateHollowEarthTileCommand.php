@@ -72,7 +72,7 @@ class CreateHollowEarthTileCommand extends PoppySeedPetsCommand
 
         $tile->setType($tileType);
 
-        $image = trim(preg_replace('/[^a-z0-9]+/', '-', strtolower($name)), '-');
+        $image = mb_trim(preg_replace('/[^a-z0-9]+/', '-', strtolower($name)), '-');
 
         $image = trim($this->askString('Image, without leading `tile/`', $image));
 
@@ -111,11 +111,11 @@ class CreateHollowEarthTileCommand extends PoppySeedPetsCommand
 
     private function askName(): string
     {
-        $name = trim($this->input->getArgument('name'));
+        $name = mb_trim($this->input->getArgument('name'));
 
         while(true)
         {
-            $name = trim($this->askString('Name', $name));
+            $name = mb_trim($this->askString('Name', $name));
 
             $nameInUse = false;
 

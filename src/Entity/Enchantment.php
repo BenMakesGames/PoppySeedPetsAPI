@@ -32,7 +32,7 @@ class Enchantment
 
     #[Groups(["myInventory", "itemEncyclopedia", "marketItem", "fireplaceFuel", "greenhouseFertilizer", "myPet", "fireplaceMantle", "dragonTreasure"])]
     #[ORM\Column(type: 'boolean')]
-    private bool $isSuffix;
+    private bool $isSuffix = false;
 
     #[Groups(["myInventory", "itemEncyclopedia", "marketItem", "myPet"])]
     #[ORM\OneToOne(targetEntity: 'App\Entity\ItemTool', inversedBy: 'enchantment', cascade: ['persist', 'remove'])]
@@ -43,8 +43,9 @@ class Enchantment
     #[ORM\ManyToOne(targetEntity: Aura::class)]
     private ?Aura $aura;
 
-    public function __construct(ItemTool $effects)
+    public function __construct(string $name, ItemTool $effects)
     {
+        $this->name = $name;
         $this->effects = $effects;
     }
 
@@ -53,7 +54,7 @@ class Enchantment
         return $this->id;
     }
 
-    public function getName(): ?string
+    public function getName(): string
     {
         return $this->name;
     }
@@ -65,7 +66,7 @@ class Enchantment
         return $this;
     }
 
-    public function getIsSuffix(): ?bool
+    public function getIsSuffix(): bool
     {
         return $this->isSuffix;
     }

@@ -131,7 +131,7 @@ class UpsertRecipeCommand extends PoppySeedPetsCommand
     {
         $question = new Question($prompt . ' (' . $name . ') ', $name);
         $question->setValidator(function($answer) use($recipe) {
-            $answer = trim($answer);
+            $answer = mb_trim($answer);
 
             $existing = $this->recipeRepository->findOneByName($answer);
 

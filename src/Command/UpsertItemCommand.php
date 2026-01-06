@@ -64,7 +64,7 @@ class UpsertItemCommand extends PoppySeedPetsCommand
             if(str_starts_with($name, 'Tile:'))
                 throw new \Exception('Tiles must be created with app:create-hollow-earth-tile.');
 
-            $this->output->writeln('Creating "' . $name . '"');
+            $this->output->writeln('Creating Item: "' . $name . '"');
 
             $item = (new Item())
                 ->setName($name)
@@ -93,7 +93,7 @@ class UpsertItemCommand extends PoppySeedPetsCommand
     {
         $question = new Question($prompt . ' (' . $name . ') ', $name);
         $question->setValidator(function($answer) use($item) {
-            $answer = trim($answer);
+            $answer = mb_trim($answer);
 
             $existing = $this->em->getRepository(Item::class)->findOneBy([ 'name' => $answer ]);
 
