@@ -66,6 +66,7 @@ abstract class PoppySeedPetsCommand extends Command
             return $answerValue;
         });
 
+        /** @phpstan-ignore-next-line */
         return $this->ask($question);
     }
 
@@ -73,7 +74,7 @@ abstract class PoppySeedPetsCommand extends Command
     {
         $question = new Question($prompt . ' (' . $defaultValue . ') ', $defaultValue);
 
-        $question->setValidator(function($answer) use($constraint) {
+        $question->setValidator(function(string $answer) use($constraint) {
             if((int)$answer != $answer)
                 throw new \RuntimeException('Must be an integer.');
 
@@ -83,6 +84,7 @@ abstract class PoppySeedPetsCommand extends Command
             return (int)$answer;
         });
 
+        /** @phpstan-ignore-next-line */
         return $this->ask($question);
     }
 
@@ -91,10 +93,14 @@ abstract class PoppySeedPetsCommand extends Command
         return $this->confirm($prompt, $defaultValue);
     }
 
-    protected function askChoice(string $prompt, array $choices, $defaultValue): string
+    /**
+     * @param array<string|bool|int|float|\Stringable> $choices
+     */
+    protected function askChoice(string $prompt, array $choices, bool|float|int|string|null $defaultValue): string
     {
         $question = new ChoiceQuestion($prompt, $choices, $defaultValue);
 
+        /** @phpstan-ignore-next-line */
         return $this->ask($question);
     }
 
@@ -113,13 +119,14 @@ abstract class PoppySeedPetsCommand extends Command
 
         $question = new Question($prompt . ' (' . $defaultValue . ') ', $defaultValue);
 
-        $question->setValidator(function($answer) use($constraint) {
-            if($constraint && !$constraint(trim($answer)))
+        $question->setValidator(function(string $answer) use($constraint) {
+            if($constraint && !$constraint(mb_trim($answer)))
                 throw new \RuntimeException('That input was no good. Try again.');
 
             return $answer;
         });
 
+        /** @phpstan-ignore-next-line */
         return mb_trim($this->ask($question));
     }
 
@@ -127,7 +134,7 @@ abstract class PoppySeedPetsCommand extends Command
     {
         $question = new Question($prompt . ' (' . $defaultValue . ') ', $defaultValue);
 
-        $question->setValidator(function($answer) use($constraint) {
+        $question->setValidator(function(string $answer) use($constraint) {
             if((float)$answer != $answer)
                 throw new \RuntimeException('Must be a real number.');
 
@@ -137,6 +144,7 @@ abstract class PoppySeedPetsCommand extends Command
             return (float)$answer;
         });
 
+        /** @phpstan-ignore-next-line */
         return $this->ask($question);
     }
 
