@@ -47,14 +47,15 @@ class GetDonatableItemsController
             ->select('i')->from(Inventory::class, 'i')
             ->andWhere('i.owner=:user')
             ->leftJoin('i.item', 'item')
+            ->leftJoin('i.enchantmentData', 'enchData')
             ->andWhere('i.location IN (:locations)')
             ->andWhere('item.id NOT IN (SELECT miitem.id FROM App\\Entity\\MuseumItem mi LEFT JOIN mi.item miitem WHERE mi.user=:user)')
             ->setParameter('locations', [ LocationEnum::Home, LocationEnum::Basement ])
             ->setParameter('user', $user)
             ->addGroupBy('item.id')
-            ->addGroupBy('i.enchantment')
+            ->addGroupBy('enchData.enchantment')
             ->addOrderBy('item.name')
-            ->addOrderBy('i.enchantment')
+            ->addOrderBy('CASE WHEN enchData.enchantment IS NULL THEN 0 ELSE 1 END')
         ;
 
         $paginator = new Paginator($qb);
