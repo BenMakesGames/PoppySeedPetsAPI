@@ -357,13 +357,6 @@ class Inventory
         return $this->enchantmentData?->getHue();
     }
 
-    public function setEnchantmentHue(int $hue): self
-    {
-        $this->enchantmentData?->setHue($hue);
-
-        return $this;
-    }
-
     public function providesLight(): bool
     {
         return
