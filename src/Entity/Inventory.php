@@ -84,9 +84,8 @@ class Inventory
     #[ORM\OneToOne(targetEntity: LunchboxItem::class, mappedBy: 'inventoryItem', cascade: ['remove'])]
     private ?LunchboxItem $lunchboxItem = null;
 
-    #[ORM\ManyToOne(targetEntity: Enchantment::class)]
-    #[Groups(["myInventory", "itemEncyclopedia", "marketItem", "fireplaceFuel", "greenhouseFertilizer", "myPet", "fireplaceMantle", "dragonTreasure", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails"])]
-    private ?Enchantment $enchantment = null;
+    #[ORM\OneToOne(targetEntity: InventoryEnchantment::class, mappedBy: 'inventory', cascade: ['persist', 'remove'])]
+    private ?InventoryEnchantment $enchantmentData = null;
 
     #[ORM\ManyToOne(targetEntity: Spice::class)]
     #[Groups(["myInventory", "itemEncyclopedia", "marketItem", "fireplaceFuel", "greenhouseFertilizer", "myPet", "fireplaceMantle", "dragonTreasure"])]
@@ -323,18 +322,39 @@ class Inventory
         return $this;
     }
 
+    #[Groups(["myInventory", "itemEncyclopedia", "marketItem", "fireplaceFuel", "greenhouseFertilizer", "myPet", "fireplaceMantle", "dragonTreasure", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails"])]
     public function getEnchantment(): ?Enchantment
     {
-        return $this->enchantment;
+        return $this->enchantmentData?->getEnchantment();
     }
 
-    public function setEnchantment(?Enchantment $enchantment): self
+    public function setEnchantment(?Enchantment $enchantment, int $hue = 0): self
     {
-        $this->enchantment = $enchantment;
+        if ($enchantment === null) {
+            $this->enchantmentData = null;
+        } else {
+            if ($this->enchantmentData === null) {
+                $this->enchantmentData = new InventoryEnchantment($this, $enchantment, $hue);
+            } else {
+                $this->enchantmentData->setEnchantment($enchantment);
+                $this->enchantmentData->setHue($hue);
+            }
+        }
 
         $this->fullItemName = InventoryModifierFunctions::getNameWithModifiers($this);
 
         return $this;
+    }
+
+    public function getEnchantmentData(): ?InventoryEnchantment
+    {
+        return $this->enchantmentData;
+    }
+
+    #[Groups(["myInventory", "itemEncyclopedia", "marketItem", "fireplaceFuel", "greenhouseFertilizer", "myPet", "fireplaceMantle", "dragonTreasure", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails"])]
+    public function getEnchantmentHue(): ?int
+    {
+        return $this->enchantmentData?->getHue();
     }
 
     public function providesLight(): bool

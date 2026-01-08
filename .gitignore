@@ -1,5 +1,11 @@
+# IDEs
 /.idea
+/.vscode
+/.vs
+
+# local config
 /.claude/settings.local.json
+CLAUDE.local.md
 
 ###> symfony/framework-bundle ###
 /.env.local

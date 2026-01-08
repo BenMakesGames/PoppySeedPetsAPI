@@ -46,6 +46,7 @@ class ApplyAuraController
 
         $petId = $request->request->getInt('pet');
         $auraId = $request->request->getInt('aura');
+        $hue = $request->request->getInt('hue', 0) % 360;
 
         if($petId <= 0 || $auraId <= 0)
             throw new PSPInvalidOperationException('A pet and style must be selected.');
@@ -85,7 +86,7 @@ class ApplyAuraController
         else
             $transactionService->spendRecyclingPoints($user, 100, 'Bought the ' . $unlockedAura->getAura()->getAura()->getName() . ' style from the Hattier.', [ 'Hattier' ]);
 
-        $pet->getHat()->setEnchantment($unlockedAura->getAura());
+        $pet->getHat()->setEnchantment($unlockedAura->getAura(), $hue);
 
         PetBadgeHelpers::awardBadgeAndLog($em, $pet, PetBadgeEnum::TriedOnANewStyle, null);
 
