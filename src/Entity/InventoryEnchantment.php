@@ -74,6 +74,11 @@ class InventoryEnchantment
 
     public function setHue(int $hue): self
     {
+        if($hue < 0)
+            $hue = 360 - abs($hue);
+        else if($hue >= 360)
+            $hue = $hue % 360;
+
         $this->hue = $hue;
 
         return $this;
