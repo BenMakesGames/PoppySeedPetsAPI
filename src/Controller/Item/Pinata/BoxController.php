@@ -1241,14 +1241,6 @@ class BoxController
 
         $description .= 'Inside the chest, you find ' . ArrayFunctions::list_nice($lootNames) . '!';
 
-        $cocoa = EnchantmentRepository::findOneByName($em, 'Cocoa');
-
-        if(!$hattierService->userHasUnlocked($user, $cocoa))
-        {
-            $hattierService->playerUnlockAura($user, $cocoa, 'You unlocked this by opening a Chocolate Chest!');
-            $description .= ' (Also, a new, chocolate aura is available for you at the Hattier\'s!)';
-        }
-
         $em->flush();
 
         return $responseService->itemActionSuccess($description, [ 'itemDeleted' => true ]);
