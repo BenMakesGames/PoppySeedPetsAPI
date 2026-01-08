@@ -352,9 +352,9 @@ class Inventory
     }
 
     #[Groups(["myInventory", "itemEncyclopedia", "marketItem", "fireplaceFuel", "greenhouseFertilizer", "myPet", "fireplaceMantle", "dragonTreasure", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails"])]
-    public function getEnchantmentHue(): int
+    public function getEnchantmentHue(): ?int
     {
-        return $this->enchantmentData?->getHue() ?? 0;
+        return $this->enchantmentData?->getHue();
     }
 
     public function setEnchantmentHue(int $hue): self
