@@ -66,6 +66,7 @@ class UpsertRecipeCommand extends PoppySeedPetsCommand
      */
     public static function totalFertilizer(array $quantities): int
     {
+        /** @phpstan-ignore-next-line */
         return ArrayFunctions::sum($quantities, fn(ItemQuantity $quantity) => $quantity->item->getFertilizer() * $quantity->quantity);
     }
 
@@ -74,6 +75,7 @@ class UpsertRecipeCommand extends PoppySeedPetsCommand
         if(strtolower($_SERVER['APP_ENV']) !== 'dev')
             throw new \Exception('Can only be run in dev environments.');
 
+        /** @var string $name */
         $name = $this->input->getArgument('recipe');
         $recipe = $this->recipeRepository->findOneByName($name);
 
@@ -130,8 +132,8 @@ class UpsertRecipeCommand extends PoppySeedPetsCommand
     private function askName(string $prompt, Recipe $recipe, string $name): string
     {
         $question = new Question($prompt . ' (' . $name . ') ', $name);
-        $question->setValidator(function($answer) use($recipe) {
-            $answer = trim($answer);
+        $question->setValidator(function(string $answer) use($recipe) {
+            $answer = mb_trim($answer);
 
             $existing = $this->recipeRepository->findOneByName($answer);
 
@@ -141,6 +143,7 @@ class UpsertRecipeCommand extends PoppySeedPetsCommand
             return $answer;
         });
 
+        /** @phpstan-ignore-next-line */
         return $this->ask($question);
     }
 

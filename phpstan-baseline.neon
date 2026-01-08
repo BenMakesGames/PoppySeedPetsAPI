@@ -79,13 +79,13 @@ parameters:
 			path: src/Command/CreateHollowEarthTileCommand.php
 
 		-
-			message: '#^Parameter \#1 \$string of function trim expects string, mixed given\.$#'
+			message: '#^Parameter \#1 \$string of function mb_trim expects string, mixed given\.$#'
 			identifier: argument.type
 			count: 1
 			path: src/Command/CreateHollowEarthTileCommand.php
 
 		-
-			message: '#^Parameter \#1 \$string of function trim expects string, string\|null given\.$#'
+			message: '#^Parameter \#1 \$string of function mb_trim expects string, string\|null given\.$#'
 			identifier: argument.type
 			count: 1
 			path: src/Command/CreateHollowEarthTileCommand.php
@@ -160,6 +160,36 @@ parameters:
 			message: '#^Call to an undefined method object\:\:getId\(\)\.$#'
 			identifier: method.notFound
 			count: 1
+			path: src/Command/ExportAuraCommand.php
+
+		-
+			message: '#^Parameter \#1 \$columnName of method Doctrine\\ORM\\Mapping\\ClassMetadata\<object\>\:\:getFieldForColumn\(\) expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Command/ExportAuraCommand.php
+
+		-
+			message: '#^Parameter \#1 \$string of function addslashes expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Command/ExportAuraCommand.php
+
+		-
+			message: '#^Parameter \#1 \$string of function addslashes expects string, string\|false given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Command/ExportAuraCommand.php
+
+		-
+			message: '#^Parameter \#1 \$string of function strtolower expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Command/ExportAuraCommand.php
+
+		-
+			message: '#^Call to an undefined method object\:\:getId\(\)\.$#'
+			identifier: method.notFound
+			count: 1
 			path: src/Command/ExportItemCommand.php
 
 		-
@@ -182,12 +212,6 @@ parameters:
 
 		-
 			message: '#^Parameter \#1 \$string of function strtolower expects string, mixed given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Command/ExportItemCommand.php
-
-		-
-			message: '#^Parameter \#2 \$entity of method App\\Command\\ExportItemCommand\:\:generateSql\(\) expects object, App\\Entity\\ItemFood\|null given\.$#'
 			identifier: argument.type
 			count: 1
 			path: src/Command/ExportItemCommand.php
@@ -343,74 +367,14 @@ parameters:
 			path: src/Command/PlayerStatsCommand.php
 
 		-
-			message: '#^Cannot cast mixed to float\.$#'
-			identifier: cast.double
-			count: 3
-			path: src/Command/PoppySeedPetsCommand.php
-
-		-
 			message: '#^Cannot cast mixed to int\.$#'
 			identifier: cast.int
-			count: 5
-			path: src/Command/PoppySeedPetsCommand.php
-
-		-
-			message: '#^Method App\\Command\\PoppySeedPetsCommand\:\:askChoice\(\) has parameter \$choices with no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Command/PoppySeedPetsCommand.php
-
-		-
-			message: '#^Method App\\Command\\PoppySeedPetsCommand\:\:askChoice\(\) has parameter \$defaultValue with no type specified\.$#'
-			identifier: missingType.parameter
-			count: 1
-			path: src/Command/PoppySeedPetsCommand.php
-
-		-
-			message: '#^Method App\\Command\\PoppySeedPetsCommand\:\:askChoice\(\) should return string but returns mixed\.$#'
-			identifier: return.type
-			count: 1
-			path: src/Command/PoppySeedPetsCommand.php
-
-		-
-			message: '#^Method App\\Command\\PoppySeedPetsCommand\:\:askFloat\(\) should return float but returns mixed\.$#'
-			identifier: return.type
-			count: 1
-			path: src/Command/PoppySeedPetsCommand.php
-
-		-
-			message: '#^Method App\\Command\\PoppySeedPetsCommand\:\:askInt\(\) should return int but returns mixed\.$#'
-			identifier: return.type
-			count: 1
-			path: src/Command/PoppySeedPetsCommand.php
-
-		-
-			message: '#^Method App\\Command\\PoppySeedPetsCommand\:\:askNullableInt\(\) should return int\|null but returns mixed\.$#'
-			identifier: return.type
-			count: 1
+			count: 2
 			path: src/Command/PoppySeedPetsCommand.php
 
 		-
 			message: '#^Method App\\Command\\PoppySeedPetsCommand\:\:confirm\(\) should return bool but returns mixed\.$#'
 			identifier: return.type
-			count: 1
-			path: src/Command/PoppySeedPetsCommand.php
-
-		-
-			message: '#^Parameter \#1 \$string of function trim expects string, mixed given\.$#'
-			identifier: argument.type
-			count: 2
-			path: src/Command/PoppySeedPetsCommand.php
-
-		-
-			message: '#^Parameter \#2 \$choices of class Symfony\\Component\\Console\\Question\\ChoiceQuestion constructor expects array\<bool\|float\|int\|string\|Stringable\>, array given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Command/PoppySeedPetsCommand.php
-
-		-
-			message: '#^Parameter \#3 \$default of class Symfony\\Component\\Console\\Question\\ChoiceQuestion constructor expects bool\|float\|int\|string\|null, mixed given\.$#'
-			identifier: argument.type
 			count: 1
 			path: src/Command/PoppySeedPetsCommand.php
 
@@ -661,7 +625,79 @@ parameters:
 			path: src/Command/UpdateHollowEarthTileEventCommand.php
 
 		-
-			message: '#^Binary operation "\." between ''Creating "'' and mixed results in an error\.$#'
+			message: '#^Binary operation "\." between ''Creating Aura\: "'' and mixed results in an error\.$#'
+			identifier: binaryOp.invalid
+			count: 1
+			path: src/Command/UpsertAuraCommand.php
+
+		-
+			message: '#^Binary operation "\." between ''Updating "'' and mixed results in an error\.$#'
+			identifier: binaryOp.invalid
+			count: 1
+			path: src/Command/UpsertAuraCommand.php
+
+		-
+			message: '#^Method App\\Command\\UpsertAuraCommand\:\:askEnchantmentWord\(\) should return string but returns mixed\.$#'
+			identifier: return.type
+			count: 1
+			path: src/Command/UpsertAuraCommand.php
+
+		-
+			message: '#^Method App\\Command\\UpsertAuraCommand\:\:askItem\(\) should return App\\Entity\\Item but returns mixed\.$#'
+			identifier: return.type
+			count: 1
+			path: src/Command/UpsertAuraCommand.php
+
+		-
+			message: '#^Method App\\Command\\UpsertAuraCommand\:\:askName\(\) should return string but returns mixed\.$#'
+			identifier: return.type
+			count: 1
+			path: src/Command/UpsertAuraCommand.php
+
+		-
+			message: '#^Method App\\Command\\UpsertAuraCommand\:\:askNullableItem\(\) should return App\\Entity\\Item\|null but returns mixed\.$#'
+			identifier: return.type
+			count: 1
+			path: src/Command/UpsertAuraCommand.php
+
+		-
+			message: '#^Method App\\Command\\UpsertAuraCommand\:\:totalFertilizer\(\) should return int but returns mixed\.$#'
+			identifier: return.type
+			count: 1
+			path: src/Command/UpsertAuraCommand.php
+
+		-
+			message: '#^Parameter \#1 \$enchantment of method App\\Command\\UpsertAuraCommand\:\:enchantmentName\(\) expects App\\Entity\\Enchantment, App\\Entity\\Enchantment\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Command/UpsertAuraCommand.php
+
+		-
+			message: '#^Parameter \#1 \$name of class App\\Entity\\Aura constructor expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Command/UpsertAuraCommand.php
+
+		-
+			message: '#^Parameter \#1 \$string of function mb_trim expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 4
+			path: src/Command/UpsertAuraCommand.php
+
+		-
+			message: '#^Parameter \#1 \$string of function strtolower expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Command/UpsertAuraCommand.php
+
+		-
+			message: '#^Parameter \#2 \$name of method App\\Command\\UpsertAuraCommand\:\:name\(\) expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Command/UpsertAuraCommand.php
+
+		-
+			message: '#^Binary operation "\." between ''Creating Item\: "'' and mixed results in an error\.$#'
 			identifier: binaryOp.invalid
 			count: 1
 			path: src/Command/UpsertItemCommand.php
@@ -697,15 +733,15 @@ parameters:
 			path: src/Command/UpsertItemCommand.php
 
 		-
-			message: '#^Parameter \#1 \$string of function strtolower expects string, mixed given\.$#'
+			message: '#^Parameter \#1 \$string of function mb_trim expects string, mixed given\.$#'
 			identifier: argument.type
-			count: 1
+			count: 3
 			path: src/Command/UpsertItemCommand.php
 
 		-
-			message: '#^Parameter \#1 \$string of function trim expects string, mixed given\.$#'
+			message: '#^Parameter \#1 \$string of function strtolower expects string, mixed given\.$#'
 			identifier: argument.type
-			count: 3
+			count: 1
 			path: src/Command/UpsertItemCommand.php
 
 		-
@@ -775,15 +811,15 @@ parameters:
 			path: src/Command/UpsertPlantCommand.php
 
 		-
-			message: '#^Parameter \#1 \$string of function strtolower expects string, mixed given\.$#'
+			message: '#^Parameter \#1 \$string of function mb_trim expects string, mixed given\.$#'
 			identifier: argument.type
-			count: 1
+			count: 2
 			path: src/Command/UpsertPlantCommand.php
 
 		-
-			message: '#^Parameter \#1 \$string of function trim expects string, mixed given\.$#'
+			message: '#^Parameter \#1 \$string of function strtolower expects string, mixed given\.$#'
 			identifier: argument.type
-			count: 2
+			count: 1
 			path: src/Command/UpsertPlantCommand.php
 
 		-
@@ -811,25 +847,7 @@ parameters:
 			path: src/Command/UpsertPlantCommand.php
 
 		-
-			message: '#^Binary operation "\." between ''Creating "'' and mixed results in an error\.$#'
-			identifier: binaryOp.invalid
-			count: 1
-			path: src/Command/UpsertRecipeCommand.php
-
-		-
-			message: '#^Binary operation "\." between ''Updating "'' and mixed results in an error\.$#'
-			identifier: binaryOp.invalid
-			count: 1
-			path: src/Command/UpsertRecipeCommand.php
-
-		-
 			message: '#^Method App\\Command\\UpsertRecipeCommand\:\:askItem\(\) should return App\\Entity\\Item but returns mixed\.$#'
-			identifier: return.type
-			count: 1
-			path: src/Command/UpsertRecipeCommand.php
-
-		-
-			message: '#^Method App\\Command\\UpsertRecipeCommand\:\:askName\(\) should return string but returns mixed\.$#'
 			identifier: return.type
 			count: 1
 			path: src/Command/UpsertRecipeCommand.php
@@ -841,43 +859,13 @@ parameters:
 			path: src/Command/UpsertRecipeCommand.php
 
 		-
-			message: '#^Method App\\Command\\UpsertRecipeCommand\:\:totalFertilizer\(\) should return int but returns mixed\.$#'
-			identifier: return.type
-			count: 1
-			path: src/Command/UpsertRecipeCommand.php
-
-		-
-			message: '#^Parameter \#1 \$name of class App\\Model\\Recipe constructor expects string, mixed given\.$#'
+			message: '#^Parameter \#1 \$string of function mb_trim expects string, mixed given\.$#'
 			identifier: argument.type
-			count: 1
-			path: src/Command/UpsertRecipeCommand.php
-
-		-
-			message: '#^Parameter \#1 \$recipeName of method App\\Service\\RecipeRepository\:\:findOneByName\(\) expects string, mixed given\.$#'
-			identifier: argument.type
-			count: 1
+			count: 2
 			path: src/Command/UpsertRecipeCommand.php
 
 		-
 			message: '#^Parameter \#1 \$string of function strtolower expects string, mixed given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Command/UpsertRecipeCommand.php
-
-		-
-			message: '#^Parameter \#1 \$string of function trim expects string, mixed given\.$#'
-			identifier: argument.type
-			count: 3
-			path: src/Command/UpsertRecipeCommand.php
-
-		-
-			message: '#^Parameter \#2 \$name of method App\\Command\\UpsertRecipeCommand\:\:name\(\) expects string, mixed given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Command/UpsertRecipeCommand.php
-
-		-
-			message: '#^Parameter \#3 \$subject of function str_replace expects array\<string\>\|string, mixed given\.$#'
 			identifier: argument.type
 			count: 1
 			path: src/Command/UpsertRecipeCommand.php
@@ -2051,12 +2039,6 @@ parameters:
 			identifier: argument.templateType
 			count: 1
 			path: src/Controller/Item/Scroll/SandwichController.php
-
-		-
-			message: '#^Cannot call method getSpicy\(\) on App\\Entity\\ItemFood\|null\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: src/Controller/Item/SpicyKonpeitoController.php
 
 		-
 			message: '#^Cannot call method getMaxDarkPlants\(\) on App\\Entity\\Greenhouse\|null\.$#'

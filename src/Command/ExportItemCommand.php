@@ -160,13 +160,11 @@ class ExportItemCommand extends PoppySeedPetsCommand
 
         $columnSql = '`' . implode('`, `', $columns) . '`';
 
-        $encodedValues = array_map(fn($c) => ExportItemCommand::encodeValueToSql($entity->{'get' . $entityMeta->getFieldForColumn($c)}()), $columns);
+        $encodedValues = array_map(fn($c) => self::encodeValueToSql($entity->{'get' . $entityMeta->getFieldForColumn($c)}()), $columns);
 
         $valueSql = implode(',', $encodedValues);
 
-        $sql = "-- $comment\nINSERT INTO $tableName ($columnSql) VALUES ($valueSql) ON DUPLICATE KEY UPDATE `id` = `id`;";
-
-        return $sql;
+        return "-- $comment\nINSERT INTO $tableName ($columnSql) VALUES ($valueSql) ON DUPLICATE KEY UPDATE `id` = `id`;";
     }
 
     private static function encodeValueToSql(mixed $value): mixed

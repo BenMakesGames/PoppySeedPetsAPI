@@ -88,7 +88,7 @@ class FoodWithSpice
         if($food->getLeftovers())
             $this->leftovers[] = $food->getLeftovers();
 
-        if($spice && $spice->getEffects())
+        if($spice)
         {
             $effects = $spice->getEffects();
 

@@ -37,14 +37,20 @@ class Spice
 
     #[Groups(["myInventory", "marketItem", "itemEncyclopedia", "myPet", "dragonTreasure", "greenhouseFertilizer", "fireplaceFuel", "fireplaceMantle"])]
     #[ORM\Column(type: 'boolean')]
-    private bool $isSuffix;
+    private bool $isSuffix = false;
+
+    public function __construct(string $name, ItemFood $effects)
+    {
+        $this->name = $name;
+        $this->effects = $effects;
+    }
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getName(): ?string
+    public function getName(): string
     {
         return $this->name;
     }
@@ -56,7 +62,7 @@ class Spice
         return $this;
     }
 
-    public function getIsSuffix(): ?bool
+    public function getIsSuffix(): bool
     {
         return $this->isSuffix;
     }
@@ -68,7 +74,7 @@ class Spice
         return $this;
     }
 
-    public function getEffects(): ?ItemFood
+    public function getEffects(): ItemFood
     {
         return $this->effects;
     }
