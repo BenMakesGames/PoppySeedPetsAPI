@@ -1172,7 +1172,7 @@ class BoxController
     public function openChocolateChest(
         Inventory $box, ResponseService $responseService, InventoryService $inventoryService,
         UserStatsService $userStatsRepository, EntityManagerInterface $em, IRandom $rng,
-        UserAccessor $userAccessor, HattierService $hattierService
+        UserAccessor $userAccessor
     ): JsonResponse
     {
         $user = $userAccessor->getUserOrThrow();
