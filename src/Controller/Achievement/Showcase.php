@@ -33,7 +33,9 @@ final class Showcase
     {
         $db = SimpleDb::createReadOnlyConnection();
 
-        $totalCount = $db->query('SELECT COUNT(DISTINCT(user_id)) FROM user_badge')->getSingleValue();
+        $totalCount = $db->query(
+            'SELECT COUNT(DISTINCT(user_badge.user_id)) FROM user_badge JOIN user ON user.id = user_badge.user_id WHERE user.disabled_on IS NULL'
+        )->getSingleValue();
 
         $totalPages = (int)ceil($totalCount / self::PageSize);
 
@@ -44,9 +46,11 @@ final class Showcase
                 <<<EOSQL
                     SELECT t.achievementCount, user.id, user.name, user.icon
                     FROM (
-                        SELECT user_id, COUNT(id) as achievementCount
+                        SELECT user_badge.user_id, COUNT(user_badge.id) as achievementCount
                         FROM user_badge
-                        GROUP BY user_id
+                        JOIN user ON user.id = user_badge.user_id
+                        WHERE user.disabled_on IS NULL
+                        GROUP BY user_badge.user_id
                         ORDER BY achievementCount DESC
                         LIMIT ?,?
                     ) t

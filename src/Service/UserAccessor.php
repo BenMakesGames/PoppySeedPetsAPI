@@ -42,6 +42,9 @@ class UserAccessor
         if(!($user instanceof User))
             throw new UnauthorizedHttpException('You must be logged in to do that!');
 
+        if($user->isDisabled() || $user->getIsLocked())
+            throw new UnauthorizedHttpException('This account is not active.');
+
         return $user;
     }
 }

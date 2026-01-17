@@ -191,6 +191,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private \DateTimeImmutable $lastPerformedQualityTime;
 
+    #[ORM\Column(nullable: true)]
+    private ?\DateTimeImmutable $disabledOn = null;
+
     public function __construct(string $name, string $email)
     {
         $this->name = $name;
@@ -810,5 +813,22 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->fieldGuideEntries->exists(
             fn(int $key, UserFieldGuideEntry $entry) => $entry->getEntry()->getName() === $entryName
         );
+    }
+
+    public function getDisabledOn(): ?\DateTimeImmutable
+    {
+        return $this->disabledOn;
+    }
+
+    public function setDisabledOn(?\DateTimeImmutable $disabledOn): static
+    {
+        $this->disabledOn = $disabledOn;
+
+        return $this;
+    }
+
+    public function isDisabled(): bool
+    {
+        return $this->disabledOn !== null;
     }
 }

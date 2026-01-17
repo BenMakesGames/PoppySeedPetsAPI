@@ -48,6 +48,10 @@ final class LogInController
         if(!$user || !$userPasswordEncoder->isPasswordValid($user, $logInRequest->passphrase))
             throw new AccessDeniedHttpException('Email and/or passphrase is not correct.');
 
+        // Auto-undisable account when a disabled user logs in with correct credentials
+        if($user->isDisabled())
+            $user->setDisabledOn(null);
+
         if($user->getIsLocked())
             throw new AccessDeniedHttpException('This account has been locked.');
 

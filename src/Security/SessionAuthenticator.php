@@ -76,8 +76,9 @@ class SessionAuthenticator extends AbstractAuthenticator
 
         $user = $session->getUser();
 
-        if($user->getIsLocked())
+        if($user->getIsLocked() || $user->isDisabled())
         {
+            SessionService::clearCookie();
             $this->responseService->setSessionId(null);
             throw new PSPAccountLocked();
         }

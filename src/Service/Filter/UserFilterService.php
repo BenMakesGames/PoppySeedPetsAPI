@@ -53,7 +53,8 @@ class UserFilterService implements FilterServiceInterface
 
     public function createQueryBuilder(): QueryBuilder
     {
-        return $this->repository->createQueryBuilder('u');
+        return $this->repository->createQueryBuilder('u')
+            ->andWhere('u.disabledOn IS NULL');
     }
 
     public function setUser(?User $user): void

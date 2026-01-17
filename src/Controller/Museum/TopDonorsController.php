@@ -47,6 +47,7 @@ class TopDonorsController
             ->select('u AS user,s.value AS itemsDonated')
             ->leftJoin(UserStats::class, 's', Expr\Join::WITH, 's.user = u.id')
             ->andWhere('s.stat = :statName')
+            ->andWhere('u.disabledOn IS NULL')
             ->addOrderBy('s.value', 'DESC')
             ->addOrderBy('s.lastTime', 'ASC')
             ->setParameter('statName', UserStat::ItemsDonatedToMuseum)

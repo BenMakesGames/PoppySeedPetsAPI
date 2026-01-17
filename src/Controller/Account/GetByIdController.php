@@ -29,6 +29,7 @@ use App\Service\ResponseService;
 use App\Service\UserAccessor;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
@@ -42,6 +43,9 @@ class GetByIdController
         UserAccessor $userAccessor
     ): JsonResponse
     {
+        if($user->isDisabled())
+            throw new NotFoundHttpException();
+
         $pets = $em->getRepository(Pet::class)->findBy([ 'owner' => $user, 'location' => PetLocationEnum::HOME ]);
         $theme = UserStyleFunctions::findCurrent($em, $user->getId());
 
@@ -105,6 +109,9 @@ class GetByIdController
     #[Route("/{user}/minimal", methods: ["GET"], requirements: ["user" => "\d+"])]
     public function getProfileMinimal(User $user, ResponseService $responseService): JsonResponse
     {
+        if($user->isDisabled())
+            throw new NotFoundHttpException();
+
         return $responseService->success($user, [ SerializationGroupEnum::USER_PUBLIC_PROFILE ]);
     }
 }

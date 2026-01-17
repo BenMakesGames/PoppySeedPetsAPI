@@ -29,6 +29,6 @@ class UserTypeaheadService extends TypeaheadService
 
     public function addQueryBuilderConditions(QueryBuilder $qb): QueryBuilder
     {
-        return $qb;
+        return $qb->andWhere('e.disabledOn IS NULL');
     }
 }
