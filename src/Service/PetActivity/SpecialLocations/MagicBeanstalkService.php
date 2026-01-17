@@ -25,14 +25,11 @@ use App\Enum\PetBadgeEnum;
 use App\Enum\PetSkillEnum;
 use App\Functions\AdventureMath;
 use App\Functions\ArrayFunctions;
-use App\Functions\DateFunctions;
 use App\Functions\NumberFunctions;
 use App\Functions\PetActivityLogFactory;
 use App\Functions\PetActivityLogTagHelpers;
 use App\Functions\PetBadgeHelpers;
 use App\Model\ComputedPetSkills;
-use App\Model\PetChanges;
-use App\Service\Clock;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\PetActivity\IPetActivity;
@@ -45,8 +42,7 @@ class MagicBeanstalkService implements IPetActivity
         private readonly InventoryService $inventoryService,
         private readonly PetExperienceService $petExperienceService,
         private readonly IRandom $rng,
-        private readonly EntityManagerInterface $em,
-        private readonly Clock $clock
+        private readonly EntityManagerInterface $em
     )
     {
     }
@@ -531,10 +527,8 @@ class MagicBeanstalkService implements IPetActivity
 
         if($this->rng->rngSkillRoll($petWithSkills->getStealth()->getTotal() + $petWithSkills->getDexterity()->getTotal()) >= 20)
         {
-            $wheatFlourOrCorn = DateFunctions::isCornMoon($this->clock->now) ? 'Corn' : 'Wheat Flour';
-
             $possibleLoot = [
-                $wheatFlourOrCorn,
+                'Ill-gotten Grains',
                 'Gold Bar',
                 'Linens and Things',
                 'Pamplemousse',
@@ -542,7 +536,7 @@ class MagicBeanstalkService implements IPetActivity
                 'Slice of Bread',
                 'Stereotypical Bone',
                 'Puddin\' Rec\'pes',
-                'Gold Harp'
+                'Gold Harp',
             ];
 
             $loot = [

@@ -210,7 +210,7 @@ class ChocolateMansion
             $expStats = [ PetSkillEnum::Stealth ];
 
             $item = ItemRepository::findOneByName($this->em, $this->rng->rngNextFromArray([
-                'Blood Wine', 'Chocolate Wine',
+                'Blood Wine', 'Chocolate Wine', 'Ill-gotten Grains'
             ]));
 
             $loot[] = $item;
@@ -229,7 +229,7 @@ class ChocolateMansion
             $expStats = [ PetSkillEnum::Stealth ];
 
             $item = ItemRepository::findOneByName($this->em, $this->rng->rngNextFromArray([
-                'Blood Wine', 'Chocolate Wine',
+                'Blood Wine', 'Chocolate Wine', 'Ill-gotten Grains',
             ]));
 
             $loot[] = $item;
@@ -247,7 +247,7 @@ class ChocolateMansion
             $expStats = [ ];
 
             $item = ItemRepository::findOneByName($this->em, $this->rng->rngNextFromArray([
-                'Blood Wine', 'Chocolate Wine',
+                'Blood Wine', 'Chocolate Wine', 'Ill-gotten Grains',
             ]));
 
             $loot[] = $item;
@@ -261,7 +261,7 @@ class ChocolateMansion
             $expAmount = 3;
             $expStats = [ PetSkillEnum::Brawl ];
 
-            $loot[] = 'Chocolate Wine';
+            $loot[] = $this->rng->rngNextFromArray([ 'Chocolate Wine', 'Ill-gotten Grains' ]);
             $tags[] = 'Fighting';
 
             if($roll >= 25)
