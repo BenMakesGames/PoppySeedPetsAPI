@@ -7117,12 +7117,6 @@ parameters:
 			path: src/Service/PetActivity/GatheringService.php
 
 		-
-			message: '#^Cannot call method setEnchantment\(\) on App\\Entity\\Inventory\|null\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: src/Service/PetActivity/GatheringService.php
-
-		-
 			message: '#^Parameter \#3 \$species of method App\\Service\\PetFactory\:\:createPet\(\) expects App\\Entity\\PetSpecies, App\\Entity\\PetSpecies\|null given\.$#'
 			identifier: argument.type
 			count: 1
@@ -7141,12 +7135,6 @@ parameters:
 			path: src/Service/PetActivity/GivingTreeGatheringService.php
 
 		-
-			message: '#^Cannot call method getGuild\(\) on App\\Entity\\GuildMembership\|null\.$#'
-			identifier: method.nonObject
-			count: 3
-			path: src/Service/PetActivity/GizubisGardenService.php
-
-		-
 			message: '#^Cannot call method getName\(\) on App\\Entity\\Guild\|null\.$#'
 			identifier: method.nonObject
 			count: 3
@@ -7159,15 +7147,9 @@ parameters:
 			path: src/Service/PetActivity/GizubisGardenService.php
 
 		-
-			message: '#^Cannot call method increaseReputation\(\) on App\\Entity\\GuildMembership\|null\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: src/Service/PetActivity/GizubisGardenService.php
-
-		-
 			message: '#^Cannot call method getGuild\(\) on App\\Entity\\GuildMembership\|null\.$#'
 			identifier: method.nonObject
-			count: 31
+			count: 2
 			path: src/Service/PetActivity/GuildService.php
 
 		-
@@ -7189,33 +7171,9 @@ parameters:
 			path: src/Service/PetActivity/GuildService.php
 
 		-
-			message: '#^Cannot call method getRank\(\) on App\\Entity\\GuildMembership\|null\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: src/Service/PetActivity/GuildService.php
-
-		-
-			message: '#^Cannot call method getReputation\(\) on App\\Entity\\GuildMembership\|null\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: src/Service/PetActivity/GuildService.php
-
-		-
 			message: '#^Cannot call method getStarterTool\(\) on App\\Entity\\Guild\|null\.$#'
 			identifier: method.nonObject
 			count: 2
-			path: src/Service/PetActivity/GuildService.php
-
-		-
-			message: '#^Cannot call method getTitle\(\) on App\\Entity\\GuildMembership\|null\.$#'
-			identifier: method.nonObject
-			count: 2
-			path: src/Service/PetActivity/GuildService.php
-
-		-
-			message: '#^Cannot call method increaseReputation\(\) on App\\Entity\\GuildMembership\|null\.$#'
-			identifier: method.nonObject
-			count: 9
 			path: src/Service/PetActivity/GuildService.php
 
 		-
@@ -7327,12 +7285,6 @@ parameters:
 			path: src/Service/PetActivity/PhilosophersStoneService.php
 
 		-
-			message: '#^Cannot call method setEnchantment\(\) on App\\Entity\\Inventory\|null\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: src/Service/PetActivity/PhilosophersStoneService.php
-
-		-
 			message: '#^Cannot call method getName\(\) on App\\Entity\\Pet\|null\.$#'
 			identifier: method.nonObject
 			count: 2
@@ -7435,12 +7387,6 @@ parameters:
 			path: src/Service/PetActivity/SpecialLocations/BurntForestService.php
 
 		-
-			message: '#^Cannot call method setEnchantment\(\) on App\\Entity\\Inventory\|null\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: src/Service/PetActivity/SpecialLocations/BurntForestService.php
-
-		-
 			message: '#^Left side of && is always true\.$#'
 			identifier: booleanAnd.leftAlwaysTrue
 			count: 1
@@ -7462,12 +7408,6 @@ parameters:
 			message: '#^Cannot call method getFullItemName\(\) on App\\Entity\\Inventory\|null\.$#'
 			identifier: method.nonObject
 			count: 2
-			path: src/Service/PetActivity/SpecialLocations/FructalPlaneService.php
-
-		-
-			message: '#^Cannot call method setEnchantment\(\) on App\\Entity\\Inventory\|null\.$#'
-			identifier: method.nonObject
-			count: 1
 			path: src/Service/PetActivity/SpecialLocations/FructalPlaneService.php
 
 		-

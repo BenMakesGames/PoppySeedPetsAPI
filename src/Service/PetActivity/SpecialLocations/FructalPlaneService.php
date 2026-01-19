@@ -21,6 +21,7 @@ use App\Enum\PetBadgeEnum;
 use App\Enum\PetSkillEnum;
 use App\Functions\ActivityHelpers;
 use App\Functions\ArrayFunctions;
+use App\Functions\InventoryHelpers;
 use App\Functions\PetActivityLogFactory;
 use App\Functions\PetActivityLogTagHelpers;
 use App\Functions\PetBadgeHelpers;
@@ -107,7 +108,8 @@ class FructalPlaneService
         $this->petExperienceService->gainExp($pet, count($loot), [ PetSkillEnum::Arcana ], $activityLog);
         $this->petExperienceService->spendTime($pet, 2, PetActivityStatEnum::UMBRA, true);
 
-        $pet->getTool()->setEnchantment(null);
+        if($pet->getTool())
+            InventoryHelpers::removeEnchantment($this->em, $pet->getTool());
 
         PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::VisitedTheFructalPlane, $activityLog);
 

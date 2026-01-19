@@ -25,6 +25,7 @@ use App\Enum\PetSkillEnum;
 use App\Enum\StatusEffectEnum;
 use App\Functions\ActivityHelpers;
 use App\Functions\EnchantmentRepository;
+use App\Functions\InventoryHelpers;
 use App\Functions\NumberFunctions;
 use App\Functions\PetActivityLogFactory;
 use App\Functions\PetActivityLogTagHelpers;
@@ -461,7 +462,8 @@ class BurntForestService implements IPetActivity
 
         $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 45), PetActivityStatEnum::OTHER, true);
 
-        $pet->getTool()->setEnchantment(null);
+        if($pet->getTool())
+            InventoryHelpers::removeEnchantment($this->em, $pet->getTool());
 
         return $activityLog;
     }

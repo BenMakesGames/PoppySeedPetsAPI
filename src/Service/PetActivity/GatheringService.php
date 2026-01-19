@@ -1337,7 +1337,7 @@ class GatheringService implements IPetActivity
             {
                 $item = $this->inventoryService->petCollectsItem($itemName, $pet, $pet->getName() . ' found this in a ruined settlement deep in the island\'s Micro-jungle.', $activityLog);
 
-                if($itemName === 'No Right Turns')
+                if($item && $itemName === 'No Right Turns')
                     $item->setEnchantment(EnchantmentRepository::findOneByName($this->em, 'Thorn-covered'));
             }
 

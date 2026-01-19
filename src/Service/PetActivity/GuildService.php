@@ -120,7 +120,7 @@ class GuildService
 
         $activityLog = $this->pickGuildActivity($petWithSkills);
 
-        if($activityLog !== null)
+        if($activityLog)
         {
             $activityLog
                 ->setChanges($changes->compare($petWithSkills->getPet()))
@@ -136,9 +136,7 @@ class GuildService
         $pet = $petWithSkills->getPet();
 
         if($pet->getGuildMembership()->getLevel() === 0)
-        {
             return $this->doGuildIntroductions($pet);
-        }
 
         return match ($pet->getGuildMembership()->getGuild()->getName())
         {
@@ -157,7 +155,9 @@ class GuildService
 
     private function doGuildIntroductions(Pet $pet): PetActivityLog
     {
-        $member = $pet->getGuildMembership();
+        $member = $pet->getGuildMembership()
+            ?? throw new \RuntimeException('Pet is not in a guild?!');
+
         $collectStarterTool = false;
 
         switch($member->getReputation())
@@ -190,7 +190,8 @@ class GuildService
 
     private function doTimesArrowMission(Pet $pet): PetActivityLog
     {
-        $member = $pet->getGuildMembership();
+        $member = $pet->getGuildMembership()
+            ?? throw new \RuntimeException('Pet is not in a guild?!');
 
         $message = $this->rng->rngNextFromArray([
             '%pet:' . $pet->getId() . '.name% ' . $this->rng->rngNextFromArray([ 'picked up a book from', 'returned a book to' ]).  ' the Library of Fire for one of their ' . $member->getGuild()->getName() . ' seniors.',
@@ -210,7 +211,8 @@ class GuildService
 
     private function doLightAndShadowMission(Pet $pet): PetActivityLog
     {
-        $member = $pet->getGuildMembership();
+        $member = $pet->getGuildMembership()
+            ?? throw new \RuntimeException('Pet is not in a guild?!');
 
         $message = $this->rng->rngNextFromArray([
             $pet->getName() . ' ' . $this->rng->rngNextFromArray([ 'picked up a book from', 'returned a book to' ]).  ' the Library of Fire for one of their ' . $member->getGuild()->getName() . ' seniors.',
@@ -230,7 +232,8 @@ class GuildService
 
     private function doTapestriesMission(Pet $pet): PetActivityLog
     {
-        $member = $pet->getGuildMembership();
+        $member = $pet->getGuildMembership()
+            ?? throw new \RuntimeException('Pet is not in a guild?!');
 
         $message = $this->rng->rngNextFromArray([
             $pet->getName() . ' ' . $this->rng->rngNextFromArray([ 'picked up a book from', 'returned a book to' ]).  ' the Library of Fire for one of their ' . $member->getGuild()->getName() . ' seniors.',
@@ -250,7 +253,8 @@ class GuildService
 
     private function doInnerSanctumMission(Pet $pet): PetActivityLog
     {
-        $member = $pet->getGuildMembership();
+        $member = $pet->getGuildMembership()
+            ?? throw new \RuntimeException('Pet is not in a guild?!');
 
         if($this->rng->rngNextInt(1, 3) === 1)
         {
@@ -310,7 +314,8 @@ class GuildService
 
     private function doDwarfcraftMission(Pet $pet): PetActivityLog
     {
-        $member = $pet->getGuildMembership();
+        $member = $pet->getGuildMembership()
+            ?? throw new \RuntimeException('Pet is not in a guild?!');
 
         $message = $this->rng->rngNextFromArray([
             $pet->getName() . ' picked up some Liquid-hot Magma for one of their ' . $member->getGuild()->getName() . ' seniors.',
@@ -330,7 +335,8 @@ class GuildService
 
     private function doHighImpactMission(Pet $pet): ?PetActivityLog
     {
-        $member = $pet->getGuildMembership();
+        $member = $pet->getGuildMembership()
+            ?? throw new \RuntimeException('Pet is not in a guild?!');
 
         // High Impact members do other cool stuff, high up a magic bean stalks, and deep undersea
         if($member->getTitle() >= 3)
@@ -354,7 +360,8 @@ class GuildService
 
     private function doTheUniverseForgetsMission(Pet $pet): PetActivityLog
     {
-        $member = $pet->getGuildMembership();
+        $member = $pet->getGuildMembership()
+            ?? throw new \RuntimeException('Pet is not in a guild?!');
 
         $message = $this->rng->rngNextFromArray([
             $pet->getName() . ' ' . $this->rng->rngNextFromArray([ 'picked up a book from', 'returned a book to' ]).  ' the Library of Fire for one of their ' . $member->getGuild()->getName() . ' seniors.',
@@ -374,7 +381,8 @@ class GuildService
 
     private function doCorrespondenceMission(Pet $pet): ?PetActivityLog
     {
-        $member = $pet->getGuildMembership();
+        $member = $pet->getGuildMembership()
+            ?? throw new \RuntimeException('Pet is not in a guild?!');
 
         // there are delivery messages that Correspondence members can do, during normal pet activities
         if($this->rng->rngNextInt(0, 2) < $member->getTitle())
