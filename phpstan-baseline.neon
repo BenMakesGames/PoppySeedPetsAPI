@@ -7135,12 +7135,6 @@ parameters:
 			path: src/Service/PetActivity/GivingTreeGatheringService.php
 
 		-
-			message: '#^Cannot call method getGuild\(\) on App\\Entity\\GuildMembership\|null\.$#'
-			identifier: method.nonObject
-			count: 3
-			path: src/Service/PetActivity/GizubisGardenService.php
-
-		-
 			message: '#^Cannot call method getName\(\) on App\\Entity\\Guild\|null\.$#'
 			identifier: method.nonObject
 			count: 3
@@ -7153,15 +7147,9 @@ parameters:
 			path: src/Service/PetActivity/GizubisGardenService.php
 
 		-
-			message: '#^Cannot call method increaseReputation\(\) on App\\Entity\\GuildMembership\|null\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: src/Service/PetActivity/GizubisGardenService.php
-
-		-
 			message: '#^Cannot call method getGuild\(\) on App\\Entity\\GuildMembership\|null\.$#'
 			identifier: method.nonObject
-			count: 31
+			count: 2
 			path: src/Service/PetActivity/GuildService.php
 
 		-
@@ -7183,33 +7171,9 @@ parameters:
 			path: src/Service/PetActivity/GuildService.php
 
 		-
-			message: '#^Cannot call method getRank\(\) on App\\Entity\\GuildMembership\|null\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: src/Service/PetActivity/GuildService.php
-
-		-
-			message: '#^Cannot call method getReputation\(\) on App\\Entity\\GuildMembership\|null\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: src/Service/PetActivity/GuildService.php
-
-		-
 			message: '#^Cannot call method getStarterTool\(\) on App\\Entity\\Guild\|null\.$#'
 			identifier: method.nonObject
 			count: 2
-			path: src/Service/PetActivity/GuildService.php
-
-		-
-			message: '#^Cannot call method getTitle\(\) on App\\Entity\\GuildMembership\|null\.$#'
-			identifier: method.nonObject
-			count: 2
-			path: src/Service/PetActivity/GuildService.php
-
-		-
-			message: '#^Cannot call method increaseReputation\(\) on App\\Entity\\GuildMembership\|null\.$#'
-			identifier: method.nonObject
-			count: 9
 			path: src/Service/PetActivity/GuildService.php
 
 		-
