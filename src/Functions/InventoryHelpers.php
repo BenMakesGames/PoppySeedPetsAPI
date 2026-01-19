@@ -19,7 +19,10 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class InventoryHelpers
 {
-    public static function removeEnchantment(EntityManagerInterface $em, Inventory $inventory)
+    /**
+     * Removes an enchantment (bonus) from an inventory item.
+     */
+    public static function removeEnchantment(EntityManagerInterface $em, Inventory $inventory): void
     {
         if(!$inventory->getEnchantmentData())
             return;
