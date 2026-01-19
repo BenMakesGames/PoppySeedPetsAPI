@@ -15,6 +15,7 @@ namespace App\Controller\Inventory;
 
 use App\Entity\Inventory;
 use App\Exceptions\PSPNotFoundException;
+use App\Functions\InventoryHelpers;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -37,8 +38,7 @@ class RemoveBonusController
         if($inventory->getOwner()->getId() !== $user->getId())
             throw new PSPNotFoundException('That item does not belong to you.');
 
-        $em->remove($inventory->getEnchantmentData());
-        $inventory->setEnchantment(null);
+        InventoryHelpers::removeEnchantment($em, $inventory);
 
         $em->flush();
 

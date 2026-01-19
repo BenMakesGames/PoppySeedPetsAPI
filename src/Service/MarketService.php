@@ -22,6 +22,7 @@ use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Enum\UnlockableFeatureEnum;
 use App\Enum\UserStat;
+use App\Functions\InventoryHelpers;
 use App\Functions\InventoryModifierFunctions;
 use App\Functions\MarketListingRepository;
 use App\Functions\UserQuestRepository;
@@ -106,11 +107,10 @@ class MarketService
         $this->userStatsRepository->incrementStat($item->getOwner(), UserStat::ItemsSoldInMarket, 1);
         $this->userStatsRepository->incrementStat($newOwner, UserStat::ItemsBoughtInMarket, 1);
 
-        $this->em->remove($item->getEnchantmentData());
+        InventoryHelpers::removeEnchantment($this->em, $item);
 
         $item
             ->setSpice(null)
-            ->setEnchantment(null)
             ->changeOwner($newOwner, $newItemComment, $this->em)
             ->setLocation($location)
         ;

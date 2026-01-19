@@ -23,6 +23,7 @@ use App\Enum\PetBadgeEnum;
 use App\Enum\PetSkillEnum;
 use App\Functions\ActivityHelpers;
 use App\Functions\EquipmentFunctions;
+use App\Functions\InventoryHelpers;
 use App\Functions\ItemRepository;
 use App\Functions\MeritRepository;
 use App\Functions\PetActivityLogFactory;
@@ -393,8 +394,8 @@ class PhilosophersStoneService
 
         PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::FoundMerkabaOfAir, $activityLog);
 
-        $this->em->remove($pet->getTool()->getEnchantmentData());
-        $pet->getTool()->setEnchantment(null);
+        if($pet->getTool())
+            InventoryHelpers::removeEnchantment($this->em, $pet->getTool());
 
         $pet->addMerit(MeritRepository::findOneByName($this->em, MeritEnum::LIGHTNING_REINS));
 
