@@ -7117,12 +7117,6 @@ parameters:
 			path: src/Service/PetActivity/GatheringService.php
 
 		-
-			message: '#^Cannot call method setEnchantment\(\) on App\\Entity\\Inventory\|null\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: src/Service/PetActivity/GatheringService.php
-
-		-
 			message: '#^Parameter \#3 \$species of method App\\Service\\PetFactory\:\:createPet\(\) expects App\\Entity\\PetSpecies, App\\Entity\\PetSpecies\|null given\.$#'
 			identifier: argument.type
 			count: 1
@@ -7327,12 +7321,6 @@ parameters:
 			path: src/Service/PetActivity/PhilosophersStoneService.php
 
 		-
-			message: '#^Cannot call method setEnchantment\(\) on App\\Entity\\Inventory\|null\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: src/Service/PetActivity/PhilosophersStoneService.php
-
-		-
 			message: '#^Cannot call method getName\(\) on App\\Entity\\Pet\|null\.$#'
 			identifier: method.nonObject
 			count: 2
@@ -7435,12 +7423,6 @@ parameters:
 			path: src/Service/PetActivity/SpecialLocations/BurntForestService.php
 
 		-
-			message: '#^Cannot call method setEnchantment\(\) on App\\Entity\\Inventory\|null\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: src/Service/PetActivity/SpecialLocations/BurntForestService.php
-
-		-
 			message: '#^Left side of && is always true\.$#'
 			identifier: booleanAnd.leftAlwaysTrue
 			count: 1
@@ -7462,12 +7444,6 @@ parameters:
 			message: '#^Cannot call method getFullItemName\(\) on App\\Entity\\Inventory\|null\.$#'
 			identifier: method.nonObject
 			count: 2
-			path: src/Service/PetActivity/SpecialLocations/FructalPlaneService.php
-
-		-
-			message: '#^Cannot call method setEnchantment\(\) on App\\Entity\\Inventory\|null\.$#'
-			identifier: method.nonObject
-			count: 1
 			path: src/Service/PetActivity/SpecialLocations/FructalPlaneService.php
 
 		-
