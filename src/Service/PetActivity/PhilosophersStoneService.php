@@ -393,6 +393,7 @@ class PhilosophersStoneService
 
         PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::FoundMerkabaOfAir, $activityLog);
 
+        $this->em->remove($pet->getTool()->getEnchantmentData());
         $pet->getTool()->setEnchantment(null);
 
         $pet->addMerit(MeritRepository::findOneByName($this->em, MeritEnum::LIGHTNING_REINS));

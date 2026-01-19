@@ -461,6 +461,7 @@ class BurntForestService implements IPetActivity
 
         $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 45), PetActivityStatEnum::OTHER, true);
 
+        $this->em->remove($pet->getTool()->getEnchantmentData());
         $pet->getTool()->setEnchantment(null);
 
         return $activityLog;

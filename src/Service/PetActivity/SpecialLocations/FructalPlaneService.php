@@ -107,6 +107,7 @@ class FructalPlaneService
         $this->petExperienceService->gainExp($pet, count($loot), [ PetSkillEnum::Arcana ], $activityLog);
         $this->petExperienceService->spendTime($pet, 2, PetActivityStatEnum::UMBRA, true);
 
+        $this->em->remove($pet->getTool()->getEnchantmentData());
         $pet->getTool()->setEnchantment(null);
 
         PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::VisitedTheFructalPlane, $activityLog);

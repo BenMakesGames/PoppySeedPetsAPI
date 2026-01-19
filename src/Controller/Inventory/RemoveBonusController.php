@@ -37,6 +37,7 @@ class RemoveBonusController
         if($inventory->getOwner()->getId() !== $user->getId())
             throw new PSPNotFoundException('That item does not belong to you.');
 
+        $em->remove($inventory->getEnchantmentData());
         $inventory->setEnchantment(null);
 
         $em->flush();

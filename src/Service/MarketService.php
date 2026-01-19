@@ -106,6 +106,8 @@ class MarketService
         $this->userStatsRepository->incrementStat($item->getOwner(), UserStat::ItemsSoldInMarket, 1);
         $this->userStatsRepository->incrementStat($newOwner, UserStat::ItemsBoughtInMarket, 1);
 
+        $this->em->remove($item->getEnchantmentData());
+
         $item
             ->setSpice(null)
             ->setEnchantment(null)
