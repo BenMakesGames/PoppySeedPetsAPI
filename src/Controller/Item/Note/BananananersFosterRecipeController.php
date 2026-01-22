@@ -34,7 +34,7 @@ class BananananersFosterRecipeController
     {
         $user = $userAccessor->getUserOrThrow();
 
-        ItemControllerHelpers::validateInventory($user, $inventory, 'note/bananananersFoster/#/upload');
+        ItemControllerHelpers::validateInventoryAllowingLibrary($user, $inventory, 'note/bananananersFoster/#/upload');
 
         $message = $cookingService->showRecipeNamesToCookingBuddy($user, [
             'Bananananers Foster',
@@ -49,7 +49,7 @@ class BananananersFosterRecipeController
         UserAccessor $userAccessor
     ): JsonResponse
     {
-        ItemControllerHelpers::validateInventory($userAccessor->getUserOrThrow(), $inventory, 'note/bananananersFoster/#/read');
+        ItemControllerHelpers::validateInventoryAllowingLibrary($userAccessor->getUserOrThrow(), $inventory, 'note/bananananersFoster/#/read');
 
         return $responseService->itemActionSuccess('Start with Naner Ice Cream.
 

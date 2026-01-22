@@ -34,7 +34,7 @@ class CobblerRecipesController
     {
         $user = $userAccessor->getUserOrThrow();
 
-        ItemControllerHelpers::validateInventory($user, $inventory, 'note/cobblers/#/upload');
+        ItemControllerHelpers::validateInventoryAllowingLibrary($user, $inventory, 'note/cobblers/#/upload');
 
         $message = $cookingService->showRecipeNamesToCookingBuddy($user, [
             'Berry Cobbler (Blueberry)',
@@ -50,7 +50,7 @@ class CobblerRecipesController
         UserAccessor $userAccessor
     ): JsonResponse
     {
-        ItemControllerHelpers::validateInventory($userAccessor->getUserOrThrow(), $inventory, 'note/cobblers/#/read');
+        ItemControllerHelpers::validateInventoryAllowingLibrary($userAccessor->getUserOrThrow(), $inventory, 'note/cobblers/#/read');
 
         return $responseService->itemActionSuccess('* flour
 * milk

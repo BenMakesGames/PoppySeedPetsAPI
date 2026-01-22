@@ -34,7 +34,7 @@ class BucheDeNoelRecipeController
     {
         $user = $userAccessor->getUserOrThrow();
 
-        ItemControllerHelpers::validateInventory($user, $inventory, 'note/bucheDeNoel/#/upload');
+        ItemControllerHelpers::validateInventoryAllowingLibrary($user, $inventory, 'note/bucheDeNoel/#/upload');
 
         $message = $cookingService->showRecipeNamesToCookingBuddy($user, [
             'Bûche De Noël',
@@ -49,7 +49,7 @@ class BucheDeNoelRecipeController
         UserAccessor $userAccessor
     ): JsonResponse
     {
-        ItemControllerHelpers::validateInventory($userAccessor->getUserOrThrow(), $inventory, 'note/bucheDeNoel/#/read');
+        ItemControllerHelpers::validateInventoryAllowingLibrary($userAccessor->getUserOrThrow(), $inventory, 'note/bucheDeNoel/#/read');
 
         return $responseService->itemActionSuccess('**Bûche De Noël**
 * Egg

@@ -37,7 +37,7 @@ class LetterFromTheLibraryOfFireController
         UserAccessor $userAccessor
     ): JsonResponse
     {
-        ItemControllerHelpers::validateInventory($userAccessor->getUserOrThrow(), $inventory, 'letterFromTheLibraryOfFire/#/read');
+        ItemControllerHelpers::validateInventoryAllowingLibrary($userAccessor->getUserOrThrow(), $inventory, 'letterFromTheLibraryOfFire/#/read');
 
         $user = $userAccessor->getUserOrThrow();
 
@@ -51,11 +51,11 @@ class LetterFromTheLibraryOfFireController
 
 An anonymous benefactor has sponsored your registration as a member of the Library of Fire!
 
-Though you may not heard of The Library of Fire, you\'re no doubt familiar with the myth of the burning of the Library of Alexandria.
+Though you may not have heard of The Library of Fire, you\'re no doubt familiar with the myth of the burning of the Library of Alexandria.
 
-The Library of Fire was founded by Aristarchus in 138 BC, shortly after his death, to preserve the spirit of the Library of Alexandria. Named for the enduring flame of knowledge, whispers of the Library of Fire made their way to the material world, where its name become entangled with the story of the decline of the Library of Alexandria.
+The Library of Fire was founded by Aristarchus in 138 BC, shortly after his death, to preserve the spirit of the Library of Alexandria. Named for the enduring flame of knowledge, whispers of the Library of Fire made their way to the material world, where its name became entangled with the story of the decline of the Library of Alexandria.
 
-Today, the Library of Fire is home to over 120 trillion works, in the form of books, journals, songs, videos, ixettes, paintings, transmissions, and more!
+Today, the Library of Fire is home to more than ℵ<sub>0</sub> works, in the form of books, journals, songs, videos, ixettes, paintings, transmissions, and more!
 
 Beyond public access to floors 1 through 7, your level of membership entitles you to:
 * Browsing & borrowing access to floors 8 through 414 of the library
@@ -70,6 +70,7 @@ For questions & support regarding Magma Whelps, the information desk (floor 2) c
 The Library of Fire is always open. We look forward to seeing you!');
         }
     }
+
     #[Route("/{inventory}/meltSeal", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function meltSeal(

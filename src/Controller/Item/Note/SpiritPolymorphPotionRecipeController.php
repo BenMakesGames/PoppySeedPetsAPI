@@ -34,7 +34,7 @@ class SpiritPolymorphPotionRecipeController
     {
         $user = $userAccessor->getUserOrThrow();
 
-        ItemControllerHelpers::validateInventory($user, $inventory, 'note/spiritPolymorphPotion/#/upload');
+        ItemControllerHelpers::validateInventoryAllowingLibrary($user, $inventory, 'note/spiritPolymorphPotion/#/upload');
 
         $message = $cookingService->showRecipeNamesToCookingBuddy($user, [
             'Spirit Polymorph Potion (A)',
@@ -50,7 +50,7 @@ class SpiritPolymorphPotionRecipeController
         UserAccessor $userAccessor
     ): JsonResponse
     {
-        ItemControllerHelpers::validateInventory($userAccessor->getUserOrThrow(), $inventory, 'note/spiritPolymorphPotion/#/read');
+        ItemControllerHelpers::validateInventoryAllowingLibrary($userAccessor->getUserOrThrow(), $inventory, 'note/spiritPolymorphPotion/#/read');
 
         return $responseService->itemActionSuccess('* Striped Microcline
 * Witch-hazel

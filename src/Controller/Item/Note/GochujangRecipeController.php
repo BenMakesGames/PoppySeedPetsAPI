@@ -34,7 +34,7 @@ class GochujangRecipeController
     {
         $user = $userAccessor->getUserOrThrow();
 
-        ItemControllerHelpers::validateInventory($user, $inventory, 'note/gochujang/#/upload');
+        ItemControllerHelpers::validateInventoryAllowingLibrary($user, $inventory, 'note/gochujang/#/upload');
 
         $message = $cookingService->showRecipeNamesToCookingBuddy($user, [
             'Gochujang',
@@ -49,7 +49,7 @@ class GochujangRecipeController
         UserAccessor $userAccessor
     ): JsonResponse
     {
-        ItemControllerHelpers::validateInventory($userAccessor->getUserOrThrow(), $inventory, 'note/gochujang/#/read');
+        ItemControllerHelpers::validateInventoryAllowingLibrary($userAccessor->getUserOrThrow(), $inventory, 'note/gochujang/#/read');
 
         return $responseService->itemActionSuccess('Age the following:
 
