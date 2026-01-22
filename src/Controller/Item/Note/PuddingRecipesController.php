@@ -34,7 +34,7 @@ class PuddingRecipesController
     {
         $user = $userAccessor->getUserOrThrow();
 
-        ItemControllerHelpers::validateInventory($user, $inventory, 'note/puddin/#/upload');
+        ItemControllerHelpers::validateInventoryAllowingLibrary($user, $inventory, 'note/puddin/#/upload');
 
         $message = $cookingService->showRecipeNamesToCookingBuddy($user, [
             'Naner Puddin\'',
@@ -51,7 +51,7 @@ class PuddingRecipesController
         UserAccessor $userAccessor
     ): JsonResponse
     {
-        ItemControllerHelpers::validateInventory($userAccessor->getUserOrThrow(), $inventory, 'note/puddin/#/read');
+        ItemControllerHelpers::validateInventoryAllowingLibrary($userAccessor->getUserOrThrow(), $inventory, 'note/puddin/#/read');
 
         return $responseService->itemActionSuccess('**Naner Puddin\'**
 

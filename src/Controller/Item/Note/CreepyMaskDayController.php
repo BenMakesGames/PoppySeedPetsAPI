@@ -31,7 +31,7 @@ class CreepyMaskDayController
         UserAccessor $userAccessor
     ): JsonResponse
     {
-        ItemControllerHelpers::validateInventory($userAccessor->getUserOrThrow(), $inventory, 'note/creepyMaskDay/#/read');
+        ItemControllerHelpers::validateInventoryAllowingLibrary($userAccessor->getUserOrThrow(), $inventory, 'note/creepyMaskDay/#/read');
 
         $lines = [];
 

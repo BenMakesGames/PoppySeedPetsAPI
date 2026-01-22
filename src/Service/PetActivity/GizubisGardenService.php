@@ -55,7 +55,8 @@ class GizubisGardenService
     private function doRandomSeedlingadventure(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $member = $pet->getGuildMembership();
+        $member = $pet->getGuildMembership()
+            ?? throw new \RuntimeException('Pet is not in a guild?!');
 
         switch($this->rng->rngNextInt(1, 3))
         {

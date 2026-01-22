@@ -32,6 +32,7 @@ class MissingMailController
         IRandom $rng, EntityManagerInterface $em
     ): JsonResponse
     {
+        // CANNOT BE USED FROM LIBRARY: it replaces itself with Paper
         ItemControllerHelpers::validateInventory($userAccessor->getUserOrThrow(), $inventory, 'missingMail/#/read');
 
         $inventory

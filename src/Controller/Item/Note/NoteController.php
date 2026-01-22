@@ -35,6 +35,7 @@ class NoteController
     {
         $user = $userAccessor->getUserOrThrow();
 
+        // CANNOT BE USED FROM LIBRARY: it replaces itself with Paper
         ItemControllerHelpers::validateInventory($user, $inventory, 'note/#/erase');
 
         $paper = ItemRepository::findOneByName($em, 'Paper');

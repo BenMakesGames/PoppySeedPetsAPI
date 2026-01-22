@@ -30,7 +30,7 @@ class WelcomeNoteController
         UserAccessor $userAccessor
     ): JsonResponse
     {
-        ItemControllerHelpers::validateInventory($userAccessor->getUserOrThrow(), $inventory, 'note/welcome/#/read');
+        ItemControllerHelpers::validateInventoryAllowingLibrary($userAccessor->getUserOrThrow(), $inventory, 'note/welcome/#/read');
 
         return $responseService->itemActionSuccess('# Welcome!
 

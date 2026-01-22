@@ -19,6 +19,18 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class InventoryHelpers
 {
+    /**
+     * Removes an enchantment (bonus) from an inventory item.
+     */
+    public static function removeEnchantment(EntityManagerInterface $em, Inventory $inventory): void
+    {
+        if(!$inventory->getEnchantmentData())
+            return;
+
+        $em->remove($inventory->getEnchantmentData());
+        $inventory->setEnchantment(null);
+    }
+
     public static function findOneToConsume(EntityManagerInterface $em, User $owner, string $itemName): ?Inventory
     {
         return $em->getRepository(Inventory::class)->createQueryBuilder('i')
