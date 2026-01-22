@@ -34,7 +34,7 @@ class CarrotWineRecipeController
     {
         $user = $userAccessor->getUserOrThrow();
 
-        ItemControllerHelpers::validateInventory($user, $inventory, 'note/carrotWine/#/upload');
+        ItemControllerHelpers::validateInventoryAllowingLibrary($user, $inventory, 'note/carrotWine/#/upload');
 
         $message = $cookingService->showRecipeNamesToCookingBuddy($user, [
             'Carrot Wine (A)',
@@ -50,7 +50,7 @@ class CarrotWineRecipeController
         UserAccessor $userAccessor
     ): JsonResponse
     {
-        ItemControllerHelpers::validateInventory($userAccessor->getUserOrThrow(), $inventory, 'note/carrotWine/#/read');
+        ItemControllerHelpers::validateInventoryAllowingLibrary($userAccessor->getUserOrThrow(), $inventory, 'note/carrotWine/#/read');
 
         return $responseService->itemActionSuccess('**Carrot Wine**
 

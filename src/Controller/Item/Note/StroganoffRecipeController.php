@@ -34,7 +34,7 @@ class StroganoffRecipeController
     {
         $user = $userAccessor->getUserOrThrow();
 
-        ItemControllerHelpers::validateInventory($user, $inventory, 'note/stroganoff/#/upload');
+        ItemControllerHelpers::validateInventoryAllowingLibrary($user, $inventory, 'note/stroganoff/#/upload');
 
         $message = $cookingService->showRecipeNamesToCookingBuddy($user, [
             'Fish Stroganoff (A)',
@@ -54,7 +54,7 @@ class StroganoffRecipeController
         UserAccessor $userAccessor
     ): JsonResponse
     {
-        ItemControllerHelpers::validateInventory($userAccessor->getUserOrThrow(), $inventory, 'note/stroganoff/#/read');
+        ItemControllerHelpers::validateInventoryAllowingLibrary($userAccessor->getUserOrThrow(), $inventory, 'note/stroganoff/#/read');
 
         return $responseService->itemActionSuccess('* mushrooms, onions, oil (or butter)
 * fish
