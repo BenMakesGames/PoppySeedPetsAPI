@@ -1915,24 +1915,6 @@ parameters:
 			path: src/Controller/Item/Pinata/BoosterPackController.php
 
 		-
-			message: '#^Cannot call method setSpice\(\) on mixed\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: src/Controller/Item/Pinata/BoxController.php
-
-		-
-			message: '#^Parameter \#2 \$itemGroup of static method App\\Service\\InventoryService\:\:getRandomItemFromItemGroup\(\) expects App\\Entity\\ItemGroup, App\\Entity\\ItemGroup\|null given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Controller/Item/Pinata/BoxController.php
-
-		-
-			message: '#^Parameter \#5 \$newInventory of static method App\\Controller\\Item\\Pinata\\BoxHelpers\:\:countRemoveFlushAndRespond\(\) expects array\<App\\Entity\\Inventory\>, array\<int, mixed\> given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Controller/Item/Pinata/BoxController.php
-
-		-
 			message: '#^Binary operation "\." between non\-falsy\-string and mixed results in an error\.$#'
 			identifier: binaryOp.invalid
 			count: 3
