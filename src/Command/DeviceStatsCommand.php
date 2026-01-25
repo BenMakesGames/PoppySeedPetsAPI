@@ -46,7 +46,7 @@ class DeviceStatsCommand extends Command
         /** @var DeviceStats[] $latestStats */
         $latestStats = $this->em->getRepository(DeviceStats::class)->createQueryBuilder('s')
             ->andWhere('s.time > :oldestTime ')
-            ->andWhere('s.id IN (SELECT MAX(s2.id) FROM App:DeviceStats s2 WHERE s2.time > :oldestTime AND s2.user=s.user)')
+            ->andWhere('s.id IN (SELECT MAX(s2.id) FROM ' . DeviceStats::class . ' s2 WHERE s2.time > :oldestTime AND s2.user=s.user)')
             ->setParameter('oldestTime', $oldestDate->format('Y-m-d H:s:i'))
             ->getQuery()
             ->execute()
