@@ -178,6 +178,10 @@ class ExportItemCommand extends PoppySeedPetsCommand
         if($value === null)
             return 'NULL';
 
+        // TODO: would be nice to differentiate between string-backed & int-backed:
+        if($value instanceof \BackedEnum)
+            return '"' . $value->value . '"';
+
         if(is_array($value))
             return '"' . addslashes(json_encode($value)) . '"';
 

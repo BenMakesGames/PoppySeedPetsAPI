@@ -496,6 +496,9 @@ class InventoryService
         if($i->getSpice() && $this->rng->rngNextBool())
             return $i;
 
+        if($i->getItem()->getName() === 'Cellular Peptide Cake')
+            return $i->setSpice(SpiceRepository::findOneByName($this->em, 'with Mint Frosting'));
+
         if($i->getItem()->getName() === 'Worms' && DateFunctions::getFullMoonName($this->clock->now) === 'Worm')
             return $i->setSpice(SpiceRepository::findOneByName($this->em, 'with Butts'));
 

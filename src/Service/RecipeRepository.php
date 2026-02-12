@@ -515,6 +515,7 @@ final class RecipeRepository
             new Recipe('Mini Cooking Buddy', '158:1,1129:1', '1416:1', 0),
             new Recipe('Mini Melowatern Onigiri', '17:1,131:1,140:1', '308:4', 0),
             new Recipe('Minor Scroll of Riches', '128:1,1129:1', '127:1', 0),
+            new Recipe('Mint Frosting', '12:1,65:1,370:1', '1507:3', 0),
             new Recipe('Mirepoix', '6:1,7:1,8:1', '30:2', 0),
             new Recipe('Miso Soup', '494:1,1118:1', '1119:2', 0),
             new Recipe('Mixed Nut Brittle', '12:1,25:1,48:1,65:1,511:1', '696:3', 0),
