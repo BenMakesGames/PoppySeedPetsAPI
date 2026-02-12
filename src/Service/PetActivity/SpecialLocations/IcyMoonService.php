@@ -295,8 +295,11 @@ class IcyMoonService implements IPetActivity
 
             $pet->increaseEsteem($this->rng->rngNextInt(2, 4));
 
-            if($roll >= 30) $pieces++;
-            if($roll >= 40) $pieces++;
+            if($roll >= 30)
+                $this->inventoryService->petCollectsItem('Cellular Peptide Cake', $pet, $pet->getName() . ' got this by defeating a Mini Crystalline Entity on an Icy Moon!', $activityLog);
+
+            if($roll >= 40)
+                $pieces++;
 
             for($i = 0; $i < $pieces; $i++)
                 $this->inventoryService->petCollectsItem($this->rng->rngNextFromArray([ 'Glass', 'Gypsum', 'Fiberglass' ]), $pet, $pet->getName() . ' got this by defeating a Mini Crystalline Entity on an Icy Moon!', $activityLog);
