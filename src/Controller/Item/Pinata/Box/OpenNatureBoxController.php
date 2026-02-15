@@ -71,6 +71,9 @@ class OpenNatureBoxController
                 $newInventory[$i]->setSpice($spice);
         }
 
+        if($rng->rngNextInt(1, 8) === 8)
+            $newInventory[] = $inventoryService->receiveItem('Duck Pond', $user, $user, $user->getName() . ' got this from ' . $inventory->getItem()->getNameWithArticle() . '.', $location, $inventory->getLockedToOwner());
+
         return BoxHelpers::countRemoveFlushAndRespond('Opening the box revealed', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em);
     }
 }

@@ -21,6 +21,7 @@ use App\Functions\DateFunctions;
 use App\Functions\UserQuestRepository;
 use App\Service\Clock;
 use App\Service\InventoryService;
+use App\Service\IRandom;
 use App\Service\ResponseService;
 use App\Service\UserStatsService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -37,7 +38,7 @@ class FarmerController
     public function invokeFarmerScroll(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
         UserStatsService $userStatsRepository, EntityManagerInterface $em, Clock $clock,
-        UserAccessor $userAccessor
+        UserAccessor $userAccessor, IRandom $rng
     ): JsonResponse
     {
         $user = $userAccessor->getUserOrThrow();
@@ -68,7 +69,14 @@ class FarmerController
         }
 
         $items = [
-            'Straw Hat', $wheatOrCorn, 'Scythe', 'Creamy Milk', 'Egg', 'Grandparoot', 'Crooked Stick', 'Potato'
+            $rng->rngNextFromArray([ 'Straw Hat', 'Forgotten Flowerpot' ]),
+            $wheatOrCorn,
+            $rng->rngNextFromArray([ 'Scythe', 'Garden Shovel' ]),
+            $rng->rngNextFromArray([ 'Creamy Milk', 'Cheese', 'Plain Yogurt' ]),
+            'Egg',
+            $rng->rngNextFromArray([ 'Potato', 'Carrot', 'Beans', 'Onion' ]),
+            'Grandparoot',
+            'Crooked Stick'
         ];
 
         $newInventory = [];
