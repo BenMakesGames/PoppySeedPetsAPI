@@ -58,15 +58,21 @@ class PizzaBoxController
             ->execute();
 
         $numSlices = $rng->rngNextFromArray([
-            3, 3, 3, 3, 3, 4, 4, 4, 5, 6, // averages 3.8 (slightly less than 4, to avoid an infinite pizza box engine)
+            1, 3, 3, 3, 3, 4, 4, 4, 5, 6, // averages less than 4, to avoid an infinite pizza box engine
         ]);
 
-        for($i = 0; $i < $numSlices; $i++)
+        if($numSlices === 1)
+            $newInventory[] = $inventoryService->receiveItem('Pizzaface', $user, $user, $description, $location, $locked);
+        else
         {
-            $newInventory[] = $inventoryService->receiveItem($rng->rngNextFromArray($possibleSlices), $user, $user, $description, $location, $locked)
-                ->setSpice($inventory->getSpice())
-            ;
+            for($i = 0; $i < $numSlices; $i++)
+            {
+                $newInventory[] = $inventoryService->receiveItem($rng->rngNextFromArray($possibleSlices), $user, $user, $description, $location, $locked)
+                    ->setSpice($inventory->getSpice())
+                ;
+            }
         }
+
 
         return BoxHelpers::countRemoveFlushAndRespond('You open the box, finding', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em);
     }

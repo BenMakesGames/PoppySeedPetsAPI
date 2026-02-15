@@ -58,7 +58,6 @@ class HatBoxController
             'Merchant\'s Cap',
             'Merchant\'s Other Cap',
             'Much Too Tall',
-            'Pizzaface',
             'Propeller Beanie',
             'Sombrero',
             'Uncommon Blue',
