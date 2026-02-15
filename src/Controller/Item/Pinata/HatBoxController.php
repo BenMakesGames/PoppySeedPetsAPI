@@ -50,15 +50,18 @@ class HatBoxController
             'Crabhat',
             'Dark Horsey Hat',
             'Eccentric Top Hat',
+            'Goosecap',
             'Gray Bow',
             'Horsey Hat',
             'Judy',
             'Masquerade Mask',
             'Merchant\'s Cap',
             'Merchant\'s Other Cap',
+            'Much Too Tall',
             'Pizzaface',
             'Propeller Beanie',
             'Sombrero',
+            'Uncommon Blue',
             'Wizarding Hat',
         ]));
 
