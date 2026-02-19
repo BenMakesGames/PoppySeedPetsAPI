@@ -31,6 +31,7 @@ use App\Functions\NumberFunctions;
 use App\Functions\PetActivityLogFactory;
 use App\Functions\PetActivityLogTagHelpers;
 use App\Functions\PetBadgeHelpers;
+use App\Functions\SongRepository;
 use App\Functions\SpiceRepository;
 use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
@@ -38,6 +39,7 @@ use App\Service\FieldGuideService;
 use App\Service\HouseSimService;
 use App\Service\InventoryService;
 use App\Service\IRandom;
+use App\Service\JukeboxService;
 use App\Service\PetActivity\IPetActivity;
 use App\Service\PetExperienceService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -50,7 +52,8 @@ class IcyMoonService implements IPetActivity
         private readonly IRandom $rng,
         private readonly FieldGuideService $fieldGuideService,
         private readonly EntityManagerInterface $em,
-        private readonly HouseSimService $houseSimService
+        private readonly HouseSimService $houseSimService,
+        private readonly JukeboxService $jukeboxService
     )
     {
     }
@@ -115,18 +118,22 @@ class IcyMoonService implements IPetActivity
 
         if($this->rng->rngNextInt(1, 100) === 1)
         {
-            $activityLog->appendEntry('(Also, on the way back home they noticed a Fancy Teapot drifting through space! How\'d that get there??');
+            $activityLog->appendEntry('(Also, on the way back home they noticed a Fancy Teapot drifting through space, humming ethereally! How\'d that get there??)');
 
             $this->inventoryService->petCollectsItem('Fancy Teapot', $pet, $pet->getName() . ' found this floating in space near an Icy Moon.', $activityLog);
+
+            $this->maybeUnlockSong($pet, $activityLog);
         }
         else if($pet->hasMerit(MeritEnum::LUCKY) && $this->rng->rngNextInt(1, 100) === 1)
         {
             $activityLog
-                ->appendEntry('(Also, on the way back home they noticed a Fancy Teapot drifting through space! How\'d that get there?? Lucky~!')
+                ->appendEntry('(Also, on the way back home they noticed a Fancy Teapot drifting through space, humming ethereally! How\'d that get there?? Lucky~!')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ PetActivityLogTagEnum::Lucky ]))
             ;
 
             $this->inventoryService->petCollectsItem('Fancy Teapot', $pet, $pet->getName() . ' found this floating in space near an Icy Moon.', $activityLog);
+
+            $this->maybeUnlockSong($pet, $activityLog);
         }
 
         $activityLog->setChanges($changes->compare($pet));
@@ -134,6 +141,22 @@ class IcyMoonService implements IPetActivity
         PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::ExploredAnIcyMoon, $activityLog);
 
         return $activityLog;
+    }
+
+    private function maybeUnlockSong(Pet $pet, PetActivityLog $activityLog): void
+    {
+        $song = SongRepository::findOneByName($this->em, 'The Dreaming Nebula');
+        if($pet->getOwner()->getLibrary()?->getHasJukebox()
+            && !$this->jukeboxService->userHasUnlockedSong($pet->getOwner(), $song))
+        {
+            $this->jukeboxService->unlockSongDuringPetActivity(
+                $pet,
+                $activityLog,
+                $song,
+                ' The teapot\'s tune lingered in their mind...',
+                ActivityHelpers::PetName($pet) . ' heard an unfamiliar tune humming from a Fancy Teapot they found near an Icy Moon.'
+            );
+        }
     }
 
     private function lostInBlizzard(Pet $pet): PetActivityLog
