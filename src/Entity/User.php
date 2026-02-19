@@ -158,6 +158,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: UserUnlockedAura::class, mappedBy: 'user', orphanRemoval: true)]
     private Collection $unlockedAuras;
 
+    /** @var Collection<int, UserUnlockedSong>  */
+    #[ORM\OneToMany(targetEntity: UserUnlockedSong::class, mappedBy: 'user', orphanRemoval: true)]
+    private Collection $unlockedSongs;
+
     #[ORM\Column(type: 'integer')]
     private int $museumPoints = 0;
 
@@ -207,6 +211,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->greenhousePlants = new ArrayCollection();
         $this->userSessions = new ArrayCollection();
         $this->unlockedAuras = new ArrayCollection();
+        $this->unlockedSongs = new ArrayCollection();
         $this->fate = mt_rand(0, 2147483647);
         $this->unlockedFeatures = new ArrayCollection();
         $this->badges = new ArrayCollection();
@@ -658,6 +663,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getUnlockedAuras(): Collection
     {
         return $this->unlockedAuras;
+    }
+
+    /**
+     * @return Collection<int, UserUnlockedSong>
+     */
+    public function getUnlockedSongs(): Collection
+    {
+        return $this->unlockedSongs;
     }
 
     public function getMuseumPoints(): int

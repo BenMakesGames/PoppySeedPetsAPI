@@ -38,4 +38,5 @@ final class PlayerActivityLogTagEnum
     public const string Stocking_Stuffing_Season = 'Stocking Stuffing Season';
     public const string Birdbath = 'Birdbath';
     public const string Item_Use = 'Item Use';
+    public const string Music = 'Music';
 }
