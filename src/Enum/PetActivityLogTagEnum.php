@@ -119,4 +119,6 @@ final class PetActivityLogTagEnum
     public const string Location_Hedge_Maze = 'Location: Hedge Maze';
     public const string Location_Hedge_Maze_Sphinx = 'Location: Hedge Maze Sphinx';
     public const string Location_Hedge_Maze_Light_Puzzle = 'Location: Hedge Maze Light Puzzle';
+
+    public const string Jukebox = 'Jukebox';
 }

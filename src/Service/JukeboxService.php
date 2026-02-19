@@ -13,12 +13,19 @@ declare(strict_types=1);
 
 namespace App\Service;
 
+use App\Entity\Pet;
+use App\Entity\PetActivityLog;
 use App\Entity\Song;
 use App\Entity\User;
 use App\Entity\UserUnlockedSong;
+use App\Enum\PetActivityLogInterestingness;
+use App\Enum\PetActivityLogTagEnum;
 use App\Enum\PlayerActivityLogTagEnum;
 use App\Functions\ArrayFunctions;
+use App\Functions\PetActivityLogFactory;
+use App\Functions\PetActivityLogTagHelpers;
 use App\Functions\PlayerLogFactory;
+use App\Functions\SongRepository;
 use Doctrine\ORM\EntityManagerInterface;
 
 class JukeboxService
@@ -151,5 +158,68 @@ class JukeboxService
 
             $this->userSongsPerRequestCache[$cacheKey] = $unlockedSong;
         }
+    }
+
+    public function petUnlockSong(User $user, Song $song, string $comment, PetActivityLog $activityLog): UserUnlockedSong
+    {
+        $cacheKey = $user->getId() . '-' . $song->getId();
+
+        if(array_key_exists($cacheKey, $this->userSongsPerRequestCache) && $this->userSongsPerRequestCache[$cacheKey] !== null)
+            return $this->userSongsPerRequestCache[$cacheKey];
+
+        $existing = $this->em->getRepository(UserUnlockedSong::class)->findOneBy([
+            'user' => $user,
+            'song' => $song
+        ]);
+
+        if($existing)
+        {
+            $this->userSongsPerRequestCache[$cacheKey] = $existing;
+            return $existing;
+        }
+
+        $unlockedSong = (new UserUnlockedSong(user: $user, song: $song))
+            ->setComment($comment)
+        ;
+
+        $this->em->persist($unlockedSong);
+
+        $activityLog->appendEntry('(A new song has been added to your Jukebox!)');
+        $activityLog->addInterestingness(PetActivityLogInterestingness::RareActivity);
+        $activityLog->addTags(PetActivityLogTagHelpers::findByNames($this->em, [PetActivityLogTagEnum::Jukebox]));
+
+        $this->userSongsPerRequestCache[$cacheKey] = $unlockedSong;
+
+        return $unlockedSong;
+    }
+
+    public function petMaybeUnlockSong(Pet $pet, Song|string $song, string $activityLogMessage, string $songUnlockComment): ?PetActivityLog
+    {
+        if(is_string($song))
+            $song = SongRepository::findOneByName($this->em, $song);
+
+        if($this->userHasUnlockedSong($pet->getOwner(), $song))
+            return null;
+
+        $library = $pet->getOwner()->getLibrary();
+
+        if(!$library || !$library->getHasJukebox())
+            return null;
+
+        $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, $activityLogMessage);
+
+        $this->petUnlockSong($pet->getOwner(), $song, $songUnlockComment, $activityLog);
+
+        return $activityLog;
+    }
+
+    public function unlockSongDuringPetActivity(Pet $pet, PetActivityLog $activityLog, Song $song, string $description, string $songUnlockComment): void
+    {
+        $activityLog
+            ->appendEntry($description)
+            ->addInterestingness(PetActivityLogInterestingness::RareActivity)
+        ;
+
+        $this->petUnlockSong($pet->getOwner(), $song, $songUnlockComment, $activityLog);
     }
 }
