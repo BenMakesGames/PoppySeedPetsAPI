@@ -44,6 +44,10 @@ _When/if_ a query needs to be shared, create a service class or static class.
 
 They scatter related code across multiple files, making changes harder to make and more error-prone.
 
-Use explicit mapping to response DTOs, instead.
+Use explicit mapping to response DTOs, instead. Never add new serialization group constants to `SerializationGroupEnum`.
 
 > 🧚‍♀️ **Hey, listen!** Poppy Seed Pets started off using serialization groups, so you'll see them a lot. If you have the will and opportunity, please migrate old code to use explicit mapping instead!
+
+### Doctrine `make:migration` generates phantom diffs (DBAL 4.x)
+
+After upgrading from DBAL 3.x to 4.x, `make:migration` produces dozens of spurious ALTERs on datetime columns (stripping old `(DC2Type:datetime_immutable)` comments). Always review auto-generated migrations and trim to only the intended schema changes. A one-time cleanup migration to strip all `DC2Type` comments would fix this permanently.

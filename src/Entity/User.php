@@ -132,6 +132,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToOne(targetEntity: Greenhouse::class, mappedBy: 'owner', cascade: ['persist', 'remove'])]
     private ?Greenhouse $greenhouse = null;
 
+    #[ORM\OneToOne(targetEntity: Library::class, mappedBy: 'owner', cascade: ['persist', 'remove'])]
+    private ?Library $library = null;
+
     #[Groups(["myAccount"])]
     #[ORM\Column(type: 'integer')]
     private int $recyclePoints = 0;
@@ -559,6 +562,23 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         // set the owning side of the relation if necessary
         if ($this !== $greenhouse->getOwner()) {
             $greenhouse->setOwner($this);
+        }
+
+        return $this;
+    }
+
+    public function getLibrary(): ?Library
+    {
+        return $this->library;
+    }
+
+    public function setLibrary(Library $library): self
+    {
+        $this->library = $library;
+
+        // set the owning side of the relation if necessary
+        if ($this !== $library->getOwner()) {
+            $library->setOwner($this);
         }
 
         return $this;
