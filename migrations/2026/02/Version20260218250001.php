@@ -26,7 +26,7 @@ final class Version20260218250001 extends AbstractMigration
     public function up(Schema $schema): void
     {
         // Add the Music player activity log tag
-        $this->addSql("INSERT INTO user_activity_log_tag (title, color, emoji) VALUES ('Music', '9B59B6', '🎵')");
+        $this->addSql("INSERT INTO user_activity_log_tag (title, color, emoji) VALUES ('Jukebox', '9B59B6', '🎵')");
 
         // Seed the song table with the initial set of songs
         $this->addSql("INSERT INTO song (name, filename) VALUES ('frogs_life', 'music/frogs_life.ogg')");

@@ -113,7 +113,7 @@ class JukeboxService
 
                 $this->em->persist($unlockedSong);
 
-                PlayerLogFactory::create($this->em, $user, 'You unlocked the song "' . $song->getName() . '"!', [ PlayerActivityLogTagEnum::Music ]);
+                PlayerLogFactory::create($this->em, $user, 'You unlocked the song "' . $song->getName() . '"!', [ PlayerActivityLogTagEnum::Jukebox ]);
             }
 
             $this->userSongsPerRequestCache[$cacheKey] = $unlockedSong;
