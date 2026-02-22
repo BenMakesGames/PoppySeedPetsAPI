@@ -26,6 +26,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use App\Service\UserAccessor;
 
 #[Route("/museum")]
@@ -35,7 +36,7 @@ class GetDonatableItemsController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function getDonatable(
         ResponseService $responseService, Request $request, EntityManagerInterface $em,
-        UserAccessor $userAccessor
+        UserAccessor $userAccessor, NormalizerInterface $normalizer
     ): JsonResponse
     {
         $user = $userAccessor->getUserOrThrow();
@@ -49,7 +50,8 @@ class GetDonatableItemsController
             ->leftJoin('i.item', 'item')
             ->leftJoin('i.enchantmentData', 'enchData')
             ->andWhere('i.location IN (:locations)')
-            ->andWhere('item.id NOT IN (SELECT miitem.id FROM App\\Entity\\MuseumItem mi LEFT JOIN mi.item miitem WHERE mi.user=:user)')
+            ->leftJoin('App\\Entity\\MuseumItem', 'mi', 'WITH', 'mi.item = item AND mi.user = :user')
+            ->andWhere('(mi.id IS NULL) OR ((mi.createdBy IS NULL OR mi.createdBy != :user) AND i.createdBy = :user)')
             ->setParameter('locations', [ LocationEnum::Home, LocationEnum::Basement ])
             ->setParameter('user', $user)
             ->addGroupBy('item.id')
@@ -82,10 +84,30 @@ class GetDonatableItemsController
         $results->resultCount = $resultCount;
         $results->results = $paginator->getQuery()->execute();
 
-        return $responseService->success($results, [
+        /** @var Inventory[] $inventories */
+        $inventories = $results->results;
+
+        $resultItems = array_map(fn(Inventory $inv) => $inv->getItem(), $inventories);
+        $existingMuseumItemIds = $em->createQueryBuilder()
+            ->select('IDENTITY(mi.item)')
+            ->from(\App\Entity\MuseumItem::class, 'mi')
+            ->where('mi.user = :user AND mi.item IN (:items)')
+            ->setParameter('user', $user)
+            ->setParameter('items', $resultItems)
+            ->getQuery()->getSingleColumnResult();
+
+        /** @var array{results: list<array{item: array{id: int}, isUpgrade?: bool}>} $data */
+        $data = $normalizer->normalize($results, null, ['groups' => [
             SerializationGroupEnum::FILTER_RESULTS,
             SerializationGroupEnum::MY_INVENTORY,
             SerializationGroupEnum::MY_DONATABLE_INVENTORY
-        ]);
+        ]]);
+
+        foreach ($data['results'] as &$result) {
+            $result['isUpgrade'] = in_array($result['item']['id'], $existingMuseumItemIds);
+        }
+        unset($result);
+
+        return $responseService->success($data);
     }
 }
