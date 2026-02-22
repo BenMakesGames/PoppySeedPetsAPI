@@ -63,6 +63,8 @@ class DonateController
         if(count($inventory) === 0)
             throw new PSPFormValidationException('No items were selected.');
 
+        $existingMuseumItems = [];
+
         for($i = count($inventory) - 1; $i >= 0; $i--)
         {
             if($inventory[$i]->getOwner()->getId() !== $user->getId())
@@ -78,8 +80,16 @@ class DonateController
 
             if($existingItem)
             {
-                unset($inventory[$i]);
-                continue;
+                $isUpgrade = $inventory[$i]->getCreatedBy()?->getId() === $user->getId()
+                    && $existingItem->getCreatedBy()?->getId() !== $user->getId();
+
+                if(!$isUpgrade)
+                {
+                    unset($inventory[$i]);
+                    continue;
+                }
+
+                $existingMuseumItems[$inventory[$i]->getId()] = $existingItem;
             }
         }
 
@@ -88,26 +98,42 @@ class DonateController
 
         $totalMuseumPoints = 0;
         $donatedItemNames = [];
+        $newDonationCount = 0;
 
         foreach($inventory as $i)
         {
-            $museumItem = (new MuseumItem(user: $user, item: $i->getItem()))
-                ->setCreatedBy($i->getCreatedBy())
-                ->setComments($i->getComments())
-            ;
+            if(isset($existingMuseumItems[$i->getId()]))
+            {
+                // Upgrade existing museum entry
+                $existingMuseumItems[$i->getId()]
+                    ->setCreatedBy($i->getCreatedBy())
+                    ->setComments($i->getComments());
+            }
+            else
+            {
+                // New donation
+                $museumItem = (new MuseumItem(user: $user, item: $i->getItem()))
+                    ->setCreatedBy($i->getCreatedBy())
+                    ->setComments($i->getComments())
+                ;
 
-            $totalMuseumPoints += $i->getItem()->getMuseumPoints();
+                $totalMuseumPoints += $i->getItem()->getMuseumPoints();
+                $newDonationCount++;
+
+                $em->persist($museumItem);
+            }
+
             $donatedItemNames[] = $i->getItem()->getNameWithArticle();
-
-            $em->persist($museumItem);
             $em->remove($i);
         }
 
         $donationSummary = count($inventory) > 5 ? (count($inventory) . ' items') : ArrayFunctions::list_nice($donatedItemNames);
 
-        $transactionService->getMuseumFavor($user, $totalMuseumPoints, 'You donated ' . $donationSummary . ' to the Museum.');
+        if($totalMuseumPoints > 0)
+            $transactionService->getMuseumFavor($user, $totalMuseumPoints, 'You donated ' . $donationSummary . ' to the Museum.');
 
-        $userStatsRepository->incrementStat($user, UserStat::ItemsDonatedToMuseum, count($inventory));
+        if($newDonationCount > 0)
+            $userStatsRepository->incrementStat($user, UserStat::ItemsDonatedToMuseum, $newDonationCount);
 
         $em->flush();
 
