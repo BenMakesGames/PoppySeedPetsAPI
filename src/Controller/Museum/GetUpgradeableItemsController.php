@@ -30,11 +30,11 @@ use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use App\Service\UserAccessor;
 
 #[Route("/museum")]
-class GetDonatableItemsController
+class GetUpgradeableItemsController
 {
-    #[Route("/donatable", methods: ["GET"])]
+    #[Route("/upgradeable", methods: ["GET"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
-    public function getDonatable(
+    public function getUpgradeable(
         ResponseService $responseService, Request $request, EntityManagerInterface $em,
         UserAccessor $userAccessor, NormalizerInterface $normalizer
     ): JsonResponse
@@ -51,7 +51,7 @@ class GetDonatableItemsController
             ->leftJoin('i.enchantmentData', 'enchData')
             ->andWhere('i.location IN (:locations)')
             ->leftJoin('App\\Entity\\MuseumItem', 'mi', 'WITH', 'mi.item = item AND mi.user = :user')
-            ->andWhere('mi.id IS NULL')
+            ->andWhere('(mi.createdBy IS NULL OR mi.createdBy != :user) AND i.createdBy = :user')
             ->setParameter('locations', [ LocationEnum::Home, LocationEnum::Basement ])
             ->setParameter('user', $user)
             ->addGroupBy('item.id')
@@ -87,7 +87,6 @@ class GetDonatableItemsController
         $data = $normalizer->normalize($results, null, ['groups' => [
             SerializationGroupEnum::FILTER_RESULTS,
             SerializationGroupEnum::MY_INVENTORY,
-            SerializationGroupEnum::MY_DONATABLE_INVENTORY
         ]]);
 
         return $responseService->success($data);
