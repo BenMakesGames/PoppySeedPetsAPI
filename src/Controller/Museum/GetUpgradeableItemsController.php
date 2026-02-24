@@ -82,6 +82,7 @@ class GetUpgradeableItemsController
         $results->pageSize = 20;
         $results->pageCount = $lastPage;
         $results->resultCount = $resultCount;
+        /** @phpstan-ignore-next-line execute() doesn't know what it returns :( */
         $results->results = $paginator->getQuery()->execute();
 
         $data = $normalizer->normalize($results, null, ['groups' => [
