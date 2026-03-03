@@ -44,6 +44,7 @@
         "symfony/serializer": "*",
         "symfony/translation": "*",
         "symfony/twig-bundle": "*",
+        "symfony/uid": "7.3.*",
         "symfony/validator": "*",
         "symfony/web-link": "*",
         "symfony/yaml": "*",
