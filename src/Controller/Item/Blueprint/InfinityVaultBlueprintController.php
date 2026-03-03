@@ -50,7 +50,7 @@ class InfinityVaultBlueprintController
         $quintessence = InventoryHelpers::findOneToConsume($em, $user, 'Quintessence');
 
         if(!$quintessence)
-            return $responseService->itemActionSuccess('You\'ll need a Quintessence to power the Infinity Vault Blueprint.');
+            return $responseService->itemActionSuccess('You\'ll need a Quintessence to build an Infinity Vault.');
 
         $pet = BlueprintHelpers::getPet($em, $user, $request);
 
