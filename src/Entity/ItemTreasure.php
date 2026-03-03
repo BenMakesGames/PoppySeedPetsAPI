@@ -14,16 +14,16 @@ declare(strict_types=1);
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Types\UlidType;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Uid\Ulid;
 
 #[ORM\Entity]
 class ItemTreasure
 {
     #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column(type: 'integer')]
-    /** @phpstan-ignore property.unusedType */
-    private ?int $id = null;
+    #[ORM\Column(type: UlidType::NAME)]
+    private Ulid $id;
 
     #[Groups(["dragonTreasure"])]
     #[ORM\Column(type: 'integer')]
@@ -37,7 +37,12 @@ class ItemTreasure
     #[ORM\Column(type: 'integer')]
     private int $gems = 0;
 
-    public function getId(): ?int
+    public function __construct()
+    {
+        $this->id = new Ulid();
+    }
+
+    public function getId(): Ulid
     {
         return $this->id;
     }

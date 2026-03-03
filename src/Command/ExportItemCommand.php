@@ -29,6 +29,7 @@ use App\Entity\Spice;
 use App\Functions\ItemRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Uid\AbstractUid;
 
 class ExportItemCommand extends PoppySeedPetsCommand
 {
@@ -184,6 +185,9 @@ class ExportItemCommand extends PoppySeedPetsCommand
 
         if(is_array($value))
             return '"' . addslashes(json_encode($value)) . '"';
+
+        if($value instanceof AbstractUid)
+            return '0x' . bin2hex($value->toBinary());
 
         if(is_object($value))
             return $value->getId();
