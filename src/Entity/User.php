@@ -491,6 +491,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->getGreenhouse() ? $this->getGreenhouse()->getMaxPlants() : 0;
     }
 
+    #[Groups(["myAccount"])]
+    public function isVaultOpen(): bool
+    {
+        return $this->vault?->isOpen() ?? false;
+    }
+
+    #[Groups(["myAccount"])]
+    public function getVaultOpenUntil(): ?string
+    {
+        return $this->vault?->getOpenUntil()?->format('c');
+    }
+
     /**
      * @return Collection<int, UserSession>
      */
