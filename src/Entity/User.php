@@ -129,6 +129,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToOne(targetEntity: Beehive::class, mappedBy: 'user', cascade: ['persist', 'remove'])]
     private ?Beehive $beehive = null;
 
+    #[ORM\OneToOne(targetEntity: Vault::class, mappedBy: 'user', cascade: ['persist', 'remove'])]
+    private ?Vault $vault = null;
+
     #[ORM\OneToOne(targetEntity: Greenhouse::class, mappedBy: 'owner', cascade: ['persist', 'remove'])]
     private ?Greenhouse $greenhouse = null;
 
@@ -542,6 +545,23 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         // set the owning side of the relation if necessary
         if ($this !== $beehive->getUser()) {
             $beehive->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function getVault(): ?Vault
+    {
+        return $this->vault;
+    }
+
+    public function setVault(Vault $vault): self
+    {
+        $this->vault = $vault;
+
+        // set the owning side of the relation if necessary
+        if ($this !== $vault->getUser()) {
+            $vault->setUser($this);
         }
 
         return $this;
