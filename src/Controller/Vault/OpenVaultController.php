@@ -18,9 +18,11 @@ use App\Enum\UnlockableFeatureEnum;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotEnoughCurrencyException;
 use App\Exceptions\PSPNotUnlockedException;
+use App\Enum\UserStat;
 use App\Service\ResponseService;
 use App\Service\TransactionService;
 use App\Service\UserAccessor;
+use App\Service\UserStatsService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
@@ -33,7 +35,8 @@ class OpenVaultController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function openVault(
         ResponseService $responseService, EntityManagerInterface $em,
-        UserAccessor $userAccessor, TransactionService $transactionService
+        UserAccessor $userAccessor, TransactionService $transactionService,
+        UserStatsService $userStatsService
     ): JsonResponse
     {
         $user = $userAccessor->getUserOrThrow();
@@ -62,6 +65,8 @@ class OpenVaultController
             throw new PSPNotEnoughCurrencyException($cost . '~~m~~', $user->getMoneys() . '~~m~~');
 
         $transactionService->spendMoney($user, $cost, 'Opened the Infinity Vault for 1 hour.');
+        $userStatsService->incrementStat($user, UserStat::OpenedTheInfinityVault);
+        $userStatsService->incrementStat($user, UserStat::MoneysSpentOnTheInfinityVault, $cost);
 
         $vault->setOpenUntil((new \DateTimeImmutable())->modify('+1 hour'));
 
