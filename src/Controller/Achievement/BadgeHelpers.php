@@ -921,6 +921,16 @@ final class BadgeHelpers
                 $reward = TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($em, 'Scroll of Chocolate'), 1);
                 break;
 
+            case BadgeEnum::OPENED_INFINITY_VAULT_1:
+                $progress = [ 'target' => 1, 'current' => self::getStatTotal($user, [ UserStat::OpenedTheInfinityVault ], $em, $cache) ];
+                $reward = TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($em, 'Key Ring'), 1);
+                break;
+
+            case BadgeEnum::INFINITY_VAULT_MONEYS_SPENT_9999:
+                $progress = [ 'target' => 9999, 'current' => self::getStatTotal($user, [ UserStat::MoneysSpentOnTheInfinityVault ], $em, $cache) ];
+                $reward = TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($em, 'Tile: Gold Vein'), 1);
+                break;
+
             default:
                 throw new \Exception('Oops! Badge not implemented! Ben was a bad programmer!');
         }
