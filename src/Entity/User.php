@@ -492,7 +492,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     #[Groups(["myAccount"])]
-    public function isVaultOpen(): bool
+    public function getIsVaultOpen(): bool
     {
         return $this->vault?->isOpen() ?? false;
     }
