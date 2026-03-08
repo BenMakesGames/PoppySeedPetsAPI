@@ -923,12 +923,12 @@ final class BadgeHelpers
 
             case BadgeEnum::OPENED_INFINITY_VAULT_1:
                 $progress = [ 'target' => 1, 'current' => self::getStatTotal($user, [ UserStat::OpenedTheInfinityVault ], $em, $cache) ];
-                $reward = TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($em, 'Key Ring'), 1);
+                $reward = TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($em, 'Hollow Earth Booster Pack: Beginnings'), 3);
                 break;
 
             case BadgeEnum::INFINITY_VAULT_MONEYS_SPENT_9999:
                 $progress = [ 'target' => 9999, 'current' => self::getStatTotal($user, [ UserStat::MoneysSpentOnTheInfinityVault ], $em, $cache) ];
-                $reward = TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($em, 'Tile: Gold Vein'), 1);
+                $reward = TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($em, 'Tiny Rocketship'), 1);
                 break;
 
             default:
