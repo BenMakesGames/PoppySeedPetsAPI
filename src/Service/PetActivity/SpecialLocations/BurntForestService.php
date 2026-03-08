@@ -15,6 +15,7 @@ namespace App\Service\PetActivity\SpecialLocations;
 
 use App\Entity\Pet;
 use App\Entity\PetActivityLog;
+use App\Entity\User;
 use App\Enum\ActivityPersonalityEnum;
 use App\Enum\GuildEnum;
 use App\Enum\MeritEnum;
@@ -23,6 +24,7 @@ use App\Enum\PetActivityStatEnum;
 use App\Enum\PetBadgeEnum;
 use App\Enum\PetSkillEnum;
 use App\Enum\StatusEffectEnum;
+use App\Enum\UnlockableFeatureEnum;
 use App\Functions\ActivityHelpers;
 use App\Functions\EnchantmentRepository;
 use App\Functions\InventoryHelpers;
@@ -193,9 +195,22 @@ class BurntForestService implements IPetActivity
 
         if($roll >= 11)
         {
-            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% visited the Burnt Forest, and found a wounded fairy! They bandaged it up; thankful, the Fairy cast a minor blessing on ' . $pet->getName() . '!')
-                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'The Umbra', 'Fae-kind' ]))
-            ;
+            $petName = ActivityHelpers::PetName($pet);
+
+            if($pet->getOwner()->hasUnlockedFeature(UnlockableFeatureEnum::Basement) && $pet->getOwner()->getBasementSize() < User::MaxBasementSize)
+            {
+                $pet->getOwner()->increaseBasementSize(10);
+
+                $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, "$petName visited the Burnt Forest, and found a wounded fairy! They bandaged it up; thankful, the Fairy cast a minor blessing on $petName, AND on your Basement - it can now hold {$pet->getOwner()->getBasementSize()} items!")
+                    ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'The Umbra', 'Fae-kind' ]))
+                ;
+            }
+            else
+            {
+                $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, "$petName visited the Burnt Forest, and found a wounded fairy! They bandaged it up; thankful, the Fairy cast a minor blessing on $petName!")
+                    ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'The Umbra', 'Fae-kind' ]))
+                ;
+            }
 
             StatusEffectHelpers::applyStatusEffect($this->em, $pet, $this->rng->rngNextFromArray([
                 StatusEffectEnum::Inspired, StatusEffectEnum::Oneiric, StatusEffectEnum::ExtraExtroverted

@@ -100,7 +100,7 @@ class TradesController
 
                 $itemsInBasement = InventoryService::countTotalInventory($em, $user, LocationEnum::Basement);
 
-                if($itemsInBasement + $quantity > User::MaxBasementInventory)
+                if($itemsInBasement + $quantity > $user->getBasementSize())
                 {
                     throw new PSPInvalidOperationException('There is not enough room in your house or basement for ' . $quantity . ' more items!');
                 }

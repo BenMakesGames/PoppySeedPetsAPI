@@ -98,7 +98,7 @@ class BuyController
             throw new PSPFormValidationException('Did you forget to select something to buy?');
 
         $existingInventoryCount = InventoryService::countTotalInventory($em, $user, $buyTo);
-        $maxInventory = $buyTo === LocationEnum::Basement ? User::MaxBasementInventory : User::MaxHouseInventory;
+        $maxInventory = $buyTo === LocationEnum::Basement ? $user->getBasementSize() : User::MaxHouseInventory;
 
         if($existingInventoryCount + $totalQuantity > $maxInventory)
         {

@@ -91,7 +91,7 @@ class MoveFromVaultController
         }
         else if($targetLocation === LocationEnum::Basement)
         {
-            if($itemsInTarget + $quantity > User::MaxBasementInventory)
+            if($itemsInTarget + $quantity > $user->getBasementSize())
                 throw new PSPInvalidOperationException('Not enough space in the basement.');
         }
         else if($targetLocation === LocationEnum::Mantle)

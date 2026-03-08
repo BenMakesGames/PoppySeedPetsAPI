@@ -172,7 +172,7 @@ class MarketService
         {
             $itemsInBuyersBasement = InventoryService::countTotalInventory($this->em, $highestBid->getUser(), LocationEnum::Basement);
 
-            if($itemsInBuyersBasement < User::MaxBasementInventory)
+            if($itemsInBuyersBasement < $user->getBasementSize())
                 $targetLocation = LocationEnum::Basement;
         }
         else // assume home as fallback/default
@@ -183,7 +183,7 @@ class MarketService
             {
                 $itemsInBuyersBasement = InventoryService::countTotalInventory($this->em, $highestBid->getUser(), LocationEnum::Basement);
 
-                if($itemsInBuyersBasement < User::MaxBasementInventory)
+                if($itemsInBuyersBasement < $user->getBasementSize())
                     $targetLocation = LocationEnum::Basement;
             }
         }

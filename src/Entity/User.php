@@ -30,7 +30,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     public const int MaxHouseInventory = 100;
-    public const int MaxBasementInventory = 10000;
+    public const int MaxBasementSize = 10000;
     public const int MinPassphraseLength = 12;
     public const int MaxPassphraseLength = 128; // Reasonable maximum to prevent DoS attacks
 
@@ -193,6 +193,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column]
     private \DateTimeImmutable $lastPerformedQualityTime;
+
+    #[ORM\Column]
+    private int $basementSize = 1000;
 
     public function __construct(string $name, string $email)
     {
@@ -842,5 +845,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->fieldGuideEntries->exists(
             fn(int $key, UserFieldGuideEntry $entry) => $entry->getEntry()->getName() === $entryName
         );
+    }
+
+    public function getBasementSize(): int
+    {
+        return $this->basementSize;
+    }
+
+    public function increaseBasementSize(int $growth): static
+    {
+        $this->basementSize = min(self::MaxBasementSize, $this->basementSize + $growth);
+
+        return $this;
     }
 }

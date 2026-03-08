@@ -77,7 +77,7 @@ class BuyController
                 'Whaaaat?!',
             ]);
 
-            if($itemsInBasement >= User::MaxBasementInventory)
+            if($itemsInBasement >= $user->getBasementSize())
                 throw new PSPInvalidOperationException('Your house has ' . $itemsAtHome . ', and your basement has ' . $itemsInBasement . ' items! (' . $dang . ') You\'ll need to make some space, first...');
 
             $placeItemsIn = LocationEnum::Basement;
