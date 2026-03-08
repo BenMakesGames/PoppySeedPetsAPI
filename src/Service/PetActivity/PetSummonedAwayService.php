@@ -14,9 +14,11 @@ declare(strict_types=1);
 namespace App\Service\PetActivity;
 
 use App\Entity\PetActivityLog;
+use App\Entity\User;
 use App\Enum\PetActivityLogInterestingness;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
+use App\Enum\UnlockableFeatureEnum;
 use App\Exceptions\UnreachableException;
 use App\Functions\DateFunctions;
 use App\Functions\ItemRepository;
@@ -112,6 +114,7 @@ class PetSummonedAwayService
     private function doSummonedToCleanAndHost(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
+        $oldBasementSize = $pet->getOwner()->getBasementSize();
 
         switch($this->rng->rngNextInt(1, 3))
         {
@@ -120,6 +123,10 @@ class PetSummonedAwayService
                 $loot = $this->rng->rngNextFromArray([ 'Fluff', 'Cobweb' ]);
                 $skill = null;
                 $tags = [ 'Gathering' ];
+
+                if($pet->getOwner()->hasUnlockedFeature(UnlockableFeatureEnum::Basement) && $pet->getOwner()->getBasementSize() < User::MaxBasementSize)
+                    $pet->getOwner()->increaseBasementSize(50);
+
                 break;
             case 2:
                 $activity = 'serve food to guests at a fancy party in a mansion';
@@ -147,7 +154,12 @@ class PetSummonedAwayService
         }
 
         $lootItem = ItemRepository::findOneByName($this->em, $loot);
-        $message = 'While ' . $pet->getName() . ' was thinking about what to do, they were magically summoned! The wizard that summoned them made them ' . $activity . '. Once the task was completed, ' . $pet->getName() . ' returned home, still holding ' . $lootItem->getNameWithArticle() . '!';
+        $message = 'While ' . $pet->getName() . ' was thinking about what to do, they were magically summoned! The wizard that summoned them made them ' . $activity . '. Once the task was completed, ' . $pet->getName() . ' returned home, still holding ' . $lootItem->getNameWithArticle();
+
+        if($pet->getOwner()->getBasementSize() > $oldBasementSize)
+            $message .= ', AND with new ideas about how to make the most of your space - your Basement can now hold ' . $pet->getOwner()->getBasementSize() . ' items!';
+        else
+            $message .= '!';
 
         $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, $message)
             ->setIcon('icons/activity-logs/summoned')
