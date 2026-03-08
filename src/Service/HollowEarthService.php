@@ -254,7 +254,7 @@ class HollowEarthService
 
         $card = $this->getEffectiveTileCard($player, $nextTile);
 
-        $action = $card ? $card->getEvent() : null;
+        $action = $card?->getEvent();
 
         $player
             ->setCurrentTile($nextTile)
@@ -379,6 +379,10 @@ class HollowEarthService
 
         $activityLog = null;
 
+        // increase basement size BEFORE rendering description
+        if(array_key_exists('increaseBasement', $event))
+            $player->getUser()->increaseBasementSize((int)$event['increaseBasement']);
+
         if(array_key_exists('description', $event) && $doLog)
         {
             $description = self::formatEventDescription($event['description'], $player);
@@ -447,6 +451,7 @@ class HollowEarthService
         $replacements = [
             '%pet.name%' => $player->getChosenPet()->getName(),
             '%player.name%' => $player->getUser()->getName(),
+            '%player.basementSize%' => $player->getUser()->getBasementSize(),
         ];
 
         return str_replace(
