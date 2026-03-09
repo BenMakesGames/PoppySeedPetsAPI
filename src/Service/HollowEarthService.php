@@ -451,16 +451,13 @@ class HollowEarthService
 
     public static function formatEventDescription(string $description, HollowEarthPlayer $player): string
     {
-        $replacements = [
-            '%pet.name%' => $player->getChosenPet()->getName(),
-            '%player.name%' => $player->getUser()->getName(),
-            '%player.basementSize%' => "{$player->getUser()->getBasementSize()}",
-        ];
-
-        return str_replace(
-            array_keys($replacements),
-            $replacements,
-            $description
+        return strtr(
+            $description,
+            [
+                '%pet.name%' => $player->getChosenPet()->getName(),
+                '%player.name%' => $player->getUser()->getName(),
+                '%player.basementSize%' => $player->getUser()->getBasementSize(),
+            ]
         );
     }
 
