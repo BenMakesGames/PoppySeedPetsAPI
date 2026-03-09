@@ -17,6 +17,7 @@ use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
 use App\Entity\ItemGroup;
 use App\Functions\ArrayFunctions;
+use App\Functions\ItemGroupRepository;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\ResponseService;
@@ -53,9 +54,9 @@ class BoosterPackController
 
         $itemGroupNameBase = self::SetItemGroupNames[$set];
 
-        $commons = $em->getRepository(ItemGroup::class)->findOneBy([ 'name' => $itemGroupNameBase . ': Common' ]);
-        $uncommons = $em->getRepository(ItemGroup::class)->findOneBy([ 'name' => $itemGroupNameBase . ': Uncommon' ]);
-        $rares = $em->getRepository(ItemGroup::class)->findOneBy([ 'name' => $itemGroupNameBase . ': Rare' ]);
+        $commons = ItemGroupRepository::findOneByName($em, $itemGroupNameBase . ': Common');
+        $uncommons = ItemGroupRepository::findOneByName($em, $itemGroupNameBase . ': Uncommon');
+        $rares = ItemGroupRepository::findOneByName($em, $itemGroupNameBase . ': Rare');
 
         $tiles = [
             InventoryService::getRandomItemFromItemGroup($rng, $commons),

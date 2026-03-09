@@ -15,6 +15,7 @@ namespace App\Enum;
 
 final class MeritEnum
 {
+    /** @use FakeEnum<string> */
     use FakeEnum;
 
     // obtained through affection rewards (for additional config, check MeritInfo.php)

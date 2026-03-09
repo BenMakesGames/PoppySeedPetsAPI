@@ -89,7 +89,7 @@ class ClaimRewardsController
 
                 // triggers Hyssop letter #3
                 $oldValue = UserQuestRepository::findOrCreate($em, $user, 'Can Receive Letters from Fairies', 0);
-                if($oldValue->getValue() === 2)
+                if($oldValue->getIntValue() === 2)
                     $oldValue->setValue(3);
             }
             else if($itemName === 'Burnt Log')

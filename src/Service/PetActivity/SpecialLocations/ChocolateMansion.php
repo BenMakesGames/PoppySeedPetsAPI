@@ -72,7 +72,7 @@ class ChocolateMansion
 
         $petFurthestRoom = $this->petQuestRepository->findOrCreate($pet, 'Chocolate Mansion Furthest Room', self::QuestValueUpToFoyer);
 
-        $maxRoom = min($roomsAvailableQuest->getValue(), $petFurthestRoom->getValue());
+        $maxRoom = min($roomsAvailableQuest->getIntValue(), $petFurthestRoom->getValue());
 
         $changes = new PetChanges($pet);
 
@@ -358,7 +358,7 @@ class ChocolateMansion
 
         $this->inventoryService->petCollectsItem('Chocolate Bar', $pet, $pet->getName() . ' broke this off of a chocolate book in the study of le Manoir de Chocolat.', $activityLog);
 
-        if($searchRoll > 2 && $quest->getValue() === self::QuestValueAllExceptCellarAndAttic)
+        if($searchRoll > 2 && $quest->getIntValue() === self::QuestValueAllExceptCellarAndAttic)
         {
             $loot = null;
 
@@ -433,7 +433,7 @@ class ChocolateMansion
 
         $this->petExperienceService->gainExp($pet, $success ? 2 : 1, [ PetSkillEnum::Stealth ], $activityLog);
 
-        if($searchRoll >= 25 && $quest->getValue() === self::QuestValueAllExceptCellarAndAttic)
+        if($searchRoll >= 25 && $quest->getIntValue() === self::QuestValueAllExceptCellarAndAttic)
         {
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::Stealth ], $activityLog);
             $pet->increaseEsteem(8);
@@ -474,7 +474,7 @@ class ChocolateMansion
 
         $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::Stealth ], $activityLog);
 
-        if($searchRoll > 2 && $quest->getValue() === self::QuestValueAllExceptCellarAndAttic)
+        if($searchRoll > 2 && $quest->getIntValue() === self::QuestValueAllExceptCellarAndAttic)
         {
             $loot = null;
 
@@ -648,7 +648,7 @@ class ChocolateMansion
 
         if($success)
         {
-            if($quest->getValue() === self::QuestValueUpToGardens)
+            if($quest->getIntValue() === self::QuestValueUpToGardens)
             {
                 $quest->setValue(self::QuestValueAllExceptCellarAndAttic);
                 $description .= 'There was a chocolate fountain in the center; %pet:' . $pet->getId() . '.name% bottled some of the liquid. While they were doing so, they spotted a lever. Pulling it, a large \\*CLANK\\* was heard coming from the front of the house!';
@@ -683,7 +683,7 @@ class ChocolateMansion
         $description = $this->getEntryDescription($pet);
         $climbing = $this->rng->rngNextInt(1, 5) <= $petWithSkills->getClimbingBonus()->getTotal();
 
-        if($quest->getValue() === 1)
+        if($quest->getIntValue() === 1)
         {
             $quest->setValue(2);
             $description .= 'They tried to enter the mansion\'s front door, but two, giant choco-steel bars blocked entry... ';

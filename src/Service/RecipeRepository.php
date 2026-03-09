@@ -811,11 +811,11 @@ final class RecipeRepository
 
     /**
      * @param callable(Recipe): bool $delegate
-     * @return Recipe[]
+     * @return list<Recipe>
      */
     public function findBy(callable $delegate): array
     {
-        return array_filter($this->recipes, $delegate);
+        return array_values(array_filter($this->recipes, $delegate));
     }
 
     /**

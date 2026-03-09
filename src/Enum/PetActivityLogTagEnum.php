@@ -15,6 +15,7 @@ namespace App\Enum;
 
 final class PetActivityLogTagEnum
 {
+    /** @use FakeEnum<string> */
     use FakeEnum;
 
     public const string Add_on_Assistance = 'Add-on Assistance';

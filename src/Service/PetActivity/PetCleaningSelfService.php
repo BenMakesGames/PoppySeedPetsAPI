@@ -123,19 +123,24 @@ class PetCleaningSelfService
             ->setParameter('threeDaysAgo', $threeDaysAgo)
             ->setParameter('userId', $exceptUser->getId());
 
-        $count = $qb->select('COUNT(g)')->getQuery()->getSingleScalarResult();
+        $count = (int)$qb->select('COUNT(g)')->getQuery()->getSingleScalarResult();
 
         if($count === 0)
             return null;
 
-        $offset = $this->rng->rngNextInt(0, $count - 1);
-
-        return $qb
+        $qb
             ->select('g')
-            ->setFirstResult($offset)
-            ->setMaxResults(1)
+            ->setMaxResults(1);
+
+        if($count > 1)
+            $qb->setFirstResult($this->rng->rngNextInt(0, $count - 1));
+
+        /** @var Greenhouse $greenhouse */
+        $greenhouse = $qb
             ->getQuery()
             ->getSingleResult();
+
+        return $greenhouse;
     }
 
     /**

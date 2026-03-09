@@ -17,6 +17,7 @@ use App\Controller\Item\ItemControllerHelpers;
 use App\Controller\Item\Pinata\BoxHelpers;
 use App\Entity\Inventory;
 use App\Entity\ItemGroup;
+use App\Functions\ItemGroupRepository;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\ResponseService;
@@ -58,14 +59,11 @@ class OpenGamingBoxController
         $r = $rng->rngNextInt(1, 6);
 
         if($r === 6)
-            $rarityGroup = $em->getRepository(ItemGroup::class)->findOneBy([ 'name' => 'Hollow Earth Booster Pack: Rare' ]);
+            $rarityGroup = ItemGroupRepository::findOneByName($em, 'Hollow Earth Booster Pack: Rare');
         else if($r >= 4)
-            $rarityGroup = $em->getRepository(ItemGroup::class)->findOneBy([ 'name' => 'Hollow Earth Booster Pack: Uncommon' ]);
+            $rarityGroup = ItemGroupRepository::findOneByName($em, 'Hollow Earth Booster Pack: Uncommon');
         else
-            $rarityGroup = $em->getRepository(ItemGroup::class)->findOneBy([ 'name' => 'Hollow Earth Booster Pack: Common' ]);
-
-        if(!$rarityGroup)
-            throw new \Exception('One or more of the Hollow Earth Booster Pack rarity groups does not exist in the database!');
+            $rarityGroup = ItemGroupRepository::findOneByName($em, 'Hollow Earth Booster Pack: Common');
 
         $tile = InventoryService::getRandomItemFromItemGroup($rng, $rarityGroup);
 

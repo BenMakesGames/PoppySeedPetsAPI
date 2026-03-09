@@ -462,7 +462,7 @@ class PetActivityService
 
         if($progress->getValue() < 40)
         {
-            $progress->setValue($progress->getValue() + $this->rng->rngNextInt(1, 4));
+            $progress->setValue($progress->getIntValue() + $this->rng->rngNextInt(1, 4));
             return null;
         }
 

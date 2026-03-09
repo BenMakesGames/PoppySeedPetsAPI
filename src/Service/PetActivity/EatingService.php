@@ -241,7 +241,7 @@ class EatingService
     }
 
     /**
-     * @param Inventory[] $inventory
+     * @param list<Inventory> $inventory
      */
     public function doFeed(User $feeder, Pet $pet, array $inventory): PetActivityLog
     {

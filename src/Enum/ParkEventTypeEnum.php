@@ -15,6 +15,7 @@ namespace App\Enum;
 
 final class ParkEventTypeEnum
 {
+    /** @use FakeEnum<string> */
     use FakeEnum;
 
     public const string KinBall = 'Kin-Ball';

@@ -30,6 +30,7 @@ final class ItemRepository
 
     public static function findOneByName(EntityManagerInterface $em, string $itemName): Item
     {
+        /** @var Item|null $item */
         $item = $em->getRepository(Item::class)->createQueryBuilder('i')
             ->where('i.name=:name')
             ->setParameter('name', $itemName)

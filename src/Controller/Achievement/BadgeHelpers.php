@@ -26,15 +26,6 @@ use Doctrine\ORM\EntityManagerInterface;
 
 final class BadgeHelpers
 {
-    public static function getUnlockedFeatures(User $user, array $featureNames): int
-    {
-        return array_reduce(
-            $user->getUnlockedFeatures()->getValues(),
-            fn(int $carry, UserUnlockedFeature $feature) => $carry + (int)in_array($feature->getFeature(), $featureNames),
-            0
-        );
-    }
-
     private static function getUnlockedFieldGuideEntries(User $user): int
     {
         return $user->getFieldGuideEntries()->count();
@@ -50,6 +41,9 @@ final class BadgeHelpers
         return $user->getUnlockedAuras()->count();
     }
 
+    /**
+     * @param string[] $badgeNames
+     */
     private static function getCompletedBadges(User $user, array $badgeNames): int
     {
         return array_reduce(
@@ -59,6 +53,9 @@ final class BadgeHelpers
         );
     }
 
+    /**
+     * @param string[] $statNames
+     */
     private static function getStatTotal(User $user, array $statNames, EntityManagerInterface $em, InMemoryCache $perRequestCache): int
     {
         $key = 'UserStatTotal:' . $user->getId() . ':' . implode(',', $statNames);
@@ -842,7 +839,7 @@ final class BadgeHelpers
             // Meta
 
             case BadgeEnum::AccountAge365:
-                $progress = [ 'target' => 365, 'current' => (new \DateTimeImmutable())->diff($user->getRegisteredOn())->days ];
+                $progress = [ 'target' => 365, 'current' => (new \DateTimeImmutable())->diff($user->getRegisteredOn())->days ?: 0 ];
                 $reward = TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($em, 'Candle'), 1);
                 break;
 

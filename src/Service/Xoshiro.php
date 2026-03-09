@@ -76,7 +76,9 @@ class Xoshiro implements IRandom
         {
             $r = $this->rng->getInt($i, $n - 1);
             $temp = $array[$r];
+            /** @phpstan-ignore-next-line phpstan is unable to follow the logic of an in-place shuffle */
             $array[$r] = $array[$i];
+            /** @phpstan-ignore-next-line phpstan is unable to follow the logic of an in-place shuffle */
             $array[$i] = $temp;
         }
     }

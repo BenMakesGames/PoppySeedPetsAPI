@@ -15,6 +15,7 @@ namespace App\Enum;
 
 final class HollowEarthActionTypeEnum
 {
+    /** @use FakeEnum<string> */
     use FakeEnum;
 
     public const string PetChallenge = 'petChallenge';

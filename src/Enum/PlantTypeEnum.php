@@ -15,6 +15,7 @@ namespace App\Enum;
 
 final class PlantTypeEnum
 {
+    /** @use FakeEnum<string> */
     use FakeEnum;
 
     public const string Earth = 'earth';

@@ -52,7 +52,7 @@ class FoodWithSpice
 
     public function __construct(Item $item, ?Spice $spice)
     {
-        $food = $item->getFood();
+        $food = $item->getFood() ?? throw new \InvalidArgumentException('Item must have food properties');
 
         $this->baseItem = $item;
         $this->name = $item->getName();

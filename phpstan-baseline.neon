@@ -397,18 +397,6 @@ parameters:
 			path: src/Command/RunParkEventsCommand.php
 
 		-
-			message: '#^Binary operation "\." between ''Looking for pets…'' and mixed results in an error\.$#'
-			identifier: binaryOp.invalid
-			count: 1
-			path: src/Command/RunParkEventsCommand.php
-
-		-
-			message: '#^Binary operation "\." between ''oops\: support for…'' and mixed results in an error\.$#'
-			identifier: binaryOp.invalid
-			count: 1
-			path: src/Command/RunParkEventsCommand.php
-
-		-
 			message: '#^Method App\\Command\\RunParkEventsCommand\:\:findPetsEligibleForParkEvent\(\) should return array\<App\\Entity\\Pet\> but returns list\.$#'
 			identifier: return.type
 			count: 1
@@ -416,12 +404,6 @@ parameters:
 
 		-
 			message: '#^Parameter \#1 \$array of function array_filter expects array, mixed given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Command/RunParkEventsCommand.php
-
-		-
-			message: '#^Parameter \#1 \$value of static method App\\Enum\\ParkEventTypeEnum\:\:isAValue\(\) expects int\|string, mixed given\.$#'
 			identifier: argument.type
 			count: 1
 			path: src/Command/RunParkEventsCommand.php
@@ -661,12 +643,6 @@ parameters:
 			path: src/Command/UpsertAuraCommand.php
 
 		-
-			message: '#^Method App\\Command\\UpsertAuraCommand\:\:totalFertilizer\(\) should return int but returns mixed\.$#'
-			identifier: return.type
-			count: 1
-			path: src/Command/UpsertAuraCommand.php
-
-		-
 			message: '#^Parameter \#1 \$enchantment of method App\\Command\\UpsertAuraCommand\:\:enchantmentName\(\) expects App\\Entity\\Enchantment, App\\Entity\\Enchantment\|null given\.$#'
 			identifier: argument.type
 			count: 1
@@ -751,12 +727,6 @@ parameters:
 			path: src/Command/UpsertItemCommand.php
 
 		-
-			message: '#^Parameter \#2 \$defaultValue of method App\\Command\\PoppySeedPetsCommand\:\:askInt\(\) expects int, int\|null given\.$#'
-			identifier: argument.type
-			count: 2
-			path: src/Command/UpsertItemCommand.php
-
-		-
 			message: '#^Parameter \#2 \$name of method App\\Command\\UpsertItemCommand\:\:name\(\) expects string, mixed given\.$#'
 			identifier: argument.type
 			count: 1
@@ -764,18 +734,6 @@ parameters:
 
 		-
 			message: '#^Binary operation "\." between ''Creating "'' and mixed results in an error\.$#'
-			identifier: binaryOp.invalid
-			count: 1
-			path: src/Command/UpsertPlantCommand.php
-
-		-
-			message: '#^Binary operation "\." between non\-falsy\-string and mixed results in an error\.$#'
-			identifier: binaryOp.invalid
-			count: 1
-			path: src/Command/UpsertPlantCommand.php
-
-		-
-			message: '#^Binary operation "/" between mixed and 100 results in an error\.$#'
 			identifier: binaryOp.invalid
 			count: 1
 			path: src/Command/UpsertPlantCommand.php
@@ -818,12 +776,6 @@ parameters:
 
 		-
 			message: '#^Parameter \#1 \$string of function strtolower expects string, mixed given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Command/UpsertPlantCommand.php
-
-		-
-			message: '#^Parameter \#1 \$strings of static method App\\Functions\\ArrayFunctions\:\:list_nice\(\) expects iterable\<string\>, array\<int\|string\> given\.$#'
 			identifier: argument.type
 			count: 1
 			path: src/Command/UpsertPlantCommand.php
@@ -1045,38 +997,8 @@ parameters:
 			path: src/Controller/Account/RegisterController.php
 
 		-
-			message: '#^Parameter \#1 \$badge of static method App\\Controller\\Achievement\\BadgeHelpers\:\:getBadgeProgress\(\) expects string, int\|string given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Controller/Achievement/Available.php
-
-		-
-			message: '#^Method App\\Controller\\Achievement\\BadgeHelpers\:\:getBadgeProgress\(\) should return array\{badge\: string, progress\: array\{target\: int, current\: int\}, done\: bool, reward\: App\\Model\\TraderOfferCostOrYield\} but returns array\{badge\: ''AccountAge365''\|''Achievements10''\|''Achievements100''\|''Achievements110''\|''Achievements120''\|''Achievements130''\|''Achievements140''\|''Achievements150''\|''Achievements20''\|''Achievements30''\|''Achievements40''\|''Achievements50''\|''Achievements60''\|''Achievements70''\|''Achievements80''\|''Achievements90''\|''ApricotFestival1''\|''ApricotFestival10''\|''BaabblesOpened1''\|''BaabblesOpened10''\|''BaabblesOpened100''\|''BaabblesOpened1000''\|''BoxBoxBoxBox''\|''Composted10''\|''Composted100''\|''Composted1000''\|''Cooked10''\|''Cooked100''\|''Cooked1000''\|''Cooked10000''\|''CookingBuddyRecipes…''\|''DefeatedNoetalasWin…''\|''DefeatedSummonedMon…''\|''DragonVaseDipping10''\|''FedAnts10''\|''FedAntsAndBees10''\|''FedBees10''\|''FedCentipedes10''\|''FertilizedHarvested…''\|''FertilizedPlant10''\|''FertilizedPlant100''\|''FertilizedPlant1000''\|''FieldGuide10''\|''FieldGuide20''\|''FireplaceFuel10''\|''FireplaceFuel100''\|''FireplaceFuel1000''\|''FireplaceFuel10000''\|''GreatSpiritBoshinog…''\|''GreatSpiritCardeasL…''\|''GreatSpiritDionysus…''\|''GreatSpiritEiriPers…''\|''GreatSpiritHuehueco…''\|''GreatSpiritHunterOf…''\|''GreatSpiritMajorRew…''\|''GreatSpiritMinorRew…''\|''GreatSpiritModerate…''\|''HarvestedPlant10''\|''HarvestedPlant100''\|''HarvestedPlant1000''\|''HeartstoneDimension…''\|''HollowEarthTravel10''\|''HollowEarthTravel100''\|''HollowEarthTravel10…''\|''Honorificabilitudin…''\|''HorribleEggplant1''\|''HorribleEggplant10''\|''HotPotatoTossed1''\|''HotPotatoTossed10''\|''HotPotatoTossed100''\|''HotPotDipping10''\|''IceMangoes10''\|''LongestFire10080''\|''LongestFire1440''\|''LongestFire60''\|''MaxPets4''\|''MisreadScroll1''\|''MoneysSpent10''\|''MoneysSpent100''\|''MoneysSpent1000''\|''MoneysSpent10000''\|''MoneysSpent100000''\|''Museum100''\|''Museum1000''\|''Museum1100''\|''Museum1200''\|''Museum200''\|''Museum300''\|''Museum400''\|''Museum500''\|''Museum600''\|''Museum700''\|''Museum800''\|''Museum900''\|''OpenedBoxBox1''\|''OpenedBoxBox10''\|''OpenedCanOfFood10''\|''OpenedCanOfFood100''\|''OpenedCerealBox''\|''OpenedCerealBoxCanO…''\|''OpenedHatBox1''\|''OpenedHatBox10''\|''OpenedPaperBag10''\|''OpenedPaperBag100''\|''OpenedPlasticBottle…''\|''Petted10''\|''Petted100''\|''Petted1000''\|''Petted10000''\|''PlazaBox1''\|''PlazaBox10''\|''PlazaBox100''\|''ReadScroll1''\|''ReadScroll10''\|''ReadScroll100''\|''Recycled10''\|''Recycled100''\|''Recycled1000''\|''Recycled10000''\|''SouffleStartler''\|''TowerOfTrials1''\|''TowerOfTrials10''\|''TowerOfTrials100''\|''TreasuresGivenToDra…''\|''TrophiesEarned1''\|''TrophiesEarned10''\|''TrophiesEarned100''\|''UnlockedHattierStyl…''\|''WeekdayCoins1''\|''WeekdayCoins7''\|''WhisperStone''\|''WorkerBees1000''\|''WorkerBees10000''\|''Zoologist10''\|''Zoologist100''\|''Zoologist20''\|''Zoologist30''\|''Zoologist40''\|''Zoologist50''\|''Zoologist60''\|''Zoologist70''\|''Zoologist80''\|''Zoologist90'', progress\: array\{target\: 1\|2\|3\|4\|5\|7\|10\|20\|30\|40\|50\|60\|70\|80\|90\|100\|110\|120\|130\|140\|150\|200\|300\|365\|400\|500\|600\|700\|800\|900\|1000\|1100\|1200\|1440\|10000\|10080\|100000, current\: int\|false\}, done\: bool, reward\: App\\Model\\TraderOfferCostOrYield\}\.$#'
-			identifier: return.type
-			count: 1
-			path: src/Controller/Achievement/BadgeHelpers.php
-
-		-
-			message: '#^Method App\\Controller\\Achievement\\BadgeHelpers\:\:getCompletedBadges\(\) has parameter \$badgeNames with no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Controller/Achievement/BadgeHelpers.php
-
-		-
-			message: '#^Method App\\Controller\\Achievement\\BadgeHelpers\:\:getStatTotal\(\) has parameter \$statNames with no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Controller/Achievement/BadgeHelpers.php
-
-		-
 			message: '#^Method App\\Controller\\Achievement\\BadgeHelpers\:\:getStatTotal\(\) should return int but returns mixed\.$#'
 			identifier: return.type
-			count: 1
-			path: src/Controller/Achievement/BadgeHelpers.php
-
-		-
-			message: '#^Method App\\Controller\\Achievement\\BadgeHelpers\:\:getUnlockedFeatures\(\) has parameter \$featureNames with no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
 			count: 1
 			path: src/Controller/Achievement/BadgeHelpers.php
 
@@ -1387,18 +1309,6 @@ parameters:
 			path: src/Controller/Grocer/BuyController.php
 
 		-
-			message: '#^Binary operation "\+" between mixed and int\<0, max\> results in an error\.$#'
-			identifier: binaryOp.invalid
-			count: 1
-			path: src/Controller/Grocer/BuyController.php
-
-		-
-			message: '#^Binary operation "\-" between 20 and mixed results in an error\.$#'
-			identifier: binaryOp.invalid
-			count: 1
-			path: src/Controller/Grocer/BuyController.php
-
-		-
 			message: '#^Cannot access offset ''item'' on mixed\.$#'
 			identifier: offsetAccess.nonOffsetAccessible
 			count: 1
@@ -1439,12 +1349,6 @@ parameters:
 			identifier: offsetAccess.invalidOffset
 			count: 1
 			path: src/Controller/Grocer/BuyController.php
-
-		-
-			message: '#^Binary operation "\-" between 20 and mixed results in an error\.$#'
-			identifier: binaryOp.invalid
-			count: 1
-			path: src/Controller/Grocer/GetInventoryController.php
 
 		-
 			message: '#^Parameter \#1 \$owner of method App\\Entity\\Inventory\:\:changeOwner\(\) expects App\\Entity\\User, App\\Entity\\User\|null given\.$#'
@@ -1665,7 +1569,7 @@ parameters:
 		-
 			message: '#^Negated boolean expression is always false\.$#'
 			identifier: booleanNot.alwaysFalse
-			count: 2
+			count: 1
 			path: src/Controller/HollowEarth/TradesController.php
 
 		-
@@ -1741,48 +1645,6 @@ parameters:
 			path: src/Controller/Item/Blueprint/FishStatueBlueprintController.php
 
 		-
-			message: '#^Binary operation "\." between ''\#\#\# '' and mixed results in an error\.$#'
-			identifier: binaryOp.invalid
-			count: 1
-			path: src/Controller/Item/Book/LeChocolatController.php
-
-		-
-			message: '#^Binary operation "\." between ''\* '' and mixed results in an error\.$#'
-			identifier: binaryOp.invalid
-			count: 1
-			path: src/Controller/Item/Book/LeChocolatController.php
-
-		-
-			message: '#^Cannot access property \$ingredients on mixed\.$#'
-			identifier: property.nonObject
-			count: 1
-			path: src/Controller/Item/Book/LeChocolatController.php
-
-		-
-			message: '#^Cannot access property \$name on mixed\.$#'
-			identifier: property.nonObject
-			count: 2
-			path: src/Controller/Item/Book/LeChocolatController.php
-
-		-
-			message: '#^Method App\\Controller\\Item\\Book\\LeChocolatController\:\:getRecipes\(\) return type has no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Controller/Item/Book/LeChocolatController.php
-
-		-
-			message: '#^Parameter \#1 \$callback of function array_map expects \(callable\(mixed\)\: mixed\)\|null, Closure\(App\\Model\\Recipe\)\: string given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Controller/Item/Book/LeChocolatController.php
-
-		-
-			message: '#^Parameter \#2 \$list of static method App\\Service\\InventoryService\:\:deserializeItemList\(\) expects string, mixed given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Controller/Item/Book/LeChocolatController.php
-
-		-
 			message: '#^Parameter \#3 \$species of method App\\Service\\PetFactory\:\:createPet\(\) expects App\\Entity\\PetSpecies, App\\Entity\\PetSpecies\|null given\.$#'
 			identifier: argument.type
 			count: 1
@@ -1823,24 +1685,6 @@ parameters:
 			identifier: booleanNot.alwaysFalse
 			count: 3
 			path: src/Controller/Item/EggController.php
-
-		-
-			message: '#^Method App\\Controller\\Item\\DustingLocation\:\:__construct\(\) has parameter \$loot with no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Controller/Item/EvilFeatherDuster.php
-
-		-
-			message: '#^Parameter \#1 \$item of method App\\Service\\InventoryService\:\:receiveItem\(\) expects App\\Entity\\Item\|string, mixed given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Controller/Item/EvilFeatherDuster.php
-
-		-
-			message: '#^Parameter \#1 \$strings of static method App\\Functions\\ArrayFunctions\:\:list_nice\(\) expects iterable\<string\>, array given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Controller/Item/EvilFeatherDuster.php
 
 		-
 			message: '#^Cannot call method getName\(\) on App\\Entity\\Aura\|null\.$#'
@@ -1897,52 +1741,10 @@ parameters:
 			path: src/Controller/Item/PetAlteration/ForgettingScrollController.php
 
 		-
-			message: '#^Parameter \#2 \$callback of function array_filter expects \(callable\(int\|string\)\: bool\)\|null, Closure\(string\)\: bool given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Controller/Item/PetAlteration/ForgettingScrollController.php
-
-		-
 			message: '#^Parameter \#1 \$statusEffect of method App\\Entity\\Pet\:\:removeStatusEffect\(\) expects App\\Entity\\StatusEffect, App\\Entity\\StatusEffect\|null given\.$#'
 			identifier: argument.type
 			count: 3
 			path: src/Controller/Item/PetAlteration/WerebaneController.php
-
-		-
-			message: '#^Parameter \#2 \$itemGroup of static method App\\Service\\InventoryService\:\:getRandomItemFromItemGroup\(\) expects App\\Entity\\ItemGroup, App\\Entity\\ItemGroup\|null given\.$#'
-			identifier: argument.type
-			count: 4
-			path: src/Controller/Item/Pinata/BoosterPackController.php
-
-		-
-			message: '#^Binary operation "\." between non\-falsy\-string and mixed results in an error\.$#'
-			identifier: binaryOp.invalid
-			count: 3
-			path: src/Controller/Item/Pinata/JuiceBoxController.php
-
-		-
-			message: '#^Cannot access offset 0 on mixed\.$#'
-			identifier: offsetAccess.nonOffsetAccessible
-			count: 2
-			path: src/Controller/Item/Pinata/JuiceBoxController.php
-
-		-
-			message: '#^Cannot access offset 1 on mixed\.$#'
-			identifier: offsetAccess.nonOffsetAccessible
-			count: 4
-			path: src/Controller/Item/Pinata/JuiceBoxController.php
-
-		-
-			message: '#^Parameter \#1 \$item of method App\\Service\\InventoryService\:\:receiveItem\(\) expects App\\Entity\\Item\|string, mixed given\.$#'
-			identifier: argument.type
-			count: 2
-			path: src/Controller/Item/Pinata/JuiceBoxController.php
-
-		-
-			message: '#^Parameter \#1 \$string of function ucfirst expects string, mixed given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Controller/Item/Pinata/JuiceBoxController.php
 
 		-
 			message: '#^Parameter \#1 \$array of method App\\Service\\IRandom\:\:rngNextFromArray\(\) expects array\<mixed\>, mixed given\.$#'
@@ -1967,60 +1769,6 @@ parameters:
 			identifier: argument.type
 			count: 1
 			path: src/Controller/Item/Pinata/RecoveredArchiveController.php
-
-		-
-			message: '#^Method App\\Controller\\Item\\Pinata\\SeekingClaymoreController\:\:generateResponse\(\) has parameter \$items with no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Controller/Item/Pinata/SeekingClaymoreController.php
-
-		-
-			message: '#^Method App\\Controller\\Item\\Pinata\\SeekingClaymoreController\:\:receiveItems\(\) has parameter \$items with no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Controller/Item/Pinata/SeekingClaymoreController.php
-
-		-
-			message: '#^Parameter \#1 \$item of method App\\Service\\InventoryService\:\:receiveItem\(\) expects App\\Entity\\Item\|string, mixed given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Controller/Item/Pinata/SeekingClaymoreController.php
-
-		-
-			message: '#^Parameter \#1 \$strings of static method App\\Functions\\ArrayFunctions\:\:list_nice\(\) expects iterable\<string\>, array given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Controller/Item/Pinata/SeekingClaymoreController.php
-
-		-
-			message: '#^Cannot call method getNameWithArticle\(\) on mixed\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: src/Controller/Item/Scroll/SandwichController.php
-
-		-
-			message: '#^Parameter \#1 \$array of method App\\Service\\IRandom\:\:rngNextSubsetFromArray\(\) expects array\<mixed\>, mixed given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Controller/Item/Scroll/SandwichController.php
-
-		-
-			message: '#^Parameter \#1 \$item of method App\\Service\\InventoryService\:\:receiveItem\(\) expects App\\Entity\\Item\|string, mixed given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Controller/Item/Scroll/SandwichController.php
-
-		-
-			message: '#^Parameter \#1 \$strings of static method App\\Functions\\ArrayFunctions\:\:list_nice\(\) expects iterable\<string\>, list given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Controller/Item/Scroll/SandwichController.php
-
-		-
-			message: '#^Unable to resolve the template type T in call to method App\\Service\\IRandom\:\:rngNextSubsetFromArray\(\)$#'
-			identifier: argument.templateType
-			count: 1
-			path: src/Controller/Item/Scroll/SandwichController.php
 
 		-
 			message: '#^Cannot call method getMaxDarkPlants\(\) on App\\Entity\\Greenhouse\|null\.$#'
@@ -2619,11 +2367,17 @@ parameters:
 		-
 			message: '#^Binary operation "\+\=" between \(float\|int\) and mixed results in an error\.$#'
 			identifier: assignOp.invalid
-			count: 3
+			count: 1
 			path: src/Controller/Pet/GetActivityStatsController.php
 
 		-
-			message: '#^Binary operation "/" between mixed and \(float\|int\) results in an error\.$#'
+			message: '#^Binary operation "/" between array\|float\|int\<1, max\> and \(float\|int\) results in an error\.$#'
+			identifier: binaryOp.invalid
+			count: 1
+			path: src/Controller/Pet/GetActivityStatsController.php
+
+		-
+			message: '#^Binary operation "/" between array\|float\|int\|null and \(float\|int\<1, max\>\) results in an error\.$#'
 			identifier: binaryOp.invalid
 			count: 1
 			path: src/Controller/Pet/GetActivityStatsController.php
@@ -2631,32 +2385,14 @@ parameters:
 		-
 			message: '#^Binary operation "/" between mixed and \(float\|int\<1, max\>\) results in an error\.$#'
 			identifier: binaryOp.invalid
-			count: 2
-			path: src/Controller/Pet/GetActivityStatsController.php
-
-		-
-			message: '#^Binary operation "/" between mixed and mixed results in an error\.$#'
-			identifier: binaryOp.invalid
 			count: 1
 			path: src/Controller/Pet/GetActivityStatsController.php
 
 		-
-			message: '#^Offset int\|string might not exist on array\{umbra\: ''\#9900FF'', smith\: ''\#FFCC00'', plasticprint\: ''\#FFFFFF'', craft\: ''\#FF6600'', magicbind\: ''\#FF00FF'', gather\: ''\#33CC00'', protocol7\: ''\#336600'', program\: ''\#000000'', \.\.\.\}\.$#'
-			identifier: offsetAccess.notFound
-			count: 5
-			path: src/Controller/Pet/GetActivityStatsController.php
-
-		-
-			message: '#^Offset int\|string might not exist on array\{umbra\: ''Umbra'', smith\: ''Smithing'', plasticprint\: ''3D Printer'', craft\: ''Crafting'', magicbind\: ''Magic\-binding'', gather\: ''Gathering'', protocol7\: ''Protocol 7'', program\: ''Programming'', \.\.\.\}\.$#'
-			identifier: offsetAccess.notFound
-			count: 5
-			path: src/Controller/Pet/GetActivityStatsController.php
-
-		-
-			message: '#^Binary operation "\+" between mixed and 1 results in an error\.$#'
+			message: '#^Binary operation "/" between mixed and array\|float\|int\<1, max\> results in an error\.$#'
 			identifier: binaryOp.invalid
 			count: 1
-			path: src/Controller/Pet/GuessFavoriteFlavorController.php
+			path: src/Controller/Pet/GetActivityStatsController.php
 
 		-
 			message: '#^Parameter \#1 \$guesses of method App\\Entity\\Pet\:\:setRevealedFavoriteFlavor\(\) expects int, mixed given\.$#'
@@ -2699,18 +2435,6 @@ parameters:
 			identifier: argument.type
 			count: 1
 			path: src/Controller/Pet/ReleaseController.php
-
-		-
-			message: '#^Cannot call method getId\(\) on App\\Entity\\Guild\|null\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: src/Controller/Pet/SelfReflectionController.php
-
-		-
-			message: '#^Cannot call method getName\(\) on App\\Entity\\Guild\|null\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: src/Controller/Pet/SelfReflectionController.php
 
 		-
 			message: '#^Offset ''bff''\|''broke up''\|''dislike''\|''friend''\|''friendly rival''\|''fwb''\|''mate'' might not exist on array\{friend\: ''friends'', bff\: ''BFFs'', fwb\: ''FWBs'', mate\: ''dating''\}\.$#'
@@ -3199,30 +2923,6 @@ parameters:
 			path: src/Entity/Guild.php
 
 		-
-			message: '#^Cannot call method getJuniorTitle\(\) on App\\Entity\\Guild\|null\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: src/Entity/GuildMembership.php
-
-		-
-			message: '#^Cannot call method getMasterTitle\(\) on App\\Entity\\Guild\|null\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: src/Entity/GuildMembership.php
-
-		-
-			message: '#^Cannot call method getMemberTitle\(\) on App\\Entity\\Guild\|null\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: src/Entity/GuildMembership.php
-
-		-
-			message: '#^Cannot call method getSeniorTitle\(\) on App\\Entity\\Guild\|null\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: src/Entity/GuildMembership.php
-
-		-
 			message: '#^Method App\\Entity\\HollowEarthPlayer\:\:getAction\(\) has no return type specified\.$#'
 			identifier: missingType.return
 			count: 1
@@ -3571,24 +3271,6 @@ parameters:
 			path: src/Entity/ParkEvent.php
 
 		-
-			message: '#^Binary operation "\|" between int\|string and int\|string results in an error\.$#'
-			identifier: binaryOp.invalid
-			count: 1
-			path: src/Entity/Pet.php
-
-		-
-			message: '#^Binary operation "\|" between mixed and int\|string results in an error\.$#'
-			identifier: binaryOp.invalid
-			count: 1
-			path: src/Entity/Pet.php
-
-		-
-			message: '#^Cannot call method getName\(\) on App\\Entity\\Guild\|null\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: src/Entity/Pet.php
-
-		-
 			message: '#^Cannot call method getName\(\) on mixed\.$#'
 			identifier: method.nonObject
 			count: 1
@@ -3669,12 +3351,6 @@ parameters:
 		-
 			message: '#^Parameter \#2 \$min of static method App\\Functions\\NumberFunctions\:\:clamp\(\) expects int, mixed given\.$#'
 			identifier: argument.type
-			count: 1
-			path: src/Entity/Pet.php
-
-		-
-			message: '#^Property App\\Entity\\Pet\:\:\$activityPersonality \(int\) does not accept mixed\.$#'
-			identifier: assign.propertyType
 			count: 1
 			path: src/Entity/Pet.php
 
@@ -3967,18 +3643,6 @@ parameters:
 			path: src/Entity/UserQuest.php
 
 		-
-			message: '#^Method App\\Entity\\UserQuest\:\:getValue\(\) has no return type specified\.$#'
-			identifier: missingType.return
-			count: 1
-			path: src/Entity/UserQuest.php
-
-		-
-			message: '#^Method App\\Entity\\UserQuest\:\:setValue\(\) has parameter \$value with no type specified\.$#'
-			identifier: missingType.parameter
-			count: 1
-			path: src/Entity/UserQuest.php
-
-		-
 			message: '#^Property App\\Entity\\UserQuest\:\:\$value has no type specified\.$#'
 			identifier: missingType.property
 			count: 1
@@ -3991,214 +3655,10 @@ parameters:
 			path: src/Entity/UserSubscription.php
 
 		-
-			message: '#^Method App\\Enum\\ActivityPersonalityEnum\:\:getRandomValue\(\) should return string but returns int\|string\.$#'
-			identifier: return.type
-			count: 1
-			path: src/Enum/ActivityPersonalityEnum.php
-
-		-
-			message: '#^Method App\\Enum\\ActivityPersonalityEnum\:\:getValues\(\) should return array\<int\|string\> but returns list\<mixed\>\.$#'
-			identifier: return.type
-			count: 1
-			path: src/Enum/ActivityPersonalityEnum.php
-
-		-
-			message: '#^Method App\\Enum\\BadgeEnum\:\:getRandomValue\(\) should return string but returns int\|string\.$#'
-			identifier: return.type
-			count: 1
-			path: src/Enum/BadgeEnum.php
-
-		-
-			message: '#^Method App\\Enum\\BadgeEnum\:\:getValues\(\) should return array\<int\|string\> but returns list\<mixed\>\.$#'
-			identifier: return.type
-			count: 1
-			path: src/Enum/BadgeEnum.php
-
-		-
 			message: '#^Cannot cast mixed to string\.$#'
 			identifier: cast.string
 			count: 1
 			path: src/Enum/EnumInvalidValueException.php
-
-		-
-			message: '#^Method App\\Enum\\HollowEarthActionTypeEnum\:\:getRandomValue\(\) should return string but returns int\|string\.$#'
-			identifier: return.type
-			count: 1
-			path: src/Enum/HollowEarthActionTypeEnum.php
-
-		-
-			message: '#^Method App\\Enum\\HollowEarthActionTypeEnum\:\:getValues\(\) should return array\<int\|string\> but returns list\<mixed\>\.$#'
-			identifier: return.type
-			count: 1
-			path: src/Enum/HollowEarthActionTypeEnum.php
-
-		-
-			message: '#^Method App\\Enum\\HollowEarthRequiredActionEnum\:\:getRandomValue\(\) should return string but returns int\|string\.$#'
-			identifier: return.type
-			count: 1
-			path: src/Enum/HollowEarthRequiredActionEnum.php
-
-		-
-			message: '#^Method App\\Enum\\HollowEarthRequiredActionEnum\:\:getValues\(\) should return array\<int\|string\> but returns list\<mixed\>\.$#'
-			identifier: return.type
-			count: 1
-			path: src/Enum/HollowEarthRequiredActionEnum.php
-
-		-
-			message: '#^Method App\\Enum\\LocationEnum\:\:getRandomValue\(\) should return string but returns int\|string\.$#'
-			identifier: return.type
-			count: 1
-			path: src/Enum/LocationEnum.php
-
-		-
-			message: '#^Method App\\Enum\\LocationEnum\:\:getValues\(\) should return array\<int\|string\> but returns list\<mixed\>\.$#'
-			identifier: return.type
-			count: 1
-			path: src/Enum/LocationEnum.php
-
-		-
-			message: '#^Method App\\Enum\\MeritEnum\:\:getRandomValue\(\) should return string but returns int\|string\.$#'
-			identifier: return.type
-			count: 1
-			path: src/Enum/MeritEnum.php
-
-		-
-			message: '#^Method App\\Enum\\MeritEnum\:\:getValues\(\) should return array\<int\|string\> but returns list\<mixed\>\.$#'
-			identifier: return.type
-			count: 1
-			path: src/Enum/MeritEnum.php
-
-		-
-			message: '#^Method App\\Enum\\ParkEventTypeEnum\:\:getRandomValue\(\) should return string but returns int\|string\.$#'
-			identifier: return.type
-			count: 1
-			path: src/Enum/ParkEventTypeEnum.php
-
-		-
-			message: '#^Method App\\Enum\\ParkEventTypeEnum\:\:getValues\(\) should return array\<int\|string\> but returns list\<mixed\>\.$#'
-			identifier: return.type
-			count: 1
-			path: src/Enum/ParkEventTypeEnum.php
-
-		-
-			message: '#^Method App\\Enum\\PatreonTierEnum\:\:getRandomValue\(\) should return string but returns int\|string\.$#'
-			identifier: return.type
-			count: 1
-			path: src/Enum/PatreonTierEnum.php
-
-		-
-			message: '#^Method App\\Enum\\PatreonTierEnum\:\:getValues\(\) should return array\<int\|string\> but returns list\<mixed\>\.$#'
-			identifier: return.type
-			count: 1
-			path: src/Enum/PatreonTierEnum.php
-
-		-
-			message: '#^Method App\\Enum\\PetActivityLogTagEnum\:\:getRandomValue\(\) should return string but returns int\|string\.$#'
-			identifier: return.type
-			count: 1
-			path: src/Enum/PetActivityLogTagEnum.php
-
-		-
-			message: '#^Method App\\Enum\\PetActivityLogTagEnum\:\:getValues\(\) should return array\<int\|string\> but returns list\<mixed\>\.$#'
-			identifier: return.type
-			count: 1
-			path: src/Enum/PetActivityLogTagEnum.php
-
-		-
-			message: '#^Method App\\Enum\\PetActivityStatEnum\:\:getRandomValue\(\) should return string but returns int\|string\.$#'
-			identifier: return.type
-			count: 1
-			path: src/Enum/PetActivityStatEnum.php
-
-		-
-			message: '#^Method App\\Enum\\PetActivityStatEnum\:\:getValues\(\) should return array\<int\|string\> but returns list\<mixed\>\.$#'
-			identifier: return.type
-			count: 1
-			path: src/Enum/PetActivityStatEnum.php
-
-		-
-			message: '#^Method App\\Enum\\PetBadgeEnum\:\:getRandomValue\(\) should return string but returns int\|string\.$#'
-			identifier: return.type
-			count: 1
-			path: src/Enum/PetBadgeEnum.php
-
-		-
-			message: '#^Method App\\Enum\\PetBadgeEnum\:\:getValues\(\) should return array\<int\|string\> but returns list\<mixed\>\.$#'
-			identifier: return.type
-			count: 1
-			path: src/Enum/PetBadgeEnum.php
-
-		-
-			message: '#^Method App\\Enum\\PetLocationEnum\:\:getRandomValue\(\) should return string but returns int\|string\.$#'
-			identifier: return.type
-			count: 1
-			path: src/Enum/PetLocationEnum.php
-
-		-
-			message: '#^Method App\\Enum\\PetLocationEnum\:\:getValues\(\) should return array\<int\|string\> but returns list\<mixed\>\.$#'
-			identifier: return.type
-			count: 1
-			path: src/Enum/PetLocationEnum.php
-
-		-
-			message: '#^Method App\\Enum\\PetSkillEnum\:\:getRandomValue\(\) should return string but returns int\|string\.$#'
-			identifier: return.type
-			count: 1
-			path: src/Enum/PetSkillEnum.php
-
-		-
-			message: '#^Method App\\Enum\\PetSkillEnum\:\:getValues\(\) should return array\<int\|string\> but returns list\<mixed\>\.$#'
-			identifier: return.type
-			count: 1
-			path: src/Enum/PetSkillEnum.php
-
-		-
-			message: '#^Method App\\Enum\\PlantTypeEnum\:\:getRandomValue\(\) should return string but returns int\|string\.$#'
-			identifier: return.type
-			count: 1
-			path: src/Enum/PlantTypeEnum.php
-
-		-
-			message: '#^Method App\\Enum\\PlantTypeEnum\:\:getValues\(\) should return array\<int\|string\> but returns list\<mixed\>\.$#'
-			identifier: return.type
-			count: 1
-			path: src/Enum/PlantTypeEnum.php
-
-		-
-			message: '#^Method App\\Enum\\PlayerActivityLogTagEnum\:\:getRandomValue\(\) should return string but returns int\|string\.$#'
-			identifier: return.type
-			count: 1
-			path: src/Enum/PlayerActivityLogTagEnum.php
-
-		-
-			message: '#^Method App\\Enum\\PlayerActivityLogTagEnum\:\:getValues\(\) should return array\<int\|string\> but returns list\<mixed\>\.$#'
-			identifier: return.type
-			count: 1
-			path: src/Enum/PlayerActivityLogTagEnum.php
-
-		-
-			message: '#^Method App\\Enum\\SerializationGroupEnum\:\:getRandomValue\(\) should return string but returns int\|string\.$#'
-			identifier: return.type
-			count: 1
-			path: src/Enum/SerializationGroupEnum.php
-
-		-
-			message: '#^Method App\\Enum\\SerializationGroupEnum\:\:getValues\(\) should return array\<int\|string\> but returns list\<mixed\>\.$#'
-			identifier: return.type
-			count: 1
-			path: src/Enum/SerializationGroupEnum.php
-
-		-
-			message: '#^Method App\\Enum\\StorySectionStyleEnum\:\:getRandomValue\(\) should return string but returns int\|string\.$#'
-			identifier: return.type
-			count: 1
-			path: src/Enum/StorySectionStyleEnum.php
-
-		-
-			message: '#^Method App\\Enum\\StorySectionStyleEnum\:\:getValues\(\) should return array\<int\|string\> but returns list\<mixed\>\.$#'
-			identifier: return.type
-			count: 1
-			path: src/Enum/StorySectionStyleEnum.php
 
 		-
 			message: '#^Cannot access offset 0 on callable\(\)\: mixed\.$#'
@@ -4243,24 +3703,6 @@ parameters:
 			path: src/EventSubscriber/OneNonIdempotentRequestPerUserSubscriber.php
 
 		-
-			message: '#^Binary operation "\+" between \(array\|float\|int\) and mixed results in an error\.$#'
-			identifier: binaryOp.invalid
-			count: 1
-			path: src/Functions/ArrayFunctions.php
-
-		-
-			message: '#^Binary operation "/" between mixed and int\<0, max\> results in an error\.$#'
-			identifier: binaryOp.invalid
-			count: 1
-			path: src/Functions/ArrayFunctions.php
-
-		-
-			message: '#^Method App\\Functions\\ArrayFunctions\:\:average\(\) has parameter \$values with no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Functions/ArrayFunctions.php
-
-		-
 			message: '#^Method App\\Functions\\ArrayFunctions\:\:except\(\) has parameter \$toExclude with no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 1
@@ -4279,27 +3721,9 @@ parameters:
 			path: src/Functions/ArrayFunctions.php
 
 		-
-			message: '#^Method App\\Functions\\ArrayFunctions\:\:list_nice\(\) should return string but returns string\|false\.$#'
+			message: '#^Method App\\Functions\\ArrayFunctions\:\:sum\(\) should return TOutput of float\|int but returns \(float\|int\)\.$#'
 			identifier: return.type
 			count: 1
-			path: src/Functions/ArrayFunctions.php
-
-		-
-			message: '#^Method App\\Functions\\ArrayFunctions\:\:list_nice_sorted\(\) has parameter \$strings with no value type specified in iterable type iterable\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Functions/ArrayFunctions.php
-
-		-
-			message: '#^Parameter \#1 \$strings of static method App\\Functions\\ArrayFunctions\:\:list_nice\(\) expects iterable\<string\>, list given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Functions/ArrayFunctions.php
-
-		-
-			message: '#^Parameter \#1 \$value of function count expects array\|Countable, iterable\<string\> given\.$#'
-			identifier: argument.type
-			count: 3
 			path: src/Functions/ArrayFunctions.php
 
 		-
@@ -4375,25 +3799,7 @@ parameters:
 			path: src/Functions/EnchantmentRepository.php
 
 		-
-			message: '#^Cannot access offset 0 on mixed\.$#'
-			identifier: offsetAccess.nonOffsetAccessible
-			count: 1
-			path: src/Functions/GroupNameGenerator.php
-
-		-
-			message: '#^Cannot access offset int\<\-1, max\> on mixed\.$#'
-			identifier: offsetAccess.nonOffsetAccessible
-			count: 1
-			path: src/Functions/GroupNameGenerator.php
-
-		-
 			message: '#^Method App\\Functions\\GroupNameGenerator\:\:generateNameFromParts\(\) has parameter \$dictionary with no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Functions/GroupNameGenerator.php
-
-		-
-			message: '#^Method App\\Functions\\GroupNameGenerator\:\:generateNameFromParts\(\) has parameter \$parts with no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 1
 			path: src/Functions/GroupNameGenerator.php
@@ -4407,23 +3813,17 @@ parameters:
 		-
 			message: '#^Parameter \#1 \$string of function strlen expects string, mixed given\.$#'
 			identifier: argument.type
-			count: 5
+			count: 2
 			path: src/Functions/GroupNameGenerator.php
 
 		-
-			message: '#^Parameter \#1 \$string of function substr expects string, mixed given\.$#'
+			message: '#^Parameter \#2 \$getter of static method App\\Functions\\ArrayFunctions\:\:max\(\) expects callable\(mixed\)\: \(float\|int\|numeric\-string\), Closure\(string\)\: int\<0, max\> given\.$#'
 			identifier: argument.type
 			count: 1
 			path: src/Functions/GroupNameGenerator.php
 
 		-
 			message: '#^Method App\\Functions\\HollowEarthTileRepository\:\:findAllInBounds\(\) should return array\<App\\Entity\\HollowEarthTile\> but returns mixed\.$#'
-			identifier: return.type
-			count: 1
-			path: src/Functions/HollowEarthTileRepository.php
-
-		-
-			message: '#^Method App\\Functions\\HollowEarthTileRepository\:\:findOneById\(\) should return App\\Entity\\HollowEarthTile but returns mixed\.$#'
 			identifier: return.type
 			count: 1
 			path: src/Functions/HollowEarthTileRepository.php
@@ -4477,12 +3877,6 @@ parameters:
 			path: src/Functions/ItemRepository.php
 
 		-
-			message: '#^Method App\\Functions\\ItemRepository\:\:findOneByName\(\) should return App\\Entity\\Item but returns mixed\.$#'
-			identifier: return.type
-			count: 1
-			path: src/Functions/ItemRepository.php
-
-		-
 			message: '#^Method App\\Functions\\ItemRepository\:\:getIdByName\(\) should return int but returns float\|int\<min, \-1\>\|int\<1, max\>\|string\|true\.$#'
 			identifier: return.type
 			count: 1
@@ -4495,28 +3889,10 @@ parameters:
 			path: src/Functions/JewishCalendarFunctions.php
 
 		-
-			message: '#^Method App\\Functions\\MarketListingRepository\:\:findMarketListingForItem\(\) should return App\\Entity\\MarketListing\|null but returns mixed\.$#'
-			identifier: return.type
-			count: 1
-			path: src/Functions/MarketListingRepository.php
-
-		-
-			message: '#^Method App\\Functions\\MeritRepository\:\:findOneByName\(\) should return App\\Entity\\Merit but returns mixed\.$#'
-			identifier: return.type
-			count: 1
-			path: src/Functions/MeritRepository.php
-
-		-
 			message: '#^Method App\\Functions\\NumberFunctions\:\:findDivisors\(\) return type has no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 1
 			path: src/Functions/NumberFunctions.php
-
-		-
-			message: '#^Method App\\Functions\\PetActivityLogTagHelpers\:\:findOneByName\(\) should return App\\Entity\\PetActivityLogTag but returns mixed\.$#'
-			identifier: return.type
-			count: 1
-			path: src/Functions/PetActivityLogTagHelpers.php
 
 		-
 			message: '#^Method App\\Functions\\PetSpeciesRepository\:\:findOneById\(\) should return App\\Entity\\PetSpecies but returns mixed\.$#'
@@ -4639,182 +4015,8 @@ parameters:
 			path: src/Model/FilterResults.php
 
 		-
-			message: '#^Cannot call method getAlcohol\(\) on App\\Entity\\ItemFood\|null\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: src/Model/FoodWithSpice.php
-
-		-
-			message: '#^Cannot call method getCaffeine\(\) on App\\Entity\\ItemFood\|null\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: src/Model/FoodWithSpice.php
-
-		-
-			message: '#^Cannot call method getChanceForBonusItem\(\) on App\\Entity\\ItemFood\|null\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: src/Model/FoodWithSpice.php
-
-		-
-			message: '#^Cannot call method getContainsTentacles\(\) on App\\Entity\\ItemFood\|null\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: src/Model/FoodWithSpice.php
-
-		-
-			message: '#^Cannot call method getFood\(\) on App\\Entity\\ItemFood\|null\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: src/Model/FoodWithSpice.php
-
-		-
-			message: '#^Cannot call method getGrantedSkill\(\) on App\\Entity\\ItemFood\|null\.$#'
-			identifier: method.nonObject
-			count: 2
-			path: src/Model/FoodWithSpice.php
-
-		-
-			message: '#^Cannot call method getGrantedStatusEffect\(\) on App\\Entity\\ItemFood\|null\.$#'
-			identifier: method.nonObject
-			count: 2
-			path: src/Model/FoodWithSpice.php
-
-		-
-			message: '#^Cannot call method getGrantedStatusEffectDuration\(\) on App\\Entity\\ItemFood\|null\.$#'
-			identifier: method.nonObject
-			count: 2
-			path: src/Model/FoodWithSpice.php
-
-		-
-			message: '#^Cannot call method getGrantsSelfReflection\(\) on App\\Entity\\ItemFood\|null\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: src/Model/FoodWithSpice.php
-
-		-
-			message: '#^Cannot call method getJunk\(\) on App\\Entity\\ItemFood\|null\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: src/Model/FoodWithSpice.php
-
-		-
-			message: '#^Cannot call method getLeftovers\(\) on App\\Entity\\ItemFood\|null\.$#'
-			identifier: method.nonObject
-			count: 2
-			path: src/Model/FoodWithSpice.php
-
-		-
-			message: '#^Cannot call method getLove\(\) on App\\Entity\\ItemFood\|null\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: src/Model/FoodWithSpice.php
-
-		-
-			message: '#^Cannot call method getPsychedelic\(\) on App\\Entity\\ItemFood\|null\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: src/Model/FoodWithSpice.php
-
-		-
-			message: '#^Cannot call method getRandomFlavor\(\) on App\\Entity\\ItemFood\|null\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: src/Model/FoodWithSpice.php
-
-		-
-			message: '#^Cannot call method getchemically\(\) on App\\Entity\\ItemFood\|null\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: src/Model/FoodWithSpice.php
-
-		-
-			message: '#^Cannot call method getcreamy\(\) on App\\Entity\\ItemFood\|null\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: src/Model/FoodWithSpice.php
-
-		-
-			message: '#^Cannot call method getearthy\(\) on App\\Entity\\ItemFood\|null\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: src/Model/FoodWithSpice.php
-
-		-
-			message: '#^Cannot call method getfatty\(\) on App\\Entity\\ItemFood\|null\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: src/Model/FoodWithSpice.php
-
-		-
-			message: '#^Cannot call method getfishy\(\) on App\\Entity\\ItemFood\|null\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: src/Model/FoodWithSpice.php
-
-		-
-			message: '#^Cannot call method getfloral\(\) on App\\Entity\\ItemFood\|null\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: src/Model/FoodWithSpice.php
-
-		-
-			message: '#^Cannot call method getfruity\(\) on App\\Entity\\ItemFood\|null\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: src/Model/FoodWithSpice.php
-
-		-
-			message: '#^Cannot call method getmeaty\(\) on App\\Entity\\ItemFood\|null\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: src/Model/FoodWithSpice.php
-
-		-
-			message: '#^Cannot call method getoniony\(\) on App\\Entity\\ItemFood\|null\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: src/Model/FoodWithSpice.php
-
-		-
-			message: '#^Cannot call method getplanty\(\) on App\\Entity\\ItemFood\|null\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: src/Model/FoodWithSpice.php
-
-		-
-			message: '#^Cannot call method getspicy\(\) on App\\Entity\\ItemFood\|null\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: src/Model/FoodWithSpice.php
-
-		-
-			message: '#^Cannot call method gettannic\(\) on App\\Entity\\ItemFood\|null\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: src/Model/FoodWithSpice.php
-
-		-
-			message: '#^Parameter \#1 \$food of class App\\Model\\BonusItemChance constructor expects App\\Entity\\ItemFood, App\\Entity\\ItemFood\|null given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Model/FoodWithSpice.php
-
-		-
-			message: '#^Property App\\Model\\FoodWithSpice\:\:\$food \(int\) does not accept int\|null\.$#'
-			identifier: assign.propertyType
-			count: 1
-			path: src/Model/FoodWithSpice.php
-
-		-
 			message: '#^Property App\\Model\\FoodWithSpice\:\:\$grantedSkills type has no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
-			count: 1
-			path: src/Model/FoodWithSpice.php
-
-		-
-			message: '#^Property App\\Model\\FoodWithSpice\:\:\$love \(int\) does not accept int\|null\.$#'
-			identifier: assign.propertyType
 			count: 1
 			path: src/Model/FoodWithSpice.php
 
@@ -4837,21 +4039,9 @@ parameters:
 			path: src/Model/HouseSim.php
 
 		-
-			message: '#^Parameter \#1 \$array of method App\\Service\\IRandom\:\:rngNextShuffle\(\) expects array\<int, mixed\>, array\<string\> given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Model/HouseSim.php
-
-		-
 			message: '#^Parameter \#1 \$key of function array_key_exists expects int\|string, int\|null given\.$#'
 			identifier: argument.type
 			count: 5
-			path: src/Model/HouseSim.php
-
-		-
-			message: '#^Parameter \#1 \$strings of static method App\\Functions\\ArrayFunctions\:\:list_nice\(\) expects iterable\<string\>, array\<int, mixed\> given\.$#'
-			identifier: argument.type
-			count: 1
 			path: src/Model/HouseSim.php
 
 		-
@@ -5275,12 +4465,6 @@ parameters:
 			path: src/Service/CookingService.php
 
 		-
-			message: '#^Binary operation "\." between ''Your Cooking Buddy…'' and mixed results in an error\.$#'
-			identifier: binaryOp.invalid
-			count: 1
-			path: src/Service/CookingService.php
-
-		-
 			message: '#^Cannot access property \$name on App\\Model\\Recipe\|null\.$#'
 			identifier: property.nonObject
 			count: 1
@@ -5293,73 +4477,7 @@ parameters:
 			path: src/Service/CookingService.php
 
 		-
-			message: '#^Cannot call method getChanceForBonusItem\(\) on mixed\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: src/Service/CookingService.php
-
-		-
-			message: '#^Cannot call method getEffects\(\) on mixed\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: src/Service/CookingService.php
-
-		-
-			message: '#^Cannot call method getItem\(\) on mixed\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: src/Service/CookingService.php
-
-		-
-			message: '#^Cannot call method getLocation\(\) on mixed\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: src/Service/CookingService.php
-
-		-
-			message: '#^Cannot call method getLockedToOwner\(\) on mixed\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: src/Service/CookingService.php
-
-		-
-			message: '#^Cannot call method getSpice\(\) on mixed\.$#'
-			identifier: method.nonObject
-			count: 3
-			path: src/Service/CookingService.php
-
-		-
-			message: '#^Cannot call method setSpice\(\) on mixed\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: src/Service/CookingService.php
-
-		-
-			message: '#^Method App\\Service\\CookingService\:\:prepareRecipe\(\) has parameter \$inventory with no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Service/CookingService.php
-
-		-
-			message: '#^Parameter \#1 \$array of method App\\Service\\IRandom\:\:rngNextShuffle\(\) expects array\<int, mixed\>, array\<App\\Entity\\Inventory\> given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Service/CookingService.php
-
-		-
-			message: '#^Parameter \#1 \$array of method App\\Service\\IRandom\:\:rngNextShuffle\(\) expects array\<int, mixed\>, array\<mixed\> given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Service/CookingService.php
-
-		-
 			message: '#^Parameter \#1 \$key of function array_key_exists expects int\|string, int\|null given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Service/CookingService.php
-
-		-
-			message: '#^Parameter \#1 \$object of method Doctrine\\Persistence\\ObjectManager\:\:remove\(\) expects object, mixed given\.$#'
 			identifier: argument.type
 			count: 1
 			path: src/Service/CookingService.php
@@ -5383,20 +4501,8 @@ parameters:
 			path: src/Service/CookingService.php
 
 		-
-			message: '#^Parameter \#5 \$location of method App\\Service\\InventoryService\:\:giveInventoryQuantities\(\) expects int, mixed given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Service/CookingService.php
-
-		-
-			message: '#^Property App\\Model\\PrepareRecipeResults\:\:\$inventory \(array\<App\\Entity\\Inventory\>\) does not accept array\<mixed\>\.$#'
-			identifier: assign.propertyType
-			count: 1
-			path: src/Service/CookingService.php
-
-		-
-			message: '#^Property App\\Model\\PrepareRecipeResults\:\:\$location \(int\) does not accept mixed\.$#'
-			identifier: assign.propertyType
+			message: '#^Strict comparison using \=\=\= between 1 and 1 will always evaluate to true\.$#'
+			identifier: identical.alwaysTrue
 			count: 1
 			path: src/Service/CookingService.php
 
@@ -5407,58 +4513,10 @@ parameters:
 			path: src/Service/CravingService.php
 
 		-
-			message: '#^Method App\\Service\\CravingService\:\:getRandomCravingItemGroup\(\) should return App\\Entity\\ItemGroup but returns App\\Entity\\ItemGroup\|null\.$#'
-			identifier: return.type
-			count: 1
-			path: src/Service/CravingService.php
-
-		-
 			message: '#^Parameter \#1 \$object of method Doctrine\\Persistence\\ObjectManager\:\:remove\(\) expects object, App\\Entity\\PetCraving\|null given\.$#'
 			identifier: argument.type
 			count: 1
 			path: src/Service/CravingService.php
-
-		-
-			message: '#^Argument of an invalid type mixed supplied for foreach, only iterables are supported\.$#'
-			identifier: foreach.nonIterable
-			count: 1
-			path: src/Service/DragonService.php
-
-		-
-			message: '#^Binary operation "\*" between mixed and 0\.25 results in an error\.$#'
-			identifier: binaryOp.invalid
-			count: 1
-			path: src/Service/DragonService.php
-
-		-
-			message: '#^Binary operation "\*" between mixed and 0\.35 results in an error\.$#'
-			identifier: binaryOp.invalid
-			count: 1
-			path: src/Service/DragonService.php
-
-		-
-			message: '#^Binary operation "\*" between mixed and 0\.5 results in an error\.$#'
-			identifier: binaryOp.invalid
-			count: 1
-			path: src/Service/DragonService.php
-
-		-
-			message: '#^Binary operation "\*" between mixed and 2 results in an error\.$#'
-			identifier: binaryOp.invalid
-			count: 1
-			path: src/Service/DragonService.php
-
-		-
-			message: '#^Binary operation "\*" between mixed and 3 results in an error\.$#'
-			identifier: binaryOp.invalid
-			count: 1
-			path: src/Service/DragonService.php
-
-		-
-			message: '#^Binary operation "\+" between \(float\|int\) and mixed results in an error\.$#'
-			identifier: binaryOp.invalid
-			count: 1
-			path: src/Service/DragonService.php
 
 		-
 			message: '#^Cannot call method getGems\(\) on App\\Entity\\ItemTreasure\|null\.$#'
@@ -5473,69 +4531,15 @@ parameters:
 			path: src/Service/DragonService.php
 
 		-
-			message: '#^Cannot call method getItem\(\) on mixed\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: src/Service/DragonService.php
-
-		-
 			message: '#^Cannot call method getName\(\) on App\\Entity\\Pet\|null\.$#'
 			identifier: method.nonObject
 			count: 3
 			path: src/Service/DragonService.php
 
 		-
-			message: '#^Cannot call method getNameWithArticle\(\) on mixed\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: src/Service/DragonService.php
-
-		-
 			message: '#^Cannot call method getSilver\(\) on App\\Entity\\ItemTreasure\|null\.$#'
 			identifier: method.nonObject
 			count: 1
-			path: src/Service/DragonService.php
-
-		-
-			message: '#^Parameter \#1 \$gems of method App\\Entity\\Dragon\:\:increaseGems\(\) expects int, mixed given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Service/DragonService.php
-
-		-
-			message: '#^Parameter \#1 \$gold of method App\\Entity\\Dragon\:\:increaseGold\(\) expects int, mixed given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Service/DragonService.php
-
-		-
-			message: '#^Parameter \#1 \$object of method Doctrine\\Persistence\\ObjectManager\:\:remove\(\) expects object, mixed given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Service/DragonService.php
-
-		-
-			message: '#^Parameter \#1 \$silver of method App\\Entity\\Dragon\:\:increaseSilver\(\) expects int, mixed given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Service/DragonService.php
-
-		-
-			message: '#^Parameter \#1 \$strings of static method App\\Functions\\ArrayFunctions\:\:list_nice\(\) expects iterable\<string\>, list given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Service/DragonService.php
-
-		-
-			message: '#^Parameter \#1 \$value of function count expects array\|Countable, mixed given\.$#'
-			identifier: argument.type
-			count: 2
-			path: src/Service/DragonService.php
-
-		-
-			message: '#^Parameter \#1 \$values of static method App\\Functions\\ArrayFunctions\:\:sum\(\) expects array\<App\\Entity\\Inventory\>, mixed given\.$#'
-			identifier: argument.type
-			count: 3
 			path: src/Service/DragonService.php
 
 		-
@@ -6073,18 +5077,6 @@ parameters:
 			path: src/Service/HattierService.php
 
 		-
-			message: '#^Binary operation "%%" between mixed and 61 results in an error\.$#'
-			identifier: binaryOp.invalid
-			count: 1
-			path: src/Service/Holidays/HalloweenService.php
-
-		-
-			message: '#^Binary operation "\+" between mixed and 1 results in an error\.$#'
-			identifier: binaryOp.invalid
-			count: 1
-			path: src/Service/Holidays/HalloweenService.php
-
-		-
 			message: '#^Method App\\Service\\Holidays\\HalloweenService\:\:findRandomTrickOrTreater\(\) should return App\\Entity\\Pet\|null but returns mixed\.$#'
 			identifier: return.type
 			count: 1
@@ -6193,12 +5185,6 @@ parameters:
 			path: src/Service/HollowEarthService.php
 
 		-
-			message: '#^Method App\\Service\\HollowEarthService\:\:createTrade\(\) has parameter \$items with no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Service/HollowEarthService.php
-
-		-
 			message: '#^Method App\\Service\\HollowEarthService\:\:createTrade\(\) return type has no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 1
@@ -6213,12 +5199,6 @@ parameters:
 		-
 			message: '#^Method App\\Service\\HollowEarthService\:\:getAllCardIdsOnMap\(\) should return array\<int\> but returns list\<int\|null\>\.$#'
 			identifier: return.type
-			count: 1
-			path: src/Service/HollowEarthService.php
-
-		-
-			message: '#^Method App\\Service\\HollowEarthService\:\:getCardAuthor\(\) return type has no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
 			count: 1
 			path: src/Service/HollowEarthService.php
 
@@ -6260,12 +5240,6 @@ parameters:
 
 		-
 			message: '#^Parameter \#1 \$description of static method App\\Service\\HollowEarthService\:\:formatEventDescription\(\) expects string, mixed given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Service/HollowEarthService.php
-
-		-
-			message: '#^Parameter \#1 \$items of static method App\\Service\\HollowEarthService\:\:serializeItem\(\) expects array\<App\\Entity\\Item\>, array given\.$#'
 			identifier: argument.type
 			count: 1
 			path: src/Service/HollowEarthService.php
@@ -6417,7 +5391,7 @@ parameters:
 		-
 			message: '#^Cannot call method getActivityTime\(\) on App\\Entity\\PetHouseTime\|null\.$#'
 			identifier: method.nonObject
-			count: 4
+			count: 3
 			path: src/Service/HouseService.php
 
 		-
@@ -6435,36 +5409,6 @@ parameters:
 		-
 			message: '#^Cannot cast mixed to int\.$#'
 			identifier: cast.int
-			count: 1
-			path: src/Service/HouseService.php
-
-		-
-			message: '#^Parameter \#1 \$array of function array_filter expects array, mixed given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Service/HouseService.php
-
-		-
-			message: '#^Parameter \#1 \$array of method App\\Service\\IRandom\:\:rngNextShuffle\(\) expects array\<int, mixed\>, array\<App\\Entity\\Pet\> given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Service/HouseService.php
-
-		-
-			message: '#^Parameter \#1 \$petsWithTime of method App\\Service\\HouseService\:\:processPets\(\) expects array\<App\\Entity\\Pet\>, array\<int, mixed\> given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Service/HouseService.php
-
-		-
-			message: '#^Parameter \#1 \$value of function count expects array\|Countable, mixed given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Service/HouseService.php
-
-		-
-			message: '#^Parameter \#2 \$callback of function array_filter expects \(callable\(mixed\)\: bool\)\|null, Closure\(App\\Entity\\Pet\)\: bool given\.$#'
-			identifier: argument.type
 			count: 1
 			path: src/Service/HouseService.php
 
@@ -6629,42 +5573,6 @@ parameters:
 			identifier: missingType.iterableValue
 			count: 1
 			path: src/Service/MuseumService.php
-
-		-
-			message: '#^Binary operation "\+" between int and mixed results in an error\.$#'
-			identifier: binaryOp.invalid
-			count: 4
-			path: src/Service/ParkEvent/JoustingService.php
-
-		-
-			message: '#^Binary operation "\." between mixed and '' '' results in an error\.$#'
-			identifier: binaryOp.invalid
-			count: 1
-			path: src/Service/ParkEvent/JoustingService.php
-
-		-
-			message: '#^Binary operation "\." between non\-falsy\-string and mixed results in an error\.$#'
-			identifier: binaryOp.invalid
-			count: 1
-			path: src/Service/ParkEvent/JoustingService.php
-
-		-
-			message: '#^Cannot access offset int on mixed\.$#'
-			identifier: offsetAccess.nonOffsetAccessible
-			count: 4
-			path: src/Service/ParkEvent/JoustingService.php
-
-		-
-			message: '#^Cannot call method getName\(\) on mixed\.$#'
-			identifier: method.nonObject
-			count: 2
-			path: src/Service/ParkEvent/JoustingService.php
-
-		-
-			message: '#^Cannot call method hasMerit\(\) on mixed\.$#'
-			identifier: method.nonObject
-			count: 2
-			path: src/Service/ParkEvent/JoustingService.php
 
 		-
 			message: '#^Binary operation "\." between non\-falsy\-string and mixed results in an error\.$#'
@@ -6877,12 +5785,6 @@ parameters:
 			path: src/Service/PetActivity/CraftingService.php
 
 		-
-			message: '#^Parameter \#3 \$stats of method App\\Service\\PetExperienceService\:\:gainExp\(\) expects array\<string\>, array\<int\|string\> given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Service/PetActivity/Daydreams/NoodleDaydream.php
-
-		-
 			message: '#^Cannot call method getRelationship\(\) on mixed\.$#'
 			identifier: method.nonObject
 			count: 1
@@ -6895,28 +5797,10 @@ parameters:
 			path: src/Service/PetActivity/Daydreams/PizzaDaydream.php
 
 		-
-			message: '#^Parameter \#1 \$item of method App\\Service\\InventoryService\:\:petCollectsItem\(\) expects App\\Entity\\Item\|string, mixed given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Service/PetActivity/Daydreams/PizzaDaydream.php
-
-		-
 			message: '#^Parameter \#1 \$statusEffect of method App\\Entity\\Pet\:\:removeStatusEffect\(\) expects App\\Entity\\StatusEffect, App\\Entity\\StatusEffect\|null given\.$#'
 			identifier: argument.type
 			count: 5
 			path: src/Service/PetActivity/DreamingAndDaydreamingService.php
-
-		-
-			message: '#^Cannot access offset ''a'' on mixed\.$#'
-			identifier: offsetAccess.nonOffsetAccessible
-			count: 3
-			path: src/Service/PetActivity/DreamingService.php
-
-		-
-			message: '#^Cannot access offset ''the'' on mixed\.$#'
-			identifier: offsetAccess.nonOffsetAccessible
-			count: 1
-			path: src/Service/PetActivity/DreamingService.php
 
 		-
 			message: '#^Method App\\Service\\PetActivity\\DreamingService\:\:applyMadlib\(\) has parameter \$replacements with no value type specified in iterable type array\.$#'
@@ -6937,12 +5821,6 @@ parameters:
 			path: src/Service/PetActivity/DreamingService.php
 
 		-
-			message: '#^Parameter \#1 \$string of function ucfirst expects string, mixed given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Service/PetActivity/DreamingService.php
-
-		-
 			message: '#^Parameter \#1 \$text of static method App\\Service\\PetActivity\\DreamingService\:\:applyMadlib\(\) expects string, mixed given\.$#'
 			identifier: argument.type
 			count: 2
@@ -6953,60 +5831,6 @@ parameters:
 			identifier: argument.type
 			count: 1
 			path: src/Service/PetActivity/DreamingService.php
-
-		-
-			message: '#^Binary operation "\." between '' The '' and mixed results in an error\.$#'
-			identifier: binaryOp.invalid
-			count: 2
-			path: src/Service/PetActivity/EatingService.php
-
-		-
-			message: '#^Cannot call method getItem\(\) on mixed\.$#'
-			identifier: method.nonObject
-			count: 5
-			path: src/Service/PetActivity/EatingService.php
-
-		-
-			message: '#^Cannot call method getItemGroups\(\) on mixed\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: src/Service/PetActivity/EatingService.php
-
-		-
-			message: '#^Cannot call method getName\(\) on mixed\.$#'
-			identifier: method.nonObject
-			count: 3
-			path: src/Service/PetActivity/EatingService.php
-
-		-
-			message: '#^Cannot call method getSpice\(\) on mixed\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: src/Service/PetActivity/EatingService.php
-
-		-
-			message: '#^Parameter \#1 \$array of method App\\Service\\IRandom\:\:rngNextShuffle\(\) expects array\<int, mixed\>, array\<App\\Entity\\Inventory\> given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Service/PetActivity/EatingService.php
-
-		-
-			message: '#^Parameter \#1 \$array of static method App\\Functions\\ArrayFunctions\:\:any\(\) expects iterable\<App\\Entity\\ItemGroup\>, mixed given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Service/PetActivity/EatingService.php
-
-		-
-			message: '#^Parameter \#1 \$item of class App\\Model\\FoodWithSpice constructor expects App\\Entity\\Item, mixed given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Service/PetActivity/EatingService.php
-
-		-
-			message: '#^Parameter \#1 \$object of method Doctrine\\Persistence\\ObjectManager\:\:remove\(\) expects object, mixed given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Service/PetActivity/EatingService.php
 
 		-
 			message: '#^Parameter \#1 \$statName of method App\\Entity\\PetSkills\:\:getStat\(\) expects string, mixed given\.$#'
@@ -7021,12 +5845,6 @@ parameters:
 			path: src/Service/PetActivity/EatingService.php
 
 		-
-			message: '#^Parameter \#1 \$string of function strtolower expects string, mixed given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Service/PetActivity/EatingService.php
-
-		-
 			message: '#^Parameter \#2 \$itemGroup of static method App\\Service\\InventoryService\:\:getRandomItemFromItemGroup\(\) expects App\\Entity\\ItemGroup, App\\Entity\\ItemGroup\|null given\.$#'
 			identifier: argument.type
 			count: 1
@@ -7034,12 +5852,6 @@ parameters:
 
 		-
 			message: '#^Parameter \#2 \$skill of method App\\Service\\PetExperienceService\:\:forceIncreaseSkill\(\) expects string, mixed given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Service/PetActivity/EatingService.php
-
-		-
-			message: '#^Parameter \#2 \$spice of class App\\Model\\FoodWithSpice constructor expects App\\Entity\\Spice\|null, mixed given\.$#'
 			identifier: argument.type
 			count: 1
 			path: src/Service/PetActivity/EatingService.php
@@ -7105,22 +5917,10 @@ parameters:
 			path: src/Service/PetActivity/GatheringService.php
 
 		-
-			message: '#^Cannot call method setLockedToOwner\(\) on App\\Entity\\Inventory\|null\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: src/Service/PetActivity/GenericAdventureService.php
-
-		-
 			message: '#^Cannot call method increaseReputation\(\) on App\\Entity\\GuildMembership\|null\.$#'
 			identifier: method.nonObject
 			count: 1
 			path: src/Service/PetActivity/GivingTreeGatheringService.php
-
-		-
-			message: '#^Cannot call method getName\(\) on App\\Entity\\Guild\|null\.$#'
-			identifier: method.nonObject
-			count: 3
-			path: src/Service/PetActivity/GizubisGardenService.php
 
 		-
 			message: '#^Cannot call method getTitle\(\) on App\\Entity\\GuildMembership\|null\.$#'
@@ -7141,21 +5941,9 @@ parameters:
 			path: src/Service/PetActivity/GuildService.php
 
 		-
-			message: '#^Cannot call method getName\(\) on App\\Entity\\Guild\|null\.$#'
-			identifier: method.nonObject
-			count: 29
-			path: src/Service/PetActivity/GuildService.php
-
-		-
 			message: '#^Cannot call method getName\(\) on App\\Entity\\Item\|null\.$#'
 			identifier: method.nonObject
 			count: 1
-			path: src/Service/PetActivity/GuildService.php
-
-		-
-			message: '#^Cannot call method getStarterTool\(\) on App\\Entity\\Guild\|null\.$#'
-			identifier: method.nonObject
-			count: 2
 			path: src/Service/PetActivity/GuildService.php
 
 		-
@@ -7225,31 +6013,7 @@ parameters:
 			path: src/Service/PetActivity/LetterService.php
 
 		-
-			message: '#^Parameter \#1 \$item of method App\\Service\\InventoryService\:\:petCollectsItem\(\) expects App\\Entity\\Item\|string, mixed given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Service/PetActivity/NoetalaAdventureService.php
-
-		-
-			message: '#^Binary operation "\-" between bool\|float\|int\<min, \-1\>\|int\<1, max\>\|string\|null and 1 results in an error\.$#'
-			identifier: binaryOp.invalid
-			count: 1
-			path: src/Service/PetActivity/PetCleaningSelfService.php
-
-		-
-			message: '#^Method App\\Service\\PetActivity\\PetCleaningSelfService\:\:findRandomGreenhouseForCleaningIn\(\) should return App\\Entity\\Greenhouse\|null but returns mixed\.$#'
-			identifier: return.type
-			count: 1
-			path: src/Service/PetActivity/PetCleaningSelfService.php
-
-		-
 			message: '#^Parameter \#1 \$statusEffect of method App\\Entity\\Pet\:\:removeStatusEffect\(\) expects App\\Entity\\StatusEffect, App\\Entity\\StatusEffect\|null given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Service/PetActivity/PetCleaningSelfService.php
-
-		-
-			message: '#^Parameter \#2 \$inclusiveMax of method App\\Service\\IRandom\:\:rngNextInt\(\) expects int, mixed given\.$#'
 			identifier: argument.type
 			count: 1
 			path: src/Service/PetActivity/PetCleaningSelfService.php
@@ -7495,12 +6259,6 @@ parameters:
 			path: src/Service/PetActivity/TreasureMapService.php
 
 		-
-			message: '#^Binary operation "\." between non\-falsy\-string and mixed results in an error\.$#'
-			identifier: binaryOp.invalid
-			count: 3
-			path: src/Service/PetActivity/UmbraService.php
-
-		-
 			message: '#^Cannot call method getItem\(\) on App\\Entity\\Inventory\|null\.$#'
 			identifier: method.nonObject
 			count: 1
@@ -7519,18 +6277,6 @@ parameters:
 			path: src/Service/PetActivity/UmbraService.php
 
 		-
-			message: '#^Parameter \#1 \$item of method App\\Service\\InventoryService\:\:petCollectsItem\(\) expects App\\Entity\\Item\|string, mixed given\.$#'
-			identifier: argument.type
-			count: 3
-			path: src/Service/PetActivity/UmbraService.php
-
-		-
-			message: '#^Parameter \#3 \$stats of method App\\Service\\PetExperienceService\:\:gainExp\(\) expects array\<string\>, array\<int\|string\> given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Service/PetActivity/UmbraService.php
-
-		-
 			message: '#^Binary operation "\+" between 2 and mixed results in an error\.$#'
 			identifier: binaryOp.invalid
 			count: 1
@@ -7541,12 +6287,6 @@ parameters:
 			identifier: binaryOp.invalid
 			count: 1
 			path: src/Service/PetActivity/UserBirthdayService.php
-
-		-
-			message: '#^Binary operation "\+" between mixed and int results in an error\.$#'
-			identifier: binaryOp.invalid
-			count: 1
-			path: src/Service/PetActivityService.php
 
 		-
 			message: '#^Parameter \#1 \$statusEffect of method App\\Entity\\Pet\:\:removeStatusEffect\(\) expects App\\Entity\\StatusEffect, App\\Entity\\StatusEffect\|null given\.$#'
@@ -7617,12 +6357,6 @@ parameters:
 		-
 			message: '#^Match arm comparison between App\\Enum\\PetGroupTypeEnum\:\:Sportsball and App\\Enum\\PetGroupTypeEnum\:\:Sportsball is always true\.$#'
 			identifier: match.alwaysTrue
-			count: 1
-			path: src/Service/PetGroupService.php
-
-		-
-			message: '#^Parameter \#1 \$array of method App\\Service\\IRandom\:\:rngNextShuffle\(\) expects array\<int, mixed\>, array\<App\\Model\\ComputedPetSkills\> given\.$#'
-			identifier: argument.type
 			count: 1
 			path: src/Service/PetGroupService.php
 
@@ -7781,12 +6515,6 @@ parameters:
 			identifier: missingType.iterableValue
 			count: 1
 			path: src/Service/ResponseService.php
-
-		-
-			message: '#^Binary operation "\+" between mixed and int results in an error\.$#'
-			identifier: binaryOp.invalid
-			count: 1
-			path: src/Service/StarKindred/Adventures/StandardAdventuresService.php
 
 		-
 			message: '#^Cannot access offset ''qty'' on mixed\.$#'
@@ -8169,12 +6897,6 @@ parameters:
 		-
 			message: '#^Parameter \#1 \$num of function dechex expects int, float\|int\<0, 255\> given\.$#'
 			identifier: argument.type
-			count: 1
-			path: src/Service/Xoshiro.php
-
-		-
-			message: '#^Possibly invalid array key type mixed\.$#'
-			identifier: offsetAccess.invalidOffset
 			count: 1
 			path: src/Service/Xoshiro.php
 

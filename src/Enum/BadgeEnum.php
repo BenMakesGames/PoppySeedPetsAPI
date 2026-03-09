@@ -15,6 +15,7 @@ namespace App\Enum;
 
 final class BadgeEnum
 {
+    /** @use FakeEnum<string> */
     use FakeEnum;
 
     public const string RECYCLED_10 = 'Recycled10';

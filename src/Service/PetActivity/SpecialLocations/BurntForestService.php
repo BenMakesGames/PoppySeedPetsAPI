@@ -223,7 +223,7 @@ class BurntForestService implements IPetActivity
 
             // triggers Hyssop letter #1
             $oldValue = UserQuestRepository::findOrCreate($this->em, $pet->getOwner(), 'Can Receive Letters from Fairies', 0);
-            if($oldValue->getValue() === 0)
+            if($oldValue->getIntValue() === 0)
                 $oldValue->setValue(1);
         }
         else
@@ -360,7 +360,7 @@ class BurntForestService implements IPetActivity
 
                 // triggers Hyssop letter #2
                 $oldValue = UserQuestRepository::findOrCreate($this->em, $pet->getOwner(), 'Can Receive Letters from Fairies', 0);
-                if($oldValue->getValue() === 1)
+                if($oldValue->getIntValue() === 1)
                     $oldValue->setValue(2);
             }
             else

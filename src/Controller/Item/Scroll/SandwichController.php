@@ -50,6 +50,9 @@ class SandwichController
         $lockedToOwner = $inventory->getLockedToOwner();
 
         // it's okay if the player summons another Sandwill Scroch - that's more fun :P
+        /**
+         * @var Item[] $sandwiches
+         */
         $sandwiches = $em->getRepository(Item::class)
             ->createQueryBuilder('i')
             ->join('i.itemGroups', 'ig')

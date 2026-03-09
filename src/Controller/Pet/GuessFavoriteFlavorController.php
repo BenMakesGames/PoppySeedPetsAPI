@@ -60,10 +60,10 @@ class GuessFavoriteFlavorController
 
         $flavorGuesses = UserQuestRepository::findOrCreate($em, $user, 'Flavor Guesses for Pet #' . $pet->getId(), 0);
 
-        if($flavorGuesses->getValue() > 0 && $flavorGuesses->getLastUpdated()->format('Y-m-d') === date('Y-m-d'))
+        if($flavorGuesses->getIntValue() > 0 && $flavorGuesses->getLastUpdated()->format('Y-m-d') === date('Y-m-d'))
             throw new PSPInvalidOperationException('You already guessed today. Try again tomorrow.');
 
-        $flavorGuesses->setValue($flavorGuesses->getValue() + 1);
+        $flavorGuesses->setValue($flavorGuesses->getIntValue() + 1);
 
         $data = null;
 

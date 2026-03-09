@@ -118,7 +118,7 @@ class GenericAdventureService
             ;
             $inventory = $this->inventoryService->petCollectsItem('House Fairy', $pet, 'A startled raccoon dropped this while ' . $pet->getName() . ' was out.', $activityLog);
 
-            $inventory->setLockedToOwner(true);
+            $inventory?->setLockedToOwner(true);
 
             $pet->increaseEsteem(4);
 

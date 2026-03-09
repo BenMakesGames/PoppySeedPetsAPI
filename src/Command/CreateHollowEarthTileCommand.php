@@ -18,6 +18,8 @@ use App\Entity\HollowEarthTileType;
 use App\Entity\Item;
 use App\Entity\ItemGroup;
 use App\Functions\ArrayFunctions;
+use App\Functions\ItemGroupRepository;
+use App\Functions\ItemRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Input\InputArgument;
 
@@ -88,10 +90,7 @@ class CreateHollowEarthTileCommand extends PoppySeedPetsCommand
         else
             $item->setMuseumPoints(15);
 
-        $itemGroup = $this->em->getRepository(ItemGroup::class)->findOneBy([ 'name' => 'Hollow Earth Booster Pack: ' . $rarity ]);
-
-        if(!$itemGroup)
-            throw new \Exception('Item group for that rarity not found.');
+        $itemGroup = ItemGroupRepository::findOneByName($this->em, 'Hollow Earth Booster Pack: ' . $rarity);
 
         $item->addItemGroup($itemGroup);
 

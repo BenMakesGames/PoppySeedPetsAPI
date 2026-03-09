@@ -205,7 +205,7 @@ class GreenhousePlant
         return $this->previousGrowth;
     }
 
-    public function getOrdinal(): ?int
+    public function getOrdinal(): int
     {
         return $this->ordinal;
     }
