@@ -51,7 +51,7 @@ class GetVaultStatusController
             ->getSingleScalarResult();
 
         $isOpen = $vault->isOpen();
-        $openCost = 10 + $itemCount;
+        $openCost = 10 + floor($itemCount / 10);
 
         return $responseService->success([
             'isOpen' => $isOpen,

@@ -59,7 +59,7 @@ class OpenVaultController
             ->getQuery()
             ->getSingleScalarResult();
 
-        $cost = 10 + $itemCount;
+        $cost = 10 + floor($itemCount / 10);
 
         if($user->getMoneys() < $cost)
             throw new PSPNotEnoughCurrencyException($cost . '~~m~~', $user->getMoneys() . '~~m~~');
