@@ -6721,12 +6721,6 @@ parameters:
 			path: src/Service/StoryService.php
 
 		-
-			message: '#^Parameter \#3 \$subject of function str_replace expects array\<string\>\|string, mixed given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Service/StoryService.php
-
-		-
 			message: '#^Property App\\Model\\StoryStepChoice\:\:\$text \(string\) does not accept mixed\.$#'
 			identifier: assign.propertyType
 			count: 1

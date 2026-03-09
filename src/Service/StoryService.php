@@ -224,7 +224,11 @@ class StoryService
 
             case StoryActionTypeEnum::ReceiveItem:
                 $lockedToOwner = array_key_exists('locked', $action) && $action['locked'];
-                $description = strtr($action['description'], [ '%user.name%' => $state->user->getName() ], );
+
+                if(!isset($action['description']) || !is_string($action['description']))
+                    throw new \RuntimeException('Story action description must be a string');
+
+                $description = strtr($action['description'], [ '%user.name%' => $state->user->getName() ]);
 
                 $this->inventoryService->receiveItem($action['item'], $state->user, null, $description, LocationEnum::Home, $lockedToOwner);
 
