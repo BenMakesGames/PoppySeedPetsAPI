@@ -238,10 +238,12 @@ class PetRelationship
     #[SerializedName('metDescription')]
     public function getFormattedMetDescription(): string
     {
-        return str_replace(
-            [ '%pet.name%', '%relationship.name%' ],
-            [ $this->getPet()->getName(), $this->getRelationship()->getName() ],
-            $this->getMetDescription()
+        return strtr(
+            $this->getMetDescription(),
+            [
+                '%pet.name%' => $this->getPet()->getName(),
+                '%relationship.name%' => $this->getRelationship()->getName()
+            ]
         );
     }
 

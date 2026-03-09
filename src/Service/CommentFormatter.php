@@ -81,7 +81,7 @@ class CommentFormatter
 
         $pet = $this->em->getRepository(Pet::class)->find($petId);
 
-        return str_replace($match, $pet->{'get' . $property}(), $text);
+        return strtr($text, [ $match => $pet->{'get' . $property}() ]);
     }
 
     private function doReplaceUserPart(string $text, string $match, int $userId, string $property): string

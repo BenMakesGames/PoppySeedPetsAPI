@@ -40,7 +40,7 @@ final class PetBadgeHelpers
         $pet->addBadge($newBadge);
 
         $log
-            ->appendEntry('Also: whoa! ' . str_replace('%pet.name%', ActivityHelpers::PetName($pet), self::BadgeHurrahs[$badgeName]))
+            ->appendEntry('Also: whoa! ' . strtr(self::BadgeHurrahs[$badgeName], [ '%pet.name%' => ActivityHelpers::PetName($pet) ]))
             ->addTag(PetActivityLogTagHelpers::findOneByName($em, PetActivityLogTagEnum::Badge))
             ->addInterestingness(PetActivityLogInterestingness::ActivityYieldingPetBadge)
         ;
@@ -62,9 +62,9 @@ final class PetBadgeHelpers
         $pet->addBadge($newBadge);
 
         if($logMessage)
-            $logMessage .= ' ' . str_replace('%pet.name%', ActivityHelpers::PetName($pet), self::BadgeHurrahs[$badgeName]);
+            $logMessage .= ' ' . strtr(self::BadgeHurrahs[$badgeName], [ '%pet.name%' => ActivityHelpers::PetName($pet) ]);
         else
-            $logMessage = str_replace('%pet.name%', ActivityHelpers::PetName($pet), self::BadgeHurrahs[$badgeName]);
+            $logMessage = strtr(self::BadgeHurrahs[$badgeName], [ '%pet.name%' => ActivityHelpers::PetName($pet) ]);
 
         return PetActivityLogFactory::createUnreadLog($em, $pet, $logMessage)
             ->addTag(PetActivityLogTagHelpers::findOneByName($em, PetActivityLogTagEnum::Badge))

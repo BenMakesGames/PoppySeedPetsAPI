@@ -224,7 +224,7 @@ class StoryService
 
             case StoryActionTypeEnum::ReceiveItem:
                 $lockedToOwner = array_key_exists('locked', $action) && $action['locked'];
-                $description = str_replace([ '%user.name%' ], [ $state->user->getName() ], $action['description']);
+                $description = strtr($action['description'], [ '%user.name%' => $state->user->getName() ], );
 
                 $this->inventoryService->receiveItem($action['item'], $state->user, null, $description, LocationEnum::Home, $lockedToOwner);
 

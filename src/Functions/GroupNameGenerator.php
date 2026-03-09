@@ -88,7 +88,14 @@ class GroupNameGenerator
                     $newParts[] = $part;
             }
 
-            $name = str_replace(['_', ' ,', 'the the '], [' ', ',', 'the '], implode(' ', $newParts));
+            $name = strtr(
+                implode(' ', $newParts),
+                [
+                    '_' => ' ',
+                    ' ,' => ',',
+                    'the the ' => 'the '
+                ]
+            );
 
             if(strlen($name) <= $maxLength)
                 return ucfirst($name);

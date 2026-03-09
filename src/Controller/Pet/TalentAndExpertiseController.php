@@ -91,7 +91,7 @@ class TalentAndExpertiseController
 
         $pet->getSkills()->setTalent();
 
-        PetActivityLogFactory::createUnreadLog($em, $pet, str_replace('%pet.name%', $pet->getName(), $merit->getDescription()))
+        PetActivityLogFactory::createUnreadLog($em, $pet, strtr($merit->getDescription(), [ '%pet.name%' => $pet->getName() ]))
             ->addInterestingness(PetActivityLogInterestingness::LevelUp)
         ;
 
@@ -157,7 +157,7 @@ class TalentAndExpertiseController
 
         $pet->getSkills()->setExpertise();
 
-        PetActivityLogFactory::createUnreadLog($em, $pet, str_replace('%pet.name%', $pet->getName(), $merit->getDescription()))
+        PetActivityLogFactory::createUnreadLog($em, $pet, strtr($merit->getDescription(), [ '%pet.name%' => $pet->getName() ]))
             ->addInterestingness(PetActivityLogInterestingness::LevelUp)
         ;
 
