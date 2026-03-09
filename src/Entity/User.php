@@ -194,6 +194,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private \DateTimeImmutable $lastPerformedQualityTime;
 
+    #[Groups(["myAccount"])]
     #[ORM\Column]
     private int $basementSize = 1000;
 
