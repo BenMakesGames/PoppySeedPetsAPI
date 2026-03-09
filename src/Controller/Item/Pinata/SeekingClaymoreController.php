@@ -348,6 +348,9 @@ class SeekingClaymoreController
         return $bucket;
     }
 
+    /**
+     * @param string[] $items
+     */
     private static function receiveItems(InventoryService $inventoryService, Inventory $inventory, array $items): void
     {
         $user = $inventory->getOwner();
@@ -363,6 +366,9 @@ class SeekingClaymoreController
         }
     }
 
+    /**
+     * @param string[] $items
+     */
     private static function generateResponse(ResponseService $responseService, Inventory $bucket, array $items): JsonResponse
     {
         return $responseService->itemActionSuccess(

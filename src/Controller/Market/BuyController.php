@@ -77,7 +77,7 @@ class BuyController
                 'Whaaaat?!',
             ]);
 
-            if($itemsInBasement >= User::MaxBasementInventory)
+            if($itemsInBasement >= $user->getBasementSize())
                 throw new PSPInvalidOperationException('Your house has ' . $itemsAtHome . ', and your basement has ' . $itemsInBasement . ' items! (' . $dang . ') You\'ll need to make some space, first...');
 
             $placeItemsIn = LocationEnum::Basement;
@@ -114,7 +114,9 @@ class BuyController
             throw new PSPNotFoundException('An item for that price could not be found on the market. Someone may have bought it up just before you did! Sorry :| Reload the page to get the latest prices available!');
 
         /** @var InventoryForSale $itemToBuy */
-        $itemToBuy = ArrayFunctions::min($forSale, fn(InventoryForSale $inventory) => $inventory->getSellPrice());
+        $itemToBuy = ArrayFunctions::min($forSale, fn(InventoryForSale $inventory) =>
+            $inventory->getSellPrice() ?? throw new \RuntimeException('InventoryForSale sell price is null')
+        );
 
         $inventory = $itemToBuy->getInventory();
 

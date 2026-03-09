@@ -15,6 +15,7 @@ namespace App\Enum;
 
 final class ActivityPersonalityEnum
 {
+    /** @use FakeEnum<int> */
     use FakeEnum;
 
     // 0-15 are gathering

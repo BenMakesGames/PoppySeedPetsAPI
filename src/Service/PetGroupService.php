@@ -387,7 +387,7 @@ class PetGroupService
 
     public function createGroup(Pet $pet): ?PetGroup
     {
-        /** @var ComputedPetSkills[] $availableFriends */
+        /** @var list<ComputedPetSkills> $availableFriends */
         $availableFriends = array_values(array_map(function(Pet $pet) {
             return $pet->getComputedSkills();
         }, self::findFriendsWithFewGroups($pet)));
@@ -459,7 +459,6 @@ class PetGroupService
                 $this->rng->rngNextShuffle($availableFriends);
         }
 
-        /** @var ComputedPetSkills[] $friendsToInvite */
         $friendsToInvite = array_slice($availableFriends, 0, min(count($availableFriends), $this->rng->rngNextInt(2, $this->rng->rngNextInt(3, 4))));
         $friendNames = array_map(fn(ComputedPetSkills $p) => $p->getPet()->getName(), $friendsToInvite);
 

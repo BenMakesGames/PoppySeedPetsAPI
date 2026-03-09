@@ -51,10 +51,13 @@ class MarketListingRepository
 
     public static function findMarketListingForItem(EntityManagerInterface $em, int $itemId): ?MarketListing
     {
-        $qb = $em->getRepository(MarketListing::class)->createQueryBuilder('ml')
+        /** @var MarketListing|null $item */
+        $item = $em->getRepository(MarketListing::class)->createQueryBuilder('ml')
             ->andWhere('ml.item = :itemId')
-            ->setParameter('itemId', $itemId);
+            ->setParameter('itemId', $itemId)
+            ->getQuery()
+            ->getOneOrNullResult();
 
-        return $qb->getQuery()->getOneOrNullResult();
+        return $item;
     }
 }

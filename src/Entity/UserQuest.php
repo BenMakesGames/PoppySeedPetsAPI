@@ -72,12 +72,19 @@ class UserQuest
         return $this->name;
     }
 
-    public function getValue()
+    public function getValue(): mixed
     {
         return $this->value;
     }
 
-    public function setValue($value): self
+    public function getIntValue(): int
+    {
+        return is_int($this->value)
+            ? $this->value
+            : throw new \RuntimeException('Value must be an integer');
+    }
+
+    public function setValue(mixed $value): self
     {
         $this->lastUpdated = new \DateTimeImmutable();
         $this->value = $value;

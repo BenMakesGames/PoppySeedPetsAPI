@@ -28,6 +28,7 @@ final class MeritRepository
         if(!MeritEnum::isAValue($name))
             throw new EnumInvalidValueException(MeritEnum::class, $name);
 
+        /** @var Merit|null $merit */
         $merit = $em->getRepository(Merit::class)->createQueryBuilder('m')
             ->where('m.name=:name')
             ->setParameter('name', $name)

@@ -69,7 +69,7 @@ class CreateBidController
 
             $itemsInBasement = InventoryService::countTotalInventory($em, $user, LocationEnum::Basement);
 
-            if($itemsInBasement >= User::MaxBasementInventory)
+            if($itemsInBasement >= $user->getBasementSize())
                 throw new PSPInvalidOperationException('Your house and basement are already overflowing with items! You\'ll need to clear some space before you can create any new bids.');
         }
 

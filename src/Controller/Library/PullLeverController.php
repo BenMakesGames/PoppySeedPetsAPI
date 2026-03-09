@@ -18,7 +18,6 @@ use App\Enum\LocationEnum;
 use App\Enum\UnlockableFeatureEnum;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotUnlockedException;
-use App\Functions\UserUnlockedFeatureHelpers;
 use App\Service\HollowEarthService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;

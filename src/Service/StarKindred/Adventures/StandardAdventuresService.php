@@ -213,6 +213,7 @@ class StandardAdventuresService
 
     /**
      * @param ComputedPetSkills[] $pets
+     * @param callable(ComputedPetSkills): (int|float) $petSkillFn
      * @param string[] $lootTable
      * @return string[]
      */

@@ -97,7 +97,7 @@ class GiftShopController
 
             $itemsInBuyersBasement = InventoryService::countTotalInventory($em, $user, LocationEnum::Basement);
 
-            if($itemsInBuyersBasement < User::MaxBasementInventory)
+            if($itemsInBuyersBasement < $user->getBasementSize())
                 $targetLocation = LocationEnum::Basement;
             else
                 throw new PSPInvalidOperationException('There\'s not enough space in your house or basement!');

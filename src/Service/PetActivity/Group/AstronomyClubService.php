@@ -288,18 +288,13 @@ class AstronomyClubService
 
     private function formatMessage(string $template, Pet $member, PetGroup $group, string $findings): string
     {
-        return str_replace(
+        return strtr(
+            $template,
             [
-                '%pet%',
-                '%group%',
-                '%this%',
-            ],
-            [
-                $member->getName(),
-                $group->getName(),
-                $findings
-            ],
-            $template
+                '%pet%' => $member->getName(),
+                '%group%' => $group->getName(),
+                '%this%' => $findings,
+            ]
         );
     }
 }

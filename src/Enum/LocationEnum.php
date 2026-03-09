@@ -15,6 +15,7 @@ namespace App\Enum;
 
 final class LocationEnum
 {
+    /** @use FakeEnum<int> */
     use FakeEnum;
 
     const int Home = 0;

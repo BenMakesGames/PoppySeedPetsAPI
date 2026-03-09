@@ -15,6 +15,7 @@ namespace App\Enum;
 
 final class PatreonTierEnum
 {
+    /** @use FakeEnum<string> */
     use FakeEnum;
 
     public const string DapperSwan = 'DapperSwan';

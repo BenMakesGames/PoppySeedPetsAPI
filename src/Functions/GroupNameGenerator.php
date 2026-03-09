@@ -47,7 +47,7 @@ class GroupNameGenerator
                     continue;
             }
 
-            if(strpos($part, '/') !== false)
+            if(str_contains($part, '/'))
                 $part = $rng->rngNextFromArray(explode('/', $part));
 
             $newParts[] = $part;
@@ -56,6 +56,9 @@ class GroupNameGenerator
         return $newParts;
     }
 
+    /**
+     * @param string[] $parts
+     */
     private static function generateNameFromParts(
         IRandom $rng,
         array $parts,
@@ -66,6 +69,7 @@ class GroupNameGenerator
         while(true)
         {
             $newParts = [];
+            /** @var array<string, string> $chosenWords */
             $chosenWords = [];
 
             foreach($parts as $part)
@@ -84,12 +88,19 @@ class GroupNameGenerator
                     $newParts[] = $part;
             }
 
-            $name = str_replace(['_', ' ,', 'the the '], [' ', ',', 'the '], implode(' ', $newParts));
+            $name = strtr(
+                implode(' ', $newParts),
+                [
+                    '_' => ' ',
+                    ' ,' => ',',
+                    'the the ' => 'the '
+                ]
+            );
 
             if(strlen($name) <= $maxLength)
                 return ucfirst($name);
 
-            $longestWord = ArrayFunctions::max($chosenWords, fn($a) => strlen($a));
+            $longestWord = ArrayFunctions::max($chosenWords, fn(string $a) => strlen($a));
 
             $longestWordType = array_search($longestWord, $chosenWords);
 

@@ -15,6 +15,7 @@ namespace App\Enum;
 
 final class PetLocationEnum
 {
+    /** @use FakeEnum<string> */
     use FakeEnum;
 
     public const string HOME = 'home';

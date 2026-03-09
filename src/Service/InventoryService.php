@@ -157,7 +157,7 @@ class InventoryService
 
     /**
      * @param ItemQuantity|ItemQuantity[] $quantities
-     * @return Inventory[]
+     * @return list<Inventory>
      * @throws EnumInvalidValueException|PSPNotFoundException
      */
     public function giveInventoryQuantities(ItemQuantity|array $quantities, User $owner, User $creator, string $comment, int $location, bool $lockedToOwner = false): array

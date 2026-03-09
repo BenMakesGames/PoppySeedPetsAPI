@@ -59,7 +59,7 @@ class GuildMembership
         return $this->id;
     }
 
-    public function getPet(): ?Pet
+    public function getPet(): Pet
     {
         return $this->pet;
     }
@@ -71,7 +71,7 @@ class GuildMembership
         return $this;
     }
 
-    public function getGuild(): ?Guild
+    public function getGuild(): Guild
     {
         return $this->guild;
     }

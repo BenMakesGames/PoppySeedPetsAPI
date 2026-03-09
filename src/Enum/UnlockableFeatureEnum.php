@@ -27,6 +27,7 @@ enum UnlockableFeatureEnum: string
     case Greenhouse = 'Greenhouse';
     case Hattier = 'Hattier';
     case HollowEarth = 'Hollow Earth';
+    case InfinityVault = 'Infinity Vault';
     case Mailbox = 'Mailbox';
     case Market = 'Market';
     case Museum = 'Museum';

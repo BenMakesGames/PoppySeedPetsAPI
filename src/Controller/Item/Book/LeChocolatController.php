@@ -30,6 +30,9 @@ use App\Service\UserAccessor;
 #[Route("/item/leChocolat")]
 class LeChocolatController
 {
+    /**
+     * @return list<Recipe>
+     */
     private function getRecipes(RecipeRepository $recipeRepository): array
     {
         return $recipeRepository->findBy(fn(Recipe $recipe) => mb_strpos(mb_strtolower($recipe->name), 'chocolat') !== false);

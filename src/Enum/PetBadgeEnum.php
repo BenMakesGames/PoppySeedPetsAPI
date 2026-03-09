@@ -15,6 +15,7 @@ namespace App\Enum;
 
 final class PetBadgeEnum
 {
+    /** @use FakeEnum<string> */
     use FakeEnum;
 
     // affection!

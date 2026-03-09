@@ -188,6 +188,9 @@ final class ArrayFunctions
         return self::list_nice($list, $separator, $lastSeparator);
     }
 
+    /**
+     * @param iterable<string>|string[] $strings
+     */
     public static function list_nice_sorted(iterable $strings, string $separator = ', ', string $lastSeparator = ', and '): string
     {
         $list = iterator_to_array($strings);
@@ -198,14 +201,14 @@ final class ArrayFunctions
 
 
     /**
-     * @param string[] $strings
+     * @param string[]|int[] $strings
      */
-    public static function list_nice(iterable $strings, string $separator = ', ', string $lastSeparator = ', and '): string
+    public static function list_nice(array $strings, string $separator = ', ', string $lastSeparator = ', and '): string
     {
         if(count($strings) === 0)
             return '';
         else if(count($strings) === 1)
-            return reset($strings);
+            return (string)reset($strings);
 
         $list = '';
 
@@ -228,11 +231,13 @@ final class ArrayFunctions
     }
 
     /**
-     * @template T
-     * @param T[] $values
-     * @param callable(T): mixed $getter
+     * @template TInput
+     * @template TOutput of (int|float)
+     * @param TInput[] $values
+     * @param callable(TInput): TOutput $getter
+     * @return TOutput
      */
-    public static function sum(array $values, callable $getter): mixed
+    public static function sum(array $values, callable $getter): int|float
     {
         return array_reduce(
             $values,
@@ -241,6 +246,11 @@ final class ArrayFunctions
         );
     }
 
+    /**
+     * @template TInput
+     * @param TInput[] $values
+     * @param callable(TInput): (int|float) $getter
+     */
     public static function average(array $values, callable $getter): float
     {
         return ArrayFunctions::sum($values, $getter) / count($values);
@@ -250,7 +260,7 @@ final class ArrayFunctions
      * Return one of the items from the array of $values which has the LARGEST value, as returned by the $getter
      * @template T
      * @param iterable<T> $values
-     * @param callable(T): mixed $getter
+     * @param callable(T): numeric $getter
      * @return T|null
      */
     public static function max(iterable $values, callable $getter): mixed
@@ -276,7 +286,7 @@ final class ArrayFunctions
      * Return one of the items from the array of $values which has the SMALLEST value, as returned by the $getter
      * @template T
      * @param iterable<T> $values
-     * @param callable(T): mixed $getter
+     * @param callable(T): numeric $getter
      * @return T|null
      */
     public static function min(iterable $values, callable $getter): mixed

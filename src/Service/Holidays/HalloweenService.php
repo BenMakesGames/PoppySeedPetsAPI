@@ -105,9 +105,9 @@ class HalloweenService
     {
         $treated = UserQuestRepository::findOrCreate($this->em, $user, 'Trick-or-Treaters Treated', 0);
 
-        $treated->setValue($treated->getValue() + 1);
+        $treated->setValue($treated->getIntValue() + 1);
 
-        $item = match($treated->getValue() % 61)
+        $item = match($treated->getIntValue() % 61)
         {
             1 => 'Crooked Stick',
             3 => 'Super-wrinkled Cloth',

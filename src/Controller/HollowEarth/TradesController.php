@@ -72,7 +72,7 @@ class TradesController
 
         $tile = $player->getCurrentTile();
 
-        if(!$tile || !$tile->getIsTradingDepot())
+        if(!$tile->getIsTradingDepot())
             throw new PSPInvalidOperationException('You are not on a trade depot!');
 
         if($player->getCurrentAction() || $player->getMovesRemaining() > 0)
@@ -100,7 +100,7 @@ class TradesController
 
                 $itemsInBasement = InventoryService::countTotalInventory($em, $user, LocationEnum::Basement);
 
-                if($itemsInBasement + $quantity > User::MaxBasementInventory)
+                if($itemsInBasement + $quantity > $user->getBasementSize())
                 {
                     throw new PSPInvalidOperationException('There is not enough room in your house or basement for ' . $quantity . ' more items!');
                 }

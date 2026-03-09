@@ -105,10 +105,13 @@ class HouseSim implements IHouseSim
     }
 
     /**
-     * @param Item[]|string[] $items
+     * @param list<Item|string> $items
      */
     public function loseOneOf(IRandom $rng, array $items): string
     {
+        /**
+         * @var list<string> $items
+         */
         $items = array_map(
             fn($item) => is_string($item) ? $item : $item->getName(),
             $items

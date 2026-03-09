@@ -87,7 +87,7 @@ class BuyController
         $grocerItemsDay = UserQuestRepository::findOrCreate($em, $user, 'Grocer Items Purchased Date', $now->format('Y-m-d'));
 
         if($now->format('Y-m-d') === $grocerItemsDay->getValue())
-            $maxCanPurchase = GrocerService::MaxCanPurchasePerDay - $grocerItemsQuantity->getValue();
+            $maxCanPurchase = GrocerService::MaxCanPurchasePerDay - $grocerItemsQuantity->getIntValue();
         else
             $maxCanPurchase = GrocerService::MaxCanPurchasePerDay;
 
@@ -98,7 +98,7 @@ class BuyController
             throw new PSPFormValidationException('Did you forget to select something to buy?');
 
         $existingInventoryCount = InventoryService::countTotalInventory($em, $user, $buyTo);
-        $maxInventory = $buyTo === LocationEnum::Basement ? User::MaxBasementInventory : User::MaxHouseInventory;
+        $maxInventory = $buyTo === LocationEnum::Basement ? $user->getBasementSize() : User::MaxHouseInventory;
 
         if($existingInventoryCount + $totalQuantity > $maxInventory)
         {
@@ -142,7 +142,7 @@ class BuyController
         $userStatsRepository->incrementStat($user, 'Items Purchased from Grocer', $totalQuantity);
 
         if($now->format('Y-m-d') === $grocerItemsDay->getValue())
-            $grocerItemsQuantity->setValue($grocerItemsQuantity->getValue() + $totalQuantity);
+            $grocerItemsQuantity->setValue($grocerItemsQuantity->getIntValue() + $totalQuantity);
         else
         {
             $grocerItemsDay->setValue($now->format('Y-m-d'));

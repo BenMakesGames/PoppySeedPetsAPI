@@ -116,6 +116,9 @@ class DragonService
 
         $user = $dragon->getOwner();
 
+        /**
+         * @var Inventory[] $items
+         */
         $items = $this->em->getRepository(Inventory::class)->createQueryBuilder('i')
             ->leftJoin('i.item', 'item')
             ->leftJoin('item.treasure', 'treasure')

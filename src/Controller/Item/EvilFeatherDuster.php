@@ -269,6 +269,9 @@ class EvilFeatherDuster
 
 class DustingLocation
 {
+    /**
+     * @param string[] $loot
+     */
     public function __construct(
         public readonly string $locationName,
         public readonly string $statName,

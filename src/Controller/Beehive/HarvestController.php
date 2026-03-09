@@ -53,6 +53,7 @@ class HarvestController
         if(!$user->hasUnlockedFeature(UnlockableFeatureEnum::Beehive) || !$user->getBeehive())
             throw new PSPNotUnlockedException('Beehive');
 
+        $oldBasementSize = $user->getBasementSize();
         $beehive = $user->getBeehive();
         $itemNames = [];
 
@@ -70,6 +71,9 @@ class HarvestController
             $beehive->setHoneycombProgress(0);
 
             $inventoryService->receiveItem('Honeycomb', $user, $user, $user->getName() . ' took this from their Beehive.', LocationEnum::Home);
+
+            if($user->hasUnlockedFeature(UnlockableFeatureEnum::Basement))
+                $user->increaseBasementSize(6);
 
             $itemNames[] = 'Honeycomb';
         }
@@ -187,7 +191,21 @@ class HarvestController
 
         $em->flush();
 
-        $responseService->addFlashMessage('You received ' . ArrayFunctions::list_nice($itemNames) . '.');
+        $itemList = ArrayFunctions::list_nice($itemNames);
+
+        if($user->getBasementSize() > $oldBasementSize)
+        {
+            $howNice = $rng->rngNextFromArray([
+                '(The power of hexagons!)',
+                '(That was nice of them!)',
+                '(Such skill! Such panache!)',
+                '(Bee power!)'
+            ]);
+
+            $responseService->addFlashMessage("You received $itemList, AND some friendly bees increased your Basement -` it can now hold {$user->getBasementSize()} items!` ({$howNice})");
+        }
+        else
+            $responseService->addFlashMessage("You received $itemList.");
 
         return $responseService->success($beehive, [ SerializationGroupEnum::MY_BEEHIVE, SerializationGroupEnum::HELPER_PET ]);
     }

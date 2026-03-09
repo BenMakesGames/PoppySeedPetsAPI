@@ -564,6 +564,10 @@ class ProgrammingService implements IPetActivity
     {
         $pet = $petWithSkills->getPet();
 
+        // Infinity Imp vs Infinity Imp: skip the fight entirely, just collect the blueprint
+        if($pet->getSpecies()->getName() === PetSpeciesName::InfinityImp->value)
+            return $this->infinityImpCollectsBlueprint($pet, $actionInterrupted);
+
         $scienceRoll = $this->rng->rngSkillRoll($petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getHackingBonus()->getTotal());
         $brawlRoll = $this->rng->rngSkillRoll($petWithSkills->getDexterity()->getTotal() + $petWithSkills->getBrawl()->getTotal());
 
@@ -637,6 +641,19 @@ class ProgrammingService implements IPetActivity
 
         $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::Science ], $activityLog);
         $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::PROGRAM, false);
+
+        return $activityLog;
+    }
+
+    private function infinityImpCollectsBlueprint(Pet $pet, string $actionInterrupted): PetActivityLog
+    {
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::PROGRAM, false);
+
+        $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% started ' . $actionInterrupted . ', but an Infinity Imp, well, _would_ have popped up, but when you do the math it turns out that `2 × Infinity Imp = Infinity Imp + Infinity Vault Blueprint`, so, actually, an Infinity Vault Blueprint popped up. (Startling, all the same!)')
+            ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ PetActivityLogTagEnum::Physics ]))
+        ;
+
+        $this->inventoryService->petCollectsItem('Infinity Vault Blueprint', $pet, $pet->getName() . ' received this because math is weird.', $activityLog);
 
         return $activityLog;
     }

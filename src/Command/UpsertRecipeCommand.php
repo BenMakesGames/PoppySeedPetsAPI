@@ -66,7 +66,6 @@ class UpsertRecipeCommand extends PoppySeedPetsCommand
      */
     public static function totalFertilizer(array $quantities): int
     {
-        /** @phpstan-ignore-next-line */
         return ArrayFunctions::sum($quantities, fn(ItemQuantity $quantity) => $quantity->item->getFertilizer() * $quantity->quantity);
     }
 

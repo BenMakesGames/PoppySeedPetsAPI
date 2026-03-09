@@ -121,7 +121,7 @@ class ItemFood
         return $this->id;
     }
 
-    public function getFood(): ?int
+    public function getFood(): int
     {
         return $this->food;
     }
@@ -133,7 +133,7 @@ class ItemFood
         return $this;
     }
 
-    public function getLove(): ?int
+    public function getLove(): int
     {
         return $this->love;
     }

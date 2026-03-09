@@ -15,6 +15,7 @@ namespace App\Enum;
 
 final class StorySectionStyleEnum
 {
+    /** @use FakeEnum<string> */
     use FakeEnum;
 
     public const string Dialog = 'dialog';

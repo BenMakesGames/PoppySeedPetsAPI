@@ -60,6 +60,8 @@ final class UserStat
     public const string RolledSatyrDice = 'Rolled Satyr Dice';
     public const string ShatteredIceMango = 'Shattered an Ice "Mango"';
     public const string SetAToucanFree = 'Set a Toucan Free';
+    public const string OpenedTheInfinityVault = 'Opened the Infinity Vault';
+    public const string MoneysSpentOnTheInfinityVault = 'Moneys Spent on the Infinity Vault';
 
     public const string RECEIVED_A_MINOR_PRIZE_FROM_A_GREAT_SPIRIT = 'Received a Minor Reward from a Great Spirit';
     public const string RECEIVED_A_MODERATE_PRIZE_FROM_A_GREAT_SPIRIT = 'Received a Moderate Reward from a Great Spirit';

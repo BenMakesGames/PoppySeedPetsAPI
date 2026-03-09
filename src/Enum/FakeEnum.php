@@ -15,22 +15,33 @@ namespace App\Enum;
 
 use App\Service\IRandom;
 
+/**
+ * @template T
+ * @deprecated This trait is deprecated and should not be used. Use native PHP enums instead.
+ */
 trait FakeEnum
 {
     /**
-     * @return string[]|int[]
+     * @return list<T>
      */
     public static function getValues(): array
     {
+        /** @phpstan-ignore-next-line */
         return array_values((new \ReflectionClass(__CLASS__))->getConstants());
     }
 
-    public static function isAValue(string|int $value): bool
+    /**
+     * @param T $value
+     */
+    public static function isAValue(mixed $value): bool
     {
         return in_array($value, self::getValues());
     }
 
-    public static function getRandomValue(IRandom $rng): string
+    /**
+     * @return T
+     */
+    public static function getRandomValue(IRandom $rng): mixed
     {
         return $rng->rngNextFromArray(self::getValues());
     }

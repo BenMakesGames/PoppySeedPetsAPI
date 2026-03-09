@@ -224,7 +224,11 @@ class StoryService
 
             case StoryActionTypeEnum::ReceiveItem:
                 $lockedToOwner = array_key_exists('locked', $action) && $action['locked'];
-                $description = str_replace([ '%user.name%' ], [ $state->user->getName() ], $action['description']);
+
+                if(!isset($action['description']) || !is_string($action['description']))
+                    throw new \RuntimeException('Story action description must be a string');
+
+                $description = strtr($action['description'], [ '%user.name%' => $state->user->getName() ]);
 
                 $this->inventoryService->receiveItem($action['item'], $state->user, null, $description, LocationEnum::Home, $lockedToOwner);
 
@@ -265,7 +269,10 @@ class StoryService
                 break;
 
             default:
-                throw new \Exception('Unhandled story action type "' . $action['type'] . '"');
+                if(is_string($action['type']))
+                    throw new \RuntimeException('Unhandled story action type "' . $action['type'] . '"');
+                else
+                    throw new \RuntimeException('Unhandled story action type, and it\'s not even a string; it\'s a ' . gettype($action['type']) . '!');
         }
     }
 

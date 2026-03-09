@@ -153,6 +153,9 @@ class HollowEarthService
         return $data;
     }
 
+    /**
+     * @return array{name:string,id:string|null}|null
+     */
     private function getCardAuthor(?HollowEarthTileCard $card): ?array
     {
         if(!$card?->getAuthor())
@@ -254,7 +257,7 @@ class HollowEarthService
 
         $card = $this->getEffectiveTileCard($player, $nextTile);
 
-        $action = $card ? $card->getEvent() : null;
+        $action = $card?->getEvent();
 
         $player
             ->setCurrentTile($nextTile)
@@ -379,6 +382,10 @@ class HollowEarthService
 
         $activityLog = null;
 
+        // increase basement size BEFORE rendering description
+        if(array_key_exists('increaseBasement', $event) && is_numeric($event['increaseBasement']))
+            $player->getUser()->increaseBasementSize((int)$event['increaseBasement']);
+
         if(array_key_exists('description', $event) && $doLog)
         {
             $description = self::formatEventDescription($event['description'], $player);
@@ -444,15 +451,13 @@ class HollowEarthService
 
     public static function formatEventDescription(string $description, HollowEarthPlayer $player): string
     {
-        $replacements = [
-            '%pet.name%' => $player->getChosenPet()->getName(),
-            '%player.name%' => $player->getUser()->getName(),
-        ];
-
-        return str_replace(
-            array_keys($replacements),
-            $replacements,
-            $description
+        return strtr(
+            $description,
+            [
+                '%pet.name%' => $player->getChosenPet()->getName(),
+                '%player.name%' => $player->getUser()->getName(),
+                '%player.basementSize%' => $player->getUser()->getBasementSize(),
+            ]
         );
     }
 
@@ -506,6 +511,9 @@ class HollowEarthService
         ];
     }
 
+    /**
+     * @param Item[] $items
+     */
     private static function createTrade(HollowEarthPlayer $player, array $items, string $id, string $itemName, array $cost): array
     {
         return

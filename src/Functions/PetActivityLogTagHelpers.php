@@ -35,6 +35,7 @@ final class PetActivityLogTagHelpers
 
     public static function findOneByName(EntityManagerInterface $em, string $name): PetActivityLogTag
     {
+        /** @var PetActivityLogTag|null $tag */
         $tag = $em->getRepository(PetActivityLogTag::class)->createQueryBuilder('t')
             ->where('t.title=:title')
             ->setParameter('title', $name)

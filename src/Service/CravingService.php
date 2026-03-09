@@ -23,6 +23,7 @@ use App\Enum\PetBadgeEnum;
 use App\Enum\StatusEffectEnum;
 use App\Functions\ActivityHelpers;
 use App\Functions\ArrayFunctions;
+use App\Functions\ItemGroupRepository;
 use App\Functions\PetActivityLogFactory;
 use App\Functions\PetActivityLogTagHelpers;
 use App\Functions\PetBadgeHelpers;
@@ -95,7 +96,7 @@ class CravingService
     private function getRandomCravingItemGroup(Pet $pet): ItemGroup
     {
         if($pet->hasStatusEffect(StatusEffectEnum::BittenByAVampire))
-            return $this->em->getRepository(ItemGroup::class)->findOneBy([ 'name' => 'Bloody' ]);
+            return ItemGroupRepository::findOneByName($this->em, 'Bloody');
 
         $cravingGroups = $this->em->getRepository(ItemGroup::class)->findBy([ 'isCraving' => 1 ]);
 

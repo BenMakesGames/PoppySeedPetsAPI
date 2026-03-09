@@ -93,7 +93,7 @@ class ItemControllerHelpers
     {
         $itemsInHouse = InventoryService::countTotalInventory($em, $inventory->getOwner(), LocationEnum::Basement);
 
-        if($itemsInHouse >= User::MaxBasementInventory)
+        if($itemsInHouse >= $inventory->getOwner()->getBasementSize())
             throw new PSPInvalidOperationException('Your basement is already stuffed! You\'ll need to clear some space, or move the ' . $inventory->getItem()->getName() . ' somewhere else before trying again.');
     }
 

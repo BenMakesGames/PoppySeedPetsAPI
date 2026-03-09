@@ -238,9 +238,12 @@ class CookingService
         return 'Your Cooking Buddy learned ' . $countLearnedRecipes . ' new recipe' . ($countLearnedRecipes === 1 ? '' : 's') . '.';
     }
 
+    /**
+     * @param Inventory[] $inventory
+     */
     private function prepareRecipe(array $inventory, Recipe $recipe, int $multiple, User $inventoryOwner, User $preparer): PrepareRecipeResults
     {
-        /** @var Spice[] $spices */
+        /** @var list<Spice> $spices */
         $spices = [];
         $allLockedToOwner = true;
 

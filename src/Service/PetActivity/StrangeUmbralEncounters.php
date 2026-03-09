@@ -15,11 +15,13 @@ namespace App\Service\PetActivity;
 
 use App\Entity\Pet;
 use App\Entity\PetActivityLog;
+use App\Entity\User;
 use App\Enum\EnumInvalidValueException;
 use App\Enum\PetActivityLogInterestingness;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
 use App\Enum\StatusEffectEnum;
+use App\Enum\UnlockableFeatureEnum;
 use App\Exceptions\PSPNotFoundException;
 use App\Functions\ActivityHelpers;
 use App\Functions\EnchantmentRepository;
@@ -54,9 +56,9 @@ class StrangeUmbralEncounters
     {
         $pet = $petWithSkills->getPet();
 
-        $maxEncoutner = $pet->getLevel() >= 10 ? 3 : 2;
+        $maxEncounter = $pet->getLevel() >= 10 ? 3 : 2;
 
-        return match ($this->rng->rngNextInt(1, $maxEncoutner))
+        return match ($this->rng->rngNextInt(1, $maxEncounter))
         {
             1 => $this->encounterWildlife($pet),
             2 => $this->encounterCosmicGoat($pet),

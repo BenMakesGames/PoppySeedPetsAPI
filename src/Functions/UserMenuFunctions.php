@@ -23,7 +23,7 @@ final class UserMenuFunctions
 {
     /** @var array<int, string>  */
     private const array DefaultOrder = [
-        'home', 'cookingBuddy', 'basement', 'greenhouse', 'beehive', 'dragonDen', 'hollowEarth', 'library',
+        'home', 'cookingBuddy', 'basement', 'infinityVault', 'greenhouse', 'beehive', 'dragonDen', 'hollowEarth', 'library',
         'fireplace', 'park', 'plaza', 'museum', 'zoologist', 'market', 'grocer', 'petShelter',
         'bookstore', 'trader', 'hattier', 'fieldGuide', 'mailbox', 'painter', 'florist',
         'journal', 'achievements'
@@ -92,6 +92,7 @@ final class UserMenuFunctions
             (self::maybeAddMenuItem($menuItems, 'home', $user, $userSortOrder, null) ? 0 : 1) +
             (self::maybeAddMenuItem($menuItems, 'cookingBuddy', $user, $userSortOrder, UnlockableFeatureEnum::CookingBuddy) ? 0 : 1) +
             (self::maybeAddMenuItem($menuItems, 'basement', $user, $userSortOrder, UnlockableFeatureEnum::Basement) ? 0 : 1) +
+            (self::maybeAddMenuItem($menuItems, 'infinityVault', $user, $userSortOrder, UnlockableFeatureEnum::InfinityVault) ? 0 : 1) +
             (self::maybeAddMenuItem($menuItems, 'greenhouse', $user, $userSortOrder, UnlockableFeatureEnum::Greenhouse) ? 0 : 1) +
             (self::maybeAddMenuItem($menuItems, 'beehive', $user, $userSortOrder, UnlockableFeatureEnum::Beehive) ? 0 : 1) +
             (self::maybeAddMenuItem($menuItems, 'fireplace', $user, $userSortOrder, UnlockableFeatureEnum::Fireplace) ? 0 : 1) +

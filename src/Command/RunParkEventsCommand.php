@@ -78,7 +78,7 @@ class RunParkEventsCommand extends Command
 
         if($eventType === null)
             $eventType = $eventTypes[$minuteOfTheDay % count($eventTypes)];
-        else if(!ParkEventTypeEnum::isAValue($eventType))
+        else if(!is_string($eventType) || !ParkEventTypeEnum::isAValue($eventType))
             throw new \InvalidArgumentException('"' . $eventType . '" is not a valid park event type.');
 
         $output->writeln('Looking for pets for a ' . $eventType . '.');

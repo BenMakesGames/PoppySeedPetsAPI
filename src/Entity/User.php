@@ -30,7 +30,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     public const int MaxHouseInventory = 100;
-    public const int MaxBasementInventory = 10000;
+    public const int MaxBasementSize = 10000;
     public const int MinPassphraseLength = 12;
     public const int MaxPassphraseLength = 128; // Reasonable maximum to prevent DoS attacks
 
@@ -129,6 +129,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToOne(targetEntity: Beehive::class, mappedBy: 'user', cascade: ['persist', 'remove'])]
     private ?Beehive $beehive = null;
 
+    #[ORM\OneToOne(targetEntity: Vault::class, mappedBy: 'user', cascade: ['persist', 'remove'])]
+    private ?Vault $vault = null;
+
     #[ORM\OneToOne(targetEntity: Greenhouse::class, mappedBy: 'owner', cascade: ['persist', 'remove'])]
     private ?Greenhouse $greenhouse = null;
 
@@ -190,6 +193,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column]
     private \DateTimeImmutable $lastPerformedQualityTime;
+
+    #[Groups(["myAccount"])]
+    #[ORM\Column]
+    private int $basementSize = 1000;
 
     public function __construct(string $name, string $email)
     {
@@ -488,6 +495,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->getGreenhouse() ? $this->getGreenhouse()->getMaxPlants() : 0;
     }
 
+    #[Groups(["myAccount"])]
+    public function getIsVaultOpen(): bool
+    {
+        return $this->vault?->isOpen() ?? false;
+    }
+
+    #[Groups(["myAccount"])]
+    public function getVaultOpenUntil(): ?string
+    {
+        return $this->vault?->getOpenUntil()?->format('c');
+    }
+
     /**
      * @return Collection<int, UserSession>
      */
@@ -542,6 +561,23 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         // set the owning side of the relation if necessary
         if ($this !== $beehive->getUser()) {
             $beehive->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function getVault(): ?Vault
+    {
+        return $this->vault;
+    }
+
+    public function setVault(Vault $vault): self
+    {
+        $this->vault = $vault;
+
+        // set the owning side of the relation if necessary
+        if ($this !== $vault->getUser()) {
+            $vault->setUser($this);
         }
 
         return $this;
@@ -810,5 +846,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->fieldGuideEntries->exists(
             fn(int $key, UserFieldGuideEntry $entry) => $entry->getEntry()->getName() === $entryName
         );
+    }
+
+    public function getBasementSize(): int
+    {
+        return $this->basementSize;
+    }
+
+    public function increaseBasementSize(int $growth): static
+    {
+        $this->basementSize = min(self::MaxBasementSize, $this->basementSize + $growth);
+
+        return $this;
     }
 }

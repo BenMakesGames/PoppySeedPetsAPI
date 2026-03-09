@@ -15,6 +15,7 @@ namespace App\Enum;
 
 final class HollowEarthRequiredActionEnum
 {
+    /** @use FakeEnum<int> */
     use FakeEnum;
 
     public const int No = 0;

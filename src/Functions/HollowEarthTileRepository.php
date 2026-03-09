@@ -23,6 +23,7 @@ final class HollowEarthTileRepository
 {
     public static function findOneById(EntityManagerInterface $em, int $tileId): HollowEarthTile
     {
+        /** @var HollowEarthTile|null $tile */
         $tile = $em->getRepository(HollowEarthTile::class)->createQueryBuilder('t')
             ->andWhere('t.id = :id')
             ->setParameter('id', $tileId)
