@@ -918,6 +918,21 @@ final class BadgeHelpers
                 $reward = TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($em, 'Scroll of Chocolate'), 1);
                 break;
 
+            case BadgeEnum::BASEMENT_SIZE_2000:
+                $progress = [ 'target' => 2000, 'current' => $user->getBasementSize() ];
+                $reward = TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($em, 'Worker Bee'), 2);
+                break;
+
+            case BadgeEnum::BASEMENT_SIZE_5000:
+                $progress = [ 'target' => 5000, 'current' => $user->getBasementSize() ];
+                $reward = TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($em, 'Worker Bee'), 5);
+                break;
+
+            case BadgeEnum::BASEMENT_SIZE_10000:
+                $progress = [ 'target' => 10000, 'current' => $user->getBasementSize() ];
+                $reward = TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($em, 'Shiny Baabble'), 1);
+                break;
+
             case BadgeEnum::OPENED_INFINITY_VAULT_1:
                 $progress = [ 'target' => 1, 'current' => self::getStatTotal($user, [ UserStat::OpenedTheInfinityVault ], $em, $cache) ];
                 $reward = TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($em, 'Hollow Earth Booster Pack: Beginnings'), 3);

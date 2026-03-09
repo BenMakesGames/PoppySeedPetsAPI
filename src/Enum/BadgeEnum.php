@@ -208,6 +208,10 @@ final class BadgeEnum
     public const string ACHIEVEMENTS_140 = 'Achievements140';
     public const string ACHIEVEMENTS_150 = 'Achievements150';
 
+    public const string BASEMENT_SIZE_2000 = 'BasementSize2000';
+    public const string BASEMENT_SIZE_5000 = 'BasementSize5000';
+    public const string BASEMENT_SIZE_10000 = 'BasementSize10000';
+
     public const string OPENED_INFINITY_VAULT_1 = 'OpenedInfinityVault1';
     public const string INFINITY_VAULT_MONEYS_SPENT_9999 = 'InfinityVaultMoneysSpent9999';
 }
