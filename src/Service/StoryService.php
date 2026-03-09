@@ -270,9 +270,9 @@ class StoryService
 
             default:
                 if(is_string($action['type']))
-                    throw new \Exception('Unhandled story action type "' . $action['type'] . '"');
+                    throw new \RuntimeException('Unhandled story action type "' . $action['type'] . '"');
                 else
-                    throw new \Exception('Unhandled story action type, and it\'s not even a string; it\'s a ' . gettype($action['type']) . '!');
+                    throw new \RuntimeException('Unhandled story action type, and it\'s not even a string; it\'s a ' . gettype($action['type']) . '!');
         }
     }
 

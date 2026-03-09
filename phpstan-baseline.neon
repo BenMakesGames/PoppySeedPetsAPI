@@ -6547,12 +6547,6 @@ parameters:
 			path: src/Service/StoryService.php
 
 		-
-			message: '#^Binary operation "\." between ''Unhandled story…'' and mixed results in an error\.$#'
-			identifier: binaryOp.invalid
-			count: 1
-			path: src/Service/StoryService.php
-
-		-
 			message: '#^Cannot access offset ''actions'' on mixed\.$#'
 			identifier: offsetAccess.nonOffsetAccessible
 			count: 1
