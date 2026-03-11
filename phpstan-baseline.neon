@@ -4381,18 +4381,6 @@ parameters:
 			path: src/Service/BookstoreService.php
 
 		-
-			message: '#^Method App\\Service\\BookstoreService\:\:getCafe\(\) return type has no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Service/BookstoreService.php
-
-		-
-			message: '#^Method App\\Service\\BookstoreService\:\:getGames\(\) return type has no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Service/BookstoreService.php
-
-		-
 			message: '#^Method App\\Service\\BookstoreService\:\:getRenamingScrollCost\(\) should return int but returns float\|int\<250, max\>\.$#'
 			identifier: return.type
 			count: 1
@@ -4401,18 +4389,6 @@ parameters:
 		-
 			message: '#^Method App\\Service\\BookstoreService\:\:getResponseData\(\) return type has no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
-			count: 1
-			path: src/Service/BookstoreService.php
-
-		-
-			message: '#^Method App\\Service\\BookstoreService\:\:serializeShopInventory\(\) has parameter \$inventory with no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Service/BookstoreService.php
-
-		-
-			message: '#^Method App\\Service\\BookstoreService\:\:serializeShopInventory\(\) should return array\<array\{item\: App\\Entity\\Item, price\: int\}\> but returns list\<array\{item\: App\\Entity\\Item, price\: mixed\}\>\.$#'
-			identifier: return.type
 			count: 1
 			path: src/Service/BookstoreService.php
 
