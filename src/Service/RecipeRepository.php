@@ -371,7 +371,7 @@ final class RecipeRepository
             new Recipe('Iron Bar (from Ore)', '88:1', '89:1', 300),
             new Recipe('Jellyfish Juice, and Pectin', '677:1', '121:3,683:1', 0),
             new Recipe('Jellyfish PB&J', '112:1,512:1,677:1', '678:2', 0),
-            new Recipe('Khachapuri', '7:1,14:1,65:1,112:1,255:1', '1515:2', 0),
+            new Recipe('Khachapuri', '7:1,14:1,65:1,112:1,255:1', '1516:2', 0),
             new Recipe('Kilju', '10:1,12:1', '646:2', 0),
             new Recipe('Kombucha (?, from scratch)', '10:1,12:1,21:1', '86:1', 0),
             new Recipe('Kombucha (from Black Tea)', '10:1,12:1,46:1', '86:2', 0),
