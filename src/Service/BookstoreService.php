@@ -402,9 +402,13 @@ class BookstoreService
      */
     public function getAvailableLiterature(User $user): array
     {
-        $prices = [
-            '⤮' => 20,
-        ];
+        $prices = [];
+
+        if($user->hasUnlockedFeature(UnlockableFeatureEnum::Library))
+        {
+            $prices['⤮'] = 25;
+            $prices['The Open Window'] = 20;
+        }
 
         ksort($prices);
 
