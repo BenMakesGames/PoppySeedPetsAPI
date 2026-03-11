@@ -228,130 +228,202 @@ class BookstoreService
 
     /**
      * @return array<string, int>
-     * @throws EnumInvalidValueException
      */
-    public function getAvailableBooks(User $user): array
+    public function getAvailableSelfImprovement(User $user): array
     {
-        $bookPrices = [
+        $prices = [
             'Welcome Note' => 10, // remember: this item can be turned into plain paper
-            'Cooking 101' => 15,
-            'A Guide to Our Weather' => 15,
         ];
 
-        $flowersPurchased = $this->em->getRepository(UserStats::class)->findOneBy([ 'user' => $user, 'stat' => 'Flowerbombs Purchased' ]);
+        if($this->renamingScrollAvailable($user))
+            $prices['Renaming Scroll'] = $this->getRenamingScrollCost($user);
 
-        if($flowersPurchased && $flowersPurchased->getValue() > 0)
-            $bookPrices['Book of Flowers'] = 15;
+        $cookedSomething = $this->em->getRepository(UserStats::class)->findOneBy([ 'user' => $user, 'stat' => UserStat::CookedSomething ]);
+
+        if($cookedSomething && $cookedSomething->getValue() >= 500)
+            $prices['Ultimate Chef'] = 500;
+
+        ksort($prices);
+
+        return $prices;
+    }
+
+    /**
+     * @return array<string, int>
+     */
+    public function getAvailableCooking(User $user): array
+    {
+        $prices = [
+            'Cooking 101' => 15,
+        ];
 
         $cookedSomething = $this->em->getRepository(UserStats::class)->findOneBy([ 'user' => $user, 'stat' => UserStat::CookedSomething ]);
 
         if($cookedSomething)
         {
             if($cookedSomething->getValue() >= 1)
-                $bookPrices['Unlocking the Secrets of Grandparoot'] = 15;
+                $prices['Unlocking the Secrets of Grandparoot'] = 15;
 
             if($cookedSomething->getValue() >= 5)
-                $bookPrices['Candy-maker\'s Cookbook'] = 20;
+                $prices['Candy-maker\'s Cookbook'] = 20;
 
             if($cookedSomething->getValue() >= 10)
-                $bookPrices['Big Book of Baking'] = 25;
+                $prices['Big Book of Baking'] = 25;
 
             if($cookedSomething->getValue() >= 20)
             {
-                $bookPrices['Fish Book'] = 20;
-                $bookPrices['Of Rice'] = 50;
+                $prices['Fish Book'] = 20;
+                $prices['Of Rice'] = 50;
             }
 
             if($cookedSomething->getValue() >= 50)
             {
-                $bookPrices['Juice'] = 15;
-                $bookPrices['We All Scream'] = 15;
+                $prices['Juice'] = 15;
+                $prices['We All Scream'] = 15;
             }
 
             if($cookedSomething->getValue() >= 100)
             {
-                $bookPrices['Pie Recipes'] = 15;
-                $bookPrices['Milk: The Book'] = 30;
+                $prices['Pie Recipes'] = 15;
+                $prices['Milk: The Book'] = 30;
             }
 
             if($cookedSomething->getValue() >= 150)
             {
-                $bookPrices['The School of Jelly'] = 15;
+                $prices['The School of Jelly'] = 15;
             }
 
             if($cookedSomething->getValue() >= 200)
             {
-                $bookPrices['Fried'] = 25;
-                $bookPrices['The Art of Tofu'] = 25;
+                $prices['Fried'] = 25;
+                $prices['The Art of Tofu'] = 25;
             }
 
             if($cookedSomething->getValue() >= 300)
             {
-                $bookPrices['SOUP'] = 25;
+                $prices['SOUP'] = 25;
             }
 
             if($cookedSomething->getValue() >= 400)
             {
-                $bookPrices['Cuckoo for Coconuts'] = 20;
-            }
-
-            if($cookedSomething->getValue() >= 500)
-            {
-                $bookPrices['Ultimate Chef'] = 500;
+                $prices['Cuckoo for Coconuts'] = 20;
             }
         }
+
+        if(CalendarFunctions::isStockingStuffingSeason($this->clock->now))
+            $prices['Bûche De Noël Recipe'] = 10;
+
+        $itemsDonatedToMuseum = $this->em->getRepository(UserStats::class)->findOneBy([ 'user' => $user, 'stat' => UserStat::ItemsDonatedToMuseum ]);
+
+        if($itemsDonatedToMuseum && $itemsDonatedToMuseum->getValue() >= 600)
+            $prices['Book of Noods'] = 20;
+
+        ksort($prices);
+
+        return $prices;
+    }
+
+    /**
+     * @return array<string, int>
+     */
+    public function getAvailableScienceAndNature(User $user): array
+    {
+        $prices = [
+            'A Guide to Our Weather' => 15,
+        ];
 
         $itemsDonatedToMuseum = $this->em->getRepository(UserStats::class)->findOneBy([ 'user' => $user, 'stat' => UserStat::ItemsDonatedToMuseum ]);
 
         if($itemsDonatedToMuseum)
         {
-            if($itemsDonatedToMuseum->getValue() >= 150)
-                $bookPrices['Basement Blueprint'] = 150;
-
             if($itemsDonatedToMuseum->getValue() >= 200)
             {
-                $bookPrices['Electrical Engineering Textbook'] = 50;
-                $bookPrices['Physics Textbook'] = 50;
+                $prices['Electrical Engineering Textbook'] = 50;
+                $prices['Physics Textbook'] = 50;
             }
 
             if($itemsDonatedToMuseum->getValue() >= 300)
-                $bookPrices['The Umbra'] = 25;
-
-            if($itemsDonatedToMuseum->getValue() >= 600)
-                $bookPrices['Book of Noods'] = 20;
+                $prices['The Umbra'] = 25;
         }
 
         $numberOfFeaturesUnlocked = count($user->getUnlockedFeatures());
 
         if($numberOfFeaturesUnlocked >= 15)
-            $bookPrices['The Science of Ensmallening'] = 100;
+            $prices['The Science of Ensmallening'] = 100;
 
         if($numberOfFeaturesUnlocked >= 18)
-            $bookPrices['The Science of Embiggening'] = 100;
+            $prices['The Science of Embiggening'] = 100;
+
+        ksort($prices);
+
+        return $prices;
+    }
+
+    /**
+     * @return array<string, int>
+     * @throws EnumInvalidValueException
+     */
+    public function getAvailableHomeAndGarden(User $user): array
+    {
+        $prices = [];
+
+        $flowersPurchased = $this->em->getRepository(UserStats::class)->findOneBy([ 'user' => $user, 'stat' => 'Flowerbombs Purchased' ]);
+
+        if($flowersPurchased && $flowersPurchased->getValue() > 0)
+            $prices['Book of Flowers'] = 15;
 
         if($user->hasUnlockedFeature(UnlockableFeatureEnum::Fireplace))
         {
-            $bookPrices['Melt'] = 25;
-            $bookPrices['Forge Blueprint'] = 500;
+            $prices['Melt'] = 25;
+            $prices['Forge Blueprint'] = 500;
         }
+
+        $itemsDonatedToMuseum = $this->em->getRepository(UserStats::class)->findOneBy([ 'user' => $user, 'stat' => UserStat::ItemsDonatedToMuseum ]);
+
+        if($itemsDonatedToMuseum && $itemsDonatedToMuseum->getValue() >= 150)
+            $prices['Basement Blueprint'] = 150;
 
         if(
             $user->getGreenhouse() &&
             $user->getGreenhouse()->getMaxPlants() + $user->getGreenhouse()->getMaxWaterPlants() + $user->getGreenhouse()->getMaxDarkPlants() > 6
         )
         {
-            $bookPrices['Bird Bath Blueprint'] = 200;
+            $prices['Bird Bath Blueprint'] = 200;
         }
 
-        if($this->renamingScrollAvailable($user))
-            $bookPrices['Renaming Scroll'] = $this->getRenamingScrollCost($user);
+        ksort($prices);
 
-        if(CalendarFunctions::isStockingStuffingSeason($this->clock->now))
-            $bookPrices['Bûche De Noël Recipe'] = 10;
+        return $prices;
+    }
 
-        ksort($bookPrices);
+    /**
+     * @return array<string, int>
+     * @throws EnumInvalidValueException
+     */
+    public function getAvailableLiterature(User $user): array
+    {
+        $prices = [
+            '⤮' => 20,
+        ];
 
-        return $bookPrices;
+        ksort($prices);
+
+        return $prices;
+    }
+
+    /**
+     * @return array<string, int>
+     * @throws EnumInvalidValueException
+     */
+    public function getAvailableBooks(User $user): array
+    {
+        return array_merge(
+            $this->getAvailableSelfImprovement($user),
+            $this->getAvailableCooking($user),
+            $this->getAvailableScienceAndNature($user),
+            $this->getAvailableHomeAndGarden($user),
+            $this->getAvailableLiterature($user),
+        );
     }
 
     public function getRenamingScrollCost(User $user): int
@@ -385,6 +457,37 @@ class BookstoreService
             return 'What can I get you?';
     }
 
+    /**
+     * @return array<int, array{name: string, icon: string, inventory: array{item: \App\Entity\Item, price: int}[]}>
+     */
+    public function getAisles(User $user): array
+    {
+        $aisleDefinitions = [
+            ['name' => 'Self-improvement', 'icon' => 'fa-solid fa-lightbulb', 'prices' => $this->getAvailableSelfImprovement($user)],
+            ['name' => 'Cooking', 'icon' => 'fa-solid fa-hat-chef', 'prices' => $this->getAvailableCooking($user)],
+            ['name' => 'Science & Nature', 'icon' => 'fa-solid fa-moon-over-sun', 'prices' => $this->getAvailableScienceAndNature($user)],
+            ['name' => 'Home & Garden', 'icon' => 'fa-solid fa-house', 'prices' => $this->getAvailableHomeAndGarden($user)],
+            ['name' => 'Literature', 'icon' => 'fa-solid fa-pen-fancy', 'prices' => $this->getAvailableLiterature($user)],
+            ['name' => 'Toys', 'icon' => 'fa-solid fa-puzzle-piece', 'prices' => $this->getAvailableGames($user)],
+            ['name' => 'Café', 'icon' => 'fa-solid fa-mug-hot', 'prices' => $this->getAvailableCafe($user)],
+        ];
+
+        $aisles = [];
+        foreach($aisleDefinitions as $aisle)
+        {
+            if(count($aisle['prices']) > 0)
+            {
+                $aisles[] = [
+                    'name' => $aisle['name'],
+                    'icon' => $aisle['icon'],
+                    'inventory' => $this->serializeShopInventory($aisle['prices']),
+                ];
+            }
+        }
+
+        return $aisles;
+    }
+
     public function getResponseData(User $user): array
     {
         if($this->renamingScrollAvailable($user))
@@ -397,24 +500,13 @@ class BookstoreService
 
         return [
             'dialog' => $this->getDialog($user),
-            'books' => $this->getBooks($user),
-            'games' => $this->getGames($user),
-            'cafe' => $this->getCafe($user),
+            'aisles' => $this->getAisles($user),
             'quest' => $quest,
         ];
     }
 
     /**
-     * @return array{item: \App\Entity\Item, price: int}[]
-     */
-    public function getBooks(User $user): array
-    {
-        $bookPrices = $this->getAvailableBooks($user);
-
-        return $this->serializeShopInventory($bookPrices);
-    }
-
-    /**
+     * @param array<string, int> $inventory
      * @return array{item: \App\Entity\Item, price: int}[]
      */
     private function serializeShopInventory(array $inventory): array
@@ -428,19 +520,5 @@ class BookstoreService
             ],
             $itemNames
         );
-    }
-
-    public function getGames(User $user): array
-    {
-        $gamePrices = $this->getAvailableGames($user);
-
-        return $this->serializeShopInventory($gamePrices);
-    }
-
-    public function getCafe(User $user): array
-    {
-        $cafePrices = $this->getAvailableCafe($user);
-
-        return $this->serializeShopInventory($cafePrices);
     }
 }

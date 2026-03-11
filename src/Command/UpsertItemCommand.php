@@ -292,19 +292,19 @@ class UpsertItemCommand extends PoppySeedPetsCommand
             if($item->getFood()->getGrantedSkill())
                 $suggestedItemGroups[] = 'Skill Food';
         }
-        if(mb_strpos('Choco', $item->getName()) !== false && mb_strpos('choco', $item->getImage()) !== false) $suggestedItemGroups[] = 'Chocolate';
-        if(mb_strpos('Pizza', $item->getName()) !== false && mb_strpos('pizza', $item->getImage()) !== false) $suggestedItemGroups[] = 'Za';
-        if(mb_strpos('Chees', $item->getName()) !== false && mb_strpos('chees', $item->getImage()) !== false) $suggestedItemGroups[] = 'Cheese';
-        if(mb_strpos('Key', $item->getName()) !== false && mb_strpos('key', $item->getImage()) !== false) $suggestedItemGroups[] = 'Key';
-        if(mb_strpos('Blood', $item->getName()) !== false && mb_strpos('blood', $item->getImage()) !== false) $suggestedItemGroups[] = 'Bloody';
-        if(mb_strpos('fruit', $item->getImage()) !== false) $suggestedItemGroups[] = 'Fresh Fruit';
-        if(mb_strpos('Soup', $item->getName()) !== false && mb_strpos('soup', $item->getImage()) !== false) $suggestedItemGroups[] = 'Soup';
-        if(mb_strpos('wand', $item->getImage()) !== false) $suggestedItemGroups[] = 'Wand';
-        if(mb_strpos('sword', $item->getImage()) !== false) $suggestedItemGroups[] = 'Sword';
-        if(mb_strpos('spear', $item->getImage()) !== false) $suggestedItemGroups[] = 'Spear';
-        if(mb_strpos('Bucket', $item->getName()) !== false && mb_strpos('bucket', $item->getImage()) !== false) $suggestedItemGroups[] = 'Bucket';
-        if(mb_strpos('Book', $item->getName()) !== false && mb_strpos('book', $item->getImage()) !== false) $suggestedItemGroups[] = 'Book';
-        if(mb_strpos('music', $item->getImage()) !== false || mb_strpos('instrument', $item->getImage()) !== false) $suggestedItemGroups[] = 'Musical Instrument';
+        if(mb_strpos($item->getName(), 'Choco') !== false && mb_strpos($item->getImage(), 'choco') !== false) $suggestedItemGroups[] = 'Chocolate';
+        if(mb_strpos($item->getName(), 'Pizza') !== false && mb_strpos($item->getImage(), 'pizza') !== false) $suggestedItemGroups[] = 'Za';
+        if(mb_strpos($item->getName(), 'Chees') !== false && mb_strpos($item->getImage(), 'chees') !== false) $suggestedItemGroups[] = 'Cheese';
+        if(mb_strpos($item->getName(), 'Key') !== false && mb_strpos($item->getImage(), 'key') !== false) $suggestedItemGroups[] = 'Key';
+        if(mb_strpos($item->getName(), 'Blood') !== false && mb_strpos($item->getImage(), 'blood') !== false) $suggestedItemGroups[] = 'Bloody';
+        if(mb_strpos($item->getImage(), 'fruit') !== false) $suggestedItemGroups[] = 'Fresh Fruit';
+        if(mb_strpos($item->getName(), 'Soup') !== false && mb_strpos($item->getImage(), 'soup') !== false) $suggestedItemGroups[] = 'Soup';
+        if(mb_strpos($item->getImage(), 'wand') !== false) $suggestedItemGroups[] = 'Wand';
+        if(mb_strpos($item->getImage(), 'sword') !== false) $suggestedItemGroups[] = 'Sword';
+        if(mb_strpos($item->getImage(), 'spear') !== false) $suggestedItemGroups[] = 'Spear';
+        if(mb_strpos($item->getName(), 'Bucket') !== false && mb_strpos($item->getImage(), 'bucket') !== false) $suggestedItemGroups[] = 'Bucket';
+        if(mb_strpos($item->getName(), 'Book') !== false && mb_strpos($item->getImage(), 'book') !== false) $suggestedItemGroups[] = 'Book';
+        if(mb_strpos($item->getImage(), 'music') !== false || mb_strpos($item->getImage(), 'instrument') !== false) $suggestedItemGroups[] = 'Musical Instrument';
 
         if(count($suggestedItemGroups) > 0)
         {
