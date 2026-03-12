@@ -49,7 +49,7 @@ class IsekaiAdventureService
 
         $activityLog = $this->doEncounter($petWithSkills);
 
-        if($this->rng->rngNextBool())
+        if($pet->getTool() && $this->rng->rngNextBool())
         {
             $brokenKey = ItemRepository::findOneByName($this->em, 'Broken Hazard Key');
             $pet->getTool()->changeItem($brokenKey);
@@ -62,9 +62,6 @@ class IsekaiAdventureService
             ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ PetActivityLogTagEnum::Adventure ]))
             ->setChanges($changes->compare($pet))
         ;
-
-        if(AdventureMath::petAttractsBug($this->rng, $pet, 75))
-            $this->inventoryService->petAttractsRandomBug($pet);
 
         return $activityLog;
     }
