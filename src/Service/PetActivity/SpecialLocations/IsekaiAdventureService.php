@@ -72,6 +72,7 @@ class IsekaiAdventureService
             1 => $this->encounterBugArmyPrincess($petWithSkills),
             2 => $this->encounterMadInventor($petWithSkills),
             3 => $this->encounterCelestialWarriors($petWithSkills),
+            default => throw new \RuntimeException('Unknown encounter (programmer error)'),
         };
     }
 
