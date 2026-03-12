@@ -78,6 +78,7 @@ class IsekaiAdventureService
         };
     }
 
+    // El-Hazard
     private function encounterBugArmyPrincess(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
@@ -121,6 +122,7 @@ class IsekaiAdventureService
         return $activityLog;
     }
 
+    // Escaflowne
     private function encounterMadInventor(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
@@ -163,6 +165,7 @@ class IsekaiAdventureService
         return $activityLog;
     }
 
+    // Fushigi Yûgi
     private function encounterCelestialWarriors(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
