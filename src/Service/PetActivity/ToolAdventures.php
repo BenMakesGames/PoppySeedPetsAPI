@@ -20,6 +20,7 @@ use App\Service\PetActivity\SpecialLocations\Caerbannog;
 use App\Service\PetActivity\SpecialLocations\ChocolateMansion;
 use App\Service\PetActivity\SpecialLocations\FructalPlaneService;
 use App\Service\PetActivity\SpecialLocations\HeartDimensionService;
+use App\Service\PetActivity\SpecialLocations\IsekaiAdventureService;
 use App\Service\PetActivity\SpecialLocations\LostInTownService;
 use App\Service\UserStatsService;
 
@@ -39,7 +40,8 @@ class ToolAdventures
         private readonly DokiDokiService $dokiDokiService,
         private readonly MortarOrPestleService $mortarOrPestleService,
         private readonly LostInTownService $lostInTownService,
-        private readonly FructalPlaneService $fructalPlaneService
+        private readonly FructalPlaneService $fructalPlaneService,
+        private readonly IsekaiAdventureService $isekaiAdventureService
     )
     {
     }
@@ -109,6 +111,14 @@ class ToolAdventures
             case 'Fruit Fly on a String':
                 $this->treasureMapService->doFruitHunting($pet);
                 return true;
+
+            case 'Hazard Key':
+                if($this->rng->rngNextBool())
+                {
+                    $this->isekaiAdventureService->adventure($petWithSkills);
+                    return true;
+                }
+                break;
 
             case 'Green Sportsball Ball':
                 $this->sportsBallActivityService->doGreenSportsballBall($petWithSkills);

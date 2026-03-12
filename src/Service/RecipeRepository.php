@@ -419,6 +419,7 @@ final class RecipeRepository
             new Recipe('Melowatern', '1128:1,1130:1', '131:1', 0),
             new Recipe('Melt Antipode', '484:1', '89:1,937:1', 360),
             new Recipe('Melt Blunderbuss', '106:1', '89:1', 360),
+            new Recipe('Melt Broken Hazard Key', '1520:1', '89:1,142:1', 360),
             new Recipe('Melt Ceremonial Trident', '257:1', '91:1,93:1', 360),
             new Recipe('Melt Ceremony of Fire', '259:1', '91:1,93:1,937:1', 360),
             new Recipe('Melt Ceremony of Sand and Sea', '260:1', '91:1,93:1', 360),
