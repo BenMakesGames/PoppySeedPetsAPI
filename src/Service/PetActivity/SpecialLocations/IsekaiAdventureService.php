@@ -54,7 +54,7 @@ class IsekaiAdventureService
             $brokenKey = ItemRepository::findOneByName($this->em, 'Broken Hazard Key');
             $pet->getTool()->changeItem($brokenKey);
 
-            $activityLog->appendEntry('Unfortunately, after returning home, the Hazard Key broke.');
+            $activityLog->appendEntry('Unfortunately, the return home broke their Hazard Key.');
         }
 
         $activityLog
