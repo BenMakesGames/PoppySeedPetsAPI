@@ -51,6 +51,16 @@ final class Version20260312200135 extends AbstractMigration
         -- grammar
         INSERT INTO item_grammar (`id`, `item_id`, `article`) VALUES (1600,1520,"a") ON DUPLICATE KEY UPDATE `id` = `id`;
         EOSQL);
+
+        $this->addSql(<<<EOSQL
+        INSERT INTO `pet_activity_log_tag`
+            (`id`, `title`, `color`, `emoji`)
+        VALUES
+            (101, 'Isekai Location: Bug Army', '326d36', 'fa-solid fa-bug'),
+            (102, 'Isekai Location: Mad Inventor', 'b58b8b', 'fa-regular fa-gear'),
+            (103, 'Isekai Location: Celestial Temple', 'd6c61d', 'fa-solid fa-sun')
+        ON DUPLICATE KEY UPDATE `id` = `id`;
+        EOSQL);
     }
 
     public function down(Schema $schema): void

@@ -69,7 +69,7 @@ class IsekaiAdventureService
     private function doEncounter(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         return match($this->rng->rngNextInt(1, 3)) {
-            1 => $this->encounterBugArmyPrincess($petWithSkills),
+            1 => $this->encounterBugArmy($petWithSkills),
             2 => $this->encounterMadInventor($petWithSkills),
             3 => $this->encounterCelestialWarriors($petWithSkills),
             default => throw new \RuntimeException('Unknown encounter (programmer error)'),
@@ -77,7 +77,7 @@ class IsekaiAdventureService
     }
 
     // El-Hazard
-    private function encounterBugArmyPrincess(ComputedPetSkills $petWithSkills): PetActivityLog
+    private function encounterBugArmy(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
         $petName = ActivityHelpers::PetName($pet);
@@ -89,10 +89,9 @@ class IsekaiAdventureService
             $pet->increaseEsteem(4);
             $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::HUNT, true);
 
-            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet,
-                $petName . ' got isekai\'d to a strange world, where they had to pretend to be a local princess! A high school student leading an army of bugs attacked, but ' . $petName . ' fought them off before being sent back home!')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, $petName . ' got isekai\'d to a strange world, where they had to pretend to be a local princess! A high school student leading an army of bugs attacked, but ' . $petName . ' fought them off before being sent back home!')
                 ->setIcon('items/key/hazard')
-                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Fighting' ]))
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ PetActivityLogTagEnum::Fighting, PetActivityLogTagEnum::Isekai_Location_Bug_Army ]))
             ;
 
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::Brawl ], $activityLog);
@@ -105,10 +104,9 @@ class IsekaiAdventureService
             $pet->increaseSafety(-2);
             $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::HUNT, false);
 
-            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet,
-                $petName . ' got isekai\'d to a strange world, where they had to pretend to be a local princess! A high school student leading an army of bugs attacked, and ' . $petName . ' was overwhelmed! They grabbed what they could before being sent back home!')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, $petName . ' got isekai\'d to a strange world, where they had to pretend to be a local princess! A high school student leading an army of bugs attacked, and ' . $petName . ' was overwhelmed! They grabbed what they could before being sent back home!')
                 ->setIcon('items/key/hazard')
-                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Fighting' ]))
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ PetActivityLogTagEnum::Fighting, PetActivityLogTagEnum::Isekai_Location_Bug_Army ]))
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::Brawl ], $activityLog);
@@ -133,10 +131,9 @@ class IsekaiAdventureService
             $pet->increaseEsteem(4);
             $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::UMBRA, true);
 
-            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet,
-                $petName . ' got isekai\'d and discovered they had psychic powers! With the help of two warriors - who were BOTH flirting with ' . $petName . ' the entire time - they defeated a mad inventor before being sent back home!')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, $petName . ' got isekai\'d and discovered they had psychic powers! With the help of two warriors - who were BOTH flirting with ' . $petName . ' the entire time - they defeated a mad inventor before being sent back home!')
                 ->setIcon('items/key/hazard')
-                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Fighting' ]))
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ PetActivityLogTagEnum::Fighting, PetActivityLogTagEnum::Isekai_Location_Mad_Inventor ]))
             ;
 
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::Arcana ], $activityLog);
@@ -149,10 +146,9 @@ class IsekaiAdventureService
             $pet->increaseSafety(-2);
             $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::UMBRA, false);
 
-            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet,
-                $petName . ' got isekai\'d and discovered they had psychic powers! Two warriors - who were BOTH flirting with ' . $petName . ' - tried to help fight a mad inventor, but ' . $petName . ' couldn\'t channel their powers in time, and were sent back home, defeated...')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, $petName . ' got isekai\'d and discovered they had psychic powers! Two warriors - who were BOTH flirting with ' . $petName . ' - tried to help fight a mad inventor, but ' . $petName . ' couldn\'t channel their powers in time, and were sent back home, defeated...')
                 ->setIcon('items/key/hazard')
-                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ PetActivityLogTagEnum::Fighting ]))
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ PetActivityLogTagEnum::Fighting, PetActivityLogTagEnum::Isekai_Location_Mad_Inventor ]))
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::Arcana ], $activityLog);
@@ -177,9 +173,11 @@ class IsekaiAdventureService
             $pet->increaseEsteem(4);
             $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::GATHER, true);
 
-            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet,
-                $petName . ' got isekai\'d as the destined priestess of a local god! ' . $petName . ' sought out all seven of the god\'s celestial warriors (some of whom ' . $petName . ' found VERY attractive) and recruited every last one! The god was so grateful, they sent ' . $petName . ' home with gifts.')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, $petName . ' got isekai\'d as the destined priestess of a local god! ' . $petName . ' sought out all seven of the god\'s celestial warriors (some of whom ' . $petName . ' found VERY attractive) and recruited every last one! The god was so grateful, they sent ' . $petName . ' home with gifts.')
                 ->setIcon('items/key/hazard')
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
+                    PetActivityLogTagEnum::Isekai_Location_Celestial_Temple,
+                ]))
             ;
 
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::Nature ], $activityLog);
@@ -194,15 +192,17 @@ class IsekaiAdventureService
             $pet->increaseSafety(-2);
             $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::GATHER, false);
 
-            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet,
-                $petName . ' got isekai\'d as the destined priestess of a local god! ' . $petName . ' tried to recruit the god\'s celestial warriors (some of whom ' . $petName . ' found VERY attractive), but only managed to find ' . $recruited . ' before being sent back home.')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, $petName . ' got isekai\'d as the destined priestess of a local god! ' . $petName . ' tried to recruit the god\'s celestial warriors (some of whom ' . $petName . ' found VERY attractive), but only managed to find ' . $recruited . ' before being sent back home.')
                 ->setIcon('items/key/hazard')
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
+                    PetActivityLogTagEnum::Isekai_Location_Celestial_Temple,
+                ]))
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::Nature ], $activityLog);
 
             $this->inventoryService->petCollectsItem('Moth', $pet, 'This followed ' . $pet->getName() . ' home after an isekai adventure of celestial warrior recruitment.', $activityLog);
-            $this->inventoryService->petCollectsItem('Rusty Rapier', $pet, $pet->getName() . ' grabbed this during a failed isekai adventure of celestial warrior recruitment. (It HAD been in decent shape - the trip home must have damaged it.)', $activityLog);
+            $this->inventoryService->petCollectsItem('Rusty Rapier', $pet, $pet->getName() . ' grabbed this during a failed isekai adventure of celestial warrior recruitment. (It HAD been in decent shape - the trip home across dimensions must have damaged it.)', $activityLog);
         }
 
         return $activityLog;
