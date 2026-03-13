@@ -58,7 +58,7 @@ final class Version20260312200135 extends AbstractMigration
         VALUES
             (101, 'Isekai Location: Bug Army', '326d36', 'fa-solid fa-bug'),
             (102, 'Isekai Location: Mad Inventor', 'b58b8b', 'fa-regular fa-gear'),
-            (103, 'Isekai Location: Celestial Temple', 'd6c61d', 'fa-solid fa-sun')
+            (103, 'Isekai Location: Celestial Temple', 'd6c61d', 'fa-solid fa-building-columns')
         ON DUPLICATE KEY UPDATE `id` = `id`;
         EOSQL);
     }
