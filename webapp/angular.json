@@ -34,7 +34,7 @@
               "src/llms.txt",
               {
                 "glob": "**/*",
-                "input": "../PoppySeedPetsAppProprietaryAssets/",
+                "input": "../../PoppySeedPetsAppProprietaryAssets/",
                 "output": "/assets/"
               }
             ],
@@ -86,8 +86,8 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
             "ssl": true,
-            "sslKey": "../ca.key",
-            "sslCert": "../ca.pem",
+            "sslKey": "../dev.key",
+            "sslCert": "../dev.pem",
             "buildTarget": "PoppySeedPetsApp:build"
           },
           "configurations": {

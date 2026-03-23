@@ -1,7 +1,9 @@
 {
   "permissions": {
     "allow": [
-      "Bash(git ls-tree:*)"
+      "Bash(git ls-tree:*)",
+      "Bash(ls:*)",
+      "Bash(openssl x509:*)"
     ]
   }
 }

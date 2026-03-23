@@ -24,13 +24,11 @@ Symfony has a feature called "serialization groups" which feel cool and convenie
 
 All serialization groups should be removed and replaced with explicit response mapping to endpoint-specific response DTOs.
 
-#### Repository classes
+#### Doctrine Repository classes
 
-Repositories encourage you to put all your queries in one place, resulting in large classes containing unrelated code.
+Doctrine encourages you to put all your queries related to each entity type in one place, resulting in large classes containing code that on the surface feels like it'd be related, but in practice often isn't.
 
-Poppy Seed Pets has almost entirely gotten away from using Doctrine repository classes! 🎉
-
-But a few remain.
+Poppy Seed Pets does not use Doctrine repositories, and none should be added.
 
 Either:
 1. Bring single-use queries into the actual service that uses them
@@ -57,7 +55,7 @@ Instead of the Symfony default of:
   * `PlayerService.php`
 
 We would like to organize code like:
- 
+
 * `Pet/`
   * `PetController1.php`
   * `PetController2.php`
@@ -68,25 +66,23 @@ We would like to organize code like:
   * `PlayerService.php`
 
 Possible solutions:
- 
+
 * Use Symfony bundles
 * Maybe there's some slick `config.yaml` or attribute stuff?
 * Don't use Symfony at all (related to move off PHP)
 
 ### Problem: fake enums
 
-Poppy Seed Pets was created before PHP introduced enums, so it has fake enums. We should replace all those.
+Poppy Seed Pets was created before PHP introduced enums, so it has fake enums - classes that look enum-like. We should replace all those with real enums.
 
 Because some enum values are stored in the DB, this problem can't be solved with a quick search-and-replace; each enum must be considered individually.
 
 ### Problem: big API responses
 
-All API responses include full user & weather data. This should be broken up for a couple of reasons:
+All API responses include full user data. This should be broken up for a couple of reasons:
 
 1. overall performance
 2. to facilitate moving off of PHP (easier to write a new API if the responses have to do less)
-
-I'd like to change how weather is done, anyway, to make it just be "this is the weather today", which would make solving this problem easier.
 
 ### Problem: Symfony added support for request DTOs a little bit ago, so PSP is still hardly using them
 
@@ -104,10 +100,9 @@ More info: https://symfony.com/blog/new-in-symfony-6-3-mapping-request-data-to-t
 
 Especially if lots of people become interested in contributing, automated tests will be increasingly important.
 
-* 100% code coverage is a harmful goal
+* 100% code coverage is a **harmful** goal
 * it's okay to make an automated test for the purposes of a refactor and then throw it away afterward
-* lasting automated tests must not make refactoring more difficult (do not test implementation details, for example)
-* all automated tests must have a JUSTIFICATION for existence, explaining the dev pain point they solve - see existing tests for examples
+* lasting automated tests should not make future refactoring more difficult (for example, do **not** test implementation details)
 
 ### Problem: the database is sad when players run hours, which in turn makes players sad (slow server)
 

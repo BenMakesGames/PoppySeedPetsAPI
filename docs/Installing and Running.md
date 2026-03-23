@@ -1,3 +1,5 @@
+# API (server)
+
 ## Install & Configure
 
 ### PHP (Linux instructions)
@@ -108,3 +110,43 @@ The largest API calls happen when the player views their house (pets & items). I
 We could probably go even lower, but these values are already smaller (less RAM-using) than typical settings that "balance for performance", so I'm sure it's fine :P
 
 The `Header append Vary Accept-Encoding` setting is because the API sits behind the AWS load balancer - a proxy - and we need to tell that proxy that the `Accept-Encoding` header is important information for us, and to please pass it along.
+
+# Web App (front end)
+
+## Install & Configure
+
+### Prerequisites
+
+Install the following:
+* Node.js (v20+)
+* npm (comes with Node.js)
+* Angular CLI: `npm install -g @angular/cli`
+
+### Proprietary Assets
+
+The build expects a `PoppySeedPetsAppProprietaryAssets` directory at `../../PoppySeedPetsAppProprietaryAssets/` (relative to the `webapp/` directory). This contains images and other assets not included in the repo. The app will build without it, but assets will be missing.
+
+### SSL Certificates
+
+`ng serve` is configured to run over HTTPS (required for secure cookies locally). It expects the following files in the repo root (one level above `webapp/`):
+* `dev.key` — private key
+* `dev.pem` — certificate
+
+These are already checked into the repo and expire in **December 2033**. If they expire or you need to regenerate them:
+```
+openssl req -x509 -nodes -new -sha512 -days 3650 -newkey rsa:4096 -keyout dev.key -out dev.pem -subj "/C=US/CN=MY-CA"
+```
+
+### Poppy Seed Pets, itself
+
+1. run `npm install`
+2. review `src/environments/environment.ts`; the dev config points the API at `https://localhost:8000` by default
+
+## Local Dev
+
+### Running
+
+1. run `ng serve` in the root of the `webapp/` directory
+2. the app will be available at https://localhost:4200
+3. make sure the API is also running (see API section above)
+
