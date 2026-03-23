@@ -21,7 +21,7 @@ Players unlock various locations as they progress, including: a Greenhouse for g
 ## Links
 
 - Play now: https://poppyseedpets.com/register
-- Source code: https://github.com/BenMakesGames/PoppySeedPetsAPI
+- Source code: https://github.com/BenMakesGames/PoppySeedPets
 - Support on Patreon: https://patreon.com/BenMakesGames
 - Other games by Ben: https://store.steampowered.com/search/?publisher=benmakesgames.com
 - Unofficial wiki: https://poppyseedpetsunofficialwiki.fandom.com/wiki/The_Unofficial_Poppy_Seed_Pets_Wiki
