@@ -266,8 +266,6 @@ class PregnancyService
             : $adjective . ' baby ' . $babies[0]->getSpecies()->getName()
         ;
 
-        $otherParent = $pregnancy->getOtherParent();
-
         if($numberOfPetsAtHome + count($babies) > $user->getMaxPets())
         {
             foreach($babies as $baby)
@@ -285,6 +283,8 @@ class PregnancyService
             else
                 $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% gave birth to ' . $describeBabies . '!');
         }
+
+        $otherParent = $pregnancy->getOtherParent();
 
         // log for the fathering pet
         if($otherParent)
@@ -316,8 +316,8 @@ class PregnancyService
 
         if($otherParent)
         {
-            $pregnancy->getOtherParent()->getMom()?->setIsGrandparent(true);
-            $pregnancy->getOtherParent()->getDad()?->setIsGrandparent(true);
+            $otherParent->getMom()?->setIsGrandparent(true);
+            $otherParent->getDad()?->setIsGrandparent(true);
         }
 
         $this->em->remove($pregnancy);
