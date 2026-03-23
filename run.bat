@@ -1,4 +1,9 @@
 @echo off
+REM ============================================================
+REM run.bat — Starts both dev servers in separate windows.
+REM   API (Symfony) at https://localhost:8000
+REM   SPA (Angular) at https://localhost:4200
+REM ============================================================
 echo Starting PoppySeedPets API and SPA...
 
 REM Start the Symfony API server in a new window

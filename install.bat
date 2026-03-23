@@ -1,4 +1,8 @@
 @echo off
+REM ============================================================
+REM install.bat — Installs dependencies for both apps.
+REM   Runs `composer install` in api/ and `npm install` in webapp/.
+REM ============================================================
 
 where php >nul 2>nul
 if %errorlevel% neq 0 (
