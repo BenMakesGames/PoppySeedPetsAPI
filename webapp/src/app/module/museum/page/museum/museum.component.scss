@@ -1,0 +1,56 @@
+app-museum-unlock-progress {
+  display: block;
+  max-width: 6in; // 6in is good
+}
+
+.donation-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(8rem, 1fr));
+  column-gap: 0.75rem;
+  row-gap: 0.25rem;
+}
+
+.donation-card {
+  display: grid;
+  grid-row: span 4;
+  grid-template-rows: subgrid;
+  justify-items: center;
+  text-align: center;
+  padding: 0.5rem;
+  margin-bottom: 0.5rem;
+  cursor: pointer;
+  background-color: rgb(var(--color-speech-bubble-background));
+  border-radius: 0.5rem;
+  overflow: hidden;
+
+  img {
+    width: 3rem;
+    height: 3rem;
+  }
+
+  .item-name {
+    align-self: start;
+    font-size: 0.85em;
+    text-decoration: none;
+  }
+
+  .item-date {
+    font-size: 0.8em;
+    opacity: 0.7;
+  }
+
+  .maker-ribbon {
+    justify-self: stretch;
+    align-self: end;
+    margin: 0 -0.5rem;
+    padding: 0.35em 0.5rem;
+    font-size: 0.75em;
+    background-color: rgb(var(--color-primary));
+    color: rgb(var(--color-text-on-primary));
+    text-decoration: none;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+  }
+}

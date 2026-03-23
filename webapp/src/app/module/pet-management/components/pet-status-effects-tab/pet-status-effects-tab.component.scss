@@ -1,0 +1,10 @@
+.status-effects h4 {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+
+  > img {
+    width: 1.35rem;
+    height: 1.35rem;
+  }
+}

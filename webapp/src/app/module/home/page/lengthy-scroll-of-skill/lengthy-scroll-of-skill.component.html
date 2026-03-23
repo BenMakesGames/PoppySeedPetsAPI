@@ -1,0 +1,53 @@
+<main>
+  <h2>Lengthy Scroll of Skill</h2>
+
+  <div [hidden]="state !== 'findPet'" [class.disabled]="loading">
+    <h4>
+      Which Pet?
+      @if(loading)
+      {
+        <app-loading-throbber text="" />
+      }
+    </h4>
+    <app-select-pet (selected)="doSelectPet($event)" />
+  </div>
+
+  @if(state === 'extolSkill')
+  {
+    <form (submit)="doExtol()" [class.disabled]="loading">
+      <h4>Which Skill Will {{ pet.name }} Extol?</h4>
+      <label style="padding-bottom:0.5rem">The chosen skill will increase by <em>two</em> points! Only skills with at least 10 points may be improved in this way, and no skill can be improved above 20! (20's the absolute max any skill can be!)</label>
+      @if(skills.length === 0)
+      {
+        <p>{{ pet.name }} does not have any skills that can be increased in this way...</p>
+      }
+      @else
+      {
+        <p>
+          @for(skill of skills; track skill)
+          {
+            <label [for]="'extol' + skill" class="radio-checkbox">
+              <input [id]="'extol' + skill" type="radio" name="extol" [(ngModel)]="extol" [value]="skill">{{ skill|titlecase }} ({{pet.skills[skill].base}} &rarr;
+              @if(pet.skills[skill].base >= 18)
+              {
+                20!
+              }
+              @else
+              {
+                {{ pet.skills[skill].base + 2 }}
+              }
+            </label>
+          }
+        </p>
+      }
+      <p class="buttons">
+        <button type="button" (click)="state = 'findPet'">&larr; Back</button>
+        <button type="submit" [class.disabled]="!extol">Extol!</button>{{ ' ' }}
+        @if(loading)
+        {
+          <app-loading-throbber text=""/>
+        }
+      </p>
+    </form>
+  }
+</main>

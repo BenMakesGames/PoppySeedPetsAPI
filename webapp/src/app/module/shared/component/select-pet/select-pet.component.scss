@@ -1,0 +1,53 @@
+.results {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  padding-top: 0.5rem;
+
+  > li {
+    display: block;
+
+    button {
+      text-align: center;
+      display: block;
+      width: 1.5in;
+      min-height: calc(1in + 2.5rem);
+      padding: 0.25rem 0.5rem;
+      position: relative;
+
+      @media (max-width: 380px)
+      {
+        width: 1.40in;
+      }
+    }
+
+    app-pet-appearance {
+      display: block;
+      margin: 0 auto;
+      width: 1in;
+    }
+
+    &.selected {
+      outline: 2px solid rgb(var(--color-primary));
+    }
+  }
+}
+
+small {
+  display: block;
+}
+
+app-svg-icon
+{
+  position: absolute;
+  top: calc(1in - 1em);
+  right: 1em;
+  width: 1em;
+  height: 1em;
+  display: block;
+  border-radius: 50%;
+  overflow: hidden;
+  z-index: 1;
+  background-color: rgb(var(--color-speech-bubble-background));
+  padding: 0.25em;
+}

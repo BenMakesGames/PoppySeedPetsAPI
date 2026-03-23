@@ -1,0 +1,6 @@
+<nav class="tabs-container">
+  <div class="tabs" role="tablist">
+    <button role="tab" [class.active]="active === 'pet'" (click)="doNav('/journal/pet')">Pet Activity</button>
+    <button role="tab" [class.active]="active === 'player'" (click)="doNav('/journal/player')">My Activity</button>
+  </div>
+</nav>

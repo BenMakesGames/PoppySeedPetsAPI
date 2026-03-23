@@ -1,0 +1,10 @@
+<div class="dialog">
+  <h4>{{ title }}</h4>
+  <div class="dialog-body">
+    <markdown [data]="description" />
+    <p class="buttons" style="margin-top:0.5rem;">
+      <button type="button" (click)="doYes()">{{ yesLabel }}</button>
+      <button type="button" (click)="doNo()">{{ noLabel }}</button>
+    </p>
+  </div>
+</div>

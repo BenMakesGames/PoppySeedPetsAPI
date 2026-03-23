@@ -1,0 +1,9 @@
+<div class="container">
+  <app-donut-chart [data]="activeChartData" />
+  <ol class="list legend" [style.max-height]="'calc(2em * ' + ((activeChartData.length / 2)|ceil) + ')'">
+    @for(point of activeChartData; track $index)
+    {
+      <li><span [style.background-color]="point.color"></span> {{ (point.value * 100)|number:'1.0-0' }}% {{ point.label }}</li>
+    }
+  </ol>
+</div>

@@ -1,0 +1,22 @@
+<h5>Food in Lunchbox ({{ pet.lunchboxItems.length }}/{{ lunchboxSize}}) <app-help-link link="lunchboxes" /></h5>
+<div class="items" [class.disabled]="loading">
+  @if(pet.lunchboxItems.length === 0)
+  {
+    <p>{{ noneText }}</p>
+  }
+  @for(f of pet.lunchboxItems; track f.inventoryItem.id)
+  {
+    <app-inventory-item [inventory]="f.inventoryItem" (click)="doRemoveFood(f.inventoryItem)" />
+  }
+</div>
+<h5>Food in Your House</h5>
+@if(pet.lunchboxItems.length >= lunchboxSize)
+{
+  <p>{{ pet.name }}'s lunchbox can only have up to {{ lunchboxSize }} items in it.</p>
+}
+<div [class.disabled]="pet.lunchboxItems.length >= lunchboxSize || loading" class="items">
+  @for(f of food; track f.id)
+  {
+    <app-inventory-item [inventory]="f" (click)="doAddFood(f)" />
+  }
+</div>

@@ -1,0 +1,47 @@
+<main>
+  <h2><a routerLink="/zoologist">Zoologist</a> » Show New Species</h2>
+  @if(loading)
+  {
+    <p><app-loading-throbber [randomText]="true"/></p>
+  }
+  @else if(results)
+  {
+    @if(results.resultCount === 0)
+    {
+      <p>You've already shown the Zoologist every species you have a pet for.</p>
+    }
+    @else
+    {
+      <p>Select pets to show the Zoologist. (You won't lose the pet!)</p>
+      @if(results.pageCount > 1)
+      {
+        <p class="buttons">
+          <button type="button" (click)="doShow()" [class.disabled]="!anySelected">Show</button>
+        </p>
+        <p><app-paginator [pageCount]="results.pageCount" [(page)]="page" (change)="doSearch()"/></p>
+      }
+      <p class="pets">
+        @for(pet of results.results; track pet.id)
+        {
+          <button
+            [class.selected]="pet.selected"
+            (click)="doClickPet(pet)"
+            role="checkbox"
+            [attr.aria-checked]="pet.selected ? 'true' : 'false'"
+          >
+            <app-pet-appearance [pet]="pet" />
+            <div class="pet-name">{{ pet.name }}</div>
+            <div class="species">{{ pet.species.name }}</div>
+          </button>
+        }
+      </p>
+      @if(results.pageCount > 1)
+      {
+        <p><app-paginator [pageCount]="results.pageCount" [(page)]="page" (change)="doSearch()"/></p>
+      }
+      <p class="buttons">
+        <button type="button" (click)="doShow()" [class.disabled]="!anySelected">Show</button>
+      </p>
+    }
+  }
+</main>

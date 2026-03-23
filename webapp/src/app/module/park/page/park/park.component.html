@@ -1,0 +1,61 @@
+<main>
+  <nav class="tabs-container">
+    <div class="tabs" role="tablist">
+      <a role="tab" class="active" routerLink="/park">Park</a>
+      <a role="tab" routerLink="/park/history">History</a>
+    </div>
+  </nav>
+
+  @if(loading)
+  {
+    <p><app-loading-throbber [randomText]="true" /></p>
+  }
+  @else
+  {
+    @if(petsThatCanParticipate.length > 0)
+    {
+      <div>
+        <h3>Register for Event</h3>
+        <p>Select the type of event you want your {{ petsThatCanParticipate.length === 1 ? 'pet' : 'pets' }} to participate in. They'll participate in one event per day, and winners receive money prizes!</p>
+        <div class="park-event-pets">
+          @for(pet of petsThatCanParticipate; track pet.id)
+          {
+            <div [class]="'participant pet-' + ((pet.parkEventType ?? '')|sluggify) + ' offset-' + (pet.id % 9)">
+              <app-pet-appearance [pet]="pet" [showTool]="false" [showHat]="false" />
+              <div>
+                <h4>{{ pet.name }}</h4>
+                <select [(ngModel)]="pet.parkEventType" (change)="doChangeSelection(pet)">
+                  <option [value]="null">None</option>
+                  <option value="Jousting">Jousting</option>
+                  <option value="Kin-Ball">Kin-Ball</option>
+                  <option value="Tri-D Chess">Tri-D Chess</option>
+                </select>
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+    }
+    @if(petsThatCannotParticipate.length > 0)
+    {
+      <div [style.margin-top.em]="petsThatCanParticipate.length > 0 ? 1 : 0">
+        <h3>Require Attention</h3>
+        <p>Pet your {{ petsThatCannotParticipate.length === 1 ? 'pet' : 'pets' }} to keep them eligible for park events!</p>
+        <div class="park-event-pets">
+          @for(pet of petsThatCannotParticipate; track pet.id)
+          {
+            <div style="background-color: rgb(var(--color-content-background))">
+              <div [class]="'participant disabled pet-' + ((pet.parkEventType ?? '')|sluggify)">
+                <app-pet-appearance [pet]="pet" [showTool]="false" [showHat]="false" />
+                <div>
+                  <h4>{{ pet.name }}</h4>
+                  <div class="input">{{ pet.parkEventType ? pet.parkEventType : 'None' }}</div>
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+    }
+  }
+</main>

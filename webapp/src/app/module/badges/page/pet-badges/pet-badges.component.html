@@ -1,0 +1,46 @@
+<main>
+  <nav class="tabs-container">
+    <div class="tabs">
+      <a routerLink="/achievements">Unclaimed</a>
+      <a routerLink="/achievements/claimed">Claimed</a>
+      <a routerLink="/achievements/showcase">Showcase</a>
+      <a class="active" routerLink="/achievements/petBadges">Pet Badges</a>
+    </div>
+  </nav>
+
+  @if(!petBadges)
+  {
+    <app-loading-throbber />
+  }
+  @else
+  {
+    <p>
+      <label></label>
+      <select [(ngModel)]="sort" (change)="doSort()">
+        <option value="recentlyAchieved">Newest First</option>
+        <option value="name">Alphabetical</option>
+        <option value="mostAchieved">Number of Pets</option>
+      </select>
+    </p>
+    <div class="badges">
+      @for(badge of petBadges; track badge.badge)
+      {
+        <button type="button" (click)="doViewBadge(badge.badge)" class="badge" [class.unachieved]="badge.pets === 0">
+          <img [src]="badge.badge|petBadgeImgSrc" width="80" height="80" alt="" aria-hidden="true" />
+          <span class="name link-text">{{ badge.badge|petBadgeName }}</span>
+          <div class="deets">
+            @if(badge.firstAchievedOn)
+            {
+              <span class="firstAchieved"><i class="fa-regular fa-calendar"></i><app-date-only [dateString]="badge.firstAchievedOn" /></span>
+            }
+            @else
+            {
+              <span class="firstAchieved"><i class="fa-regular fa-calendar"></i><span>&mdash;</span></span>
+            }
+            <span class="number"><i class="fa-solid fa-paw"></i><span>{{ badge.pets }}</span></span>
+          </div>
+        </button>
+      }
+    </div>
+  }
+</main>

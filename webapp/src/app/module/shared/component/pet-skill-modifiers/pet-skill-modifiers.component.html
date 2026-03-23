@@ -1,0 +1,17 @@
+@if(skill.merits !== 0 || skill.tool !== 0 || skill.statusEffects !== 0)
+{
+  <ul>
+    @if(skill.merits !== 0)
+    {
+      <li>{{ skill.merits >= 0 ? '+' : '' }}{{ skill.merits }}<img src="/assets/images/ui/merit-icon.svg" alt="from merits"></li>
+    }
+    @if(skill.tool !== 0)
+    {
+      <li>{{ skill.tool >= 0 ? '+' : '' }}{{ skill.tool }}<img src="/assets/images/ui/equipped.svg" alt="from tool"></li>
+    }
+    @if(skill.statusEffects !== 0)
+    {
+      <li>{{ skill.statusEffects >= 0 ? '+' : '' }}{{ skill.statusEffects }}<img src="/assets/images/ui/generic-status-effect.svg" alt="from status effects"></li>
+    }
+  </ul>
+}

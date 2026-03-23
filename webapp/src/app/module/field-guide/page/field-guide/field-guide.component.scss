@@ -1,0 +1,123 @@
+main {
+  background: transparent;
+  display: flex;
+  justify-content: center;
+  padding-top: 3.5rem;
+}
+
+.cover {
+  display: block;
+
+  > img {
+    display: block;
+    margin: 0;
+    width: 100%;
+
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    transform-origin: left bottom;
+
+    &:hover
+    {
+      transform: scaleX(99%) skewY(-1deg);
+    }
+  }
+}
+
+.toc {
+  padding: 1rem;
+  ol {
+    @media (min-width: 480px)
+    {
+      columns: 2;
+    }
+  }
+}
+
+.entry {
+  padding: 1rem;
+
+  .image {
+    margin: 0 auto 1rem;
+    width: 256px;
+    height: 256px;
+    max-width: calc(100vw - 4rem);
+    max-height: calc(100vw - 4rem);
+    border-radius: 100%;
+    overflow: hidden;
+    text-align: center;
+    background-color: rgb(var(--color-speech-bubble-background));
+
+    > img {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+  }
+
+  @media (min-width: 480px)
+  {
+    .image {
+      float: right;
+      margin: 0 0 1rem 1rem;
+      max-width: 40vw;
+      max-height: 40vw;
+    }
+  }
+
+}
+
+.comment, .discovered-on {
+  opacity: 0.6667;
+  font-style: italic;
+  text-align: center;
+}
+
+.discovered-on {
+  font-size: 80%;
+}
+
+.page {
+  background-color: rgb(var(--color-content-background));
+  min-height: min(720px, (100vw - 1rem) * 1.3333);
+  box-sizing: border-box;
+  position: relative;
+
+  h2 {
+    text-align: center;
+    font-size: 200%;
+  }
+
+  hr {
+    margin: 0.5rem 0;
+  }
+
+  .back-one-page {
+    position: absolute;
+    top: 0;
+    left: 0;
+    padding: 0.5rem;
+    background: linear-gradient(to bottom right, #222 49%, rgb(var(--color-content-background)) 50%);
+    color: #fff;
+    width: 2rem;
+    height: 2rem;
+    display: block;
+    font-size: 66.6667%;
+    box-shadow: 0 2px 2px rgba(0,0,0,0.2);
+  }
+}
+
+.book {
+  width: 100%;
+  max-width: 540px;
+  font-size: 120%;
+
+  *:not(i) {
+    font-family: serif;
+  }
+}
+
+.page-container {
+  width: 100%;
+  height: 0;
+  padding-bottom: 133.3333%;
+}

@@ -1,0 +1,11 @@
+button {
+  display: block;
+  width: 100%;
+}
+
+@media (max-width:480px)
+{
+  tr, td {
+    display: block;
+  }
+}

@@ -1,0 +1,82 @@
+<main>
+  <h2>Museum</h2>
+  <app-npc-dialog npc="museum-curator" name="Ridley">
+    <p>Welcome to the Museum!</p>
+    @if(results)
+    {
+      <p>You've donated a total of {{ results.resultCount }} {{ results.resultCount === 1 ? 'item' : 'items' }}{{ results.resultCount > 10 ? '!' : '.' }}</p>
+      @if(nextMilestoneDescription)
+      {
+        <p>{{ nextMilestoneDescription }}</p>
+      }
+      @if(results.resultCount > 0)
+      {
+        <p>Select any item you've donated to change your avatar image to that item!</p>
+      }
+    }
+  </app-npc-dialog>
+  @if(!results)
+  {
+    <p><app-loading-throbber [randomText]="true"/></p>
+  }
+  @else
+  {
+    <ul class="dialog-choices">
+      <li><a routerLink="/museum/donate" class="button">"I have some items I'd like to donate."</a></li>
+      @if(results.resultCount > 0)
+      {
+        <li><a routerLink="/museum/giftShop" class="button">"I'd like to buy something from the Gift Shop!"</a></li>
+      }
+      <li><a routerLink="/poppyopedia/item" [queryParams]="{ 'filter.hasDonated': false }" class="button">"What items <em>haven't</em> I donated?"</a></li>
+      <li><a routerLink="/museum/topDonors" class="button">"Who are the top donors?"</a></li>
+      @if(user.icon)
+      {
+        <li>
+          <button type="button" [class.disabled]="!clearingIconSubscription.closed" (click)="doClearIcon()">
+            "I'd like to clear my profile avatar image icon thing."
+            @if(!clearingIconSubscription.closed)
+            {
+              <app-loading-throbber text="" />
+            }
+          </button>
+        </li>
+      }
+    </ul>
+    @if(results.resultCount === 0)
+    {
+      <p>You haven't donated anything to the Museum yet.</p>
+    }
+    @else
+    {
+      @if(results.pageCount > 1)
+      {
+        <p>
+          <select [(ngModel)]="params.orderBy" (change)="doChangeSort()">
+            <option value="donatedOn">Newest First</option>
+            <option value="itemName">Alphabetical</option>
+          </select>
+        </p>
+      }
+      <p><app-url-paginator [pageCount]="results.pageCount" [page]="page" [params]="params" path="/museum" /></p>
+      <div class="donation-grid" [class.disabled]="!resultsSubscription.closed">
+        @for(item of results.results; track $index)
+        {
+          <div class="donation-card" (click)="doSelectIcon(item)" tabindex="0" role="button">
+            <img [src]="'/assets/images/items/' + item.item.image + '.svg'" alt="" />
+            <span class="item-name link-text">{{ item.item.name }}</span>
+            @if(item.createdBy)
+            {
+              <a class="maker-ribbon" [routerLink]="'/poppyopedia/resident/' + item.createdBy.id" (click)="$event.stopPropagation()"><app-player-name [player]="item.createdBy" /></a>
+            }
+            @else
+            {
+              <span class="maker-ribbon no-maker">&mdash;</span>
+            }
+            <span class="item-date"><app-date-and-time [dateString]="item.donatedOn" /></span>
+          </div>
+        }
+      </div>
+      <p><app-url-paginator [pageCount]="results.pageCount" [page]="page" [params]="params" path="/museum" /></p>
+    }
+  }
+</main>

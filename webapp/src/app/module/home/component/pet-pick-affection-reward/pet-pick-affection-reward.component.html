@@ -1,0 +1,50 @@
+<p>{{ pet.name }} is so happy for your attention and care!</p>
+@if(pet.affectionLevel - pet.affectionRewardsClaimed === 1)
+{
+  <h5>Choose a Merit:</h5>
+}
+@else if(pet.affectionLevel - pet.affectionRewardsClaimed > 1)
+{
+  <h5>Choose up to {{ pet.affectionLevel - pet.affectionRewardsClaimed }} Merits:</h5>
+}
+@if(!availableMerits)
+{
+  <p><app-loading-throbber/></p>
+}
+@else if(availableMerits.length === 0)
+{
+  <p>There are no Merits left to choose!</p>
+}
+@else
+{
+  <table class="affection-rewards">
+    <tbody>
+      @for(merit of availableMerits; track merit.name)
+      {
+        <tr>
+          <td><button type="button" (click)="doSelectMerit(merit.name)">{{ merit.name }}</button></td>
+          <td><markdown [data]="merit.description" /></td>
+        </tr>
+      }
+    </tbody>
+  </table>
+}
+@if(pet.merits.length >= 5 || pet.level >= 10)
+{
+  <h5>{{ pet.affectionLevel - pet.affectionRewardsClaimed > 1 ? 'And/or' : 'Or' }} a Skill to Improve:</h5>
+  <p>
+    <select [(ngModel)]="selectedSkill">
+      <option value="" disabled>Select one</option>
+      @for(skill of skillList; track skill)
+      {
+        @if(pet.skills[skill].base < 20)
+        {
+          <option [value]="skill">{{ skill|titlecase }} ({{ pet.skills[skill].base }} &rarr; {{ pet.skills[skill].base + 1 }})</option>
+        }
+      }
+    </select>
+  </p>
+  <p>
+    <button type="button" (click)="doSelectSkill()" [class.disabled]="!selectedSkill">Increase!</button>
+  </p>
+}

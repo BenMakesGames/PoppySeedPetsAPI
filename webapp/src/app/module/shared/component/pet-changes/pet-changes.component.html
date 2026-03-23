@@ -1,0 +1,36 @@
+@if(changes.food)
+{
+  <app-vague-change [change]="changes.food" label="Food" />
+}
+@if(changes.safety)
+{
+  <app-vague-change [change]="changes.safety" label="Safety" />
+}
+@if(changes.love)
+{
+  <app-vague-change [change]="changes.love" label="Love" />
+}
+@if(changes.esteem)
+{
+  <app-vague-change [change]="changes.esteem" label="Esteem" />
+}
+@if(changes.level)
+{
+  <app-vague-change [change]="changes.level" label="Level" />
+}
+@else if(changes.exp)
+{
+  <app-vague-change [change]="changes.exp" label="XP" />
+}
+@if(changes.scrollLevel)
+{
+  <app-vague-change [change]="changes.scrollLevel" label="📜" />
+}
+@if(changes.affectionLevel)
+{
+  <app-vague-change [change]="changes.affectionLevel" label="♥" />
+}
+@else if(changes.affection)
+{
+  <app-vague-change [change]="changes.affection" label="☺" />
+}

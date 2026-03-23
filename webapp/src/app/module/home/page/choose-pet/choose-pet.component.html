@@ -1,0 +1,7 @@
+<main>
+  <h2>{{ butWho }}</h2>
+  <h4>{{ chooseAPet }}</h4>
+  <div [class.disabled]="doingIt">
+    <app-select-pet (selected)="doIt($event)" />
+  </div>
+</main>

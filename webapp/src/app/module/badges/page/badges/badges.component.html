@@ -1,0 +1,38 @@
+<main>
+  <nav class="tabs-container">
+    <div class="tabs">
+      <a class="active" routerLink="/achievements">Unclaimed</a>
+      <a routerLink="/achievements/claimed">Claimed</a>
+      <a routerLink="/achievements/showcase">Showcase</a>
+      <a routerLink="/achievements/petBadges">Pet Badges</a>
+    </div>
+  </nav>
+
+  @if(!available)
+  {
+    <app-loading-throbber />
+  }
+  @else
+  {
+    <div class="achievements">
+      @for(a of available; track a.badge)
+      {
+        <div>
+          <img [style.background]="a.badge|badgeBackground" [src]="a.badge|badgeImage" alt="" aria-hidden="true" />
+          <h3>{{ a.badge|badgeTitle }}</h3>
+          <p><markdown [data]="a.badge|badgeDescription" /></p>
+          <p class="reward">Reward:</p>
+          <app-describe-trader-cost-or-yield [costOrYield]="a.reward" />
+          @if(a.done)
+          {
+            <button type="button" (click)="doClaim(a.badge)" [class.disabled]="!claimingReward.closed">Claim!</button>
+          }
+          @else
+          {
+            <app-badge-progress [progress]="a.progress" />
+          }
+        </div>
+      }
+    </div>
+  }
+</main>

@@ -1,0 +1,8 @@
+@if(!result)
+{
+  <img [src]="'/assets/images/ui/die/' + roll + '.svg'" alt="spinning die" [style.width]="size" [style.height]="size" />
+}
+@else
+{
+  <img [src]="'/assets/images/ui/die/' + result + '.svg'" [alt]="result" [style.width]="size" [style.height]="size" />
+}

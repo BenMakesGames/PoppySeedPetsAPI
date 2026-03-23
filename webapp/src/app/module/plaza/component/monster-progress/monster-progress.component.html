@@ -1,0 +1,22 @@
+<div class="container">
+  @if(monster.personalContribution)
+  {
+    <div class="personal-contribution" role="img" title="You have contributed to feeding this spirit.">
+      <i class="fa-regular fa-smile"></i><span>{{ monster.personalContribution }}</span>
+    </div>
+  }
+  <div class="progress-container" role="progressbar" [attr.aria-valuemax]="maxProgress" [attr.aria-valuenow]="monster.communityTotal">
+    <div class="progress" [style.width.%]="percent * 100"></div>
+  </div>
+  @for(milestone of monster.milestones; track $index)
+  {
+    <div class="milestone" [class.end]="milestone.value === maxProgress" [style.left.%]="milestone.value * 100 / maxProgress">
+      <div class="marker">
+        <div>{{ milestone.value|numberWithUnits:1 }}</div>
+        <button (click)="doShowItemPreview(milestone.item.name)" class="link-text">
+          <img [src]="'/assets/images/items/' + milestone.item.image + '.svg'" [alt]="milestone.item.image" />
+        </button>
+      </div>
+    </div>
+  }
+</div>

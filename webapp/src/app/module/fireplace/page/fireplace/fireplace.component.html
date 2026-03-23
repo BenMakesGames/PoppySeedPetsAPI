@@ -1,0 +1,174 @@
+<main>
+  <div [class.fireplace-with-right-rail]="showRightRail">
+    <div>
+      <h2>Fireplace</h2>
+      @if(loading)
+      {
+        <p><app-loading-throbber [randomText]="true"/></p>
+      }
+      @if(fireplace)
+      {
+        <div>
+          <p><app-fire [strength]="fireplace.heat" /></p>
+          @if(fireplace.heatDescription)
+          {
+            <p>Your <strong>{{ fireplace.heatDescription }} fire</strong> has been burning for {{ (fireplace.currentStreak * 60)|describeAge }}.</p>
+          }
+          @if(fireplace.hasReward)
+          {
+            <p>{{ naniNani }} It looks like there's something in there!
+              @if(fireplace.heatDescription)
+              {
+                Never mind the heat! Reach in and grab it!
+              }
+              @else
+              {
+                You should totally grab it!
+              }
+            </p>
+          }
+          @if(fireplace.hasReward && fireplace.heatDescription)
+          {
+            <p class="good-idea">{{ goodIdea }}</p>
+          }
+          <p class="buttons">
+            <button type="button" (click)="doFeedFire()" [class.disabled]="interactingWithFire">Add <i [class]="itemOtherPropertiesIcons.Flammable"></i></button>
+            @if(fireplace.hasReward)
+            {
+              <button type="button" (click)="doClaimReward()" [class.disabled]="interactingWithFire">Grab!</button>
+            }
+          </p>
+          <hr>
+          @if(fireplace.longestStreak > fireplace.currentStreak)
+          {
+            <p>The longest you've kept a fire going is {{ (fireplace.longestStreak * 60)|describeAge }}.</p>
+          }
+          @if(fireplace.currentStreak > 8 * 60 && fireplace.currentStreak === fireplace.longestStreak)
+          {
+            <p>This is your longest-burning fire yet!</p>
+          }
+        </div>
+      }
+    </div>
+    @if(fireplace && showRightRail)
+    {
+      <div class="helpers" [class.has-helper]="!!fireplace.helper" [class.has-whelp]="!!whelp">
+        @if(whelp)
+        {
+          <div>
+            <h3>{{ whelp.name }}</h3>
+            <div class="helper">
+              <div>
+                <app-image class="whelp" [colors]="{ colorA: whelp.colorA, colorB: whelp.colorB }" path="dragons/whelp" width="1in" height="0.6in" />
+                @if(whelp.growthPercent > 0)
+                {
+                  <app-progress-bar [percent]="whelp.growthPercent" />
+                }
+              </div>
+              <div class="buttons"><button type="button" (click)="doFeedWhelp()">Feed</button></div>
+            </div>
+          </div>
+        }
+        @if(fireplace.helper)
+        {
+          <div>
+            <h3>{{ fireplace.helper.name }}</h3>
+            <div class="helper">
+              <div>
+                <button type="button" class="link-text" (click)="doViewHelper()"><app-pet-appearance [pet]="fireplace.helper" /></button>
+              </div>
+              <div class="buttons">
+                <button type="button" (click)="doRecallHelper()" [class.disabled]="interactingWithFire">Take Home</button>
+              </div>
+            </div>
+            <p style="font-size:80%; font-style:italic; margin-top:0.5em">{{ fireplace.helper.name }} is helping keep the chimney tidy.</p>
+          </div>
+        }
+        @if(user.canAssignHelpers && !fireplace.helper && !whelp)
+        {
+          <div>
+            <h3>Helper</h3>
+            <p>No one's helping keep the chimney tidy. (A tough pet that's good at climbing would be ideal here!)</p>
+            <div class="buttons">
+              <button type="button" (click)="doAssignHelper()" [class.disabled]="interactingWithFire">Assign a Helper</button>
+            </div>
+          </div>
+        }
+        @if(showStocking)
+        {
+          <div class="stocking">
+            <h3>Stocking <small>(<button type="button" class="link-text" (click)="doCustomizeStocking()">customize</button>)</small></h3>
+            <div class="helper">
+              <div>
+                <app-image [colors]="fireplace.stocking" [path]="'stockings/' + fireplace.stocking.appearance" width="1in" height="0.6in" />
+              </div>
+              <div class="buttons"><button [class.disabled]="!lootStockingAjax.closed" type="button" (click)="doLookInStocking()">Reach Inside</button></div>
+            </div>
+          </div>
+        }
+      </div>
+    }
+  </div>
+  @if(mantle)
+  {
+    <div class="mantle">
+      <h3>{{ mantle.length }} / {{ fireplace.mantleSize }} Items</h3>
+      @if(mantle.length > 0)
+      {
+        <app-inventory-control
+          [stickingSentinelTop]="-2.5"
+          [currentLocation]="LocationEnum.Mantle"
+          [inventory]="mantle"
+          (inventoryRemoved)="doInventoryRemoved($event)"
+          [(mode)]="mode"
+          [(inventorySelected)]="inventorySelected"
+        />
+        <div class="inventory" [class.disabled]="loadingMantle">
+          @for(i of mantle; track i.id)
+          {
+            <app-inventory-item
+              [inventory]="i"
+              [attr.role]="this.mode === InventoryModeEnum.Browsing ? 'button' : 'checkbox'"
+              [attr.aria-checked]="i.selected ? 'true' : 'false'"
+              [class.selected]="i.selected"
+              [class.disabled]="i.lockedToOwner && mode === InventoryModeEnum.Selling"
+              tabindex="0"
+              (click)="doClickItem(i)"
+              (dblclick)="doDoubleClickItem(i)"
+              [showRecycleValue]="mode === InventoryModeEnum.Trashing"
+            />
+          }
+        </div>
+      }
+      @else
+      {
+        <p>There are currently no items on your Mantle.</p>
+        <p>Hey, listen! You can move items to your Mantle from home. Items on your Mantle will be visible on <a [routerLink]="[ '/poppyopedia/resident/' + user.id ]">your profile page</a>.</p>
+      }
+    </div>
+  }
+  @if(fireplace && (fireplace.hasForge || fireplace.bricks > 0))
+  {
+    <h3 style="margin-bottom:0.5rem">Add-ons</h3>
+    <div class="add-ons">
+      @if(fireplace.bricks > 0)
+      {
+        <div class="add-on">
+          <h4>{{ fireplace.bricks }} {{ fireplace.bricks == 1 ? 'Brick' : 'Bricks' }}</h4>
+          <div class="add-on-image-container">
+            <img src="/assets/images/locations/fireplace-bricks.svg" class="add-on-image" alt="" aria-hidden="true">
+          </div>
+        </div>
+      }
+      @if(fireplace.hasForge)
+      {
+        <div class="add-on">
+          <h4>Forge</h4>
+          <div class="add-on-image-container">
+            <img src="/assets/images/locations/forge.svg" class="add-on-image" alt="" aria-hidden="true">
+          </div>
+        </div>
+      }
+    </div>
+  }
+</main>

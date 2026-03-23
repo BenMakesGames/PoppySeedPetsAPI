@@ -1,0 +1,20 @@
+<div class="dialog">
+  <h4>Change Goods</h4>
+  <div class="dialog-body">
+    <p>Select the type of goods to be produced at this tile.</p>
+    <form (submit)="doChangeGood()" [class.disabled]="loading">
+      <p>
+        <label>Goods</label>
+        @for(goods of tile.availableGoods; track $index)
+        {
+          <label [for]="goods + 'Goods'" class="radio-checkbox"><input [id]="goods + 'Goods'" type="radio" name="goods" [(ngModel)]="selectedGoods" [value]="goods"> <img [src]="'/assets/images/hollow-earth/goods/' + goods + '.svg'" alt="" class="good" /> {{ goods|titlecase }}</label>
+        }
+      </p>
+      <p class="buttons">
+        <button type="submit">Change</button>
+        <button type="button" class="wire" (click)="doClose()">Cancel</button>
+      </p>
+    </form>
+
+  </div>
+</div>

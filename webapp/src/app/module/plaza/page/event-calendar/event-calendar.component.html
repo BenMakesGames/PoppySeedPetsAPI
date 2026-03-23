@@ -1,0 +1,78 @@
+<main>
+  <h2><a routerLink="/plaza">Plaza</a> &raquo; Event Calendar</h2>
+  @if(calendar == null)
+  {
+    <p><app-loading-throbber /></p>
+  }
+  @else
+  {
+    @for(year of calendar.years; track year.year)
+    {
+      <h4>{{ year.year }}</h4>
+      @for(month of year.months; track month.month)
+      {
+        <h5>{{ month.month }}</h5>
+        <div class="daysOfWeek" [style.background-image]="'url(/assets/images/calendar/' + (month.month|lowercase) + '.png)'">
+          <div>Mon</div>
+          <div>Tue</div>
+          <div>Wed</div>
+          <div>Thu</div>
+          <div>Fri</div>
+          <div>Sat</div>
+          <div>Sun</div>
+        </div>
+        <ul class="calendar">
+          @if(month.days[0].dayOfWeek > 1)
+          {
+            <li class="empty"></li>
+          }
+          @if(month.days[0].dayOfWeek > 2)
+          {
+            <li class="empty"></li>
+          }
+          @if(month.days[0].dayOfWeek > 3)
+          {
+            <li class="empty"></li>
+          }
+          @if(month.days[0].dayOfWeek > 4)
+          {
+            <li class="empty"></li>
+          }
+          @if(month.days[0].dayOfWeek > 5)
+          {
+            <li class="empty"></li>
+          }
+          @if(month.days[0].dayOfWeek > 6)
+          {
+            <li class="empty"></li>
+          }
+          @for(day of month.days; track day.date; let i = $index)
+          {
+            @if(day.holidays.length > 0)
+            {
+              <li [class.today]="day.date === calendar.today" tabindex="0" role="button" (click)="doDescribeDay(day)">
+                <span class="dayOfMonth">{{ i + 1 }}</span>
+                <div class="events">
+                  @for(holiday of day.holidays; track $index)
+                  {
+                    <img
+                      [src]="'/assets/images/calendar/holidays/' + (holiday|sluggify) + '.svg'"
+                      [alt]="holiday"
+                      [title]="holiday"
+                    />
+                  }
+                </div>
+              </li>
+            }
+            @else
+            {
+              <li [class.today]="day.date === calendar.today">
+                <span class="dayOfMonth">{{ i + 1 }}</span>
+              </li>
+            }
+          }
+        </ul>
+      }
+    }
+  }
+</main>

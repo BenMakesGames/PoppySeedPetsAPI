@@ -1,0 +1,13 @@
+table button {
+  display: block;
+  width: 100%;
+}
+
+@media (max-width:480px)
+{
+  table.affection-rewards {
+    tr, td { display: block; }
+    td:first-child { padding-top: 0.5em; }
+    td:last-child { padding-bottom: 0.5em; }
+  }
+}

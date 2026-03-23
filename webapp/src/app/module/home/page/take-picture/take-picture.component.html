@@ -1,0 +1,132 @@
+<main>
+  <div class="picture-and-controls">
+    <div class="polaroid" #polaroid>
+      <div class="scene">
+        <img #scene
+          [src]="'/assets/images/camera/backgrounds/' + background.url + '.svg'"
+          [alt]="background.description"
+
+          (mousemove)="doContinueDraggingMouse($event)"
+          (mouseup)="doStopDragging($event)"
+          (mouseleave)="doStopDragging($event)"
+
+          (touchmove)="doContinueDraggingTouch($event)"
+          (touchend)="doStopDragging($event)"
+        />
+        @for(subject of subjects; track subject.pet.id)
+        {
+          <app-pet-appearance
+            [pet]="subject.pet"
+            [style.left]="'calc(' + subject.x * 100 + '%'"
+            [style.top]="'calc(' + subject.y * 100 + '%'"
+            [size]="subject.sizeInInches + 'in'"
+            [flipped]="subject.flipX"
+            [showTool]="subject.showTool"
+            [showHat]="subject.showHat"
+            [disableAura]="!subject.showAura"
+            [disableMoonbound]="!subject.showMoonbound"
+            [disableSpiritCompanion]="!subject.showSpiritCompanion"
+            [disableEgg]="!subject.showEgg"
+            [showLunchbox]="subject.showLunchbox"
+
+            [style.pointer-events]="draggedSubject ? 'none' : 'auto'"
+            [style.transform]="'rotateZ(' + subject.angle + 'deg)'"
+            style="transform-origin: 50% 50%"
+
+            (mousedown)="doStartDragging(subject, $event.screenX, $event.screenY)"
+
+            (touchstart)="doStartDragging(subject, $event.touches[0].screenX, $event.touches[0].screenY)"
+            (touchmove)="doContinueDraggingTouch($event)"
+            (touchend)="doStopDragging($event)"
+          />
+        }
+      </div>
+      <div class="caption">
+        <input [(ngModel)]="caption" />
+      </div>
+    </div>
+
+    <div class="download">
+      <button (click)="doDownload()" [class.disabled]="downloading"><i class="fa-regular fa-file-download"></i></button>
+    </div>
+
+    @if(selectedSubject)
+    {
+      <div class="controls">
+        <h2><span style="line-break: anywhere">{{ selectedSubject.pet.name }}</span> (#{{ selectedSubject.pet.id }})</h2>
+        <div>
+          <label>Size</label>
+          <input type="range" min="0.2" max="4" step="0.1" [(ngModel)]="selectedSubject.sizeInInches" />
+        </div>
+        <div>
+          <label>Angle</label>
+          <input type="range" min="-180" max="180" step="1" [(ngModel)]="selectedSubject.angle" />
+        </div>
+        <div>
+          <label class="radio-checkbox"><input type="checkbox" [(ngModel)]="selectedSubject.flipX" name="flip_x" /> Mirror</label>
+        </div>
+        <div>
+          <label class="radio-checkbox"><input type="checkbox" [(ngModel)]="selectedSubject.showLunchbox" name="show_lunchbox" /> Lunchbox</label>
+        </div>
+        @if(selectedSubject.pet.pregnancy && selectedSubject.pet.pregnancy.eggColor)
+        {
+          <div>
+            <label class="radio-checkbox"><input type="checkbox" [(ngModel)]="selectedSubject.showEgg" name="show_egg" /> Egg</label>
+          </div>
+        }
+        @if(selectedSubject.pet.tool)
+        {
+          <div>
+            <label class="radio-checkbox"><input type="checkbox" [(ngModel)]="selectedSubject.showTool" name="show_tool" /> Tool</label>
+          </div>
+        }
+        @if(selectedSubject.pet.hat)
+        {
+          <div>
+            <label class="radio-checkbox"><input type="checkbox" [(ngModel)]="selectedSubject.showHat" name="show_hat" /> Hat</label>
+          </div>
+        }
+        @if((selectedSubject.pet.hat && selectedSubject.pet.hat.enchantment.aura) || (selectedSubject.pet.tool && selectedSubject.pet.tool.enchantment.aura))
+        {
+          <div>
+            <label class="radio-checkbox"><input type="checkbox" [(ngModel)]="selectedSubject.showAura" name="show_aura" /> Aura</label>
+          </div>
+        }
+        @if(selectedSubject.pet.spiritCompanion)
+        {
+          <div>
+            <label class="radio-checkbox"><input type="checkbox" [(ngModel)]="selectedSubject.showSpiritCompanion" name="show_spirit_companion" /> Spirit Companion</label>
+          </div>
+        }
+        @if(selectedSubject.petHasMoonbound)
+        {
+          <div>
+            <label class="radio-checkbox"><input type="checkbox" [(ngModel)]="selectedSubject.showMoonbound" name="show_moonbound" /> Moon Phase</label>
+          </div>
+        }
+        <div class="buttons" style="margin-top:0.5rem">
+          <button type="button" [class.disabled]="selectedSubject.index == subjects.length - 1" (click)="doMoveForward()">Pull Forward</button>
+          <button type="button" [class.disabled]="selectedSubject.index == 0" (click)="doMoveBack()">Push Back</button>
+          <button type="button" (click)="doRemoveSelectedSubject()">Remove</button>
+        </div>
+      </div>
+    }
+  </div>
+
+  <h2 style="padding-top:0.5rem">Choose a Setting</h2>
+  <div class="background-selector">
+    @for(b of backgrounds; track b.url)
+    {
+      <button
+        [class.selected]="background.url == b.url"
+        type="button"
+        (click)="background = b"
+      >
+        <img [src]="'/assets/images/camera/backgrounds/' + b.url + '.svg'" [alt]="b.description" />
+      </button>
+    }
+  </div>
+
+  <h2 style="padding-top:0.5rem">Add/Remove Pets</h2>
+  <app-select-pet (selected)="doAddSubject($event)" />
+</main>

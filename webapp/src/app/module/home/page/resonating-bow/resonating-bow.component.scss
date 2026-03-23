@@ -1,0 +1,22 @@
+.colors {
+  display: flex;
+  flex-direction: row;
+  gap: 0.5em;
+}
+
+button.selected {
+  outline: 2px solid rgb(var(--color-primary));
+}
+
+.old-color {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.color-circle {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  border-radius: 50%;
+}

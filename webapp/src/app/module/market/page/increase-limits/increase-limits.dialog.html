@@ -1,0 +1,112 @@
+<main>
+  <nav class="tabs-container" style="margin-bottom: 2em;">
+    <div class="tabs" role="tablist">
+      <a role="tab" routerLink="/market">Market</a>
+      <a role="tab" routerLink="/market/bids">Your Bids</a>
+      <a role="tab" class="active" routerLink="/market/manager">Argentelle</a>
+    </div>
+  </nav>
+  @if(state === 'intro')
+  {
+    <div>
+      <app-npc-dialog npc="market-fairy" name="Argentelle" [smallerImage]="true" [showBorder]="false" [removeNegativeMargins]="true">
+        @if(!marketLimitsAjax.closed)
+        {
+          <app-loading-throbber text="Just a moment, please"/>
+        }
+        @else
+        {
+          <markdown [data]="dialogText"></markdown>
+        }
+      </app-npc-dialog>
+      @if(marketLimitsAjax.closed)
+      {
+        <ul class="dialog-choices" [style.padding-bottom.rem]="dialogChoicesPaddingBottom">
+          @if(suggestBulkSelling)
+          {
+            <li><button type="button" (click)="doPurchaseBulkSelling()">"Selling items one at a time is annoying. Can't I sell multiple at once?"</button></li>
+          }
+          <li><button type="button" (click)="doIncreaseLimits()">"I was wondering if I could increase my market limits?"</button></li>
+          <li><button type="button" (click)="doGetTips()">"Have any tips on how to make a ton of money?"</button></li>
+          @if(canAsk)
+          {
+            <li><button type="button" (mouseover)="doDontAsk()" (click)="doDontAsk()" (focus)="doDontAsk()">"Oh! You're so--"</button></li>
+          }
+        </ul>
+      }
+    </div>
+  }
+  @else if(state === 'faq')
+  {
+    <div>
+      <app-npc-dialog npc="market-fairy" name="Argentelle" [smallerImage]="true" [showBorder]="false" [removeNegativeMargins]="true">
+        <p>*sigh*</p>
+        <p>If it were that easy, everyone would be rich. In which case, no one would be rich.</p>
+        <p>But I suppose I do have <em>one</em> tip. And one... clarification.</p>
+        <ol class="list">
+          @if(user|hasUnlockedFeature:'Basement')
+          {
+            <li>Tip: you can list items in your Basement for sale. I'm sure you noticed the basement can store tons of items.</li>
+          }
+          @else if(!(user|hasUnlockedFeature:'Museum'))
+          {
+            <li>Tip: you can list items in your Basement for sale. To get a Basement... it's a whole thing. Ask me again after you've found the Museum; your pets should discover it before too long...</li>
+          }
+          @else
+          {
+            <li>Tip: you can list items in your Basement for sale. If you don't have a Basement, you really ought to get one. Check at the Bookstore. You have to have donated a lot of items to the Museum before it shows up, though.</li>
+          }
+          <li>Clarification: to reduce clutter, tool bonuses and spices aren't shown, and are cleared from items once they are sold.</li>
+        </ol>
+      </app-npc-dialog>
+      <ul class="dialog-choices" [style.padding-bottom.rem]="dialogChoicesPaddingBottom">
+        <li><button type="button" (click)="doNoMoreTips()">"Hm, okay. Thanks."</button></li>
+      </ul>
+    </div>
+  }
+  @else if(state === 'increaseLimits')
+  {
+    <div>
+      <app-npc-dialog npc="market-fairy" name="Argentelle" [smallerImage]="true" [showBorder]="false" [removeNegativeMargins]="true">
+        <markdown [data]="dialogText"></markdown>
+        @if(!limits)
+        {
+          <app-loading-throbber />
+        }
+      </app-npc-dialog>
+      @if(limits)
+      {
+        <ul class="dialog-choices" [class.disabled]="givingItem">
+          @if(canGetHint)
+          {
+            <li><button type="button" (click)="doGetHint()">"How can I get one of those?"</button></li>
+          }
+          @if(canIncreaseLimit)
+          {
+            <li><button type="button" (click)="doGiveItem()">"Here you go!"</button></li>
+          }
+          <li><button type="button" (click)="doNeverMindTheLimits()">"{{ canIncreaseLimit ? 'I\'ll be back, later.' : 'Darn.' }}"</button></li>
+        </ul>
+      }
+    </div>
+  }
+  @else if(state === 'bulkSelling')
+  {
+    <div>
+      <app-npc-dialog npc="market-fairy" name="Argentelle" [smallerImage]="true" [showBorder]="false" [removeNegativeMargins]="true">
+        <p>That's a you problem more than a me problem.</p>
+        <p>*sigh*</p>
+        <p>That came out wrong. Let me try again:</p>
+        <p><em>I</em> can't do anything about the limited amenities provided by your squalid dwelling, but there <em>is</em> something you and your pets can do.</p>
+        <p>Take this Winged Key; give it to one of your pets, and-- well: figure it out yourself.</p>
+        <p>*sigh*</p>
+        <p><em>By which I mean:</em> you're a very clever human who can solve <em>mind-bending</em> puzzles all on their own and doesn't need a house fairy talking down to them.</p>
+        <p>And that's my requisite compliment for the day. One to-do item down; a few <em>hundred</em> left to go...</p>
+      </app-npc-dialog>
+      <p><small style="font-style: italic;">You got a Winged Key! (And one was donated to the Museum on your behalf, so you don't have to worry about that part!)</small></p>
+      <ul class="dialog-choices">
+        <li><button type="button" (click)="doGotWingedKey()">"Uh... thanks."</button></li>
+      </ul>
+    </div>
+  }
+</main>

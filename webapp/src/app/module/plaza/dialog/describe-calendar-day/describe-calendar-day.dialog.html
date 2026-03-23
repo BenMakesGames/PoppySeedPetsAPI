@@ -1,0 +1,13 @@
+<div class="dialog">
+  <h4>{{ date|date:'mediumDate':'UTC' }}</h4>
+  <div class="dialog-body">
+    @for(holiday of holidays; track $index)
+    {
+      <div class="holiday">
+        <img [src]="'/assets/images/calendar/holidays/' + (holiday|sluggify) + '.svg'" alt="" aria-hidden="true" />
+        <h5>{{ holiday }}</h5>
+        <app-explain-holiday [holiday]="holiday" />
+      </div>
+    }
+  </div>
+</div>

@@ -1,0 +1,90 @@
+
+ul.calendar {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+
+  > li.day-of-week {
+    text-align: center;
+    opacity: 0.5;
+    font-size: 0.875em;
+  }
+
+  > li.calendar-day {
+    position: relative;
+    border: 1px solid rgba(var(--color-text-on-content-background), 0.3333);
+    height: 4rem;
+    cursor: pointer;
+
+    .day-of-month {
+      position: absolute;
+      top: 0;
+      right: 0;
+      display: block;
+      opacity: 0.3333;
+    }
+
+    &.quantity-0
+    {
+      cursor: default;
+      .quantity {
+        background-color: rgba(var(--color-text-on-content-background), 0.2);
+      }
+    }
+
+    &.today {
+      .quantity {
+        box-shadow: 0 0 0 10px rgba(var(--color-primary), 0.5);
+      }
+    }
+
+    .quantity {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 2rem;
+      height: 2rem;
+      border-radius: 50%;
+      background-color: rgb(var(--color-link-and-button));
+      color: rgb(var(--color-text-on-primary));
+      line-height: 2rem;
+      text-align: center;
+
+      @media (max-width: 420px)
+      {
+        height: 1.5rem;
+        width: 1.5rem;
+        line-height: 1.5rem;
+        font-size: 75%;
+      }
+    }
+
+    .interestingness {
+      display: none;
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+  }
+}
+
+div > ul {
+  display: grid;
+  grid-template-columns: 3rem auto 3rem;
+  align-items: center;
+
+  .month {
+    text-align: center;
+    font-weight: var(--bold-weight);
+
+    small {
+      display: block;
+      font-weight: var(--normal-weight);
+    }
+  }
+
+  button {
+    width: 100%;
+  }
+}

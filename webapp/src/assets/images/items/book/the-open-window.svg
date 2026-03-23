@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="32" height="32" version="1.1" viewBox="0 0 8.4667 8.4667" xmlns="http://www.w3.org/2000/svg">
+ <g transform="translate(0 -288.53)">
+  <g>
+   <path d="m2.7578 289.71 0.34378-0.44397 3.69 1.5248-1.4613 5.4537-4.0338-1.0808z" fill="#3e5354" stroke="#223839" stroke-linecap="square" stroke-miterlimit="40" stroke-width=".33073" style="paint-order:markers fill stroke"/>
+   <rect transform="rotate(15)" x="77.862" y="278.6" width="4.1761" height="5.5975" fill="#5d9c9f" style="paint-order:markers fill stroke"/>
+   <path d="m5.6866 295.75-4.0463-1.034 0.3403-1.298 5.1548-3.0748" fill="#7ed3d7"/>
+  </g>
+  <path d="m3.0894 294.21-0.57631-0.15442-0.24773 0.92454" fill="none" stroke="#fff" stroke-dasharray="0.132292, 0.132292" stroke-width=".13229"/>
+  <rect transform="rotate(15)" x="79.225" y="283.04" width="2.8136" height=".6904" fill="#fff" style="paint-order:markers fill stroke"/>
+  <g fill="none">
+   <path d="m3.4224 294.34c0.012853-0.11172 0.1856-0.15183 0.22783-0.0368 0.040386 0.0722 0.041801 0.14613 0.049664 0.18788 0.019545-0.1676 0.21659-0.0907 0.32416-0.0169 0.049861 0.0944 0.13163 0.075 0.16261-0.0193 0.058916-0.0228-0.050068 0.14243 0.055551 0.0763 0.10426-0.0274 0.28752-0.0191 0.34103 0.0654-0.040564-0.0472-0.23007 0.0539-0.23007 0.0539" stroke="#453b18" stroke-linecap="round" stroke-linejoin="round" stroke-width=".13229"/>
+   <path d="m4.863 294.71c0.033413-0.0598 0.16826-0.15812 0.14976-0.0222-0.039978 0.10284 0.09103 0.16043 0.15363 0.0804 0.039656 0.11706 0.16697 0.0296 0.23146 0.10406 0.032513-2e-3 0.060967-0.0193 0.0904-0.0314" stroke="#453b18" stroke-linecap="round" stroke-linejoin="round" stroke-width=".13229"/>
+   <rect transform="rotate(15)" x="77.862" y="278.6" width="4.1761" height="5.6461" stroke="#223839" stroke-linecap="square" stroke-miterlimit="40" stroke-width=".33073" style="paint-order:markers fill stroke"/>
+  </g>
+  <g transform="matrix(2.1684 .58102 -.25882 .96593 70.898 7.895)" stroke="#fff" stroke-width=".13244">
+   <rect x="3.6144" y="291.13" width="1.2048" height="1.8899" fill="#fff" stroke="none" style="paint-order:markers fill stroke"/>
+  </g>
+  <path d="m5.1277 290.38-0.27619 1.0308 1.163 0.31164a1.3523 1.3653 15 0 0-0.88684-1.3424zm-0.22625-0.0601a1.3523 1.3653 15 0 0-1.4381 0.71889l1.162 0.31136z" fill="#fff" stroke-dasharray="0.132292, 0.132292" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="40" stroke-width=".13229" style="paint-order:markers fill stroke"/>
+ </g>
+</svg>

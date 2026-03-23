@@ -1,0 +1,23 @@
+.themes {
+  padding: 1rem 0;
+
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-column-gap: 1rem;
+  grid-row-gap: 1rem;
+
+  @media (min-width: 480px)
+  {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  @media (min-width: 840px)
+  {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+
+  @media (min-width: 1280px)
+  {
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+  }
+}

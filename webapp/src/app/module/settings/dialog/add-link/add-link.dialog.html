@@ -1,0 +1,33 @@
+<div class="dialog">
+  <h4>Add Link</h4>
+  <div class="dialog-body">
+    <form (submit)="doAdd()" [class.disabled]="saving">
+      <p>
+        <label for="website">Website</label>
+        <select [(ngModel)]="website" name="website" id="website">
+          @for(w of Object.keys(websites); track w)
+          {
+            <option [value]="w">{{ websites[w].title }}</option>
+          }
+        </select>
+        <span class="footnote">Don't see the website you want? <a href="https://docs.google.com/forms/d/e/1FAIpQLSczeBLNsktkSBbPZjyooHw5sEVJOBimJDS6xgEgIgFJvgqM8A/viewform?usp=sf_link" target="_blank">Send your suggestion!</a></span>
+      </p>
+      <p>
+        <label for="nameOrId">{{ websites[website].idName }}</label>
+        <input type="text" [placeholder]="websites[website].placeholder" [(ngModel)]="nameOrId" name="nameOrId" id="nameOrId" autocomplete="off" />
+        <app-social-link [link]="{ website: website, nameOrId: nameOrId }" [showUrl]="true" />
+      </p>
+      <p>
+        <label for="visibility">Visibility</label>
+        <select [(ngModel)]="visibility" name="visibility" id="visibility">
+          <option value="LoggedIn">Any logged-in player</option>
+          <option value="Followed">Only players I follow</option>
+        </select>
+      </p>
+      <div class="buttons">
+        <button type="submit" [class.disabled]="nameOrId.trim().length == 0">Add</button>
+        <button type="button" class="wire" (click)="doCancel()">Cancel</button>
+      </div>
+    </form>
+  </div>
+</div>

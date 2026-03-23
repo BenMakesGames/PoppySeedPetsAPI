@@ -1,0 +1,18 @@
+.seed {
+  cursor: pointer;
+}
+
+table {
+  width: 100%;
+}
+
+.quantity {
+  opacity: 0.5;
+  font-size: 80%;
+  text-align: right;
+  padding-right: 0;
+
+  + td {
+    padding-left: 0;
+  }
+}

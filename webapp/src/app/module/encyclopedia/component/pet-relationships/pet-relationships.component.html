@@ -1,0 +1,33 @@
+@if(loading)
+{
+  <p><app-loading-throbber /></p>
+}
+@else
+{
+  @if(relationships.unfilteredTotal === 0)
+  {
+    <p>This pet does not know any other pets.</p>
+  }
+  @if(relationships.pageCount > 1)
+  {
+    <app-paginator [pageCount]="relationships.pageCount" [page]="relationships.page" (pageChange)="loadPage($event)" />
+  }
+  <div style="margin-bottom:0.5rem">
+    @for(friend of relationships.results; let i = $index; track $index)
+    {
+      <app-pet-friend
+        class="friend"
+        (click)="doViewFriend(friend)"
+        tabindex="0"
+        role="button"
+        [pet]="pet"
+        [friend]="friend"
+        [showRating]="i + relationships.page * relationships.pageSize < pet.maximumFriends"
+      />
+    }
+  </div>
+  @if(relationships.pageCount > 1)
+  {
+    <app-paginator [pageCount]="relationships.pageCount" [page]="relationships.page" (pageChange)="loadPage($event)" />
+  }
+}

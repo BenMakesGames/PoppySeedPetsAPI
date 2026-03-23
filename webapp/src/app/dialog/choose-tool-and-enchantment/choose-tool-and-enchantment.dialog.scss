@@ -1,0 +1,27 @@
+.item-container {
+  position: relative;
+  height: 1.25in;
+
+  > * {
+    position: absolute;
+    display: block;
+  }
+
+  > .tool {
+    width: 1in;
+    height: 1in;
+    left: calc(50% - 0.5in);
+  }
+
+  > .bonus {
+    width: 0.5in;
+    height: 0.5in;
+    left: calc(50% + 0.5in - 0.25in);
+    top: calc(1in - 0.25in);
+  }
+}
+
+.swap {
+  display: block;
+  margin: 0 auto 0.5rem;
+}

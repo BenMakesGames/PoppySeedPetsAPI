@@ -1,0 +1,29 @@
+<div class="dialog">
+  <app-dialog-title-with-icons [icon]="seedlingIcon" iconLabel="seed" [title]="'Choose ' + (plantType === 'earth' ? 'an' : 'a') + ' ' + (plantType|titlecase) + ' Seed'" />
+  <div class="dialog-body">
+    @if(!seeds)
+    {
+      <app-loading-throbber [randomText]="true" />
+    }
+    @else if(seeds.length === 0)
+    {
+      <p>You don't have any food items at home which can be planted.</p>
+    }
+    @else
+    {
+      <table [class.disabled]="plantingSeed">
+        <tbody>
+          @for(seed of seeds; track seed.id)
+          {
+            <tr role="button" tabindex="0" (click)="doPlant(seed)" class="seed">
+              <td class="quantity">{{ seed.quantity }}&times;</td>
+              <td>
+                <app-inventory-item [inventory]="seed" />
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    }
+  </div>
+</div>

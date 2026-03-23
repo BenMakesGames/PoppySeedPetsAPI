@@ -1,0 +1,47 @@
+@if(!links)
+{
+  <p><app-loading-throbber [randomText]="true" /></p>
+}
+@else
+{
+  <div [class.disabled]="!saveAjax.closed || !searchAjax.closed">
+    <p>Want to be found on the world wide interweb tubes{{ alsoSayNet ? '... net' : '' }}? Links you add here will be visible on <a [routerLink]="'/poppyopedia/resident/' + userId">your profile</a>.</p>
+    <h4>My Links ({{ links.length }}/5)</h4>
+    @if(links.length === 0)
+    {
+      <p style="margin-bottom:1rem">You've got no links!</p>
+    }
+    @else
+    {
+      <div class="links">
+        @for(link of links; track link.id)
+        {
+          <div class="link">
+            <button type="button" class="link-text danger" (click)="doRemoveLink(link)"><i class="fa-regular fa-trash-alt"></i></button>
+            <div>
+              <app-social-link [link]="link" />
+              <div class="visibility">
+                <i class="fa-regular fa-eye" style="font-size:80%"></i>{{ ' ' }}
+                @if(link.visibility === 'LoggedIn')
+                {
+                  any logged-in player
+                }
+                @else if(link.visibility === 'Followed')
+                {
+                  followed players, only
+                }
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+
+      @if(links.length < 5)
+      {
+        <p class="buttons">
+          <button type="button" (click)="doAddLink()">+ Add</button>
+        </p>
+      }
+    }
+  </div>
+}

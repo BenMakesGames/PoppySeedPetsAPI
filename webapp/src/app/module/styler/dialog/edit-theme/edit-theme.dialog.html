@@ -1,0 +1,21 @@
+<div class="dialog">
+  <h4>{{ theme.name }}</h4>
+  <div class="dialog-body">
+    <form (submit)="doRename()" [class.disabled]="!renameSubscription.closed || !deleteSubscription.closed">
+      <h5>Rename</h5>
+      <p>
+        <label for="new-name">Name</label>
+        <input type="text" maxlength="15" name="new-name" id="new-name" autocomplete="off" [(ngModel)]="newName">
+      </p>
+      <p class="buttons">
+        <button type="submit">Rename</button>
+      </p>
+    </form>
+    <form (submit)="doDelete()" [class.disabled]="!renameSubscription.closed || !deleteSubscription.closed">
+      <h5>Delete</h5>
+      <p class="buttons">
+        <button type="submit" class="danger">Delete</button>
+      </p>
+    </form>
+  </div>
+</div>

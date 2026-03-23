@@ -1,0 +1,45 @@
+<div class="dialog">
+  <h4>{{ badge|petBadgeName }}</h4>
+  <div class="dialog-body">
+    <div class="hint">
+      <div class="hint-buttons">
+        <button type="button" role="radio" [class.checked]="hint === 'no'" [attr.aria-checked]="hint === 'no' ? 'true' : 'false'" (click)="doChangeHint('no')">Shush</button>
+        <button type="button" role="radio" [class.checked]="hint === 'yes'" [attr.aria-checked]="hint === 'yes' ? 'true' : 'false'" (click)="doChangeHint('yes')">Hint</button>
+        <button type="button" role="radio" [class.checked]="hint === 'spoil'" [attr.aria-checked]="hint === 'spoil' ? 'true' : 'false'" (click)="doChangeHint('spoil')">Spoil</button>
+      </div>
+      @if(hintText)
+      {
+        <div class="hint-text"><markdown [data]="hintText" /></div>
+      }
+    </div>
+    @if(!pets)
+    {
+      <p><app-loading-throbber [randomText]="true" /></p>
+    }
+    @else if(pets.resultCount === 0)
+    {
+      <p>No pets were found.</p>
+    }
+    @else
+    {
+      <p>{{ pets.resultCount }} of your pets {{ pets.resultCount === 1 ? 'has' : 'have' }} the {{ badge|petBadgeName}} badge.</p>
+      @if(pets.pageCount > 1)
+      {
+        <p><app-paginator [pageCount]="pets.pageCount" [page]="pets.page" (pageChange)="doChangePage($event)" /></p>
+      }
+      <div class="pets-grid" [class.disabled]="!petsSubscription.closed">
+        @for(pet of pets.results; track pet.id)
+        {
+          <a [routerLink]="[ '/poppyopedia/pet/' + pet.id ]" (click)="doCloseDialog()">
+            <app-pet-appearance [pet]="pet" size="1in" />
+            <p>{{ pet.name }}</p>
+          </a>
+        }
+      </div>
+      @if(pets.pageCount > 1)
+      {
+        <p><app-paginator [pageCount]="pets.pageCount" [page]="pets.page" (pageChange)="doChangePage($event)" /></p>
+      }
+    }
+  </div>
+</div>

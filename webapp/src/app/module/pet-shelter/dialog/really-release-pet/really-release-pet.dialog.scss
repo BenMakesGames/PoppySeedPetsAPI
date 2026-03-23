@@ -1,0 +1,14 @@
+.pet-columns {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+
+  > :first-child {
+    width: calc(1in + 0.5rem);
+  }
+}
+
+app-pet-appearance
+{
+  display: block;
+}

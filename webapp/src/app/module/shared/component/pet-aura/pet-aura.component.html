@@ -1,0 +1,14 @@
+<div
+  [style.width.%]="petScale() * 100"
+  [style.height.%]="petScale() * 100"
+>
+  <img
+    [src]="'/assets/images/auras/' + aura().image + '.svg'"
+    alt=""
+    [style.left.%]="aura().centerX * 100"
+    [style.top.%]="aura().centerY * 100"
+    [style.width.%]="aura().size * 100"
+    [style.height.%]="aura().size * 100"
+    [style.filter]="aura().hue ? 'hue-rotate(' + aura().hue + 'deg)' : ''"
+  >
+</div>

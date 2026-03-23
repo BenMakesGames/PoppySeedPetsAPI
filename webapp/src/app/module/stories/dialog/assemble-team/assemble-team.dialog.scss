@@ -1,0 +1,45 @@
+.available-pets
+{
+  > button {
+    background: transparent;
+    display: flex;
+    flex-direction: row;
+    gap: 1em;
+    text-align: left;
+    color: var(--color-text-on-content-background);
+    align-items: center;
+
+    h5 {
+      margin: 0;
+    }
+  }
+}
+
+.selected-members {
+  position: sticky;
+  top: 2em;
+  background-color: rgb(var(--color-content-background));
+  z-index: 1;
+  margin: -0.5em -1em 0;
+  padding: 0.5em 1em 0;
+  box-shadow: 0 5px 1px rgba(0, 0, 0, 0.15);
+  overflow: hidden;
+}
+
+.selected-pets {
+  display: flex;
+  flex-direction: row;
+  gap: 0.5em;
+  margin-bottom: 1em;
+  width: calc(3in + 1.5em);
+
+  > * {
+    background: rgb(var(--color-speech-bubble-background));
+    padding: 0;
+    border-radius: 50%;
+    width: 1in;
+    min-width: 1in;
+    height: 1in;
+    display: block;
+  }
+}

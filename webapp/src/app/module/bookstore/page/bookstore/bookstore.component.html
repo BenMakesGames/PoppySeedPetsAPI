@@ -1,0 +1,58 @@
+<main>
+  <h2>Bookstore</h2>
+  @if(dialogState === 'greeting')
+  {
+    <app-npc-dialog name="Hector" npc="hector"><markdown [data]="dialog" /></app-npc-dialog>
+    @if(quest)
+    {
+      <ul class="dialog-choices" [class.disabled]="waitingForAjaxResponse" style="margin-bottom:1.5em">
+        <li><button type="button" (click)="dialogState = 'quest'">Ask about reducing the price of Renaming Scrolls</button></li>
+      </ul>
+    }
+  }
+  @else if(dialogState === 'quest')
+  {
+    <app-npc-dialog name="Hector" npc="hector"><markdown [data]="quest.dialog" /></app-npc-dialog>
+    <ul class="dialog-choices" [class.disabled]="waitingForAjaxResponse" style="margin-bottom:1.5em">
+      @for(item of quest.askingFor; track $index)
+      {
+        <li><button type="button" (click)="doGiveItem(item)">Hand over the {{ item }}</button></li>
+      }
+      <li><button type="button" (click)="doQuestMaybeLater()">Maybe later...</button></li>
+    </ul>
+  }
+
+  @if(!bookstoreData)
+  {
+    <p><app-loading-throbber [randomText]="true"/></p>
+  }
+  @else
+  {
+    <nav class="tabs-container">
+      <div class="tabs" role="tablist">
+        @for(aisle of bookstoreData.aisles; track aisle.name)
+        {
+          <button role="tab" [class.active]="activeAisle === aisle" (click)="activeAisle = aisle">
+            <i [class]="aisle.icon"></i> {{ aisle.name }}
+          </button>
+        }
+      </div>
+    </nav>
+
+    <div class="shop-items" [class.disabled]="waitingForAjaxResponse">
+      @for(book of activeAisle.inventory; track $index)
+      {
+        <div class="shop-item">
+          <button class="item-image-and-name" type="button" (click)="doViewItem(book.item.name)">
+            <div class="item-image">
+              <img [src]="'/assets/images/items/' + book.item.image + '.svg'" alt="" />
+              <img src="/assets/images/ui/locked.svg" alt="locked to account" class="locked-on-purchase">
+            </div>
+            <span class="link-text">{{ book.item.name }}</span>
+          </button>
+          <button type="button" class="buy-button" (click)="doBuy(book)">Buy (<app-moneys [amount]="book.price" />)</button>
+        </div>
+      }
+    </div>
+  }
+</main>

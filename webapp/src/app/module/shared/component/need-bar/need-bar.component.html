@@ -1,0 +1,14 @@
+<label>{{ label() }}</label>
+<div class="bar-container">
+  @if(value() === 0)
+  {
+    <div class="middle-line"></div>
+  }
+  @else
+  {
+    <div class="bar"
+      [style.background-color]="color()"
+      [style.left.%]="leftPercent() * 100"
+      [style.width.%]="widthPercent() * 100"></div>
+  }
+</div>

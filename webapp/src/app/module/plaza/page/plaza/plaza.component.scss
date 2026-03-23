@@ -1,0 +1,133 @@
+main {
+  position: relative;
+  background-repeat: no-repeat;
+  background-size: cover;
+  @media (max-width: 1240px) {
+    background-size: 100% 100%;
+  }
+  @media (min-width:1240px)
+  {
+    background-position-y: 100%;
+  }
+
+  &.clear {
+    background-color: skyblue;
+    background-image: url(/assets/images/locations/plaza.svg), linear-gradient(to bottom, skyblue 0%, skyblue 50%, #d4c29a 50.5%);
+  }
+
+  &.cloudy {
+    background-color: slategray;
+    background-image: url(/assets/images/locations/plaza-cloudy.svg), linear-gradient(to bottom, slategray 0%, slategray 50%, #b6a784 50.5%);
+  }
+
+  &.rainy {
+    background-color: slategray;
+    background-image: url(/assets/images/locations/plaza-rainy.svg), linear-gradient(to bottom, #414d58 0%, slategray 50%, #979985 50.5%);
+  }
+
+  &.stormy {
+    background-color: #414d58;
+    background-image: url(/assets/images/locations/plaza-rainy.svg), linear-gradient(to bottom, #414d58 0%, #414d58 50%, #979985 50.5%);
+  }
+
+  &.snowy {
+    background-color: slategray;
+    background-image: url(/assets/images/locations/plaza-snowy.svg), linear-gradient(to bottom, #414d58 0%, slategray 50%, #b6a784 50.5%);
+  }
+}
+
+.monster {
+  max-width: 320px;
+  height: 200px;
+  box-sizing: border-box;
+  margin: 0 0 2rem auto;
+  position: relative;
+
+  display: grid;
+  gap: 1em;
+  grid-template-columns: auto max-content;
+  grid-template-areas: 'monster monster' 'progress buttons';
+  align-items: center;
+
+  > img {
+    grid-area: monster;
+    justify-self: center;
+    width: 100px;
+    margin-top: 10px;
+    opacity: 0.75;
+  }
+
+  > .buttons {
+    grid-area: buttons;
+    font-size: 80%;
+    z-index: 1; // the progress bar ends up overlapping part of the button, otherwise :|
+    flex-wrap: nowrap;
+  }
+}
+
+.tess {
+  display: grid;
+  grid-template-columns: 1fr;
+
+  > .portrait {
+    display: block;
+    width: 240px;
+    height: 240px;
+    overflow: hidden;
+    justify-self: center;
+
+    > img {
+      display: block;
+      width: 100%;
+      transform: scaleX(-1);
+    }
+  }
+
+  @media (min-width: 480px)
+  {
+    grid-template-columns: min(160px, 20vw) auto;
+    grid-gap: 1rem;
+
+    > .talking {
+      padding-top: 2rem;
+    }
+
+    > .portrait {
+      width: 100%;
+      height: unset;
+
+      > img {
+        transform: scaleX(1);
+      }
+    }
+  }
+}
+
+.rain {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+
+  background-image: url(/assets/images/locations/rain.svg);
+  background-repeat: repeat;
+  background-size: 512px 512px;
+
+  filter: blur(2px);
+
+  animation-name: rain;
+  animation-duration: 1.5s;
+  animation-iteration-count: infinite;
+  animation-timing-function: linear;
+}
+
+@keyframes rain {
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: -512px 1024px;
+  }
+}

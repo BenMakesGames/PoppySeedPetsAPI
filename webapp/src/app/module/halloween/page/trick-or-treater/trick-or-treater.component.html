@@ -1,0 +1,78 @@
+<main>
+  <h2>Trick or Treat!</h2>
+  @if(loading)
+  {
+    <p><app-loading-throbber [text]="sillyMessage" /></p>
+  }
+  @if(errors)
+  {
+    <app-errors [errors]="errors" />
+  }
+  @if(!loading)
+  {
+    @if(trickOrTreater)
+    {
+      <div class="pet">
+        <app-pet-appearance size="1in" [pet]="trickOrTreater" />
+        <div>
+          @if(trickOrTreater.costume)
+          {
+            <p>{{ trickOrTreater.name }}, dressed as {{ trickOrTreater.costume }}, came to trick-or-treat at your house!</p>
+          }
+          @else
+          {
+            <p>{{ trickOrTreater.name }} came to trick-or-treat at your house!</p>
+          }
+        </div>
+      </div>
+      <label>Candy Given Out</label>
+      <app-milestone-progress [milestones]="milestones" [currentProgress]="totalCandyGiven % 61" [maxProgress]="60" />
+      <h4>Give {{ candy.length === 0 ? 'Candy?' : 'Candy' }}</h4>
+      @if(candy.length === 0)
+      {
+        <p>... you have no candy T_T</p>
+      }
+      @else
+      {
+        <div [class.disabled]="givingCandy">
+          <div class="inventory">
+            @for(c of candy; track c.id)
+            {
+              <app-inventory-item [inventory]="c" tabindex="0" (click)="doSelectCandy(c)" [class.selected]="selected === c" />
+            }
+          </div>
+          <p class="buttons" style="margin-top: 0.5rem" [class.disabled]="!selected">
+            <button type="button" (click)="doGiveCandy(false)">Give to Pet</button>
+            @if(badTaste)
+            {
+              <button type="button" (click)="doGiveCandy(true)">Give to Giving Tree</button>
+            }
+          </p>
+          @if(!badTaste)
+          {
+            <ul class="dialog-choices">
+              <li><button type="button" class="link-text bad-taste" (click)="badTaste = true">I find this pet and/or costume name distasteful!</button></li>
+            </ul>
+          }
+          @else
+          {
+            <p class="bad-taste">Noted! Feel free to give your candy to the Giving Tree, instead! It will still count towards candies you've given out!</p>
+          }
+        </div>
+      }
+    }
+    @else
+    {
+      @if(!timeRemaining)
+      {
+        <p>No one's at the door... try again later?</p>
+      }
+      @else
+      {
+        <p>No one's at the door... but I have a sneaking suspicion that somepet <em>will</em> be, in {{ timeRemaining }}.</p>
+      }
+      <label>Candy Given Out</label>
+      <app-milestone-progress [milestones]="milestones" [currentProgress]="totalCandyGiven % 61" [maxProgress]="60" />
+    }
+  }
+</main>

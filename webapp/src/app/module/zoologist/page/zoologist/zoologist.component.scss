@@ -1,0 +1,40 @@
+.pet-appearance {
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.family {
+  font-style: italic;
+  opacity: 66.6667%;
+}
+
+@media (max-width: 1150px)
+{
+  .discovered-on {
+    display: none;
+  }
+}
+
+@media (max-width: 800px)
+{
+  .specimen-size {
+    display: none;
+  }
+}
+
+.specimen-name {
+  line-break: anywhere;
+
+  @media (max-width: 650px)
+  {
+    display: none;
+  }
+}
+
+
+@media (max-width: 400px)
+{
+  .species-name, .skin-item {
+    line-break: anywhere;
+  }
+}

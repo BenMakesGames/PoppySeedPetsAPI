@@ -1,0 +1,146 @@
+@if(!player)
+{
+  <main>
+    <div style="padding: 1em"><app-loading-throbber [randomText]="true" /></div>
+  </main>
+}
+@else
+{
+  <main>
+    <div id="map" #map style="background-color:#869d89" [class.disabled]="!hollowEarthAjax.closed">
+      <img src="/assets/images/hollow-earth/map.svg" width="1024" height="1024" alt="map of the hollow earth">
+      <button type="button" (click)="doSkipMap()" class="sr-only">Skip map</button>
+      @for(tile of hollowEarthMap; track tile.id)
+      {
+        <button
+          [title]="(tile.name ?? 'Empty space') + (tile.isTradingDepot ? ', and Trade Depot' : '') + (player.chosenPet && player.currentTile.x == tile.x && player.currentTile.y == tile.y ? ' - your pet, ' + player.chosenPet.name + ', is here' : '')"
+          type="button"
+          class="map-tile"
+          [style.background-image]="tile.name ? 'url(\'assets/images/hollow-earth/tile/' + (tile.image ? tile.image : 'no-image') + '.svg\')' : ''"
+          [style.left.px]="tile.x * 64"
+          [style.top.px]="tile.y * 64"
+          (click)="doShowTile(tile)"
+        ></button>
+        @if(tile.availableGoods && tile.availableGoods.length > 0)
+        {
+          <app-tile-goods [tile]="tile" />
+        }
+        @if(player.chosenPet && player.currentTile.x == tile.x && player.currentTile.y == tile.y)
+        {
+          <img
+            class="pet-shadow"
+            src="/assets/images/hollow-earth/shadow.svg"
+            width="32"
+            height="8"
+            [style.left.px]="player.currentTile.x * 64 + 16"
+            [style.top.px]="player.currentTile.y * 64 + 31"
+            alt=""
+          >
+          <app-pet-appearance
+            [pet]="player.chosenPet"
+            size="32px"
+            [style.left.px]="player.currentTile.x * 64 + 16"
+            [style.top.px]="player.currentTile.y * 64 + 4"
+          />
+        }
+      }
+    </div>
+    <div id="controls" #controls tabindex="0" [class.disabled]="!hollowEarthAjax.closed">
+      <div [class.disabled]="loadingResponse">
+        @if(player.showGoods)
+        {
+          <ul id="goods">
+            <li><img src="/assets/images/hollow-earth/goods/jade.svg" alt="" aria-hidden="true" /><span>{{ player.jade }} Jade</span></li>
+            <li><img src="/assets/images/hollow-earth/goods/incense.svg" alt="" aria-hidden="true" /><span>{{ player.incense }} Incense</span></li>
+            <li><img src="/assets/images/hollow-earth/goods/salt.svg" alt="" aria-hidden="true" /><span>{{ player.salt }} Salt</span></li>
+            <li><img src="/assets/images/hollow-earth/goods/amber.svg" alt="" aria-hidden="true" /><span>{{ player.amber }} Amber</span></li>
+            <li><img src="/assets/images/hollow-earth/goods/fruit.svg" alt="" aria-hidden="true" /><span>{{ player.fruit }} Fruit</span></li>
+          </ul>
+        }
+        <h5>Action</h5>
+        @if(player.action)
+        {
+          @if(player.movesRemaining > 0)
+          {
+            <p>Moves remaining: {{ player.movesRemaining }}</p>
+          }
+          @if(formattedDescription)
+          {
+            <p><markdown [data]="formattedDescription"></markdown></p>
+          }
+          @if(player.action.type === 'payItem?')
+          {
+            <p class="buttons">
+              <button type="button" (click)="doPay()">Use {{ player.action.item }}</button>
+              <button type="button" (click)="doNotPay()">Don't</button>
+            </p>
+          }
+          @else if(player.action.type === 'payMoneys?')
+          {
+            <p class="buttons">
+              <button type="button" (click)="doPay()">Give <app-moneys [amount]="player.action.amount" /></button>
+              <button type="button" (click)="doNotPay()">Don't</button>
+            </p>
+          }
+          @else if(player.action.type === 'payItemAndMoneys?')
+          {
+            <p class="buttons">
+              <button type="button" (click)="doPay()">Give <app-moneys [amount]="player.action.amount" /> and {{ player.action.item }}</button>
+              <button type="button" (click)="doNotPay()">Don't</button>
+            </p>
+          }
+          @else if(player.action.type === 'chooseOne')
+          {
+            <p class="buttons">
+              @for(button of player.action.buttons; let i = $index; track i)
+              {
+                <button type="button" (click)="doChoose(i)">{{ button }}</button>
+              }
+            </p>
+          }
+          @else
+          {
+            <p class="buttons">
+              <button type="button" (click)="doContinue()">{{ player.action.buttonText ? player.action.buttonText : 'Onward!' }}</button>
+            </p>
+          }
+        }
+        @else
+        {
+          @if(!player.chosenPet)
+          {
+            <p>It's dangerous to go alone... take a pet!</p>
+          }
+          <ul id="dice">
+            @if(isOnTradingDepot)
+            {
+              <li>
+                <a class="button" routerLink="/hollowEarth/tradeDepot"><span class="choose-pet">Trade...</span></a>
+              </li>
+            }
+            @if(isOnGoods)
+            {
+              <li>
+                <button type="button" (click)="doChangeGoods()"><span class="choose-pet">Change Goods...</span></button>
+              </li>
+            }
+            @if(dice.length > 0)
+            {
+              @for(die of dice; track $index)
+              {
+                <li [class.disabled]="!player.chosenPet">
+                  <button type="button" (click)="doRoll(die.item)"><img [src]="'/assets/images/items/' + die.image + '.svg'" [alt]="'d' + die.size"><span class="quantity">&times; {{ die.quantity }}</span></button>
+                </li>
+              }
+            }
+            @else
+            {
+              <li><div><span class="need-dice">Need <a routerLink="/poppyopedia/item" [queryParams]="{page: 0, 'filter.itemGroup': 'Die' }">dice</a>!</span></div></li>
+            }
+            <li><button type="button" (click)="doSwitchPet()"><span class="choose-pet">{{ player.chosenPet ? 'Switch Pet...' : 'Choose Pet...' }}</span></button></li>
+          </ul>
+        }
+      </div>
+    </div>
+  </main>
+}

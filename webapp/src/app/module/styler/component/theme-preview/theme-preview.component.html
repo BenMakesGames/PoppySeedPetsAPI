@@ -1,0 +1,32 @@
+<div [style.background-color]="'#' + theme.backgroundColor" [style.border-color]="'#' + theme.primaryColor" class="theme">
+  <div class="name" [style.background-color]="'#' + theme.primaryColor" [style.color]="'#' + theme.textOnPrimaryColor">
+    @if(icon)
+    {
+      <img [src]="'/assets/images/' + icon + '.svg'" class="player-icon" alt="">
+    }
+    {{ title }}
+  </div>
+  <div class="preview" [style.color]="'#' + theme.textColor">{{ themeType === ThemeTypeEnum.myCurrent ? 'You can save up to 10 themes.' : 'This is some text.' }}</div>
+  @if(themeType === ThemeTypeEnum.mySaved)
+  {
+    <p class="buttons">
+      <button type="button" (click)="doUse()" [style.background-color]="'#' + theme.linkAndButtonColor" [style.color]="'#' + theme.buttonTextColor">Use</button>
+      @if(canEdit)
+      {
+        <button type="button" (click)="doEdit()" [style.background-color]="'#' + theme.linkAndButtonColor" [style.color]="'#' + theme.buttonTextColor">Edit</button>
+      }
+    </p>
+  }
+  @else if(themeType === ThemeTypeEnum.myCurrent)
+  {
+    <p class="buttons">
+      <button type="button" (click)="doSaveAs()" [style.background-color]="'#' + theme.linkAndButtonColor" [style.color]="'#' + theme.buttonTextColor">Save As...</button>
+    </p>
+  }
+  @else if(themeType === ThemeTypeEnum.someoneElses)
+  {
+    <p class="buttons">
+      <button type="button" (click)="doUse()" [style.background-color]="'#' + theme.linkAndButtonColor" [style.color]="'#' + theme.buttonTextColor">Use</button>
+    </p>
+  }
+</div>

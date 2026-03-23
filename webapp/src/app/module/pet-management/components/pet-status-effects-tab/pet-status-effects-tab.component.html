@@ -1,0 +1,63 @@
+@if(hasVolagamy)
+{
+  <app-volagamy-row [pet]="pet" />
+
+  @if(hasStatusEffect)
+  {
+    <hr />
+  }
+}
+@else if(!hasStatusEffect)
+{
+  <p>Your pet has no status effects at this time.</p>
+}
+
+@if(hasStatusEffect)
+{
+  @for(status of pet.statuses; track $index)
+  {
+    <div class="status-effects">
+      <h4><img [src]="'/assets/images/icons/status-effect/' + STATUS_EFFECTS[status].icon + '.svg'" alt="" aria-hidden="true"><span>{{ status|titlecase }}</span></h4>
+      <p><markdown [data]="STATUS_EFFECTS[status].description" /></p>
+      @if(status === 'Anti-grav\'d' && hasPrehensileTongue)
+      {
+        <p>Thanks to their Prehensile Tongue, {{ pet.name }} is able to take advantage of the effect to reach great heights without risk of flying away!</p>
+      }
+    </div>
+  }
+  @if(pet.poisonLevel !== 'none')
+  {
+    <div class="status-effects">
+      <h4><img src="/assets/images/icons/status-effect/poison.svg" alt="" aria-hidden="true"><span>Nauseous ({{ pet.poisonLevel }})</span></h4>
+      <p>{{ pet.name }} has been consuming hard-to-process food or drink, and their stomach isn't responding well...</p>
+    </div>
+  }
+  @if(pet.alcoholLevel !== 'none')
+  {
+    <div class="status-effects">
+      <h4><img src="/assets/images/icons/status-effect/alcohol.svg" alt="" aria-hidden="true"><span>Tipsy</span></h4>
+      <p>{{ pet.name }} has been drinking. It will act as though its needs are all being met, even if they aren't. It might not perform quite as well at some tasks, though...</p>
+    </div>
+  }
+  @if(pet.hallucinogenLevel !== 'none')
+  {
+    <div class="status-effects">
+      <h4><img src="/assets/images/icons/status-effect/hallucinogen.svg" alt="" aria-hidden="true"><span>Hallucinating</span></h4>
+      <p>{{ pet.name }} has eaten something trippy, and is seeing strange things. Some are only figments of its imagination, but others are visions of the spirit world!</p>
+    </div>
+  }
+  @if(pet.craving)
+  {
+    <div class="status-effects">
+      <h4><img src="/assets/images/icons/status-effect/craving.svg" alt="" aria-hidden="true"><span>Craving: {{ pet.craving }}</span></h4>
+      <p>{{ pet.name }} is craving <a routerLink="/poppyopedia/item" [queryParams]="{'filter.itemGroup': pet.craving }" (click)="doClickLink()">{{ pet.craving }}</a>! If you feed {{ pet.name }} a food they want, they will gain a random bonus status effect!</p>
+    </div>
+  }
+  @if(pet.pregnancy)
+  {
+    <div class="status-effects">
+      <h4><img src="/assets/images/icons/status-effect/pregnant.svg" alt="" aria-hidden="true"><span>Pregnant</span></h4>
+      <p>{{ pet.pregnancy.pregnancyProgress }}</p>
+    </div>
+  }
+}

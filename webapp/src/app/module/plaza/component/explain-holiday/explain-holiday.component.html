@@ -1,0 +1,295 @@
+@if(holiday === 'Stocking Stuffing Season')
+{
+  <p>For the duration of December, a stocking on your Fireplace will have a random goody in it every day!</p>
+  <p>Well, it's not exactly "random"... just different. Although some days <em>are</em> also random... just check it out - you'll see!</p>
+  @if(!(user|hasUnlockedFeature:'Fireplace'))
+  {
+    <p>Of course, you'll need a Fireplace! A House Fairy can build one for you. If you haven't seen any House Fairies yet, don't worry: they tend to show up.</p>
+  }
+  <p>Also, don't forget to check the Bookstore. They have some seasonal stock.</p>
+  @if(!(user|hasUnlockedFeature:'Bookstore'))
+  {
+    <p>You haven't found the bookstore yet? Hm... well, your pets should find before too long!</p>
+  }
+}
+@else if(holiday === 'Halloween')
+{
+  <markdown>
+    <p>If you haven't already done so, make sure to dress up your pets in preparation for trick-or-treating, which spans three days here!</p>
+    <p>If your pets can't wear hats yet, the Tell Samarzhoustia traders give them out to anyone who trades with them during the month of October. Only one, though!</p>
+    @if(!(user|hasUnlockedFeature:'Trader'))
+    {
+      <p>Oh, hm, but you haven't met the Tell Samarzhoustia traders yet... it shouldn't be long before you're introduced. Give your pets a fishing rod. Tell Samarzhoustia is a fish nation.</p>
+    }
+    <p>One last thing: the Painter asked me to remind people that she has a special-spooky theme available for Halloween.</p>
+  </markdown>
+}
+@else if(holiday === 'Easter')
+{
+  <markdown>
+    <p>During easter, Plastic Eggs are hidden around the island.</p>
+    <p>I'm not sure who hides them, actually. Some say it's a Fish with Legs with Rabbit Ears, but that's ridiculous.</p>
+    <p>Anyway, they have goodies inside - candy, string, scrolls... the usual stuff - and Tell Samarzhoustia merchants will trade for the things, too!</p>
+    <p>Oh, and Kat - at the Florist's - is selling Chocolate Bombs, too.</p>
+    @if(!(user|hasUnlockedFeature:'Florist'))
+    {
+      <p>What? You haven't found the Florist's? Just "follow" another player to unlock it! A friend is best, but you can check out the <a [routerLink]="['/poppyopedia/resident']">resident directory</a> and just follow the first person you see, too.</p>
+    }
+  </markdown>
+}
+@else if(holiday === 'Saint Patrick\'s')
+{
+  <p>Clovers start growing around the island, and if you can get your hands - well, or your pets' hands - on a 5-leaf Clover, you'll attract Leprechauns!</p>
+  <p>The Painter has an event-themed, uh, theme for the day, too.</p>
+}
+@else if(holiday === 'Valentine\'s')
+{
+  <p>During Valentine's, pets show their affection for their owners. If you pet them, or feed them their favorite foods, you may receive <a [routerLink]="[ '/poppyopedia/item/Twu Wuv' ]">Twu Wuv</a>! As many as twice a day!</p>
+  <p>It's a key component in some hard-to-get crafts, so definitely keep the stuff around and see what your pets do with the stuff!</p>
+  <p>Finally: Kat - at the Florist's - sells Chocolate Bombs during Valentine's. And on White Day, too, actually.</p>
+  @if(!(user|hasUnlockedFeature:'Florist'))
+  {
+    <p>Wait, what? You haven't found the Florist's? Just "follow" another player to unlock it! A friend is best, but you can check out the <a [routerLink]="['/poppyopedia/resident']">resident directory</a> and just follow the first person you see, too.</p>
+  }
+}
+@else if(holiday === 'Cyber Monday' || holiday === 'Black Friday')
+{
+  <p>On Black Friday and Cyber Monday, pets in the Pet Shelter are 50% off, and have thematic colors! And some... odd names...</p>
+}
+@else if(holiday === 'Pi Day')
+{
+  <p>It's strange: the pets seem inclined to make lanterns with Pi on the side during and around Pi Day.</p>
+  <p>*shrugs*</p>
+  <p>Your guess is as good as mine, but if you'd like them to make one, keep around a <a [routerLink]="[ '/poppyopedia/item/Crooked Fishing Rod' ]">Crooked Fishing Rod</a>, some <a [routerLink]="[ '/poppyopedia/item/Paper' ]">Paper</a>, and either a <a [routerLink]="[ '/poppyopedia/item/Candle' ]">Candle</a> or a <a [routerLink]="[ '/poppyopedia/item/Jar of Fireflies' ]">Jar of Fireflies</a>.</p>
+  <p>Also, Bells sells Pi Pies for Pi Day. They're oddly tasty... definitely give the Grocer a visit and pick one (or twenty) up!</p>
+}
+@else if(holiday === 'PSP Birthday')
+{
+  <markdown>
+    @if(!(user|hasUnlockedFeature:'Park'))
+    {
+      <p>You'll need to have unlocked the Park to participate in this event! Just keep petting and praising your pet - maybe feed it some of its favorite foods - and you'll have it in no time!</p>
+    }
+    <p>During these three days, PSP Birthday Presents are handed out to participants in park events of all types! You can get up to 2 per day.</p>
+  </markdown>
+}
+@else if(holiday === 'Summer Solstice')
+{
+  <markdown>
+    <p>I hand out solstice goodie bags during the summer and winter solstices! You get two per solstice, so don't forget to claim yours when you can!</p>
+  </markdown>
+}
+@else if(holiday === 'Winter Solstice')
+{
+  <markdown>
+    <p>I hand out solstice goodie bags during the summer and winter solstices! You get two per solstice, so don't forget to claim yours when you can!</p>
+  </markdown>
+}
+@else if(holiday === 'PsyPets\' Birthday')
+{
+  <markdown>
+    <p>PsyPets, and HERG (the Hollow Earth Research Group) was started on March 21st, 2004, when researchers discovered the first portal to the Hollow Earth, and the strange animals that live there. The first such animal to be domesticated was a Desikh named Roy.</p>
+    <p>Here on Poppy Seed Pets Island, we've been continuing HERG's work, and like to recognize their early efforts.</p>
+    <p>I've arranged for the traders from Tell Samarzhoustia to offer a "Roy" Plushy. Buy as many as you like.</p>
+    @if(!(user|hasUnlockedFeature:'Trader'))
+    {
+      <p>Oh, you haven't met them yet? Equip your pet with a fishing rod. You should meet them soon enough. (They are fishpeople, after all!)</p>
+    }
+    <p>And if you're interested in checking out PsyPets, it is still available, but in a bit of a neglected state. Still, maybe you can have some fun with it: <a href="https://psypets.net/">https://psypets.net/</a>.</p>
+  </markdown>
+}
+@else if(holiday === 'Hanukkah')
+{
+  <markdown>
+    <p>A few pets in the Pet Shelter will have thematic names and colors. The items found in stockings are also sometimes different during Hanukkah.</p>
+  </markdown>
+}
+@else if(holiday === 'White Day')
+{
+  <markdown>
+    <p>A few pets in the Pet Shelter will have thematic names and colors, and... oh! And Kat sells Chocolate Bombs at the Florist!</p>
+    @if(!(user|hasUnlockedFeature:'Florist'))
+    {
+      <p>What? You haven't found the Florist's? Just "follow" another player to unlock it! A friend is best, but you can check out the <a [routerLink]="['/poppyopedia/resident']">resident directory</a> and just follow the first person you see, too.</p>
+    }
+  </markdown>
+}
+@else if(holiday === 'Talk Like a Pirate Day')
+{
+  <p>If you thought that pet shelter guy liked to give the pets up for adoption silly names, wait 'til you see what he does for Talk Like a Pirate day. He swears the pets coming from the portal also have something weird going on about them, but I dunno... seems far-fetched to me.</p>
+  <p>Oh, the Painter has a special theme available, too.</p>
+}
+@else if(holiday === 'Thanksgiving')
+{
+  <p>Oh, goodness.</p>
+  <p>So: a bunch of wild turkeys emerge from who-knows-where in the weeks leading up to Thanksgiving. If your pets can defeat them, they may drop some Smallish Pumpkin Spice, a rare spice that gives anyone who eats it an uncontrollable urge to seek out the terrible Turkeydragon!</p>
+  <p>It'd be a good idea to equip your pets accordingly...</p>
+}
+@else if(holiday === 'New Year\'s Day')
+{
+  <p>I hand out a box to every player on New Year's Day, with fireworks, and other goodies, so don't forget to stop by!</p>
+}
+@else if(holiday === '4th of July')
+{
+  <p>It's a pretty minor holiday here, but a few people like to celebrate it. I hand out a box every year to anyone who wants it, with fireworks and other goodies inside.</p>
+}
+@else if(holiday === 'Snake Day')
+{
+  <p>The Trader raises money for sea snake charities on this day. Apparently sea snakes were nearly hunted to extinction in Tell Samarzhoustia? 🤷‍♀️</p>
+}
+@else if(holiday === 'Bastille Day')
+{
+  <p>It's a pretty minor holiday here, but a few people like to celebrate it. I hand out a box every year to anyone who wants it, with fireworks and other goodies inside.</p>
+  <p>Oh! I just got the strangest feeling of déjà vu...</p>
+}
+@else if(holiday === 'Cinco de Mayo')
+{
+  <p>It's a pretty minor holiday here, but a few people like to celebrate it. I hand out a box every year to anyone who wants it, with foods and other goodies inside.</p>
+}
+@else if(holiday === 'Lunar New Year')
+{
+  <p>During the Lunar New Year event, I hand out a Lunar New Year Box to anyone who asks. One per year, of course!</p>
+  <p>Also, a bunch of money-filled envelopes appear across the island. Your pets are sure to bring a few back over the course of the week!</p>
+  @if(user|hasUnlockedFeature:'Dragon Den')
+  {
+    <p>Oh, and I see you have a full-grown Dragon! They'll sometimes give out Mooncakes in exchange for treasure.</p>
+  }
+  <p>Finally, pets in the Pet Shelter are named after the zodiac year, and have thematic colors, so check that out, too!</p>
+}
+@else if(holiday === 'Holi')
+{
+  <p>During Holi, pets in troubled relationships may make up with one another.</p>
+  <p>Keep an eye on <a [routerLink]="[ '/journal/pet' ]">your pet's activity logs</a> during this holiday!</p>
+}
+@else if(holiday === 'Wolf Moon')
+{
+  <p>During a Wolf Moon, pets participating in park events will come home with <a [routerLink]="[ '/poppyopedia/item/%22Wolf%22 Balloon' ]">"Wolf" Balloons</a>! 100% of the time!</p>
+  <p>Also, spirits and werecreatures are known to be more active during all full moons, so watch out for that! If one of your pets gets bitten by a werecreature, it may become a werecreature, itself!</p>
+  <p>It sounds dramatic, but it's really not the worst thing. There is a cure for it, though. If you're interested, I think there's a book which contains the recipe...</p>
+}
+@else if(holiday === 'Pink Moon')
+{
+  <p>During a Pink Moon, pets participating in park events will come home with <a [routerLink]="[ '/poppyopedia/item/Pink Balloon' ]">Pink Balloons</a>, and all the pets in the Pet Shelter are colored pink!</p>
+  <p>Also, spirits and werecreatures are known to be more active during all full moons, so watch out for that! If one of your pets gets bitten by a werecreature, it may become a werecreature, itself!</p>
+  <p>It sounds dramatic, but it's really not the worst thing. There is a cure for it, though. If you're interested, I think there's a book which contains the recipe...</p>
+}
+@else if(holiday === 'Blue Moon')
+{
+  <p>During a Blue Moon, pets in the Pet Shelter are blue! All of them!</p>
+  <p>Also, spirits and werecreatures are known to be more active during all full moons, so watch out for that! If one of your pets gets bitten by a werecreature, it may become a werecreature, itself!</p>
+  <p>It sounds dramatic, but it's really not the worst thing. There is a cure for it, though. If you're interested, I think there's a book which contains the recipe...</p>
+}
+@else if(holiday === 'Worm Moon')
+{
+  <p>Whenever I see "Worm Moon" I can't help but think "Worms can't moon people! They don't even have butts!"</p>
+  <p>Wait: <em>do</em> worms have butts?</p>
+  <p>...</p>
+  <p><em>Anyway,</em> nothing particular goes down on a {{ holiday }}, though spirits and werecreatures are known to be more active during all full moons, so watch out for that! If one of your pets gets bitten by a werecreature, it may become a werecreature, itself!</p>
+  <p>It sounds dramatic, but it's really not the worst thing. There is a cure for it, though. If you're interested, I think there's a book which contains the recipe...</p>
+}
+@else if(holiday === 'Flower Moon')
+{
+  <p>During a Flower Moon, the Florist has a sale on Flowerbombs. If you've never tossed a Flowerbomb before, this is a great time to try it!</p>
+  @if(!(user|hasUnlockedFeature:'Florist'))
+  {
+    <p>What? You haven't found the Florist's? Just "follow" another player to unlock it! A friend is best, but you can check out the <a [routerLink]="['/poppyopedia/resident']">resident directory</a> and just follow the first person you see, too.</p>
+  }
+  <p>Also, spirits and werecreatures are known to be more active during all full moons, so watch out for that! If one of your pets gets bitten by a werecreature, it may become a werecreature, itself!</p>
+  <p>It sounds dramatic, but it's really not the worst thing. There is a cure for it, though. If you're interested, I think there's a book which contains the recipe...</p>
+}
+@else if(holiday === 'Corn Moon')
+{
+  <p>Nothing particular goes down on a {{ holiday }}... though some people swear there's more Corn and less Wheat around during one? I dunno.</p>
+  <p>For sure, though, spirits and werecreatures are known to be more active during all full moons, so watch out for that! If one of your pets gets bitten by a werecreature, it may become a werecreature, itself!</p>
+  <p>It sounds dramatic, but it's really not the worst thing. There is a cure for it, though. If you're interested, I think there's a book which contains the recipe...</p>
+}
+@else if(holiday === 'The Leonids Meteor Shower')
+{
+  <markdown>
+    <p>The Leonids meteor shower should be relatively visible during this period, even to the naked eye! If you can, try to find a good spot to watch the meteors! IRL!</p>
+    <p>Even if you aren't able to, your pets may find some interesting stuff during this period of increased astronomical - and astromagical - activity...</p>
+  </markdown>
+}
+@else if(holiday === 'April Fools\'')
+{
+  <markdown>
+    <p>Kat - the Florist - sells Flowerbombs at reduced price, as well as Glitter Bombs, "and other festive items", as she described it to me.</p>
+    @if(!(user|hasUnlockedFeature:'Florist'))
+    {
+      <p>I see you haven't found the Florist's yet. Fortunately, it's pretty easy: just "follow" another player! A friend is best, but you can also check out the <a [routerLink]="['/poppyopedia/resident']">resident directory</a> and just follow the first person you see.</p>
+      <p>Oh, and be careful while on the internet on April Fools'. People tend to get a little... <em>over-excited</em>.</p>
+    }
+    @else
+    {
+      <p>It seems she has a mischievous side, after all...</p>
+      <p>Oh, that reminds me: careful while on the internet on April Fools'. People tend to get a little... <em>over-excited</em>.</p>
+    }
+  </markdown>
+}
+@else if(holiday === 'Earth Day')
+{
+  <markdown>
+    <p>Around Earth Day, I plant new trees around the island. If you'd like to help, I can give you a couple seeds between the 20th and 22nd. Once you've got it fully grown, we can plant it together!</p>
+  </markdown>
+}
+@else if(holiday === 'Noombat Day')
+{
+  <markdown>
+    <p>For some reason, on this day every year, tons of Noombats show up; the Pet Shelter is <em>swarmed</em> with the critters!</p>
+  </markdown>
+}
+@else if(holiday === 'Jelephant Day')
+{
+  <markdown>
+    <p>The island recognizes Jelephant Day on August 12th to celebrate the discovery of the Jelephant species. There isn't really a big event about it, or anything, but Bells makes it a point to sell Jelephant-shaped cookies at the Grocer, at least.</p>
+  </markdown>
+}
+@else if(holiday === 'Juramaia Day')
+{
+  <markdown>
+    <p>The discovery of Juramaia was first published in August 25th of 2011, the same date they began coming through the portal in droves. The timing is too perfect to be coincidence - metaphysicists are divided on which of the two events caused the other.</p>
+    <p>Whatever the case, you can expect oodles of the things to show up in the Pet Shelter every August 25th.</p>
+  </markdown>
+}
+@else if(holiday === 'Awa Odori')
+{
+  <markdown>
+    <p>Oh man! What <em>doesn't</em> happen?!</p>
+    <p>Your pets are going to be dancing like crazy with one another! Like, <em>all the time!</em> And if for some reason "dancing all the time" isn't enough dancing for you, Bells, at the Grocer, is selling "Odori 0.0%", which induces dancing in anyone who drinks it... <em>somehow!</em></p>
+    <p>I've also got an Awa Odori Box for you, of course. It contains a traditional Amigasa hat, and a Behatting Scroll, so your pets can at least be appropriately dressed for the occasion!</p>
+    <p><small>(Four whole days of dancing... I'm exhausted just thinking about it!)</small></p>
+  </markdown>
+}
+@else if(holiday === '8')
+{
+  <markdown>
+    <p>On December 1st, 2023, HERG researches implemented something called "PHP 8". I'm not a... computer scientist, or whatever, myself, but apparently this PHP thing caused some issues.</p>
+    <p>Also, these golden 8 things showed up, and keep showing up every year this time, so... have one, I guess?? I don't need 'em, at any rate.</p>
+  </markdown>
+}
+@else if(holiday === 'Leap Day')
+{
+  <markdown>
+    <p>There are a lot of rumors surrounding leap day. Some people say it always rains on a leap day, others go on to say frogs appear in the rain, dancing with eggs on their heads. I once heard a rumor that if you talk to a walnut on a leap day, your words will be carried to the world of the dead.</p>
+    <p>So I'm not really sure what to tell you. Do some exploring that day; see what you find.</p>
+  </markdown>
+}
+@else if(holiday === 'Creepy Mask Day')
+{
+  <p>Apparently the trader has some creepy masks to trade with players on this day.</p>
+  @if(!(user|hasUnlockedFeature:'Trader'))
+  {
+    <p>Oh, hm, but you haven't met the Tell Samarzhoustia traders yet... it shouldn't be long before you're introduced. Give your pets a fishing rod. Tell Samarzhoustia is a fish nation.</p>
+  }
+}
+@else if(holiday === 'Apricot Festival')
+{
+  <p>It seems like everyone on the island has something for the Apricot Festival: the bookstore, the grocer, the florist... even the bees seem a little different, don't you think?</p>
+  <p>Check everywhere!</p>
+}
+
+@if([ 'Snow Moon', 'Strawberry Moon', 'Buck Moon', 'Sturgeon Moon', 'Hunter\'s Moon', 'Beaver Moon', 'Cold Moon' ].indexOf(holiday) >= 0)
+{
+  <p>Nothing particular goes down on a {{ holiday }}, though spirits and werecreatures are known to be more active during all full moons, so watch out for that! If one of your pets gets bitten by a werecreature, it may become a werecreature, itself!</p>
+  <p>It sounds dramatic, but it's really not the worst thing. There is a cure for it, though. If you're interested, I think there's a book which contains the recipe...</p>
+}

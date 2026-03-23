@@ -1,0 +1,39 @@
+<div class="dialog">
+  <h4>{{ tile.name ? tile.name : 'Empty space...' }}</h4>
+  <div class="dialog-body">
+    @if(tile.author)
+    {
+      @if(tile.author.id)
+      {
+        <p>Written by <a (click)="doClose()" [routerLink]="'/poppyopedia/resident/' + tile.author.id">{{ tile.author.name }}</a>.</p>
+      }
+      @else
+      {
+        <p>Written by {{ tile.author.name }}.</p>
+      }
+    }
+    <div [class.disabled]="!deleteTileSubscription.closed">
+      @if(tile.fixed)
+      {
+        <p>This tile cannot be replaced or removed.</p>
+      }
+      @else
+      {
+        <p class="tags">
+          <b>Terrain:</b>{{ ' ' }}<ng-container *ngFor="let type of tile.types; let isLast = last">{{ type }}<ng-container *ngIf="!isLast">, </ng-container></ng-container>
+        </p>
+        <p class="buttons" [class.disabled]="!canEdit" [class.cannotEdit]="!canEdit">
+          <button type="button" (click)="doPlaceTile()">{{ tile.name ? 'Replace Tile' : 'Place Tile' }}</button>
+          @if(tile.name)
+          {
+            <button type="button" (click)="doClearTile()">Clear Space</button>
+          }
+        </p>
+        @if(!canEdit)
+        {
+          <p><small>You gotta' finish your current adventure before you can change the map...</small></p>
+        }
+      }
+    </div>
+  </div>
+</div>

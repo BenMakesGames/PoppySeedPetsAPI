@@ -1,0 +1,34 @@
+<main>
+  <h2>Transmigration Serum</h2>
+
+  @if(state === 'findPet')
+  {
+    <div [class.disabled]="loading">
+      <h4>Which Pet?</h4>
+      <app-select-pet (selected)="doShowInject($event)" />
+    </div>
+  }
+  @else if(state === 'injectPet')
+  {
+    <div [class.disabled]="loading">
+      <h4>Transmigrate {{ pet.name }} Into...</h4>
+      @if(possiblePets.length === 0)
+      {
+        <p>There are no species that {{ pet.name }} can transmigrate into.</p>
+      }
+      @else
+      {
+        <div class="species">
+          @for(newPet of possiblePets; track $index)
+          {
+            <div (click)="doInject(newPet.species)" tabindex="0">
+              <app-pet-appearance [pet]="newPet" size="1in" [showTool]="false" [showHat]="false" />
+              <span class="link-text">{{ newPet.species.name }}</span>
+            </div>
+          }
+        </div>
+      }
+      <p><button type="button" (click)="doCancelInject()">Wait, no, not {{ pet.name }}...</button></p>
+    </div>
+  }
+</main>

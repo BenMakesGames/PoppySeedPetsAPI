@@ -1,0 +1,28 @@
+.items {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(155px, 1fr));
+  gap: 1rem;
+  margin-bottom: 0.5rem;
+
+  > a {
+    text-decoration: none;
+    color: rgb(var(--color-text-on-content-background));
+    text-align: center;
+    background-color: rgb(var(--color-speech-bubble-background));
+    padding: 0.5rem;
+
+    img
+    {
+      width: 0.5in;
+      height: 0.5in;
+      display: block;
+      margin: 0 auto;
+    }
+
+    .family {
+      font-size: 80%;
+      font-style: italic;
+      opacity: 0.5;
+    }
+  }
+}

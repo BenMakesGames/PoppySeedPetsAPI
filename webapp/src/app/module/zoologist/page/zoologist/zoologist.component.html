@@ -1,0 +1,134 @@
+<main>
+  <h2>Zoologist</h2>
+  <app-npc-dialog npc="rue" name="Rue">
+    @if(dialog === 'intro')
+    {
+      <p>Hello! Welcome, welcome! My name is Rue; I'm a zoologist here at HERG.</p>
+      <p>My job is to catalog the DNA of every species in the Hollow Earth. After all, who knows what new medical breakthroughs, or other discoveries, might be lying within these creatures!</p>
+      <p>I'd love to get some small samples from your pets, and any other species you happen upon.</p>
+    }
+    @else if(dialog === 'welcome')
+    {
+      @if(!results)
+      {
+        <p>Welcome back! <small>Let me just check my notes here, real quick...</small></p>
+      }
+      @else if(results.unfilteredTotal === 0)
+      {
+        <p>Welcome back! I'm ready to get started when you are!</p>
+      }
+      @else
+      {
+        <p>Welcome back! We've got {{ results.unfilteredTotal }} species cataloged so far - thanks for your help!</p>
+      }
+    }
+    @else if(dialog === 'integument')
+    {
+      <p>Oh, that's the natural... covering of the species. You know: Feathers, Scales... that kind of thing.</p>
+      <p>If you happen to get a pet that sheds, you should expect to find some of its integument in your house from time to time.</p>
+    }
+    @else if(dialog === 'replace')
+    {
+      <p>No problem! Select any of the entries below.</p>
+    }
+  </app-npc-dialog>
+  <ul class="dialog-choices" [class.disabled]="replacing">
+    <li><a routerLink="/zoologist/showSpecies" class="button">"I have a new species to show you!"</a></li>
+    @if(results && results.unfilteredTotal > 0)
+    {
+      @if(dialog !== 'integument')
+      {
+        <li><button (click)="dialog = 'integument'">"What's an... 'integument'?"</button></li>
+      }
+      @if(dialog !== 'replace')
+      {
+        <li><button (click)="dialog = 'replace'">"I'd like to update one of the entries with a new specimen!"</button></li>
+      }
+      @else
+      {
+        <li><button (click)="dialog = 'welcome'">"All done!"</button></li>
+      }
+    }
+  </ul>
+  @if(!results)
+  {
+    <app-loading-throbber />
+  }
+  @else if(results.resultCount === 0)
+  {
+    <p style="font-style:italic;">You haven't shown the Zoologist any species yet...</p>
+  }
+  @else
+  {
+    @if(results.pageCount > 1)
+    {
+      <p>
+        <select [(ngModel)]="params.orderBy" (change)="doChangeSort()">
+          <option value="discoveredOn">Newest First</option>
+          <option value="speciesName">Alphabetical</option>
+        </select>
+      </p>
+      <p [class.disabled]="replacing"><app-url-paginator [pageCount]="results.pageCount" [page]="page" [params]="params" path="/zoologist" /></p>
+    }
+    @if(!resultsSubscription.closed)
+    {
+      <p><app-loading-throbber [randomText]="true"/></p>
+    }
+    @else
+    {
+      <table>
+        <thead>
+          <tr>
+            <th class="pet-appearance"></th>
+            <th class="species-name">Species</th>
+            @if(dialog === 'replace')
+            {
+              <th></th>
+            }
+            @else
+            {
+              <th class="skin-item">Integument</th>
+              <th class="specimen-name">Specimen Name</th>
+              <th class="specimen-size">Specimen Size</th>
+              <th class="discovered-on">Cataloged On</th>
+            }
+          </tr>
+        </thead>
+        <tbody>
+          @for(pet of results.results; track pet.species.id)
+          {
+            <tr>
+              <td class="pet-appearance"><app-pet-appearance [pet]="pet" /></td>
+              <td class="species-name">
+                <a [routerLink]="'/poppyopedia/species/' + pet.species.name">{{ pet.species.name }}</a>
+                <div class="family">{{ pet.species.family }}</div>
+              </td>
+              @if(dialog === 'replace')
+              {
+                <td>
+                  <button type="button" (click)="doReplaceEntry(pet.species.id)" [class.disabled]="replacing">Update</button>
+                </td>
+              }
+              @else
+              {
+                <td class="skin-item"><a [routerLink]="'/poppyopedia/item/' + pet.species.sheds.name">{{ pet.species.sheds.name }}</a></td>
+                <td class="specimen-name">{{ pet.petName}}</td>
+                <td class="specimen-size">{{ (pet.scale / 10)|number:'0.1' }}</td>
+                <td class="discovered-on"><app-date-and-time [dateString]="pet.discoveredOn" /></td>
+              }
+            </tr>
+          }
+        </tbody>
+      </table>
+    }
+    @if(results.pageCount > 1)
+    {
+      <p [class.disabled]="replacing">
+        @if(resultsSubscription.closed)
+        {
+          <app-url-paginator [pageCount]="results.pageCount" [page]="page" [params]="params" path="/zoologist" />
+        }
+      </p>
+    }
+  }
+</main>

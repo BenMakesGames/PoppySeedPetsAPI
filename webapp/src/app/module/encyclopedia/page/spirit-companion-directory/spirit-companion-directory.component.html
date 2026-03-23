@@ -1,0 +1,46 @@
+<main>
+  <h2><a [routerLink]="['/poppyopedia']">Poppyopedia</a> » Spirit Companions</h2>
+  @if(!results)
+  {
+    <div><app-loading-throbber /></div>
+  }
+  @else
+  {
+    <p>Found {{ results.resultCount }} {{ results.resultCount === 1 ? 'spirit companion' : 'spirit companions' }}.</p>
+    <p><app-paginator [(page)]="page" [pageCount]="results.pageCount" (change)="doSearch()"/></p>
+    <table [class.disabled]="!searchAjax.closed">
+      <thead>
+        <tr>
+          <th></th>
+          <th>Name</th>
+          <th>Star</th>
+          <th>Pet</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for(spiritCompanion of results.results; track spiritCompanion.id)
+        {
+          <tr>
+            <td>
+              <img [src]="'/assets/images/companions/' + spiritCompanion.image + '.svg'" class="spirit-companion" [alt]="spiritCompanion.image" />
+            </td>
+            <td>
+              {{ spiritCompanion.name }}
+              <small>#{{ spiritCompanion.id }}</small>
+            </td>
+            <td>
+              {{ spiritCompanion.star }}
+            </td>
+            <td>
+              <a [routerLink]="[ '/poppyopedia/pet/' + spiritCompanion.pet.id ]">
+                {{ spiritCompanion.pet.name }}
+                <small>#{{ spiritCompanion.pet.id }}</small>
+              </a>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+    <p><app-paginator [(page)]="page" [pageCount]="results.pageCount" (change)="doSearch()"/></p>
+  }
+</main>

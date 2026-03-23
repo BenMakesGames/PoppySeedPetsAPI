@@ -1,0 +1,22 @@
+:host {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+  background-color: rgb(var(--color-input-background));
+  border-radius: 9999px;
+  font-size: 80%;
+
+  > * {
+    color: rgb(var(--color-input-foreground));
+    padding: 0.25rem;
+  }
+
+  > button {
+    padding-right: 0.5rem;
+  }
+
+  > .label {
+    opacity: 0.6667;
+    padding-left: 0.5rem;
+  }
+}

@@ -1,0 +1,22 @@
+<main>
+  <h2>Scroll of Illusions</h2>
+
+  @if(state === 'findPet')
+  {
+    <div>
+      <h4>Whose Tool Will Be Enchanted?</h4>
+      <app-select-pet (selected)="doSelectPet($event)" />
+    </div>
+  }
+  @else if(state === 'chooseAppearance')
+  {
+    <div>
+      <h4>What Appearance Should {{ pet.name }}'s {{ pet.tool.item.name }} Take?</h4>
+      <app-pet-appearance [pet]="pet" />
+      <p style="font-size:80%;margin-top:1rem;">(Only items you've donated to <a routerLink="/museum">the Museum</a> may be selected.)</p>
+      <div [class.disabled]="enchanting">
+        <app-find-item-by-name (valueChange)="doEnchant($event)" />
+      </div>
+    </div>
+  }
+</main>

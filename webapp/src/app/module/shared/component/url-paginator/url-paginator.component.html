@@ -1,0 +1,16 @@
+<span>Page</span>
+@for(p of pages; let i = $index; track i)
+{
+  @if(p === null)
+  {
+    <span class="page">&ctdot;</span>
+  }
+  @else if(p === page)
+  {
+    <span class="page current">{{ p + 1 }}</span>
+  }
+  @else
+  {
+    <a class="page clickable" [routerLink]="[ path ]" [queryParams]="queryParams[i]">{{ queryParams[i].page + 1 }}</a>
+  }
+}

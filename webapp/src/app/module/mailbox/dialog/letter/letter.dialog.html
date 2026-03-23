@@ -1,0 +1,15 @@
+<div class="dialog">
+  <h4>{{ letter.letter.title }}</h4>
+  <div class="dialog-body">
+    <p class="comment">
+      {{ letter.comment }}
+      @if(letter.letter.attachment)
+      {
+        There was <a [routerLink]="'/poppyopedia/item/' + letter.letter.attachment.name ">{{ letter.letter.attachment.nameWithArticle }}</a> attached to the letter, which was dropped off at your house.
+      }
+    </p>
+    <hr />
+    <markdown [data]="letter.letter.body"></markdown>
+    <p style="text-align: right; font-style: italic">&mdash; {{ letter.letter.sender }}</p>
+  </div>
+</div>

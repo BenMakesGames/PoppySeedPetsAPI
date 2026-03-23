@@ -1,0 +1,11 @@
+<div class="container">
+  <div class="progress-container" role="progressbar" [attr.aria-valuemax]="maxProgress" [attr.aria-valuenow]="currentProgress">
+    <div class="progress" [style.width.%]="percent * 100"></div>
+  </div>
+  @for(milestone of milestones; track $index)
+  {
+    <div class="milestone" [class.end]="milestone === maxProgress" [style.left.%]="milestone * 100 / maxProgress">
+      <span>{{ milestone|numberWithUnits:0 }}</span>
+    </div>
+  }
+</div>

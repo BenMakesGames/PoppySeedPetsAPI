@@ -1,0 +1,69 @@
+<div class="dialog">
+  <h4>
+    @if(bonus && !bonus.isSuffix)
+    {
+      <em>{{ bonus.name }} </em>
+    }
+    {{ itemName }}
+    @if(bonus && bonus.isSuffix)
+    {
+      <em> {{ bonus.name }}</em>
+    }
+  </h4>
+  <div class="dialog-body">
+    <ul class="list">
+      @if(showMarketSearch)
+      {
+        <li><a [routerLink]="[ '/market' ]" [queryParams]="{ 'filter.name': itemName }" (click)="doCloseDialog()">Search the Market</a></li>
+      }
+      @if(showBasementSearch)
+      {
+        <li><a [routerLink]="[ '/basement' ]" [queryParams]="{ 'filter.name': itemName }" (click)="doCloseDialog()">Search your Basement</a></li>
+      }
+    </ul>
+    @if(!item)
+    {
+      <p><app-loading-throbber/></p>
+    }
+    @else
+    {
+      @if(showMarketHistory)
+      {
+        <app-item-price-history-from-api [itemId]="item.id" />
+      }
+      @if(spice && bonus)
+      {
+        <p style="font-weight:bold;">The above prices are for {{ item.nameWithArticle ? item.nameWithArticle : item.name }} without the "{{ bonus.name }}" bonus or "{{ spice.name }}" spice! Histories for items with bonuses and/or spices are not available.</p>
+      }
+      @if(!spice && bonus)
+      {
+        <p style="font-weight:bold;">The above prices are for {{ item.nameWithArticle ? item.nameWithArticle : item.name }} without the "{{ bonus.name }}" bonus! Histories for items with bonuses are not available.</p>
+      }
+      @if(spice && !bonus)
+      {
+        <p style="font-weight:bold;">The above prices are for {{ item.nameWithArticle ? item.nameWithArticle : item.name }} without the "{{ spice.name }}" spice! Histories for items with spices are not available.</p>
+      }
+      <app-item-details [item]="item" (clickedLink)="doCloseDialog()" />
+    }
+    @if(bonus)
+    {
+      <h4>Bonus on Item: {{ bonus.name }}</h4>
+      <ul class="list" style="margin-bottom: 0.5rem">
+        @for(modifier of bonus.effects.modifiers; track $index)
+        {
+          <li><span [class.loss]="modifier.startsWith('-')" [class.gain]="!modifier.startsWith('-')">{{ modifier }}</span></li>
+        }
+      </ul>
+    }
+    @if(spice)
+    {
+      <h4>Spice on Item: {{ spice.name }}</h4>
+      <ul class="list" style="margin-bottom: 0.5rem">
+        @for(modifier of spice.effects.modifiers; track $index)
+        {
+          <li><span [class.loss]="modifier.startsWith('-')" [class.gain]="!modifier.startsWith('-')">{{ modifier }}</span></li>
+        }
+      </ul>
+    }
+  </div>
+</div>

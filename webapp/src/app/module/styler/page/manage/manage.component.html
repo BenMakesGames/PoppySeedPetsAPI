@@ -1,0 +1,27 @@
+<main>
+  <nav class="tabs-container">
+    <div class="tabs">
+      <a [routerLink]="['/painter']">Painter</a>
+      <a class="active" [routerLink]="['/painter/manage']">My Themes</a>
+      <a [routerLink]="['/painter/find']">Player Themes</a>
+      <a [routerLink]="['/painter/builtIn']">Built-in Themes</a>
+    </div>
+  </nav>
+  @if(!getThemesSubscription.closed)
+  {
+    <p><app-loading-throbber/></p>
+  }
+  @else if(themes.length === 0)
+  {
+    <p>Save your current theme with the Painter before using this page.</p>
+  }
+  @else
+  {
+    <app-theme-grid [class.disabled]="!useThemeSubscription.closed">
+      @for(theme of themes; track theme.id)
+      {
+        <app-theme-preview [theme]="theme" (use)="doUse(theme)" (edit)="doEdit(theme)" (saveAs)="doSaveTheme()" />
+      }
+    </app-theme-grid>
+  }
+</main>

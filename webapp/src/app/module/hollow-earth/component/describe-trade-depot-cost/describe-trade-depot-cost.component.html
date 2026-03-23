@@ -1,0 +1,22 @@
+<ul>
+  @if(cost.jade)
+  {
+    <li><img src="/assets/images/hollow-earth/goods/jade.svg" alt="" aria-hidden="true" /> {{ cost.jade * quantity }} Jade</li>
+  }
+  @if(cost.incense)
+  {
+    <li><img src="/assets/images/hollow-earth/goods/incense.svg" alt="" aria-hidden="true" /> {{ cost.incense * quantity }} Incense</li>
+  }
+  @if(cost.salt)
+  {
+    <li><img src="/assets/images/hollow-earth/goods/salt.svg" alt="" aria-hidden="true" /> {{ cost.salt * quantity }} Salt</li>
+  }
+  @if(cost.amber)
+  {
+    <li><img src="/assets/images/hollow-earth/goods/amber.svg" alt="" aria-hidden="true" /> {{ cost.amber * quantity }} Amber</li>
+  }
+  @if(cost.fruit)
+  {
+    <li><img src="/assets/images/hollow-earth/goods/fruit.svg" alt="" aria-hidden="true" /> {{ cost.fruit * quantity }} Fruit</li>
+  }
+</ul>

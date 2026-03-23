@@ -1,0 +1,43 @@
+<div class="dialog">
+  <h4>Feed {{ monster.type|theSpiritName }}</h4>
+  <div class="dialog-body with-sticky-buttons">
+    @if(foods === null)
+    {
+      <p><app-loading-throbber [randomText]="true"/></p>
+    }
+    @else if(foods.length === 0)
+    {
+      <p>There are no items in your house that interest this creature.</p>
+    }
+    @else
+    {
+      <div style="position: relative;" [class.disabled]="loading">
+        <div class="buttons sticky">
+          <button type="button" (click)="doFeedMonster()" [class.disabled]="numSelected === 0">Feed</button>
+          @if(numSelected > 0)
+          {
+            <span>{{ numSelected }} selected</span>
+          }
+        </div>
+        <table style="width:100%">
+          <tbody>
+            @for(food of foods; track food.id)
+            {
+              <tr
+                tabindex="0"
+                (click)="doSelectFood(food)"
+                (dblclick)="doDoubleClickItem(food)"
+                [class.selected]="selected[food.id]"
+                role="checkbox"
+                [attr.aria-checked]="selected[food.id] ? 'true' : 'false'"
+              >
+                <td><app-inventory-item [inventory]="food" /></td>
+                <td class="rating">{{ food.points }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </div>
+</div>

@@ -1,0 +1,13 @@
+<div class="dialog">
+  <h4>{{ date|date:'yyyy-MM-dd':'UTC' }}</h4>
+  <div class="dialog-body">
+    @if(!logs)
+    {
+      <p><app-loading-throbber /></p>
+    }
+    @else
+    {
+      <app-pet-activity-log-table [logs]="logs.results" />
+    }
+  </div>
+</div>

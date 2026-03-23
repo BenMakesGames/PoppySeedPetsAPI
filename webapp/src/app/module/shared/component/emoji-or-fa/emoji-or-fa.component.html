@@ -1,0 +1,9 @@
+@let iconString = icon();
+@if(iconString.startsWith('fa'))
+{
+  <i [class]="iconString"></i>
+}
+@else
+{
+  {{ iconString }}
+}

@@ -1,0 +1,31 @@
+<main>
+  <h2><a routerLink="/library">Library</a> » ★Kindred Stories</h2>
+  @if(!stories)
+  {
+    <app-loading-throbber />
+  }
+  @else
+  {
+    <div class="stories">
+      @for(s of stories.results; track s.id)
+      {
+        <div>
+          <div>
+            <a [routerLink]="'/stories/' + s.id"><img [src]="'/assets/images/star-kindred/' + s.releaseYear + '/' + s.releaseMonth + '/thumbnail.svg'" [alt]="'Thumbnail for ' + s.title"></a>
+            <div class="buttons">
+              <a [routerLink]="'/stories/' + s.id" class="button">View</a>
+            </div>
+          </div>
+          <div>
+            <h4>{{ s.title }}</h4>
+            @if(s.releaseYear > 0)
+            {
+              <small>Released {{ months[s.releaseMonth] }}, {{ s.releaseYear }}</small>
+            }
+            <markdown [data]="s.summary"></markdown>
+          </div>
+        </div>
+      }
+    </div>
+  }
+</main>

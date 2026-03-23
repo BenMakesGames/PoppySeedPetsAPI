@@ -1,0 +1,27 @@
+h4 {
+  display: flex;
+  flex-direction: row;
+  gap: 1em;
+
+  > .fave {
+    margin-left: auto;
+    color: rgb(var(--color-text-on-primary));
+  }
+}
+
+section + section {
+  margin-top: 0.5rem;
+}
+
+ul.cost-or-yield-list {
+  margin-left: 0;
+  > li {
+    display: flex;
+
+    &::before {
+      content: '•';
+      width: 1.5rem;
+      text-align: center;
+    }
+  }
+}

@@ -1,0 +1,36 @@
+:host {
+  display: block;
+  z-index: var(--z-index-nav);
+  cursor: pointer;
+  background-color: rgba(0, 0, 0, 0.6667);
+
+  transition: background-color 0.3s ease;
+
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+}
+
+#snow {
+  background-repeat: repeat;
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  opacity: 0.3333;
+
+  background-image: url('/assets/images/ui/nav-weather/snow-1.png'), url('/assets/images/ui/nav-weather/snow-2.png'), url('/assets/images/ui/nav-weather/snow-3.png');
+  animation: snow 20s linear infinite;
+}
+
+@keyframes snow {
+  0% {
+    background-position: 0 0, 0 0, 0 0;
+  }
+  100% {
+    background-position: 500px 1000px, 400px 400px, 300px 300px;
+  }
+}

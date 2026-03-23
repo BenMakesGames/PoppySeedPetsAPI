@@ -1,0 +1,34 @@
+<div class="dialog">
+  <h4>Select a Tile</h4>
+  <div class="dialog-body">
+    @if(!myTilesAjax.closed)
+    {
+      <p><app-loading-throbber /></p>
+    }
+    @if(myTiles !== null)
+    {
+      @if(myTiles.length === 0)
+      {
+        <p>There are no Hollow Earth Tiles in your house that can be used on this space.</p>
+      }
+      @else
+      {
+        <table [class.disabled]="!useTileSubscription.closed">
+          <tbody>
+            @for(tile of myTiles; track tile.id)
+            {
+              <tr (click)="doSelectTile(tile)">
+                <td class="quantity">{{ tile.quantity }}&times;</td>
+                <td><app-inventory-item [inventory]="tile" /></td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      }
+      @if(user|hasUnlockedFeature:'Bookstore')
+      {
+        <small style="font-style: italic;opacity:0.6667;">Want more tiles? Get a booster pack at <a routerLink="/bookstore" (click)="doClose()">the Bookstore</a>!</small>
+      }
+    }
+  </div>
+</div>

@@ -1,0 +1,33 @@
+<main>
+  <app-settings-panel page="Visuals">
+    <p>To change your color scheme, <a routerLink="/painter">visit the Painter</a>.</p>
+    <p>
+      <label>Hamburger Menu</label>
+      <label class="radio-checkbox" for="figurativeHamburger" (click)="doSetHamburger('figurative')"><input type="radio" id="figurativeHamburger" [checked]="hamburger === 'figurative'"> Figurative</label>
+      <label class="radio-checkbox" for="literalHamburger" (click)="doSetHamburger('literal')"><input type="radio" id="literalHamburger" [checked]="hamburger === 'literal'"> Literal</label>
+      <label class="radio-checkbox" for="hiddenHamburger" (click)="doSetHamburger('invisible')"><input type="radio" id="hiddenHamburger" [checked]="hamburger === 'invisible'"> Invisible</label>
+    </p>
+    <p>
+      <label>Font Weight</label>
+      <label class="radio-checkbox" for="fontWeightNarrow" (click)="doSetFontWeight('thin')" style="font-weight:300;"><input type="radio" id="fontWeightNarrow" [checked]="fontWeight === 'thin'"> Thin</label>
+      <label class="radio-checkbox" for="fontWeightNormal" (click)="doSetFontWeight('')" style="font-weight:400;"><input type="radio" id="fontWeightNormal" [checked]="fontWeight === ''"> Thick</label>
+    </p>
+    <p>
+      <label>Spirit Companions</label>
+      <label class="radio-checkbox" for="animatedCompanions" (click)="doSetSpiritCompanions('animated')"><input type="radio" id="animatedCompanions" [checked]="spiritCompanions === 'animated'"> <span class="animated a8">A</span><span class="animated a7">n</span><span class="animated a6">i</span><span class="animated a5">m</span><span class="animated a4">a</span><span class="animated a3">t</span><span class="animated a2">e</span><span class="animated a1">d</span></label>
+      <label class="radio-checkbox" for="staticCompanions" (click)="doSetSpiritCompanions('static')"><input type="radio" id="staticCompanions" [checked]="spiritCompanions === 'static'"> Static</label>
+      <label class="radio-checkbox" for="hiddenCompanions" (click)="doSetSpiritCompanions('hidden')"><input type="radio" id="hiddenCompanions" [checked]="spiritCompanions === 'hidden'"> <span class="totally-hidden">Totally hidden!</span></label>
+    </p>
+    <p>
+      <label>Inventory Buttons</label>
+      <label class="radio-checkbox" for="inventoryButtonsBoth" (click)="doSetInventoryButtons('both')"><input type="radio" id="inventoryButtonsBoth" [checked]="inventoryButtons === 'both'"> Icon &amp; Text</label>
+      <label class="radio-checkbox" for="inventoryButtonsTextOnly" (click)="doSetInventoryButtons('text-only')"><input type="radio" id="inventoryButtonsTextOnly" [checked]="inventoryButtons === 'text-only'"> Text-only</label>
+      <label class="radio-checkbox" for="inventoryButtonsIconOnly" (click)="doSetInventoryButtons('icon-only')"><input type="radio" id="inventoryButtonsIconOnly" [checked]="inventoryButtons === 'icon-only'"> Icon-only</label>
+    </p>
+    <p>
+      <label>Time</label>
+      <label class="radio-checkbox" for="formatTime12Hr" (click)="doSetTimeFormat('12hr')"><input type="radio" id="formatTime12Hr" [checked]="timeFormat !== '24hr'"> 12-hour (for example, <code>1:23PM PSP</code>)</label>
+      <label class="radio-checkbox" for="formatTime24Hr" (click)="doSetTimeFormat('24hr')"><input type="radio" id="formatTime24Hr" [checked]="timeFormat === '24hr'"> 24-hour (for example, <code>13:23 PSP</code>)</label>
+    </p>
+  </app-settings-panel>
+</main>

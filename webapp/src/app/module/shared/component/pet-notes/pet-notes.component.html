@@ -1,0 +1,66 @@
+@let petInfo = pet();
+<div class="properties">
+  <div>
+    <label>ID</label>
+    <div>#{{ petInfo.id }}</div>
+  </div>
+  <div>
+    <label>Name</label>
+    <div>
+      @if(petInfo.renamingCharges > 0)
+      {
+        <app-rename-row [pet]="petInfo" (onUpdate)="doRename($event)" style="display:inline-block; margin-right:0.25rem" />
+      }
+      {{ petInfo.name }}
+    </div>
+  </div>
+  <div>
+    <label>Birthday</label>
+    <div><app-date-and-time [dateString]="petInfo.birthDate" /></div>
+  </div>
+  <div>
+    <label>Favorite Flavor</label>
+    @if(petInfo.flavor === 'Unknown')
+    {
+      <button (click)="doGuessFavoriteFlavor()">Guess it!</button>
+    }
+    @else
+    {
+      <a [routerLink]="[ '/poppyopedia/item' ]" [queryParams]="{ 'filter.edible': 'true', 'filter.foodFlavors[]': petInfo.flavor|titlecase }" (click)="doClose()">{{ petInfo.flavor|titlecase }}</a>
+    }
+  </div>
+  <div>
+    <label>Species</label>
+    <div><a [routerLink]="['/poppyopedia/species/' + petInfo.species.name ]" (click)="doClose()">{{ petInfo.species.name }}<small style="display:block;">({{ petInfo.species.family }})</small></a></div>
+  </div>
+  <div>
+    <label>Size</label>
+    <div>{{ (petInfo.scale / 10)|number:'0.1' }}</div>
+  </div>
+  <div>
+    <label>Color A</label>
+    <div class="color">
+      <span class="color-preview" [style.background-color]="'#' + petInfo.colorA"></span>
+      <div>
+        <span>{{ petInfo.colorA|colorName }}</span>
+        <code>#{{ petInfo.colorA }}</code>
+      </div>
+    </div>
+  </div>
+  <div>
+    <label>Color B</label>
+    <div class="color">
+      <span class="color-preview" [style.background-color]="'#' + petInfo.colorB"></span>
+      <div>
+        <span>{{ petInfo.colorB|colorName }}</span>
+        <code>#{{ petInfo.colorB }}</code>
+      </div>
+    </div>
+  </div>
+</div>
+<p>
+  <textarea name="petNote" [(ngModel)]="petNote"></textarea>
+</p>
+<p class="buttons">
+  <button type="button" (click)="doSaveNote()">Save</button>
+</p>

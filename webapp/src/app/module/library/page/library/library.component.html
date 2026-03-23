@@ -1,0 +1,80 @@
+<main>
+  <h2>Library</h2>
+  <div class="add-ons">
+    @if(user|hasUnlockedFeature:'Star Kindred')
+    {
+      <div>
+        <h4>★Kindred</h4>
+        <img src="/assets/images/items/book/star-kindred.svg" alt="" aria-hidden="true" />
+        <a class="button" routerLink="/stories">Play</a>
+      </div>
+    }
+    @if(user|hasUnlockedFeature:'Hollow Earth')
+    {
+      <div>
+        <h4>Secret Passage</h4>
+        <app-svg-icon sheet="menu6" icon="portal" />
+        <a class="button" routerLink="/hollowEarth">Explore</a>
+      </div>
+    }
+    @else
+    {
+      <div>
+        <h4>Hidden Lever</h4>
+        <img src="/assets/images/ui/library-lever.svg" alt="" aria-hidden="true" [class.pulled]="!pullLeverSubscription.closed" />
+        <button (click)="doPullLever()" [class.disabled]="!pullLeverSubscription.closed">Pull</button>
+      </div>
+    }
+  </div>
+  <h3 style="margin-top: 1rem">
+    Books
+    @if(results)
+    {
+      <span>({{ results.unfilteredTotal }})</span>
+    }
+  </h3>
+  @if(!results)
+  {
+    <div><app-loading-throbber [randomText]="true" /></div>
+  }
+  @else
+  {
+    <app-inventory-control
+      [stickingSentinelTop]="-2.5"
+      [currentLocation]="LocationEnum.Library"
+      [inventory]="inventory"
+      (inventoryRemoved)="doInventoryChanged()"
+      [(mode)]="mode"
+      (working)="waitingOnAjax = $event"
+      [(inventorySelected)]="inventorySelected"
+    />
+    @if(results.resultCount > 0)
+    {
+      <div>
+        @if(results.pageCount > 1)
+        {
+          <p [class.disabled]="waitingOnAjax"><app-url-paginator path="/library" [page]="page" [pageCount]="results.pageCount" [params]="{ }" /></p>
+        }
+        <div class="inventory" [class.disabled]="waitingOnAjax || !inventoryAjax.closed">
+          @for(i of inventory; track i.id)
+          {
+            <app-inventory-item
+              [inventory]="i"
+              [attr.role]="this.mode === InventoryModeEnum.Browsing ? 'button' : 'checkbox'"
+              [attr.aria-checked]="i.selected ? 'true' : 'false'"
+              [class.selected]="i.selected"
+              [class.disabled]="i.lockedToOwner && mode === InventoryModeEnum.Selling"
+              tabindex="0"
+              (click)="doClickItem(i)"
+              [showRecycleValue]="mode === InventoryModeEnum.Trashing"
+            />
+          }
+        </div>
+        @if(results.pageCount > 1)
+        {
+          <p [class.disabled]="waitingOnAjax"><app-url-paginator path="/library" [page]="page" [pageCount]="results.pageCount" [params]="{ }" /></p>
+        }
+      </div>
+    }
+  }
+</main>

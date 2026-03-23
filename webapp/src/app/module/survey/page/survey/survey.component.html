@@ -1,0 +1,33 @@
+<main>
+  @if(loading)
+  {
+    <app-loading-throbber/>
+  }
+  @else if(!survey)
+  {
+    <p>This selected survey does not exist.</p>
+    <ul class="dialog-choices">
+      <li><a class="button" routerLink="/news">"Oh. Okay."</a></li>
+    </ul>
+  }
+  @else
+  {
+    <h2>{{ survey.title }}</h2>
+    <markdown [data]="survey.description"></markdown>
+    <p class="note">All questions are optional, and even after submitting your answers, you may come back here to change them until the survey closes at {{ survey.endDate|date:'mediumDate':'UTC'}}, <app-psp-time [date]="survey.endDate" />!</p>
+    <form (submit)="doSubmit()" [class.disabled]="saving">
+      @for(question of questions; track question.id)
+      {
+        <section>
+          <markdown [data]="question.title"></markdown>
+          <app-form-field label="Answer" [value]="answers[question.id]" [maxLength]="1000">
+            <textarea maxlength="1000" [name]="'answer' + question.id" [(ngModel)]="answers[question.id]"></textarea>
+          </app-form-field>
+        </section>
+      }
+      <p class="buttons">
+        <button type="submit">Submit</button>
+      </p>
+    </form>
+  }
+</main>

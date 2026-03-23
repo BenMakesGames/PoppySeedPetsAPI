@@ -1,0 +1,47 @@
+span {
+  position: relative;
+  display: inline-block;
+  opacity: 0.3333;
+}
+
+.dot {
+  padding-left: 0.25rem;
+  animation: bouncing-dot 3s infinite linear;
+
+  &.dot1 {
+    animation-delay: 0.0s;
+  }
+
+  &.dot2 {
+    animation-delay: 0.4s;
+  }
+
+  &.dot3 {
+    animation-delay: 0.8s;
+  }
+
+  &.dot4 {
+    animation-delay: 1.2s;
+  }
+
+  &.dot5 {
+    animation-delay: 1.6s;
+  }
+}
+
+@keyframes bouncing-dot {
+  0% {
+    transform: translateY(0);
+    opacity: 0.3333;
+  }
+
+  10% {
+    transform: translateY(-20%);
+    opacity: 1;
+  }
+
+  20% {
+    transform: translateY(0);
+    opacity: 0.3333;
+  }
+}

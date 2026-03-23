@@ -1,0 +1,8 @@
+@if(timeFormat === '24hr')
+{
+  {{ date()|date:'H:mm':'UTC'}} PSP
+}
+@else
+{
+  {{ date()|date:'shortTime':'UTC'}} PSP
+}

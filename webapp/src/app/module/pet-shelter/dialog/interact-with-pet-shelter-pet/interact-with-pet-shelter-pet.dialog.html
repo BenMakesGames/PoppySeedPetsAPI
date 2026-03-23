@@ -1,0 +1,93 @@
+<div class="dialog">
+  <h4>
+    {{ pet.name }}
+    @if(loading)
+    {
+      <app-loading-throbber text="" />
+    }
+  </h4>
+  <div class="tabs-container">
+    <div class="tabs" role="tablist" [class.disabled]="loading">
+      <button role="tab" (click)="doChangeTab('status')" [class.active]="tab === 'status'">Status</button>
+      <button role="tab" (click)="doChangeTab('note')" [class.active]="tab === 'note'">Notes</button>
+      <button role="tab" (click)="doChangeTab('logs')" [class.active]="tab === 'logs'">Logs</button>
+      <button role="tab" (click)="doChangeTab('friends')" [class.active]="tab === 'friends'">Friends</button>
+      <button role="tab" (click)="doChangeTab('skills')" [class.active]="tab === 'skills'">Skills</button>
+      <button role="tab" (click)="doChangeTab('merits')" [class.active]="tab === 'merits'">Merits</button>
+      <button role="tab" (click)="doChangeTab('badges')" [class.active]="tab === 'badges'">Badges</button>
+    </div>
+  </div>
+  <div class="dialog-body">
+    @if(tab === 'status')
+    {
+      <app-pet-status-effects-tab [pet]="pet" (onNavigate)="doClose()" />
+    }
+    @else if(tab === 'logs')
+    {
+      <div>
+        @if(!logs)
+        {
+          <p><app-loading-throbber /></p>
+        }
+        @else if(logs.resultCount > 0)
+        {
+          <app-pet-logs-links [petId]="pet.id" [hasMultiplePages]="logs.pageCount > 1" [onClose]="doClose.bind(this)" />
+          <app-pet-activity-log-table [logs]="logs.results" />
+          <app-pet-logs-links [petId]="pet.id" [hasMultiplePages]="logs.pageCount > 1" [onClose]="doClose.bind(this)" />
+        }
+        @else
+        {
+          <p>This pet hasn't done anything yet! Anything at all!</p>
+        }
+      </div>
+    }
+    <div [hidden]="tab !== 'friends'">
+      @if(viewedFriends)
+      {
+        <app-pet-friends [pet]="pet" (linkClick)="doClose()" />
+      }
+    </div>
+    @if(tab === 'skills')
+    {
+      <div>
+        <app-pet-skills-and-attributes-panel [pet]="pet" (clickedHelpLink)="doClose()" />
+      </div>
+    }
+    @else if(tab === 'merits')
+    {
+      <div>
+        <app-pet-merits [pet]="pet" />
+      </div>
+    }
+    @else if(tab === 'badges')
+    {
+      <div role="tabpanel" [class.disabled]="loading">
+        @if(pet.badges.length > 0)
+        {
+          <app-pet-badge-table [badges]="pet.badges" />
+        }
+        @else
+        {
+          <p>This pet has no badges...</p>
+          <p style="opacity:0.8;font-style:italic;">(A couple easy first ones to get are from winning in a park event, and from correctly guessing the pet's favorite flavor!)</p>
+        }
+      </div>
+    }
+    @else if(tab === 'note')
+    {
+      <div [class.disabled]="loading">
+        @if(choices.length > 0)
+        {
+          <p class="buttons">
+            @for(choice of choices; track $index)
+            {
+              <button (click)="doMakeChoice(choice)">{{ choice.label }}</button>
+            }
+          </p>
+          <hr>
+        }
+        <app-pet-notes [(pet)]="pet" (loading)="doLoading($event)" (done)="doClose()" />
+      </div>
+    }
+  </div>
+</div>

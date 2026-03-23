@@ -1,0 +1,54 @@
+<main>
+  <nav class="tabs-container">
+    <h2><a routerLink="/museum">Museum</a> » Donate</h2>
+    <div class="tabs" [class.disabled]="donating">
+      <a [routerLink]="['/museum/donate']">New Donations</a>
+      <a class="active" [routerLink]="['/museum/upgrade']">Re-donate</a>
+    </div>
+  </nav>
+  @if(loading)
+  {
+    <p><app-loading-throbber [randomText]="true"/></p>
+  }
+  @else if(results)
+  {
+    @if(results.resultCount === 0)
+    {
+      <p>You don't have any items that can upgrade an existing donation.</p>
+    }
+    @else
+    {
+      <p>These are items you've already donated, but your Museum copy was made by someone else. You now own a copy <em>you</em> made &mdash; donating again will replace the Museum entry to show your name as the maker!</p>
+      <hr>
+      @if(results.pageCount > 1)
+      {
+        <p class="buttons">
+          <button type="button" (click)="doDonate()">Donate</button>
+        </p>
+        <app-paginator [pageCount]="results.pageCount" [(page)]="page" (change)="doSearch()"/>
+      }
+      <div class="inventory">
+        @for(i of results.results; track i.id)
+        {
+          <div>
+            <app-inventory-item
+              [inventory]="i"
+              [class.selected]="i.selected"
+              tabindex="0"
+              (click)="doClickItem(i)"
+              role="checkbox"
+              [attr.aria-checked]="i.selected ? 'true' : 'false'"
+            />
+          </div>
+        }
+      </div>
+      @if(results.pageCount > 1)
+      {
+        <app-paginator [pageCount]="results.pageCount" [(page)]="page" (change)="doSearch()"/>
+      }
+      <div class="buttons" style="margin-top:0.5rem">
+        <button type="button" (click)="doDonate()">Donate</button>
+      </div>
+    }
+  }
+</main>

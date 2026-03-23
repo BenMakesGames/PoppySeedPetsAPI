@@ -1,0 +1,148 @@
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Subscription } from "rxjs";
+import { ApiService } from "../../../shared/service/api.service";
+import { NPCStoreInventorySerializationGroup } from "../../../../model/npc-store-inventory.serialization-group";
+import { MyAccountSerializationGroup } from "../../../../model/my-account/my-account.serialization-group";
+import { UserDataService } from "../../../../service/user-data.service";
+import { ItemDetailsDialog } from "../../../../dialog/item-details/item-details.dialog";
+import { MatDialog } from "@angular/material/dialog";
+import { HasSounds, SoundsService } from "../../../shared/service/sounds.service";
+
+@Component({
+    templateUrl: './grocer.component.html',
+    styleUrls: ['./grocer.component.scss'],
+    standalone: false
+})
+@HasSounds([ 'chaching' ])
+export class GrocerComponent implements OnInit, OnDestroy {
+  pageMeta = { title: 'The Grocer' };
+
+  location = 0;
+  dialogStep = 'shopping';
+  user: MyAccountSerializationGroup;
+  userSubscription = Subscription.EMPTY;
+
+  grocerData: GrocerDataModel|undefined;
+  grocerDataSubscription = Subscription.EMPTY;
+  buySubscription = Subscription.EMPTY;
+
+  quantity: { [key:string]:any } = {};
+  totalCost = 0;
+  totalQuantity = 0;
+  payWith = 'recycling';
+  hotBarItems: string[] = [];
+
+  constructor(
+    private api: ApiService, private userData: UserDataService, private matDialog: MatDialog,
+    private sounds: SoundsService
+  )
+  {
+    this.payWith = localStorage.getItem('payWith') || 'recycling';
+  }
+
+  doPayWith(currency: string)
+  {
+    this.payWith = currency;
+    localStorage.setItem('payWith', currency);
+    this.doRecalculateTotalCost();
+  }
+
+  ngOnInit(): void {
+    this.userSubscription = this.userData.user.subscribe({
+      next: u => {
+        this.user = u;
+      }
+    })
+
+    this.grocerDataSubscription = this.api.get<GrocerDataModel>('/grocer').subscribe({
+      next: v => {
+        this.grocerData = v.data;
+        this.hotBarItems = [];
+
+        this.grocerData.inventory.forEach(i => {
+          this.quantity[i.item.name] = '';
+
+          if(i.special)
+            this.hotBarItems.push(i.item.name);
+        });
+      }
+    })
+  }
+
+  doViewItem(itemName: string)
+  {
+    ItemDetailsDialog.open(this.matDialog, itemName);
+  }
+
+  doRecalculateTotalCost()
+  {
+    this.totalCost = this.grocerData.inventory
+      .filter(i => parseInt(this.quantity[i.item.name]) >= 0)
+      .reduce((acc, current) => acc + parseInt(this.quantity[current.item.name]) * (this.payWith === 'moneys' ? current.moneysCost : current.recyclingCost), 0)
+    ;
+
+    this.totalQuantity = this.grocerData.inventory
+      .filter(i => parseInt(this.quantity[i.item.name]) >= 0)
+      .reduce((acc, current) => acc + parseInt(this.quantity[current.item.name]), 0)
+    ;
+  }
+
+  doBuy()
+  {
+    if(!this.buySubscription.closed)
+      return;
+
+    let purchasedQuantities = {};
+
+    Object.keys(this.quantity).forEach(itemName => {
+      if(parseInt(this.quantity[itemName]) > 0)
+        purchasedQuantities[itemName] = this.quantity[itemName];
+    });
+
+    const data = {
+      ...purchasedQuantities,
+      location: this.location,
+      payWith: this.payWith,
+    }
+
+    this.buySubscription = this.api.post<GrocerLimitUpdate>('/grocer/buy', data).subscribe({
+      next: r => {
+        this.sounds.playSound('chaching');
+
+        this.grocerData = {
+          ...this.grocerData,
+          ...r.data
+        };
+
+        this.grocerData.inventory.forEach(i => {
+          this.quantity[i.item.name] = '';
+        });
+
+        this.doRecalculateTotalCost();
+      }
+    });
+  }
+
+  ngOnDestroy() {
+    this.userSubscription.unsubscribe();
+    this.grocerDataSubscription.unsubscribe();
+  }
+
+}
+
+interface GrocerDataModel {
+  inventory: GrocerInventorySerializationGroup[];
+  maxPerDay: number;
+  maxRemainingToday: number;
+}
+
+interface GrocerInventorySerializationGroup extends NPCStoreInventorySerializationGroup
+{
+  special: boolean;
+}
+
+interface GrocerLimitUpdate
+{
+  maxPerDay: number;
+  maxRemainingToday: number;
+}

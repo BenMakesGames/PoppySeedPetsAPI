@@ -1,0 +1,14 @@
+markdown {
+  ul {
+    list-style: disc;
+    margin-left: 1.5rem;
+  }
+  ol {
+    list-style: decimal;
+    margin-left: 1.5rem;
+  }
+
+  > :last-child {
+    margin-bottom: 0 ;
+  }
+}

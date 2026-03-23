@@ -1,0 +1,33 @@
+<main>
+  <h2><a routerLink="/museum">Museum</a> » Donors</h2>
+  @if(!results)
+  {
+    <p><app-loading-throbber [randomText]="true"/></p>
+  }
+  @else
+  {
+    <p><app-paginator [pageCount]="results.pageCount" [(page)]="page" (change)="getPage()" /></p>
+    <div class="donors" [class.disabled]="!topDonorsAjax.closed">
+      @for(result of results.results; let i = $index; track i)
+      {
+        <div [class.gold]="i === 0 && results.page === 0" [class.silver]="i > 0 && results.page === 0">
+          <button (click)="doVisitWing(result.user.id)" [class.its-me]="result.user.id === user.id">
+            <app-rank-hat [rank]="i + results.page * results.pageSize + 1" />
+            <div class="avatar">
+              @if(result.user.icon)
+              {
+                <img [src]="'/assets/images/' + result.user.icon + '.svg'" alt="">
+              }
+            </div>
+            <div class="name-and-item-count">
+              <div class="name">{{ result.user.name }}</div>
+              <small>{{ result.itemsDonated }} items</small>
+            </div>
+            <div class="rank">#{{ i + results.page * results.pageSize + 1 }}</div>
+          </button>
+        </div>
+      }
+    </div>
+    <p><app-paginator [pageCount]="results.pageCount" [(page)]="page" (change)="getPage()" /></p>
+  }
+</main>

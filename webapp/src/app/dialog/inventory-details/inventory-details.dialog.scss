@@ -1,0 +1,42 @@
+hr {
+  margin-bottom: 0;
+}
+
+.description > markdown {
+  opacity: 0.5;
+}
+
+.sell-price
+{
+  width: 1in;
+}
+
+.price {
+  display: flex;
+  flex-direction: row;
+
+  > span + span {
+    padding-left: 0.5rem;
+  }
+}
+
+li small {
+  opacity: 0.5;
+  font-style: italic;
+}
+
+.locked {
+  width: 1.2rem;
+  height: 1.2rem;
+  vertical-align: middle;
+}
+
+.price-without-input {
+  padding: 0.25rem 0;
+  display: block;
+}
+
+h4 {
+  display: flex;
+  align-items: center;
+}

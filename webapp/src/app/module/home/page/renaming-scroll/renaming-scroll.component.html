@@ -1,0 +1,25 @@
+<main>
+  <h2>Renaming Scroll</h2>
+
+  @if(state === 'findPet')
+  {
+    <div>
+      <h4>Which Pet?</h4>
+      <app-select-pet (selected)="doShowRename($event)" />
+    </div>
+  }
+  @else if(state === 'renamePet')
+  {
+    <form (submit)="doRename()" [class.disabled]="renaming">
+      <h4>Rename {{ pet.name }}...</h4>
+      <p>
+        <label for="newName">Name</label>
+        <input type="text" name="newName" id="newName" [placeholder]="pet.name" [(ngModel)]="newName" autocomplete="off">
+      </p>
+      <div class="buttons">
+        <button type="button" (click)="doCancelRename()">Wait, No...</button>
+        <button type="submit">Rename</button>
+      </div>
+    </form>
+  }
+</main>

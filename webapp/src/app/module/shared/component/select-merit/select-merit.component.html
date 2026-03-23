@@ -1,0 +1,17 @@
+@if(merits === null)
+{
+  <app-loading-throbber />
+}
+@else
+{
+  <select [ngModel]="value" (ngModelChange)="valueChange.emit($event)">
+    @if(anyLabel)
+    {
+      <option [value]="null">Any</option>
+    }
+    @for(m of merits; track m.id)
+    {
+      <option [value]="m.id">{{ m.name }}</option>
+    }
+  </select>
+}

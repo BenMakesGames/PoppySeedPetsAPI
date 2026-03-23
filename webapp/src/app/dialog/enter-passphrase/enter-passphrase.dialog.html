@@ -1,0 +1,13 @@
+<div class="dialog">
+  <h4>Protected Action</h4>
+  <form class="dialog-body" (submit)="doSubmit()">
+    <p>Enter your passphrase to continue.</p>
+    <p>
+      <label for="passphrase">Passphrase</label>
+      <input type="password" id="passphrase" name="passphrase" [(ngModel)]="passphrase">
+    </p>
+    <p class="buttons">
+      <button type="submit">Submit</button>
+    </p>
+  </form>
+</div>

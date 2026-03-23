@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="32" height="32" version="1.1" viewBox="0 0 8.4667 8.4667" xmlns="http://www.w3.org/2000/svg">
+ <g transform="translate(0 -288.53)">
+  <g transform="translate(-.070871 -.047247)">
+   <path d="m4.4916 291.59s1.1707 0.0713 1.8196 0.52731c0.30989 0.21782 0.69057 0.40963 1.0037 0.55058 0.34252 0.15418 0.15544 0.42891 0.15544 0.42891s-0.27054 0.17489-0.87706 0.47418c-0.5786 0.28552-1.0015 0.75534-2.2991 0.75534-1.5516 0-1.4951-0.62705-2.1722-0.76958-0.28386-0.0597-0.53865-0.19044-0.75344-0.29331-0.56744-0.27177 0.044935-0.53116 0.044935-0.53116s0.6944-0.35843 1.3714-0.75748 1.7067-0.38479 1.7067-0.38479z" fill="#9a5b36" stroke="#5c3e2c" stroke-linecap="round" stroke-linejoin="round" stroke-width=".26458px"/>
+   <path d="m2.2199 292.93 1.3864-0.7659h1.8352l1.1171 0.7659-1.526 0.77596-1.5759-0.0504z" fill="#d2ba21"/>
+   <g fill="#b26e1c">
+    <path d="m5.8244 292.95a0.13541 0.048863 0 0 0-0.12712 0.0486 0.13541 0.048863 0 0 0 0.019747 0.0256 0.25389 0.091618 0 0 0-0.019747-6.2e-4 0.25389 0.091618 0 0 0-0.25363 0.0917 0.25389 0.091618 0 0 0 0.25363 0.0917 0.25389 0.091618 0 0 0 0.25424-0.0917 0.25389 0.091618 0 0 0-0.087627-0.0685 0.13541 0.048863 0 0 0 0.10429-0.048 0.13541 0.048863 0 0 0 0-4e-3 0.13541 0.048863 0 0 0-0.00123-5e-3 0.13541 0.048863 0 0 0-0.00185-4e-3 0.13541 0.048863 0 0 0-0.00247-4e-3 0.13541 0.048863 0 0 0-0.12959-0.0349 0.13541 0.048863 0 0 0-0.00863 0z" opacity=".44164" style="paint-order:markers fill stroke"/>
+    <ellipse cx="3.0768" cy="293.26" rx=".20735" ry=".074821" opacity=".44164" style="paint-order:markers fill stroke"/>
+    <ellipse cx="5.0473" cy="293.39" rx=".11848" ry=".042755" opacity=".44164" style="paint-order:markers fill stroke"/>
+    <ellipse cx="5.62" cy="292.8" rx=".11848" ry=".042755" opacity=".44164" style="paint-order:markers fill stroke"/>
+    <ellipse cx="4.8231" cy="292.34" rx=".11848" ry=".042755" opacity=".44164" style="paint-order:markers fill stroke"/>
+    <ellipse cx="3.2503" cy="292.55" rx=".11848" ry=".042755" opacity=".44164" style="paint-order:markers fill stroke"/>
+   </g>
+   <path d="m1.8409 292.9s0.30919-0.2217 0.81785-0.5341c0.50866-0.31241 0.77796-0.45349 1.2667-0.4938 0.48872-0.0403 1.147-0.12093 1.7354 0.21163 0.58846 0.33255 1.0672 0.70542 1.0672 0.70542l-0.26929 0.0403-1.1969-0.6752h-1.7953l-1.2068 0.81628z" fill="#be8f45"/>
+   <path d="m2.1401 293.18s0.54856 0.24187 0.75801 0.47365c0.20945 0.23178 1.3963 0.57441 2.2242 0.28217 0.82783-0.29226 1.4163-0.8566 1.7155-0.95737 0.29921-0.10075-0.50866 0.01-0.50866 0.01l-1.1969 0.68528-1.8252-0.0504-1.0373-0.6752z" fill="#be8f45"/>
+   <g fill="none" stroke="#5c3e2c" stroke-linecap="round" stroke-width=".26458px">
+    <path d="m2.9259 293.38c0.66294 0.44796 2.1309 0.50006 2.7797 0.0337 0.64884-0.46639 0.95714-0.51188 0.95714-0.51188s-0.35163-0.0958-0.8312-0.47251c-0.47957-0.37671-2.0311-0.52022-2.68-0.0538-0.64884 0.4664-1.1367 0.60746-1.1367 0.60746s0.406 0.0559 0.91099 0.39709z" stroke-linejoin="round"/>
+    <path d="m1.9933 292.99-0.58386 0.24645"/>
+    <path d="m6.6745 292.89 0.57247-0.24156"/>
+   </g>
+   <g transform="matrix(1.5217 0 0 1.5375 -1.2126 -158.46)" stroke-width=".65377">
+    <path d="m2.6894 293.65c0.30709 0.12233 0.64312 0.0794 0.43431 0.16287-0.2088 0.0835 0.19628 0.11274 0.50948 0.1044 0.31321-8e-3 0.85192-0.22132 0.47607-0.33409s0.28397-0.21716 0.045938-0.28397c-0.23804-0.0668-0.82705-0.15456-1.0106 0.0209-0.18357 0.17544-0.76229 0.20758-0.45519 0.32991z" fill="#f8f8f8"/>
+    <path d="m3.1864 293.56s0.075169-0.23386 0.31738-0.23386c0.24221 0 0.30903 0.23386 0.30903 0.23386s-0.050111 0.0835-0.30903 0.0919c-0.25892 8e-3 -0.31738-0.0919-0.31738-0.0919z" fill="#d88309"/>
+   </g>
+   <ellipse cx="5.3449" cy="292.69" rx=".1481" ry=".053444" fill="#b26e1c" opacity=".44164" style="paint-order:markers fill stroke"/>
+   <g transform="matrix(1.1942 0 0 1.2066 -.23363 -61.376)" fill="#5c3e2c" opacity=".55205" stroke-width=".83309">
+    <ellipse cx="5.6795" cy="293.25" rx=".12402" ry=".044294" opacity="1" style="paint-order:markers fill stroke"/>
+    <ellipse cx="3.4013" cy="292.72" rx=".19194" ry=".06855" style="paint-order:markers fill stroke"/>
+    <ellipse cx="3.345" cy="294.5" rx=".12402" ry=".044294" style="paint-order:markers fill stroke"/>
+    <ellipse cx="5.8549" cy="293.75" rx=".12402" ry=".044294" style="paint-order:markers fill stroke"/>
+    <ellipse cx="4.9821" cy="294.44" rx=".1449" ry=".051751" style="paint-order:markers fill stroke"/>
+    <ellipse cx="3.5497" cy="294.43" rx=".18249" ry=".065175" style="paint-order:markers fill stroke"/>
+    <ellipse cx="2.3052" cy="293.34" rx=".18249" ry=".065175" style="paint-order:markers fill stroke"/>
+    <ellipse cx="2.1215" cy="294.03" rx=".12402" ry=".044294" style="paint-order:markers fill stroke"/>
+    <ellipse cx="1.5786" cy="293.67" rx=".12402" ry=".044294" style="paint-order:markers fill stroke"/>
+    <ellipse cx="2.2005" cy="293.23" rx=".17422" ry=".062223" style="paint-order:markers fill stroke"/>
+    <ellipse cx="4.1932" cy="292.82" rx=".17422" ry=".062223" style="paint-order:markers fill stroke"/>
+    <g transform="matrix(1.2808 0 0 1.2808 -1.4831 -82.272)" stroke-width=".65044">
+     <ellipse cx="4.9695" cy="292.89" rx=".12402" ry=".044294" style="paint-order:markers fill stroke"/>
+     <ellipse cx="5.1575" cy="292.93" rx=".12402" ry=".044294" style="paint-order:markers fill stroke"/>
+    </g>
+    <ellipse cx="5.621" cy="293.95" rx=".12402" ry=".044294" style="paint-order:markers fill stroke"/>
+    <ellipse cx="5.859" cy="294.01" rx=".19919" ry=".07114" style="paint-order:markers fill stroke"/>
+   </g>
+   <g fill="none" stroke="#1c720e" stroke-width=".19844">
+    <path d="m5.5512 292.62-0.038712-0.0985"/>
+    <path d="m2.8144 293.05-0.0026-0.10593"/>
+    <path d="m3.5143 292.58 0.03636-0.0994"/>
+    <path d="m5.0148 293.2-0.0026-0.10593"/>
+    <path d="m4.58 292.54-0.0026-0.10593"/>
+    <path d="m4.307 293.5 0.01651-0.10461"/>
+    <path d="m5.6399 293.3 0.01651-0.10461"/>
+    <path d="m5.4145 292.83 0.015998-0.10461"/>
+    <path d="m2.9775 292.74-0.018501-0.10412"/>
+   </g>
+  </g>
+ </g>
+</svg>

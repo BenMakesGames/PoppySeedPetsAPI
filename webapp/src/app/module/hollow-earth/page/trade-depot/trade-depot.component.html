@@ -1,0 +1,36 @@
+<main>
+  <h2><a routerLink="/hollowEarth">Hollow Earth</a> » Trade Depot</h2>
+  @if(!tradesLoading.closed)
+  {
+    <app-loading-throbber />
+  }
+  @else
+  {
+    <table class="trades">
+      <thead>
+        <tr>
+          <th>Asking</th>
+          <th>Offering</th>
+          <th class="third-column"></th>
+        </tr>
+      </thead>
+      <tbody>
+        @for(trade of trades; track trade.id)
+        {
+          <tr>
+            <td><app-describe-trade-depot-cost [cost]="trade.cost" /></td>
+            <td>
+              <button class="link-text item" (click)="doViewItem(trade.item.name)"><img [src]="'/assets/images/items/' + trade.item.image + '.svg'" alt=""><span>{{ trade.item.name }}</span></button>
+            </td>
+            <td class="third-column"><button type="button" (click)="doTrade(trade)" [class.disabled]="trade.maxQuantity < 1">Trade</button></td>
+          </tr>
+          <tr class="extra-trade-button">
+            <td colspan="2">
+              <button type="button" (click)="doTrade(trade)" [class.disabled]="trade.maxQuantity < 1">Trade</button>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  }
+</main>

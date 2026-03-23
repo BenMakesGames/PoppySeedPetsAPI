@@ -1,0 +1,27 @@
+<div class="container">
+  @if(show === 'logIn')
+  {
+    <div>
+      <h2>Log In?</h2>
+      <app-login />
+      <ul class="list">
+        <li><button type="button" (click)="show = 'resetPassphrase'" class="link-text">"Er, sorry, I forgot my passphrase..."</button></li>
+      </ul>
+    </div>
+  }
+  @else if(show === 'resetPassphrase')
+  {
+    <div>
+      <h2>Reset my Passphrase!</h2>
+      <app-request-passphrase-reset />
+      <ul class="list">
+        <li><button type="button" (click)="show = 'logIn'" class="link-text">"Actually, let me try logging in again..."</button></li>
+      </ul>
+    </div>
+  }
+  <div>
+    <h2>Sign Up??</h2>
+    <p>Poppy Seed Pets is free to play, doesn't have ads, and doesn't sell your data! <a href="https://patreon.com/BenMakesGames">It's supported by Patreon patrons!</a></p>
+    <button [routerLink]="[ '/register' ]" type="button" class="button">Adopt a Pet</button>
+  </div>
+</div>

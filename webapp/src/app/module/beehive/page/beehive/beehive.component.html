@@ -1,0 +1,83 @@
+<main>
+  <h2>Beehive<app-help-link link="beehive" /></h2>
+  @if(loading)
+  {
+    <p><app-loading-throbber [randomText]="true"/></p>
+  }
+  @else
+  {
+    <app-npc-dialog npc="bee-queen" [name]="'Queen ' + beehive.queenName">
+      @if(dialog)
+      {
+        <p>{{ dialog }}</p>
+      }
+      @else if(beehive.isWorking)
+      {
+        <p>Bzzbzz the colony is working hard thanks to the food you brought us. Thank you bzzbzz.</p>
+        @if(beehive.workers >= 2000 && !user.canAssignHelpers)
+        {
+          <p>Also, the colony has grown, thanks to your help. We've been thinking about branching out. Do you have any ideas?</p>
+        }
+      }
+      @else
+      {
+        <p>Bzzbzz the colony is always in need of more flowers, fruit, and planty foods. Will you help us?</p>
+        @if(beehive.workers >= 2000 && !user.canAssignHelpers)
+        {
+          <p>Also, the colony has grown, thanks to your help bzzbzz. We've been thinking about branching out. Do you have any ideas?</p>
+        }
+      }
+    </app-npc-dialog>
+    <ul class="dialog-choices" [class.disabled]="interacting">
+      @if(!beehive.flowerPowerIsMaxed)
+      {
+        <li><button type="button" (click)="doGiveItem()">"I have some food for the hive."</button></li>
+      }
+      @if(beehive.workers >= 2000 && !user.canAssignHelpers)
+      {
+        <li><button type="button" (click)="doAssignHelper()">"Branching out? Maybe one of my pets can help you..."</button></li>
+      }
+    </ul>
+    @if(user.canAssignHelpers)
+    {
+      <hr />
+    }
+    <div class="bee-deets">
+      <div>
+        <h3>Colony</h3>
+        <app-progress-bar label="Flower Power" [percent]="beehive.flowerPowerPercent" />
+        <div><i class="fa-regular fa-bee"></i> {{ beehive.workers|number }} workers</div>
+      </div>
+      <div>
+        <h3>Progress</h3>
+        <app-progress-bar [label]="'Royal Jelly ' + (beehive.royalJellyPercent >= 1 ? '(ready!)' : (beehive.isWorking ? '(producing)' : '(paused)'))" [percent]="beehive.royalJellyPercent" />
+        <app-progress-bar [label]="'Honeycomb ' + (beehive.honeycombPercent >= 1 ? '(ready!)' : (beehive.isWorking ? '(producing)' : '(producing slowly)'))" [percent]="beehive.honeycombPercent" />
+        <app-progress-bar [label]="'Normal Bee Stuff ' + (beehive.miscPercent >= 1 ? '(ready!)' : (beehive.isWorking ? '(producing quickly)' : '(producing)'))" [percent]="beehive.miscPercent" />
+        <div class="buttons" [class.disabled]="interacting"><button type="button" (click)="doHarvest()" [class.disabled]="beehive.royalJellyPercent < 1 && beehive.honeycombPercent < 1 && beehive.miscPercent < 1">Harvest</button></div>
+      </div>
+      @if(user.canAssignHelpers)
+      {
+        <div>
+          <h3>Helper</h3>
+          @if(beehive.helper)
+          {
+            <div style="display: flex; flex-direction: row; align-items: center; gap: 1em; margin-bottom: 1em;">
+              <div><button type="button" (click)="doViewHelper()" class="link-text"><app-pet-appearance [pet]="beehive.helper" /></button></div>
+              <div><span style="font-weight:bold;">{{ beehive.helper.name }}</span> is helping the bees hunt &amp; gather not-so-normal bee stuff.</div>
+            </div>
+            <div class="buttons" [class.disabled]="interacting">
+              <button type="button" (click)="doRecallHelper()">Take Home</button>
+            </div>
+          }
+          @else
+          {
+            <p>No one is helping the bees out right now. (A pet skilled at hunting and/or gathering would really help here!)</p>
+            <div class="buttons" [class.disabled]="interacting">
+              <button type="button" (click)="doAssignHelper()">Assign a Helper</button>
+            </div>
+          }
+        </div>
+      }
+    </div>
+  }
+</main>

@@ -1,0 +1,19 @@
+app-progress-bar {
+  display: block;
+  max-width: 2.5in;
+  margin-bottom: 0.5rem;
+}
+
+main {
+  background-image: url('/assets/images/locations/beehive.svg');
+  background-size: contain;
+  background-position-x: 0;
+  background-position-y: 100%;
+  background-repeat: no-repeat;
+}
+
+.bee-deets {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 1rem;
+}

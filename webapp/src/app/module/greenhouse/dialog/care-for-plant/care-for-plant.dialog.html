@@ -1,0 +1,32 @@
+<div class="dialog">
+  <app-dialog-title-with-icons
+    [icon]="itemOtherPropertiesIcons.Fertilizer"
+    iconLabel="fertilizer"
+    title="Choose Fertilizers"
+  />
+  <div class="dialog-body">
+    <table [class.disabled]="loading">
+      <tbody>
+        @for(fertilizer of fertilizers; track fertilizer.id)
+        {
+          @if(fertilizer.fertilizerRating > 0)
+          {
+            <tr tabindex="0" role="button" (click)="doSelectFertilizer(fertilizer)">
+              <td class="quantity">{{ fertilizer.quantity }}&times;</td>
+              <td><app-inventory-item [inventory]="fertilizer" /></td>
+              <td class="rating">{{ fertilizer.fertilizerRating|fertilizerRating }}</td>
+            </tr>
+          }
+          @else
+          {
+            <tr class="disabled">
+              <td class="quantity">{{ fertilizer.quantity }}&times;</td>
+              <td><app-inventory-item [inventory]="fertilizer" /></td>
+              <td class="rating">{{ fertilizer.fertilizerRating|fertilizerRating }}</td>
+            </tr>
+          }
+        }
+      </tbody>
+    </table>
+  </div>
+</div>

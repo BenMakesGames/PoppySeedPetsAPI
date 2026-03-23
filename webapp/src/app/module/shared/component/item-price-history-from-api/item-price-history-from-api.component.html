@@ -1,0 +1,8 @@
+@if(!data)
+{
+  <p><app-loading-throbber /></p>
+}
+@else
+{
+  <app-item-price-history [data]="data" />
+}

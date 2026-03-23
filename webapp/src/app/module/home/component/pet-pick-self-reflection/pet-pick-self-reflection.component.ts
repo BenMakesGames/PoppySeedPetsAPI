@@ -1,0 +1,111 @@
+import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
+import {MyPetSerializationGroup} from "../../../../model/my-pet/my-pet.serialization-group";
+import {ApiService} from "../../../shared/service/api.service";
+import {PetGuildSerializationGroup} from "../../../../model/guild/pet-guild.serialization-group";
+import {PetPublicProfileSerializationGroup} from "../../../../model/public-profile/pet-public-profile.serialization-group";
+import {Subscription} from "rxjs";
+import { SelectPetComponent } from "../../../shared/component/select-pet/select-pet.component";
+import { LoadingThrobberComponent } from "../../../shared/component/loading-throbber/loading-throbber.component";
+import { PetAppearanceComponent } from "../../../shared/component/pet-appearance/pet-appearance.component";
+import { FormsModule } from "@angular/forms";
+import { CommonModule } from "@angular/common";
+
+@Component({
+    selector: 'app-pet-pick-self-reflection',
+    templateUrl: './pet-pick-self-reflection.component.html',
+    styleUrls: ['./pet-pick-self-reflection.component.scss'],
+    imports: [
+        SelectPetComponent,
+        LoadingThrobberComponent,
+        PetAppearanceComponent,
+        FormsModule,
+        CommonModule,
+    ]
+})
+export class PetPickSelfReflectionComponent implements OnInit, OnDestroy {
+
+  @Input() pet: MyPetSerializationGroup;
+  @Output() selectSelfReflection = new EventEmitter<PetPickSelfReflectionModel>();
+
+  loading = true;
+  response: GuildMembershipResponse;
+  newGuild: number;
+  reconcileWith: number;
+  possibleRelationships: string;
+
+  selfReflectionAjax: Subscription;
+
+  constructor(private api: ApiService) { }
+
+  petMapper = (r) => r.pet;
+
+  ngOnInit() {
+    this.selfReflectionAjax = this.api.get<GuildMembershipResponse>('/pet/' + this.pet.id + '/selfReflection').subscribe({
+      next: (r) => {
+        this.response = r.data;
+        this.loading = false;
+      }
+    })
+  }
+
+  ngOnDestroy(): void {
+    this.selfReflectionAjax.unsubscribe();
+  }
+
+  doSelectReconcileWith(relationship: TroubledRelationshipsModel)
+  {
+    if(relationship === null)
+    {
+      this.reconcileWith = 0;
+      this.possibleRelationships = '';
+    }
+    else
+    {
+      this.reconcileWith = relationship.pet.id;
+      this.doSetPossibleRelationships(relationship.possibleRelationships);
+    }
+  }
+
+  doReconcile()
+  {
+    this.selectSelfReflection.emit({ route: 'reconcile', data: { petId: this.reconcileWith } });
+  }
+
+  doChangeGuild()
+  {
+    this.selectSelfReflection.emit({ route: 'changeGuild', data: { guildId: this.newGuild } });
+  }
+
+  doSetPossibleRelationships(possibleRelationships: string[])
+  {
+    this.possibleRelationships = possibleRelationships.map(r => {
+      switch(r)
+      {
+        case 'friend': return 'friends';
+        case 'bff': return 'BFFs';
+        case 'fwb': return 'FWBs';
+        case 'mate': return 'dating';
+        default: return r;
+      }
+    }).join(', ');
+  }
+}
+
+export interface GuildMembershipResponse
+{
+  membership: PetGuildSerializationGroup;
+  guilds: { id: number, name: string }[];
+  troubledRelationshipsCount: number;
+  troubledRelationships: TroubledRelationshipsModel[]|null;
+}
+
+export interface TroubledRelationshipsModel {
+  pet: PetPublicProfileSerializationGroup;
+  possibleRelationships: string[];
+}
+
+export interface PetPickSelfReflectionModel
+{
+  route: string;
+  data: any;
+}

@@ -1,171 +1,84 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
-
 ## Project Overview
 
-Poppy Seed Pets API is a Symfony-based REST API backend for a virtual pet game. The codebase is written in PHP 8.4 and uses Doctrine ORM, MySQL/MariaDB, and Redis for caching.
+Poppy Seed Pets is a browser-based pet adoption and activity simulation game (poppyseedpets.com). Monorepo with two independent apps:
 
-## Essential Development Commands
+- **`api/`** — Symfony 7.3 (PHP 8.4) backend with MySQL + Redis
+- **`webapp/`** — Angular 20 frontend (TypeScript, SCSS, Angular Material)
 
-### Setup
-```bash
-composer install                                    # Install dependencies
-php bin/console doctrine:migrations:migrate         # Run database migrations
-```
+## Non-Standard Commands
 
-### Development Server
-```bash
-symfony server:start                                # Start local development server
-```
+- **API lint**: `composer run php-cs-fixer-dry-run` / `composer run php-cs-fixer` (in `api/`)
+- **API static analysis**: `vendor/bin/phpstan --configuration=phpstan.dist.neon` (in `api/`)
+- **Cron (manual)**: `vendor/bin/crunz schedule:run` (in `api/`)
+- **Storybook**: `ng run PoppySeedPetsApp:storybook` (in `webapp/`)
+- **Quick start**: `install.bat` / `run.bat` from repo root
 
-### Testing
-```bash
-vendor/bin/phpunit                                  # Run all tests
-vendor/bin/phpunit --exclude-group requiresDatabase # Run tests without database
-vendor/bin/phpunit tests/Specific/TestFile.php      # Run a single test file
-```
+## Architecture Decisions
 
-### Code Quality
-```bash
-php vendor/bin/phpstan analyse                      # Run static analysis (level 10)
-composer audit                                      # Check for security vulnerabilities
-composer php-cs-fixer-dry-run                       # Check PSR-4 autoloading compliance
-```
+These are intentional design choices — follow them in new code:
 
-Note: `php-cs-fixer` is configured minimally to only check PSR-4 autoloading (class namespaces match file paths). It does not enforce code style rules. PSR-4 violations should be fixed manually.
+### One Endpoint Per Controller
+Each controller class has exactly one endpoint. Request and response DTOs live in the same file as the controller. Don't share DTOs between endpoints except for truly common data (user/pet data).
 
-### Cron Tasks
-Cron tasks are managed by Crunz and defined in `tasks/AllTasks.php`. To run cron tasks locally, add to crontab:
-```
-* * * * * cd /PATH_TO_PROJECT && vendor/bin/crunz schedule:run
-```
+### No Doctrine Repositories
+Query the entity manager directly in services or static helper classes. Don't create repository classes — they become dumping grounds for unrelated queries.
 
-## Architectural Principles
+### No Serialization Groups
+Use explicit mapping to response DTOs instead. Serialization groups scatter related code across entity files. (Legacy code still uses them — migrate when touching it.)
 
-### One Endpoint Per Controller (Strict)
-Every controller class must contain exactly one endpoint. The same file should also contain the endpoint's request and response DTOs.
+### Use `#[MapRequestPayload]` for Request DTOs
+Modern Symfony request handling. Migrate old code to use this when touching it.
 
-**Example structure:**
-```php
-// src/Controller/House/DoQualityTimeController.php
-class DoQualityTimeController {
-    #[Route("/house/doQualityTime", methods: ["POST"])]
-    public function doQualityTime(...): JsonResponse { }
-}
-// Request/Response DTOs can be in the same file
-```
+### Vertical Slices Over Technical Layers
+Organize by game feature (Fishing, Cooking, Beehive), not by technical concern (controllers, services, repositories). Think slightly CQRS-ish.
 
-Controllers are organized in nested directories under `src/Controller/` that mirror the API structure (e.g., `House/`, `Beehive/`, `Patreon/`).
+### Logic in Controllers is Fine
+Start with logic in the controller. Extract to a service only when it needs to be shared between endpoints. YAGNI.
 
-### No Doctrine Repository Classes
-**Do not use Doctrine repository classes.** This is enforced by CI pipeline checks that fail if `ServiceEntityRepository` or `repositoryClass:` are found.
+### POST URLs Read Like Actions
+`POST /florist/tradeForGiftPackage`, `POST /pet/{petId}/feed` — RPC-style over CRUD-style. GET requests must never modify data (except side effects like logging).
 
-Instead:
-- Write queries directly in controller endpoints using `EntityManagerInterface`
-- Create domain-specific service classes when queries need to be shared
-- Use static helper classes for shared query logic
+## Key Architectural Patterns
 
-**Why:** Repository classes become bloated with unrelated code; most queries are single-use.
+### ResponseService (Critical)
+Every API endpoint must return via `ResponseService`. It:
+- Injects current user data into every response
+- Delivers unread pet activity logs as "flash messages"
+- Sets reload flags (`reloadInventory`, `reloadPets`) for the frontend
+- Normalizes response structure: `{ success, data, activity, user, reloadInventory, reloadPets }`
 
-### No Serialization Groups (Legacy Pattern)
-**Avoid Symfony serialization groups.** Use explicit mapping to response DTOs instead.
-
-**Legacy note:** The codebase contains serialization groups (e.g., `SerializationGroupEnum::PET_ACTIVITY_LOGS`) because it started with this pattern. When touching old code, migrate to explicit DTO mapping.
-
-### RESTish URLs (Action-Oriented)
-Endpoints should read like actions to be taken, not strict REST resources:
-- `POST /florist/tradeForGiftPackage`
-- `POST /fireplace/feedWhelp`
-- `POST /pet/{petId}/feed`
-- `PATCH /letter/{letterId}/read`
-
-GET requests must not modify data (except logging/tracking).
-
-### Controllers May Contain Logic
-1. **Start** by putting logic directly in controller endpoints
-2. **Extract** logic to service classes only when it needs to be shared between endpoints
-
-This prevents premature abstraction.
-
-### Request/Response DTOs Should Not Be Shared
-Request and response DTOs should be endpoint-specific, defined in the same file as the controller. Exception: truly common data like pet/player data.
-
-**Migration note:** Symfony now supports `#[MapRequestPayload]` and `#[MapQueryString]` for request DTOs. Migrate old code to use these when possible.
-
-## Code Architecture
-
-### Key Directories
-- **`src/Controller/`** - API endpoints organized by feature (House, Beehive, Plaza, etc.)
-- **`src/Service/`** - Shared business logic services
-  - `src/Service/PetActivity/` - Pet activity systems (lazy-loaded)
-  - `src/Service/Holidays/` - Holiday-specific logic (lazy-loaded)
-- **`src/Entity/`** - Doctrine entities (User, Pet, Item, Inventory, etc.)
-- **`src/Enum/`** - Typed enumerations
-- **`src/Functions/`** - Static utility functions (e.g., `ItemRepository`, `PetSpeciesRepository`)
-- **`src/Command/`** - Console commands (many for stats/cron jobs)
-- **`tasks/`** - Crunz cron task definitions
-- **`migrations/`** - Doctrine database migrations
-- **`tests/`** - PHPUnit tests
-
-### ResponseService Pattern
-All controller endpoints should return responses via `ResponseService`:
-
-```php
-return $responseService->success([
-    'message' => $message,
-    'data' => $data
-]);
-```
-
-`ResponseService` handles:
-- Injecting user data into all responses
-- Including unread pet activity logs ("flash messages")
-- Setting reload flags (`reloadInventory`, `reloadPets`)
-- Normalizing data with serialization groups
-
-### License Headers
-All PHP files must include the GPL 3.0 license header (see example in any existing `.php` file). This is enforced by the `license-eye` tool in CI.
+### Pet Activity System
+Core game loop documented in detail at `api/src/Service/PetActivity/CLAUDE.md`. Key flow:
+1. Cron increments `activity_time` every minute (max 2880 min / 48 hours)
+2. Player visits house → pets with 60+ minutes consume time and perform activities
+3. Activities implement `IPetActivity` interface with `groupDesire()` (weighted random selection) and `possibilities()`
+4. Results tracked via `PetActivityLog` → delivered as flash messages through `ResponseService`
 
 ### Lazy-Loaded Services
-Pet activity services and holiday services are configured as lazy-loaded in `config/services.yaml` to optimize performance.
+`PetActivity/` and `Holidays/` service trees are configured as lazy in `config/services.yaml`. Don't put expensive logic in constructors of these services.
 
-## CI/CD Pipeline
+### Testability Abstractions
+- Use `Clock` service instead of `new \DateTime()` / `new \DateTimeImmutable()`
+- Use `IRandom` service instead of `rand()` / `random_int()`
+- Both are mockable for deterministic tests
 
-The GitHub Actions workflow (`.github/workflows/php.yml`) runs on all PRs and includes:
+### Service Layer Details
+See `api/src/Service/CLAUDE.md` for ResponseService patterns, activity log creation, and service conventions.
 
-1. **Repository pattern check** - Fails if Doctrine repositories are used
-2. **License header check** - Validates GPL headers on all files
-3. **Syntax check** - Validates PHP syntax on changed files
-4. **Composer audit** - Checks for known vulnerabilities
-5. **PSR-4 check** - `composer php-cs-fixer-dry-run`
-6. **PHPStan** - Static analysis at level 10 with baseline
-7. **PHPUnit** - Tests excluding `requiresDatabase` group
+## Cron Jobs (api/tasks/AllTasks.php)
 
-## Environment Configuration
+- **Every minute**: `app:increase-time` (pet activity time), `app:run-park-events`
+- **Hourly**: `app:buzz-buzz` (beehive production)
+- **Daily**: `app:calculate-daily-market-item-averages`, `app:calculate-daily-stats`
 
-- `.env` - Default configuration (committed)
-- `.env.local` - Local overrides (not committed)
-- `.env.test` - Test environment config
+## Frontend Notes
 
-Key environment variables:
-- `APP_ENV` - Application environment (dev/prod/test)
-- `DATABASE_URL` - MySQL/MariaDB connection
-- `REDIS_URL` - Redis cache connection
-- Various API credentials for Patreon, Reddit, AWS SES, etc.
+- Dev server requires HTTPS — uses `dev.key`/`dev.pem` from repo root (expire Dec 2033)
+- Proprietary assets expected at `proprietary-assets/` in the repo root (gitignored) — app builds without them but images will be missing
+- API URL configured in `webapp/src/environments/environment.ts` (defaults to `https://localhost:8000`)
 
-## Testing Notes
+## Database
 
-Tests use PHPUnit 9.6. Test groups:
-- `requiresDatabase` - Tests that need a database connection (excluded from CI)
-
-Bootstrap file: `tests/bootstrap.php`
-
-## Common Gotchas
-
-- The codebase has a `phpstan-baseline.neon` with existing violations - new code should not add to it
-- All new code must follow PSR-4 autoloading standards (enforced by php-cs-fixer)
-- The project uses strict types: `declare(strict_types=1);` in all files
-- Controllers use Symfony attributes for routing: `#[Route(...)]`
-- Use `UserAccessor` service to get the current authenticated user
-- The `DoesNotRequireHouseHours` attribute is used on endpoints that don't consume house hours
+- No seed data in repo — game data (recipes, items, NPCs) must be sourced separately

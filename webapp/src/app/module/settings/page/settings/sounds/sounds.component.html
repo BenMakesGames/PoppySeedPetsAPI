@@ -1,0 +1,15 @@
+<main>
+  <app-settings-panel page="Audio">
+    <p>Sound is in very early development! There's currently very few sounds (rolling dice in the Hollow Earth, and opening letters at the Mailbox)</p>
+    <p>
+      <label>Sounds</label>
+      <label class="radio-checkbox" for="soundsYes" (click)="doSetSoundVolume(1)"><input type="radio" id="soundsYes" [checked]="soundVolume === 'on'"> Yes</label>
+      <label class="radio-checkbox" for="soundsNo" (click)="doSetSoundVolume(0)"><input type="radio" id="soundsNo" [checked]="soundVolume === 'off'"> No</label>
+    </p>
+    <p>
+      <label>Music</label>
+      <label class="radio-checkbox" for="musicYes" (click)="doSetMusicVolume(1)"><input type="radio" id="musicYes" [checked]="musicVolume === 'on'"> Yes</label>
+      <label class="radio-checkbox" for="musicNo" (click)="doSetMusicVolume(0)"><input type="radio" id="musicNo" [checked]="musicVolume === 'off'"> No</label>
+    </p>
+  </app-settings-panel>
+</main>

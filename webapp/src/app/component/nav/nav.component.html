@@ -1,0 +1,55 @@
+@if(user !== undefined)
+{
+  <header (click)="doClickHeader()" [class.with-icon]="user && user.icon" [class.with-moneys]="user && (user.moneys > 0 || user.recyclePoints > 0)" [class.with-hamburger-icon]="hamburger !== 'invisible'" [class.disable-shadow]="disableShadow">
+    <div class="time-of-day">
+      @if(weather)
+      {
+        <app-current-weather [sky]="weather.sky" [style.width.rem]="1.6" />
+      }
+    </div>
+    @if(!user)
+    {
+      <div class="name" style="text-decoration: underline;">Hello, Stranger! (Log in?)</div>
+    }
+    @else
+    {
+      @if(user.icon)
+      {
+        <img [src]="'/assets/images/' + user.icon + '.svg'" alt="">
+      }
+      <div class="name">{{ user.name }}</div>
+      @if(user.moneys > 0 || user.recyclePoints > 0)
+      {
+        <div class="moneys">
+          @if(user.recyclePoints > 0)
+          {
+            <app-recycling-points [amount]="user.recyclePoints" />
+          }
+          @if(user.moneys > 0)
+          {
+            <app-moneys [amount]="user.moneys" style="padding-left:0.5rem" />
+          }
+        </div>
+      }
+    }
+    @if(hamburger === 'literal')
+    {
+      <div class="hamburger"><img src="/assets/images/ui/hamburger2.svg" alt="a literal hamburger"></div>
+    }
+    @else if(hamburger === 'figurative')
+    {
+      <div class="hamburger figurative"><i class="hamburger"></i></div>
+    }
+  </header>
+}
+@if(navState !== 'closed')
+{
+  <app-nav-menu-dimmer (click)="doCloseNav()" />
+}
+<nav [class.open]="navState !== 'closed'" [class.right]="navState === 'right'" [class.left]="navState === 'left'" #nav>
+  @if(!user && navState !== 'closed')
+  {
+    <app-login-choices />
+  }
+  <app-menu />
+</nav>

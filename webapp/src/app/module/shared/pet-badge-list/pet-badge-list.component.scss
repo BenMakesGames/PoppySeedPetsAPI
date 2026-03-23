@@ -1,0 +1,19 @@
+div {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 0.25em;
+  justify-content: center;
+}
+
+img {
+  width: 2em;
+  height: 2em;
+  display: block;
+  margin: 0;
+  border-radius: 50%;
+  background-color: #88888840;
+  overflow: hidden;
+  text-align: center;
+  line-height: 100%;
+}

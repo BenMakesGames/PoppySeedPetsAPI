@@ -1,0 +1,27 @@
+ul {
+  > li {
+    display: inline-block;
+    width: 0.5in;
+    height: 0.5in;
+
+    > img {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+  }
+}
+
+.spirit-companions > li {
+  width: 0.25in;
+  height: 0.25in;
+}
+
+section {
+  padding-top: 3em;
+
+  @media (min-width:480px)
+  {
+    padding-top: 1em;
+  }
+}

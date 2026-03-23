@@ -1,0 +1,1 @@
+<p *ngIf="goals.length > 0">design goals: <ng-container *ngFor="let goal of goals; let last = last"><a [routerLink]="[ '/poppyopedia/designGoal/' + goal.id ]">{{ goal.name }}</a><ng-container *ngIf="!last">, </ng-container></ng-container></p>

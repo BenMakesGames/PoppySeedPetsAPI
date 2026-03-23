@@ -1,0 +1,71 @@
+.pet-preview
+{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5em;
+  margin-bottom: 0.5em;
+}
+
+tr > a {
+  display: table-cell;
+  padding-top: 0.25rem
+}
+
+.entry {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.25rem 0.5rem;
+
+  > img {
+    display: block;
+    width: 1.3333rem;
+  }
+
+  &:nth-child(2n+1) {
+    background-color: rgba(0, 0, 0, 0.15);
+  }
+}
+
+.spirit-companion-ancestor {
+  width: 1in;
+  height: 1in;
+  margin: 0 auto;
+
+  > img {
+    width: 0.35in;
+    height: 0.35in;
+    padding: 0.325in;
+  }
+}
+
+.family-tree {
+  h4 {
+    margin-bottom: 0;
+  }
+
+  .pets-grid + h4 {
+    margin-top: 1rem;
+  }
+
+  .pets-grid > div {
+    cursor: default;
+  }
+}
+
+.tabs-container {
+  margin-left: -0.5em;
+  margin-right: -0.5em;
+}
+
+.logs-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  justify-content: flex-start;
+
+  select {
+    width: max-content;
+  }
+}

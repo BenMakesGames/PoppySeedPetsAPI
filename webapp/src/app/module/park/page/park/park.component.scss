@@ -1,0 +1,67 @@
+main {
+  background-image: url(/assets/images/locations/park.svg);
+  background-repeat: no-repeat;
+  background-size: min(75vw, 75vh);
+  background-attachment: fixed;
+
+  background-position: calc(100vw - min(75vw, 75vh) - 0.15in) bottom;
+
+  @media (min-width: 6in)
+  {
+    background-position: calc(100vw - min(75vw, 75vh) - 0.15in - (100vw - 6in) / 4) bottom;
+  }
+}
+
+.park-event-pets
+{
+  + .park-event-pets {
+    padding-top: 1rem;
+  }
+
+  max-width: 540px;
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+
+  .participant {
+    display: flex;
+    flex-direction: row;
+    gap: 0.5em;
+    align-items: center;
+    background-color: rgb(var(--color-speech-bubble-background));
+    border-radius: 0.5em;
+    background-size: cover;
+
+    &.pet-tri-d-chess {
+      background-image: url(/assets/images/park-event-types/tri-d-chess.svg);
+      background-position: center center;
+    }
+
+    &.pet-jousting {
+      background-image: url(/assets/images/park-event-types/jousting.svg);
+      background-position: center top;
+    }
+
+    &.pet-kin-ball {
+      background-image: url(/assets/images/park-event-types/kin-ball.svg);
+      background-position: center center;
+    }
+
+    > div {
+      flex-grow: 1;
+      padding-right: 0.5em;
+    }
+  }
+
+  h4 {
+    padding: 0.25em 0.5em;
+    border-radius: 5px;
+    display: inline-block;
+    background-color: rgb(var(--color-speech-bubble-background));
+  }
+}
+
+select,.input {
+  width: 100%;
+  max-width: 2.75in;
+}

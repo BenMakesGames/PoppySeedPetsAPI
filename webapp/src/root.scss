@@ -1,0 +1,49 @@
+@forward 'font';
+
+html {
+  --font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+  --font-size: 0.18in;
+  --normal-weight: 400;
+  --bold-weight: 600;
+
+  --z-index-affection: 1;
+  --z-index-nav: 2;
+  --z-index-header: 3;
+  --z-index-dialog: 4;
+  // cdk overlay: 1000
+  --z-index-errors: 1001;
+
+  // default theme:
+
+  --color-content-background: 238, 238, 238;
+  --color-primary: 34, 85, 136;
+  --color-tool-bonus: 0, 153, 153;
+  --color-tool-bonus-on-primary: 0, 204, 204;
+  --color-tab-bar-background: 187, 187, 187;
+  --color-speech-bubble-background: 255, 255, 255;
+
+  --color-text-on-content-background: 51, 51, 51;
+  --color-text-on-primary: 255, 255, 255;
+
+  --color-link-and-button: 68, 119, 170;
+  --color-text-on-button: 255, 255, 255;
+
+  --color-warning: 204, 68, 34;
+
+  --color-input-background: 255, 255, 255;
+  --color-input-foreground: 51, 51, 51;
+
+  --color-gain: 34, 136, 68;
+
+  // extra settings, if you need them:
+  --color-link-on-speech-bubble: 68, 119, 170;
+
+  &.thin {
+    --normal-weight: 300;
+  }
+
+  color: rgb(var(--color-text-on-content-background));
+  scrollbar-gutter: stable;
+
+  --mat-dialog-container-max-width: min(960px, calc(100vw - 4rem));
+}

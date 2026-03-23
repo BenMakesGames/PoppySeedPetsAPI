@@ -1,0 +1,63 @@
+<div class="control">
+  <div [class.visible]="viewing === 'chart'" class="chart-container">
+    <ul class="prices">
+      @for(price of prices; track $index)
+      {
+        <li>{{ price|number:'1.2-2' }}<i class="moneys" title="moneys"></i></li>
+      }
+    </ul>
+    <div class="chart">
+      <svg viewBox="0 0 700 200" #chart></svg>
+    </div>
+    <div class="dates">
+      <div>▲ {{ sixDaysAgo|date:'MMM d':'UTC' }}</div>
+      <div>Yesterday ▲</div>
+    </div>
+    <div class="controls">
+      <button type="button" class="link-text toggle-display" (click)="doToggleDisplay()">View table</button>
+    </div>
+  </div>
+  @if(marketHistory)
+  {
+    <div [class.visible]="viewing === 'table'" class="table">
+      @if(marketHistory.length === 0)
+      {
+        @if(!marketLastHistory)
+        {
+          <p class="no-history">There is no market history data for this item.</p>
+        }
+        @else
+        {
+          <div>
+            <p>The last date this item was bought was {{ marketLastHistory.date|date:'yyyy-MM-dd':'UTC' }}. The average price on that day was <app-moneys [amount]="marketLastHistory.averagePrice" />.</p>
+          </div>
+        }
+      }
+      @else
+      {
+        <table>
+          <thead>
+            <tr>
+              <th>Date</th><th>Min</th><th>Avg</th><th>Max</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for(data of marketHistory; track $index)
+            {
+              <tr>
+                <td>{{ data.date|date:'MMM d':'UTC' }}</td>
+                <td>{{ data.minPrice }}</td>
+                <td>{{ data.averagePrice|number:'1.2-2' }}</td>
+                <td>{{ data.maxPrice }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      }
+      @if(marketHistory.length >= 2)
+      {
+        <p style="margin-bottom:1rem;"><button type="button" class="link-text toggle-display" (click)="doToggleDisplay()">View chart</button></p>
+      }
+    </div>
+  }
+</div>

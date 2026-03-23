@@ -1,0 +1,28 @@
+:host {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+
+  > * {
+    height: 1.5rem;
+    line-height: 1.5rem;
+
+    &:first-child {
+      padding-right: 0.5rem;
+    }
+
+    &.page {
+      padding: 0 0.25rem;
+
+      &.current {
+        font-weight: var(--bold-weight);
+      }
+
+      &.clickable {
+        color: rgb(var(--color-link-and-button));
+        text-decoration: underline;
+        cursor: pointer;
+      }
+    }
+  }
+}

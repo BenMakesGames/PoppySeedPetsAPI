@@ -1,0 +1,56 @@
+<main>
+  <h2>Resonating Bow</h2>
+
+  @if(!pet)
+  {
+    <div [class.disabled]="loading">
+      <h4>Whose Hue?</h4>
+      <app-select-pet (selected)="doSelectPet($event)" />
+    </div>
+  }
+  @else
+  {
+    <form [class.disabled]="loading" (submit)="doPaint()">
+      <h4>Whose Hue?</h4>
+      <div style="display: flex; flex-direction: row; align-items: center; gap: 1em;">
+        <app-pet-appearance [pet]="pet" />
+        <button class="link-text" type="button" (click)="pet = null" style="font-size:80%; font-style:italic;">Choose someone else...</button>
+      </div>
+      <h4 style="margin-top:1rem;">Which Color?</h4>
+      <div class="colors">
+        <button type="button" class="link-text" role="radio" [attr.aria-checked]="aOrB === 'A'" [class.selected]="aOrB === 'A'" (click)="doChooseColor('A')">
+          <span class="color-preview" [style.background]="'#' + pet.colorA" [title]="'color A: #' + pet.colorA"></span>
+        </button>
+        <button type="button" class="link-text" role="radio" [attr.aria-checked]="aOrB === 'B'" [class.selected]="aOrB === 'B'" (click)="doChooseColor('B')">
+          <span class="color-preview" [style.background]="'#' + pet.colorB" [title]="'color B: #' + pet.colorB"></span>
+        </button>
+      </div>
+      @if(aOrB)
+      {
+        <h4 style="margin-top:1rem;">Shift To...</h4>
+        <div class="colors">
+          @for(color of availableColors; track color.shift)
+          {
+            @if(color.shift === 0)
+            {
+              <div class="old-color">
+                <i class="fa-regular fa-arrow-left"></i>
+                <span class="color-circle" [style.background]="color.css"></span>
+                <i class="fa-regular fa-arrow-right"></i>
+              </div>
+            }
+            @else
+            {
+              <button type="button" class="link-text" role="radio" [attr.aria-checked]="selectedShift === color.shift" [class.selected]="selectedShift === color.shift" (click)="selectedShift = color.shift">
+                <span class="color-preview" [style.background]="color.css"></span>
+              </button>
+            }
+          }
+        </div>
+        <div style="margin-top: 2rem;">
+          <button type="submit" [class.disabled]="selectedShift === null">Resonate!</button>
+        </div>
+      }
+    </form>
+  }
+</main>
