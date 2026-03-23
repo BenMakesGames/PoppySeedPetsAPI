@@ -3,10 +3,15 @@ const path = require('path');
 
 describe('Pet images', function() {
     it('are all colorable', async () => {
-        const path = '../PoppySeedPetsApp/src/assets/images/pets';
+        const paths = [
+            '../PoppySeedPetsApp/src/assets/images/pets',
+            '../proprietary-assets/images/pets',
+        ];
 
         // find all .svg files in subdirs
-        const files = Array.from(readAllFiles(path))
+        const files = paths
+            .filter(p => fs.existsSync(p))
+            .flatMap(p => Array.from(readAllFiles(p)))
             .filter(file => file.endsWith('.svg'));
 
         // if no files were found, fail the test

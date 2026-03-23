@@ -76,7 +76,7 @@ See `api/src/Service/CLAUDE.md` for ResponseService patterns, activity log creat
 ## Frontend Notes
 
 - Dev server requires HTTPS — uses `dev.key`/`dev.pem` from repo root (expire Dec 2033)
-- Proprietary assets expected at `../../PoppySeedPetsAppProprietaryAssets/` relative to `webapp/` — app builds without them but images will be missing
+- Proprietary assets expected at `proprietary-assets/` in the repo root (gitignored) — app builds without them but images will be missing
 - API URL configured in `webapp/src/environments/environment.ts` (defaults to `https://localhost:8000`)
 
 ## Database

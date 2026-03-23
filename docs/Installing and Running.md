@@ -124,7 +124,7 @@ Install the following:
 
 ### Proprietary Assets
 
-The build expects a `PoppySeedPetsAppProprietaryAssets` directory at `../../PoppySeedPetsAppProprietaryAssets/` (relative to the `webapp/` directory). This contains images and other assets not included in the repo. The app will build without it, but assets will be missing.
+The build expects a `proprietary-assets/` directory at the repo root. This contains images and other assets not included in the repo (gitignored). The app will build without it, but assets will be missing.
 
 ### SSL Certificates
 

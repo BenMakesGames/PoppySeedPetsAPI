@@ -34,7 +34,7 @@
               "src/llms.txt",
               {
                 "glob": "**/*",
-                "input": "../../PoppySeedPetsAppProprietaryAssets/",
+                "input": "../proprietary-assets/",
                 "output": "/assets/"
               }
             ],
