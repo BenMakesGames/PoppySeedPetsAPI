@@ -27,5 +27,9 @@ echo === SPA (npm install) ===
 cd /d %~dp0webapp && npm install
 
 echo.
+echo === Tests (npm install) ===
+cd /d %~dp0tests && npm install
+
+echo.
 echo Done!
 pause
