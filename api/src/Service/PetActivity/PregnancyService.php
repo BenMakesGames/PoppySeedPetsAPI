@@ -266,6 +266,8 @@ class PregnancyService
             : $adjective . ' baby ' . $babies[0]->getSpecies()->getName()
         ;
 
+        $otherParent = $pregnancy->getOtherParent();
+
         if($numberOfPetsAtHome + count($babies) > $user->getMaxPets())
         {
             foreach($babies as $baby)
@@ -274,6 +276,7 @@ class PregnancyService
             $pet->setLocation(PetLocationEnum::DAYCARE);
 
             $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% gave birth to ' . $describeBabies . '! (There wasn\'t enough room at Home, so the birth took place at the Pet Shelter.)');
+                
         }
         else
         {
@@ -281,6 +284,21 @@ class PregnancyService
                 $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% gave birth to ' . $describeBabies . '! (Congrats on your first pet birth! The maximum amount of pets you can have at home has been permanently increased by one!)');
             else
                 $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% gave birth to ' . $describeBabies . '!');
+        }
+
+        // log for the fathering pet
+        if($otherParent->getId()?)
+        {
+            $otherActivityLog = $pet->getOwner()->getId() == $otherParent->getOwner()->getId()
+                ? PetActivityLogFactory::createReadLog($this->em, $otherParent, '%pet:' . $pet->getId() . '.name% gave birth to ' . $describeBabies . '! %pet:' . $otherParent->getId() . '.name% is a proud parent!' )
+                : PetActivityLogFactory::createUnreadLog($this->em, $otherParent, '%pet:' . $pet->getId() . '.name% gave birth to ' . $describeBabies . '! %pet:' . $otherParent->getId() . '.name% is a proud parent!' );
+
+                //should they get the badge too?
+
+            $otherActivityLog
+                ->addInterestingness(PetActivityLogInterestingness::GaveBirth)
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Pregnancy' ]))
+            ;
         }
 
         PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::HadABaby, $activityLog);
@@ -296,7 +314,7 @@ class PregnancyService
         $pregnancy->getParent()->getMom()?->setIsGrandparent(true);
         $pregnancy->getParent()->getDad()?->setIsGrandparent(true);
 
-        if($pregnancy->getOtherParent())
+        if($otherParent)
         {
             $pregnancy->getOtherParent()->getMom()?->setIsGrandparent(true);
             $pregnancy->getOtherParent()->getDad()?->setIsGrandparent(true);
