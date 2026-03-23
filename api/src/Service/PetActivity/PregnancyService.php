@@ -287,7 +287,7 @@ class PregnancyService
         }
 
         // log for the fathering pet
-        if($otherParent->getId()?)
+        if($otherParent)
         {
             $otherActivityLog = $pet->getOwner()->getId() == $otherParent->getOwner()->getId()
                 ? PetActivityLogFactory::createReadLog($this->em, $otherParent, '%pet:' . $pet->getId() . '.name% gave birth to ' . $describeBabies . '! %pet:' . $otherParent->getId() . '.name% is a proud parent!' )
