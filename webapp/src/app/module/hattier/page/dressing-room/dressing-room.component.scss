@@ -1,0 +1,108 @@
+.your-pet {
+  display: flex;
+  flex-direction: row;
+  gap: 1em;
+
+  > div {
+    flex-grow: 1;
+    font-style: italic;
+  }
+
+  > app-pet-appearance {
+    width: 1in;
+  }
+}
+
+.before-and-after {
+  width: calc(100% + 1rem);
+  padding: 0.5rem 0 1rem;
+  margin: 0 -0.5rem 1rem;
+  background-color: rgb(var(--color-content-background));
+  position: sticky;
+  top: 2.35rem;
+  z-index: 1;
+  box-shadow: 0 5px 1px rgba(0, 0, 0, 0.15);
+  text-align: center;
+
+  > app-pet-appearance {
+    display: block;
+    margin: 0 auto;
+    width: 1in;
+  }
+}
+
+.styles {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  justify-content: center;
+
+  label {
+    --image-width: 1in;
+
+    @media (max-width:540px)
+    {
+      --image-width: 0.75in;
+    }
+
+    cursor: pointer;
+    display: block;
+    width: calc(var(--image-width) + 1rem);
+    height: calc(var(--image-width) + 2rem);
+    position: relative;
+
+    &.selected {
+      outline: 2px solid rgb(var(--color-primary));
+    }
+
+    input[type=radio]{
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      left: -99999px;
+    }
+
+    span {
+      position: absolute;
+      bottom: 0.3333rem;
+      width: 100%;
+      text-align: center;
+      font-size: 75%;
+      line-height: 100%;
+    }
+
+    img {
+      width: var(--image-width);
+      height: var(--image-width);
+      display: block;
+      margin: 0 auto;
+    }
+  }
+}
+
+.disabled {
+  img { opacity: 0.5; }
+  span { font-style: italic; }
+}
+
+.buy-buttons
+{
+  background-color: rgb(var(--color-content-background));
+  position: sticky;
+  bottom: 0;
+
+  > div {
+    border-top: 1px solid rgba(var(--color-text-on-content-background), 0.3333);
+    padding: 0.5em;
+  }
+}
+
+.hue-range-container {
+  display: grid;
+  grid-template-columns: min-content 200px;
+  justify-content: center;
+  align-items: center;
+  gap: 1em;
+}

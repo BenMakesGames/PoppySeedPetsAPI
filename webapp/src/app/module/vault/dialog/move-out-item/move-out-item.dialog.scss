@@ -1,0 +1,13 @@
+.item-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  margin-bottom: 1rem;
+
+  img {
+    width: 48px;
+    height: 48px;
+  }
+}
+

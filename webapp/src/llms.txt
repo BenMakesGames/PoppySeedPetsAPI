@@ -1,0 +1,27 @@
+# Poppy Seed Pets
+
+> A free, ad-free web browser pet game developed by indie developer Ben Hendel-Doying.
+
+Poppy Seed Pets is a casual virtual pet game where players adopt and care for funny-looking pets on a magical island. Pets are autonomous—they perform activities roughly once an hour while you're away, like gathering supplies, fishing, crafting, or hanging out with friends. Check in at your own pace to see what they've been up to.
+
+## Gameplay
+
+- **Pet Care**: Feed, pet, and praise your pets to keep them happy. Hand-feed their favorite flavors to build affection faster.
+- **Autonomous Pets**: Pets act on their own, developing skills, personalities, and relationships with other pets over time.
+- **Crafting & Cooking**: Combine items and discover recipes.
+- **Competitions**: Enter pets in daily tournaments like Tri-D Chess, Kin-Ball, and Jousting.
+- **Community Events**: Participate in seasonal events and weekly challenges like the Monster of the Week.
+- **Player Economy**: Buy and sell items with other players in the Market.
+- **Breeding**: Pets can form relationships, date, and have offspring.
+
+## Locations
+
+Players unlock various locations as they progress, including: a Greenhouse for growing plants, a Beehive for honey production, a Dragon's den with hoarded treasures, a Museum for donations, a Park for pet competitions, and many more.
+
+## Links
+
+- Play now: https://poppyseedpets.com/register
+- Source code: https://github.com/BenMakesGames/PoppySeedPetsAPI
+- Support on Patreon: https://patreon.com/BenMakesGames
+- Other games by Ben: https://store.steampowered.com/search/?publisher=benmakesgames.com
+- Unofficial wiki: https://poppyseedpetsunofficialwiki.fandom.com/wiki/The_Unofficial_Poppy_Seed_Pets_Wiki

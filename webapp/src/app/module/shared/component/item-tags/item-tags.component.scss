@@ -1,0 +1,14 @@
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25em;
+  align-items: center;
+}
+
+.button.item-group {
+  padding: 0 0.5em;
+  font-size: 80%;
+  border-radius: 9999px;
+  background-color: rgb(var(--color-text-on-content-background));
+  color: rgb(var(--color-content-background));
+}

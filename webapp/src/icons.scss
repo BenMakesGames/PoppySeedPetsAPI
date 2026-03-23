@@ -1,0 +1,29 @@
+@font-face {
+  font-family: 'icons';
+  src: url('/assets/fonts/icons2.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+i {
+  font-family: icons;
+  font-style: normal;
+
+  &.feed:before { content: "\e900"; }
+  &.cook-or-combine:before { content: "\e901" }
+  &.hamburger:before { content: "\e902" }
+  &.moneys:before { content: "\e903" }
+  &.sell:before { content: "\e903" }
+  &.recycle:before { content: "\e904" }
+  &.move:before { content: "\e905" }
+  &.equipment-bonus:before { content: "\e90b" }
+  &.hollow-earth-tile:before { content: "\e90a" }
+
+  // replaced by fontawesome
+  /*
+  &.equipment:before { content: "\e906" }
+  &.flammable:before { content: "\e907" }
+  &.hat:before { content: "\e908" }
+  &.fertilizer:before { content: "\e909" }
+  */
+}

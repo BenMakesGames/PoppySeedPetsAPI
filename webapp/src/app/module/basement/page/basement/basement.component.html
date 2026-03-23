@@ -1,0 +1,69 @@
+<main>
+  <h2>Basement</h2>
+  <app-item-search [(filters)]="search" (filtersChange)="doSearch()" [class.disabled]="!inventory" />
+  @if(!results)
+  {
+    <div><app-loading-throbber [randomText]="true" /></div>
+  }
+  @else
+  {
+    @if(results.unfilteredTotal === 666)
+    {
+      <h3>🔥666🔥 / {{ user.basementSize }} Items</h3>
+    }
+    @else if(results.unfilteredTotal === 1337)
+    {
+      <h3>leet / {{ user.basementSize }} Items</h3>
+    }
+    @else
+    {
+      <h3>{{ results.unfilteredTotal }} / {{ user.basementSize }} Items<ng-container *ngIf="results.unfilteredTotal >= 10000"> - Full!</ng-container></h3>
+    }
+    @if(results.resultCount < results.unfilteredTotal)
+    {
+      <small>Search found {{ results.resultCount }}.</small>
+    }
+    <app-inventory-control
+      [stickingSentinelTop]="-2.5"
+      [currentLocation]="LocationEnum.Basement"
+      [inventory]="inventory"
+      (inventoryRemoved)="doInventoryChanged()"
+      [(mode)]="mode"
+      (working)="waitingOnAjax = $event"
+      [(inventorySelected)]="inventorySelected"
+    />
+    @if(results.resultCount > 0)
+    {
+      <div>
+        <p [class.disabled]="waitingOnAjax">
+          @if(results.pageCount > 1)
+          {
+            <app-paginator [pageCount]="results.pageCount" [page]="results.page" (pageChange)="doChangePage($event)" />
+          }
+        </p>
+        <div class="inventory" [class.disabled]="waitingOnAjax || !inventoryAjax.closed">
+          @for(i of inventory; track i.id)
+          {
+            <app-inventory-item
+              [inventory]="i"
+              [attr.role]="this.mode === InventoryModeEnum.Browsing ? 'button' : 'checkbox'"
+              [attr.aria-checked]="i.selected ? 'true' : 'false'"
+              [class.selected]="i.selected"
+              [class.disabled]="i.lockedToOwner && mode === InventoryModeEnum.Selling"
+              tabindex="0"
+              (click)="doClickItem(i)"
+              (dblclick)="doDoubleClickItem(i)"
+              [showRecycleValue]="mode === InventoryModeEnum.Trashing"
+            />
+          }
+        </div>
+        <p [class.disabled]="waitingOnAjax">
+          @if(results.pageCount > 1)
+          {
+            <app-paginator [pageCount]="results.pageCount" [page]="results.page" (pageChange)="doChangePage($event)" />
+          }
+        </p>
+      </div>
+    }
+  }
+</main>

@@ -1,0 +1,51 @@
+<main>
+  <nav class="tabs-container">
+    <div class="tabs">
+      <a routerLink="/achievements">Unclaimed</a>
+      <a class="active" routerLink="/achievements/claimed">Claimed</a>
+      <a routerLink="/achievements/showcase">Showcase</a>
+      <a routerLink="/achievements/petBadges">Pet Badges</a>
+    </div>
+  </nav>
+
+  @if(!claimed)
+  {
+    <app-loading-throbber />
+  }
+  @else
+  {
+    @if(claimed.length === 0)
+    {
+      <div style="opacity:0.6667; margin: 3rem auto 0; max-width: min(400px, calc(100% - 2rem));">
+        <p style="font-style:italic;">"In the absence of accolades, one finds the true essence of beginnings."</p>
+        <p>... no? Not for you? Lemme try again:</p>
+        <p style="font-style:italic;">"To be devoid of awards is to be ripe with anticipation."</p>
+        <p>Wait, ew, scratch that one: being "ripe" with stuff sounds icky! How aboouuuut...</p>
+        <p style="font-style:italic;">"To be without achievements is to stand at the precipice of greatness."</p>
+        <p>Ugh! I dunno! <em>You</em> try to come up with some pseudo-philosophical hogwash for an empty achievement page!</p>
+      </div>
+    }
+    @for(g of claimed; track g.group)
+    {
+      @if(claimed.length > 1)
+      {
+        <h2>
+          <i class="{{ BADGE_GROUP_ICONS[g.group] }}"></i><span>{{ g.group }}</span><i class="{{ BADGE_GROUP_ICONS[g.group] }} right"></i>
+          <small>{{ numberUnlockedInGroup[g.group] }} / {{ groupSizes[g.group] }}</small>
+        </h2>
+      }
+      <div class="achievements">
+        @for(a of g.badges; track a.badge)
+        {
+          <div>
+            <img [style.background]="a.badge|badgeBackground" [src]="a.badge|badgeImage" alt="" aria-hidden="true" />
+            <h3>{{ a.badge|badgeTitle }}</h3>
+            <p><markdown [data]="a.badge|badgeDescription" /></p>
+            <p class="reward">Claimed On:</p>
+            <app-date-and-time [dateString]="a.claimedOn" />
+          </div>
+        }
+      </div>
+    }
+  }
+</main>

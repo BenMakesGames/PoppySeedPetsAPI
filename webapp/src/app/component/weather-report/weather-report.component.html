@@ -1,0 +1,12 @@
+@if(weather)
+{
+  <div class="today">
+    <app-current-weather [sky]="weather.sky"></app-current-weather>
+    <div>
+      <a class="calendar" routerLink="/plaza/calendar"><i class="fa-light fa-calendar" role="img" aria-label="calendar"></i></a>
+      <div class="sky">{{ rainfallDescription }}</div>
+      <div class="datetime">{{ now|date:'mediumDate':'UTC'}}, <app-psp-time [date]="now" /></div>
+    </div>
+    <app-current-moon-phase />
+  </div>
+}

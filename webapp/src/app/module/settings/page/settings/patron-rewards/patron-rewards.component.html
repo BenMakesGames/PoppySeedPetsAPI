@@ -1,0 +1,8 @@
+<main>
+  <app-settings-panel page="Patreon">
+    <p>If you support Poppy Seed Pets on Patreon, connect your account to get patron-only rewards in-game!</p>
+    <p>
+      <a class="button" [href]="'https://www.patreon.com/oauth2/authorize?scope=identity identity.memberships&response_type=code&client_id=' + patreonConfig.clientId + '&state=' + userId + '&redirect_uri=' + encodeURIComponent(patreonConfig.redirectUri)" target="_blank">Connect with Patreon</a>
+    </p>
+  </app-settings-panel>
+</main>

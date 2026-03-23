@@ -1,0 +1,9 @@
+<header><button type="button" (click)="doExpand()">{{ location }}</button></header>
+<table class="summary">
+  <tbody>
+    @for(i of items; track i.item.id)
+    {
+      <tr class="app-summary-item" [summaryItem]="i"></tr>
+    }
+  </tbody>
+</table>

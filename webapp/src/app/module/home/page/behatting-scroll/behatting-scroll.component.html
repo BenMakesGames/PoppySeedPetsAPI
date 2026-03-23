@@ -1,0 +1,10 @@
+<main>
+  <h2>Behatting Scroll</h2>
+
+  <h4>Which Pet?</h4>
+  <p>Which pet will gain the {{ incredibleDescription }} ABILITY to wear {{ hatDescription }} <i [class]="itemOtherPropertiesIcons.Hat"></i>s?</p>
+
+  <div [class.disabled]="behatting">
+    <app-select-pet (selected)="doBehat($event)" />
+  </div>
+</main>

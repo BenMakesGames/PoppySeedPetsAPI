@@ -1,0 +1,77 @@
+.donors {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 1em;
+  justify-content: center;
+  margin-bottom: 1em;
+
+  > div {
+    --rank-background-color: white;
+    --rank-text-color: black;
+
+    &.gold {
+      --rank-background-color: goldenrod;
+      --rank-text-color: white;
+      width: 100%;
+      font-size: 150%;
+    }
+
+    > button {
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      padding: 0;
+
+      margin: 0 auto;
+      background-color: transparent;
+
+      > app-rank-hat {
+        width: 3em;
+        height: 3em;
+        margin: 0 auto;
+      }
+
+      > .avatar {
+        background-color: var(--rank-background-color);
+        width: 3em;
+        height: 3em;
+        padding: 1em;
+        margin: 0 auto;
+        border-radius: 50%;
+        > img {
+          width: 100%;
+          height: 100%;
+          display: block;
+        }
+      }
+
+      > .name-and-item-count {
+        margin-top: -1em;
+        background-color: var(--rank-background-color);
+        padding: 0 1em 0.125em;
+        border-radius: 0.2em;
+        color: var(--rank-text-color);
+        line-height: 100%;
+
+        > .name {
+          font-weight: var(--bold-weight);
+        }
+      }
+
+      > .rank {
+        color: rgba(var(--color-text-on-content-background));
+        font-size: 80%;
+      }
+    }
+  }
+}
+
+.its-me {
+  animation: throb 1s infinite ease-in-out alternate-reverse;
+}
+
+@keyframes throb {
+  0% { transform: scale(1) }
+  100% { transform: scale(1.1) }
+}

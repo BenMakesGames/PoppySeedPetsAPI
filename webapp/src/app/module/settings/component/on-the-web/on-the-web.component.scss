@@ -1,0 +1,23 @@
+.links {
+  margin-bottom: 1rem;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  display: grid;
+  gap: 0.5rem;
+
+  > .link {
+    background-color: rgb(var(--color-speech-bubble-background));
+    display: grid;
+    grid-template-columns: 2rem auto;
+    align-content: center;
+    padding: 0.5rem;
+
+    > button {
+      text-align: center;
+    }
+  }
+
+  .visibility {
+    font-size: 80%;
+    opacity: 0.66667;
+  }
+}

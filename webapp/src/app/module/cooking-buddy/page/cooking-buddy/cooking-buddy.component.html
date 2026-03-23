@@ -1,0 +1,88 @@
+<main>
+  <h2>Cooking Buddy</h2>
+
+  @if(!cookingBuddy)
+  {
+    <p><app-loading-throbber [randomText]="true" /></p>
+  }
+  @else
+  {
+    <app-npc-dialog
+      [smallerImage]="true"
+      [showBorder]="false"
+      [npc]="cookingBuddy.appearance"
+      npcPath="items"
+      [name]="cookingBuddy.name"
+    >
+      <markdown [data]="dialog"></markdown>
+    </app-npc-dialog>
+    @if(location !== null)
+    {
+      <ul [class.disabled]="!knownRecipesAjax.closed">
+        @if(location !== 0)
+        {
+          <li><button type="button" class="link-text" (click)="doSwitchLocation(0)">"{{ cookingBuddy.name }}, check house."</button></li>
+        }
+        @if(location !== 1 && (user|hasUnlockedFeature:'Basement'))
+        {
+          <li><button type="button" class="link-text" (click)="doSwitchLocation(1)">"{{ cookingBuddy.name }}, check basement."</button></li>
+        }
+        @if(location !== 2 && (user|hasUnlockedFeature:'Fireplace'))
+        {
+          <li><button type="button" class="link-text" (click)="doSwitchLocation(2)">"{{ cookingBuddy.name }}, check fireplace."</button></li>
+        }
+      </ul>
+    }
+
+    <form (submit)="doChangeFilters()" [class.disabled]="!results" class="search">
+      <p>
+        <label>Recipe</label>
+        <input type="text" name="search" [(ngModel)]="search">
+      </p>
+      <p>
+        <button type="submit">Search</button>
+      </p>
+    </form>
+
+    @if(!results)
+    {
+      <p><app-loading-throbber [randomText]="true" /></p>
+    }
+    @else if(results.resultCount > 0)
+    {
+      <p>{{ results.resultCount }} known recipes.</p>
+      @if(results.pageCount > 1)
+      {
+        <app-paginator [(page)]="page" [pageCount]="results.pageCount" (change)="doChangePage()" />
+      }
+      <div class="recipes">
+        @for(recipe of results.results; track recipe.id)
+        {
+          <button type="button" class="recipe wire" [class.not-enough-ingredients]="!recipe.canPrepare" (click)="doPrepare(recipe)">
+          <span class="makes">
+            @for(makes of recipe.makes; track $index)
+            {
+              <span>
+                <img [src]="'/assets/images/items/' + makes.item.image + '.svg'" [alt]="makes.item.name">
+                @if(makes.quantity !== 1)
+                {
+                  <span class="multiplier">&times;{{ makes.quantity }}</span>
+                }
+              </span>
+            }
+          </span>
+            <span class="name">{{ recipe.name }}</span>
+          </button>
+        }
+      </div>
+      @if(results.pageCount > 1)
+      {
+        <app-paginator [(page)]="page" [pageCount]="results.pageCount" (change)="doChangePage()" />
+      }
+    }
+    @else
+    {
+      <p>No known recipes were found :(</p>
+    }
+  }
+</main>

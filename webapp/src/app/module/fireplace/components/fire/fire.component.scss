@@ -1,0 +1,236 @@
+:host {
+  display: block;
+  width: 100%;
+  height: 300px;
+  overflow: hidden;
+}
+
+.fireplace {
+  clip-path: circle(300px at 50% 100%);
+  background: radial-gradient(#550d39, #270537);
+  width: 320px;
+  height: 300px;
+  margin: 0 auto;
+  position: relative;
+}
+
+.log {
+  position: absolute;
+  left: 20px;
+  bottom: 0;
+  width: 280px;
+  height: 32px;
+  border-radius: 16px;
+  overflow: hidden;
+  background-color: black;
+
+  > div {
+    height: 100%;
+    background-color: brown;
+  }
+}
+
+.fire {
+  width: 224px;
+  height: 300px;
+  margin: 0 auto;
+  position: relative;
+}
+
+.oh-dang {
+  color: white;
+  text-align: center;
+  position: relative;
+  top: calc(50% - 0.5em);
+}
+
+.fire .flame {
+  position: absolute;
+  transform-origin: bottom center;
+  opacity: 0.9;
+  width: 32px;
+  bottom: 20px;
+  animation: fire 2s 0s ease-in-out infinite alternate;
+
+  &:nth-child(1)
+  {
+    left: 0;
+  }
+
+  &:nth-child(2)
+  {
+    left: 32px;
+  }
+
+  &:nth-child(3)
+  {
+    left: 64px;
+  }
+
+  &:nth-child(4)
+  {
+    left: 96px;
+  }
+
+  &:nth-child(5)
+  {
+    left: 128px;
+  }
+
+  &:nth-child(6)
+  {
+    left: 160px;
+  }
+
+  &:nth-child(7)
+  {
+    left: 192px;
+  }
+}
+.fire-red .flame {
+  border-radius: 48px;
+  background: #e20f00;
+  box-shadow: 0 0 80px 18px rgba(226,15,0,0.4);
+}
+.fire-red .flame:nth-child(1) {
+  height: 135px;
+  animation-delay: 0.15s;
+}
+.fire-red .flame:nth-child(2) {
+  height: 200px;
+  animation-delay: 0.35s;
+}
+.fire-red .flame:nth-child(3) {
+  height: 250px;
+  animation-delay: 0.1s;
+}
+.fire-red .flame:nth-child(4) {
+  height: 300px;
+  animation-delay: 0s;
+}
+.fire-red .flame:nth-child(5) {
+  height: 260px;
+  animation-delay: 0.45s;
+}
+.fire-red .flame:nth-child(6) {
+  height: 190px;
+  animation-delay: 0.3s;
+}
+.fire-red .flame:nth-child(7) {
+  height: 115px;
+  animation-delay: 0.1s;
+}
+.fire-orange .flame {
+  border-radius: 48px;
+  background: #ff9c00;
+  box-shadow: 0 0 80px 18px rgba(255,156,0,0.6);
+}
+.fire-orange .flame:nth-child(1) {
+  height: 115px;
+  animation-delay: 0.05s;
+}
+.fire-orange .flame:nth-child(2) {
+  height: 175px;
+  animation-delay: 0.1s;
+}
+.fire-orange .flame:nth-child(3) {
+  height: 210px;
+  animation-delay: 0.35s;
+}
+.fire-orange .flame:nth-child(4) {
+  height: 250px;
+  animation-delay: 0.4s;
+}
+.fire-orange .flame:nth-child(5) {
+  height: 215px;
+  animation-delay: 0.5s;
+}
+.fire-orange .flame:nth-child(6) {
+  height: 135px;
+  animation-delay: 0.35s;
+}
+.fire-orange .flame:nth-child(7) {
+  height: 90px;
+  animation-delay: 0.1s;
+}
+.fire-yellow .flame {
+  border-radius: 48px;
+  background: #ffeb6e;
+  //box-shadow: 0 0 80px 18px rgba(255,235,110,0.4);
+}
+.fire-yellow .flame:nth-child(1) {
+  height: 115px;
+  animation-delay: 0.6s;
+}
+.fire-yellow .flame:nth-child(2) {
+  height: 145px;
+  animation-delay: 0.4s;
+}
+.fire-yellow .flame:nth-child(3) {
+  height: 165px;
+  animation-delay: 0.38s;
+}
+.fire-yellow .flame:nth-child(4) {
+  height: 165px;
+  animation-delay: 0.22s;
+}
+.fire-yellow .flame:nth-child(5) {
+  height: 120px;
+  animation-delay: 0.18s;
+}
+.fire-white .flame {
+  border-radius: 48px;
+  background: #fef1d9;
+  box-shadow: 0 0 80px 18px rgba(254,241,217,0.4);
+}
+.fire-white .flame:nth-child(1) {
+  height: 85px;
+  animation-delay: 0.22s;
+}
+.fire-white .flame:nth-child(2) {
+  height: 100px;
+  animation-delay: 0.42s;
+}
+.fire-white .flame:nth-child(3) {
+  height: 140px;
+  animation-delay: 0.32s;
+}
+.fire-white .flame:nth-child(4) {
+  height: 175px;
+  animation-delay: 0.8s;
+}
+.fire-white .flame:nth-child(5) {
+  height: 140px;
+  animation-delay: 0.85s;
+}
+.fire-white .flame:nth-child(6) {
+  height: 90px;
+  animation-delay: 0.64s;
+}
+.fire-white .flame:nth-child(7) {
+  height: 85px;
+  animation-delay: 0.32s;
+}
+@keyframes fire {
+  0% {
+    transform: scaleY(1);
+  }
+  28% {
+    transform: scaleY(0.7);
+  }
+  38% {
+    transform: scaleY(0.8);
+  }
+  50% {
+    transform: scaleY(0.6);
+  }
+  70% {
+    transform: scaleY(0.95);
+  }
+  82% {
+    transform: scaleY(0.58);
+  }
+  100% {
+    transform: scaleY(1);
+  }
+}

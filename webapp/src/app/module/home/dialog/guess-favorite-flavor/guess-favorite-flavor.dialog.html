@@ -1,0 +1,23 @@
+<div class="dialog">
+  <h4>Guess Favorite Flavor</h4>
+  <div class="dialog-body">
+    <form (submit)="doSubmit()" [class.disabled]="loading">
+      <p>
+        <label for="guess">Flavor</label>
+        <select id="guess" name="guess" [(ngModel)]="guess">
+          @for(flavor of flavors; track $index)
+          {
+            <option [value]="flavor">{{ flavor|titlecase }}</option>
+          }
+        </select>
+      </p>
+      <p class="buttons">
+        <button type="submit">{{ submitText }}</button>
+        @if(loading)
+        {
+          <app-loading-throbber text="" />
+        }
+      </p>
+    </form>
+  </div>
+</div>

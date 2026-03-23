@@ -1,0 +1,18 @@
+<form (submit)="doSearch()">
+  @if(textExactMatchName)
+  {
+    <label class="exact-match"><input type="checkbox" [checked]="filters[textExactMatchName]" (change)="doToggleExactMatchName()" /><i class="fa-solid" [class.fa-equals]="filters[textExactMatchName]" [class.fa-question]="!filters[textExactMatchName]" [title]="filters[textExactMatchName] ? 'exactly matches' : 'contains'"></i></label>
+  }
+  <input type="text" name="text" [(ngModel)]="filters[textName]" />
+  <button type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
+  @if(more.observed)
+  {
+    <button type="button" class="link-text more-button" (click)="doMore()">
+      More...
+      @if(filterCount > 0)
+      {
+        <span class="filter-count">{{ filterCount }}</span>
+      }
+    </button>
+  }
+</form>

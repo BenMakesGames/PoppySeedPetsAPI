@@ -1,0 +1,55 @@
+<main>
+  <h2><a [routerLink]="[ '/poppyopedia' ]">Poppyopedia</a> » Pet Groups</h2>
+  <form (submit)="doSearch()">
+    <app-group-search [(search)]="search" />
+    <p>
+      <button type="submit">Search</button>
+    </p>
+  </form>
+
+  @if(!results)
+  {
+    <p><app-loading-throbber /></p>
+  }
+  @else if(results.resultCount === 0)
+  {
+    <p>No such groups were found.</p>
+  }
+  @else
+  {
+    <p>
+      @if(results.pageCount > 1)
+      {
+        <app-paginator [page]="results.page" [pageCount]="results.pageCount" (pageChange)="getPage($event)" />
+      }
+    </p>
+    <table [class.disabled]="!resultsSubscription.closed">
+      <thead>
+        <tr>
+          <th>Name &amp; Type</th>
+          <th>Created</th>
+          <th>Last Met</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for(group of results.results; track group.id)
+        {
+          <tr [routerLink]="[ '/poppyopedia/group/' + group.id ]" tabindex="0">
+            <td>
+              <span class="link-text">{{ group.name }}</span>
+              <small>{{ group.type|petGroupLabel }}</small>
+            </td>
+            <td><app-date-only [dateString]="group.createdOn" /></td>
+            <td><app-date-and-time [dateString]="group.lastMetOn" /></td>
+          </tr>
+        }
+      </tbody>
+    </table>
+    <p>
+      @if(results.pageCount > 1)
+      {
+        <app-paginator [page]="results.page" [pageCount]="results.pageCount" (pageChange)="getPage($event)" />
+      }
+    </p>
+  }
+</main>

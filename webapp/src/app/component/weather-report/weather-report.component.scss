@@ -1,0 +1,39 @@
+:host {
+  display: block;
+}
+
+.today {
+  display: grid;
+  grid-template-columns: 0.75in auto 0.75in;
+  gap: 0.5em;
+  align-items: center;
+  justify-content: center;
+
+  > app-current-weather {
+    display: block;
+    width: 0.75in;
+    height: 0.75in;
+  }
+
+  > div {
+    display: grid;
+    grid-template-areas: 'weather calendar' 'time time';
+    align-items: center;
+
+    > .calendar {
+      grid-area: calendar;
+      justify-self: end;
+      color: rgb(var(--color-text-on-content-background));
+      font-size: 80%;
+    }
+
+    > .datetime {
+      font-size: 75%;
+      grid-area: time;
+    }
+
+    > .sky {
+      grid-area: weather;
+    }
+  }
+}

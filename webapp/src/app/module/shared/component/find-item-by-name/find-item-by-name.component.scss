@@ -1,0 +1,17 @@
+span.input,.search-results button {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  gap: 0.25rem;
+  align-items: center;
+}
+
+.search-results {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em;
+}
+
+span.input > button {
+  margin-left: auto;
+}

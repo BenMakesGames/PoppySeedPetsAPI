@@ -1,0 +1,59 @@
+<div [ngStyle]="{ position: 'relative', width: size, height: size, zIndex: 0 }">
+  @if(moonPhase && moonPhase !== 'new')
+  {
+    <img class="moon-phase" [src]="'/assets/images/icons/moon/' + moonPhase + '.svg'" [alt]="moonPhase + ' moon'">
+  }
+  @for(aura of auras; track $index)
+  {
+    <app-pet-aura [aura]="aura" [petScale]="pet.scale / 100" />
+  }
+  @if(!disableSpiritCompanion && pet.spiritCompanion && spiritCompanionAnimations !== 'hidden')
+  {
+    <div class="spirit-companion" [class.animated]="spiritCompanionAnimations === 'animated'" [style.animation-delay.s]="animationDelay" [style.animation-duration.s]="spiritSpeed"><img [src]="'/assets/images/companions/' + pet.spiritCompanion.image + '.svg'" alt="spirit companion"></div>
+  }
+  @if(!disableEgg && pet.pregnancy && pet.pregnancy.eggColor)
+  {
+    <div class="egg" [class.onRight]="petSpecies.flipX">
+      <app-image width="100%" height="100%" [colors]="eggColors" [path]="'eggs/' + petSpecies.eggImage" alt="pet egg" />
+    </div>
+  }
+  <div
+    [class.spectral]="isSpectral"
+    [class.inverted]="isInverted"
+    [class.very-inverted]="isVeryInverted"
+    class="pet-container"
+    [style.animation-delay.s]="animationDelay"
+    [style.transform]="'translate(0, calc(' + size + ' * ' + ((pet.scale - 100) / -200) + ')) ' + (flipped ? 'scaleX(-1)' : '') + (upsideDown ? 'scaleY(-1)' : '')"
+  >
+    <div [class.is-dancing]="isDancing" [style.animation-delay.s]="animationDelay" style="height:100%">
+      @if(emote())
+      {
+        <div class="emote"><app-emoji-or-fa [icon]="emoteFontAwesomeClass()" /></div>
+      }
+      <div class="movement" [class.hopping]="emote()">
+        @if(pet.colorA && pet.colorB)
+        {
+          <app-image [style.transform]="'scale(' + (pet.scale / 100) + ')'" class="pet" [width]="size" [height]="size" [colors]="petColors" [path]="'pets/' + petSpecies.image" [alt]="petSpecies.name" />
+        }
+        @if(pet.hat && showHat)
+        {
+          <div class="hat" [ngStyle]="hatPositionStyle"><img [src]="'/assets/images/items/' + pet.hat.item.image + '.svg'" [ngStyle]="hatRotationStyle" [alt]="'hat: ' + pet.hat.item.name"></div>
+        }
+        @if(itemTool && showTool)
+        {
+          <div class="tool" [class.behind]="petSpecies.handBehind && !itemTool.alwaysInFront" [ngStyle]="toolPositionStyle"><img [src]="'/assets/images/items/' + itemTool.image + '.svg'" [ngStyle]="toolRotationStyle" [alt]="'tool: ' + pet.tool.item.name"></div>
+        }
+      </div>
+    </div>
+  </div>
+  @if(glittery)
+  {
+    <img src="/assets/images/auras/glitter.svg" class="glitter" alt="glitter! so sparkly!" />
+  }
+  @if(showLunchbox === true || (showLunchbox === null && pet.lunchboxItems && pet.lunchboxItems.length > 0))
+  {
+    <div class="lunchbox" [class.onRight]="petSpecies.flipX" [class.flipped]="!petSpecies.flipX">
+      <img [src]="'/assets/images/lunchboxes/' + lunchboxImage + '.svg'" [alt]="'lunchbox containing ' + pet.lunchboxItems.length + ' item' + (pet.lunchboxItems.length === 1 ? '' : 's')" />
+    </div>
+  }
+</div>

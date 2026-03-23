@@ -1,0 +1,52 @@
+<main>
+  <small><a routerLink="/poppyopedia">Poppyopedia</a> » <a routerLink="/poppyopedia/designGoal">Design Goals</a> »</small>
+  @if(!designGoal)
+  {
+    <p><app-loading-throbber/></p>
+  }
+  @else
+  {
+    <h2>{{ designGoal.name }}</h2>
+    <div style="margin-bottom:1rem">
+      <markdown [data]="designGoal.description"></markdown>
+      <p class="author">~ Ben</p>
+    </div>
+
+    <h3>Related Announcements</h3>
+
+    @if(results && results.pageCount > 1)
+    {
+      <app-paginator [(page)]="page" [pageCount]="results.pageCount" (change)="doSearch()" />
+    }
+
+    @if(!articleSearchAjax.closed)
+    {
+      <p><app-loading-throbber/></p>
+    }
+    @else
+    {
+      @if(results.unfilteredTotal === 0)
+      {
+        <p>No announcements found.</p>
+      }
+      @for(article of results.results; track article.id)
+      {
+        <div class="speech-bubble news-article">
+          <header>
+            <h3>
+              {{ article.title }}
+              <small>written {{ article.createdOn|date:'yyyy-MM-dd':'UTC' }} <app-psp-time [date]="article.createdOn" /></small>
+            </h3>
+          </header>
+          <markdown [data]="article.body" />
+          <app-list-design-goals [goals]="article.designGoals" />
+        </div>
+      }
+
+      @if(results.pageCount > 1)
+      {
+        <app-paginator [(page)]="page" [pageCount]="results.pageCount" (change)="doSearch()" />
+      }
+    }
+  }
+</main>

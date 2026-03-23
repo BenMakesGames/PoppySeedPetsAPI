@@ -1,0 +1,26 @@
+.shop-inventory {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+
+  > div {
+    background-color: rgb(var(--color-speech-bubble-background));
+    padding: 1rem 0.5rem;
+
+    > img {
+      display: block;
+      margin: 0 auto;
+    }
+
+    > div {
+      text-align: center;
+      margin-bottom: 1rem;
+    }
+
+    > button {
+      display: block;
+      margin: 0 auto;
+    }
+  }
+}

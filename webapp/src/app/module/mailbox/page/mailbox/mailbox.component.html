@@ -1,0 +1,42 @@
+<main>
+  <h2>Mailbox</h2>
+  @if(!mailboxSubscription.closed)
+  {
+    <p><app-loading-throbber [randomText]="true" /></p>
+  }
+  @if(results && user)
+  {
+    <div class="letters">
+      @for(letter of results.results; track letter.id)
+      {
+        <button
+          class="link-text"
+          [style.transform]="'rotateZ(' + ((letter.id % 11) - 5) + 'deg)'"
+          [class.is-from-ants]="letter.letter.sender === 'Katica'"
+          (click)="doViewLetter(letter)"
+        >
+          <div class="envelope"
+            [style.background-image]="'url(/assets/images/ui/envelopes/' + (letter.letter.sender|envelopeStyle) + '.svg)'"
+          >
+            @if(!letter.isRead)
+            {
+              <span class="new">New</span>
+            }
+            <h3 class="title">{{ letter.letter.title }}</h3>
+            <div class="sender">{{ letter.letter.sender }}</div>
+            <div class="stamp">
+              <div class="post-date">
+                {{ letter.receivedOn|date:'MMM d'}}<br>
+                {{ letter.receivedOn|date:'y'}}
+              </div>
+            </div>
+            <div class="recipient">
+              <div>{{ user.name }}</div>
+              <div style="opacity:0.8">#{{ user.id }} PSP Island</div>
+            </div>
+          </div>
+        </button>
+      }
+    </div>
+  }
+</main>

@@ -1,0 +1,21 @@
+<main>
+  <h2>Bring a Plushy to Life</h2>
+  <p>Select one of the plushies in your house; that plushy shall be brought to life! (The Philosopher's Stone will be lost in the process, so choose wisely!)</p>
+  @if(!inventory)
+  {
+    <p><app-loading-throbber [randomText]="true"/></p>
+  }
+  @else if(inventory.length === 0)
+  {
+    <p>There aren't any plushies in your house right now...</p>
+  }
+  @else
+  {
+    <div class="inventory" [class.disabled]="dipping">
+      @for(i of inventory; track i.id)
+      {
+        <app-inventory-item [inventory]="i" tabindex="0" (click)="doUse(i)" />
+      }
+    </div>
+  }
+</main>

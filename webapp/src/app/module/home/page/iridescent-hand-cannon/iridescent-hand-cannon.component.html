@@ -1,0 +1,40 @@
+<main>
+  <h2>Iridescent Hand Cannon</h2>
+  <p>Which pet will be blasted with a random color?</p>
+  <p>(The Iridescent Hand Cannon has a 10% chance to break every time it's used.)</p>
+
+  <div [class.disabled]="firing">
+    <form (submit)="doNothing()" [class.disabled]="firing">
+      <p>
+        <app-select-pet (selected)="doSelectPet($event)" #selectPet [highlightSelected]="true" />
+      </p>
+      @if(selectedPet)
+      {
+        @if(selectedPetHasHyperchromatic)
+        {
+          <p><b>Hey, listen!</b> {{ selectedPet.name }} is <em>Hyperchromatic</em>; shooting it with an Iridescent Hand Cannon will blast their Hyperchromaticism away!</p>
+        }
+        <p>
+          <label>Aim at...</label>
+          <label class="radio-checkbox" [class.selected]="aimAt === 'A'">
+            <span><input type="radio" [(ngModel)]="aimAt" name="aimAt" value="A"><span class="color-box" [style.background-color]="'#' + selectedPet.colorA"></span></span>
+            <div>
+              <div style="line-height:1.2em">Main color</div>
+              <small style="line-height:1.2em">{{ selectedPet.colorA|colorName }}</small>
+            </div>
+          </label>
+          <label class="radio-checkbox" [class.selected]="aimAt === 'B'">
+            <span><input type="radio" [(ngModel)]="aimAt" name="aimAt" value="B"><span class="color-box" [style.background-color]="'#' + selectedPet.colorB"></span></span>
+            <div>
+              <div style="line-height:1.2em">Detail color (not visible on all species)</div>
+              <small style="line-height:1.2em">{{ selectedPet.colorB|colorName }}</small>
+            </div>
+          </label>
+        </p>
+        <p class="buttons">
+          <button type="button" (click)="doFire()">Fire!</button>
+        </p>
+      }
+    </form>
+  </div>
+</main>

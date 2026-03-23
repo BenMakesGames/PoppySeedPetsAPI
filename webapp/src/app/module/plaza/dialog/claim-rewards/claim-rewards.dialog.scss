@@ -1,0 +1,65 @@
+.rewards {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+$collapseBelowThisWidth: 640px;
+
+.reward {
+  display: grid;
+  grid-template-areas:
+    'name name name'
+    'picture progress claim'
+  ;
+
+  grid-template-columns: 200px auto 85px;
+  align-items: center;
+  width: 500px;
+
+  @media (max-width: $collapseBelowThisWidth) {
+    grid-template-areas: 'name' 'picture' 'progress' 'claim';
+    grid-template-columns: 1fr;
+    width: 100%;
+  }
+
+  gap: 0.5rem;
+
+  + .reward {
+    border-top: 1px solid rgb(var(--color-text-on-content-background));
+    padding-top: 1em;
+    margin-top: 0.5em;
+  }
+
+  > .picture {
+    grid-area: picture;
+    display: block;
+
+    > img {
+      width: 100%;
+    }
+  }
+
+  > .name {
+    grid-area: name;
+    margin: 0;
+    line-height: 1em;
+    text-align: center;
+  }
+
+  > .progress {
+    grid-area: progress;
+    padding-right: 2ch;
+    @media (max-width: $collapseBelowThisWidth) {
+      padding-left: 2ch;
+      margin-bottom: 3em;
+    }
+  }
+
+  > .claim {
+    grid-area: claim;
+    @media (max-width: $collapseBelowThisWidth) {
+      text-align: center;
+    }
+  }
+}

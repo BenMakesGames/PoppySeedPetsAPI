@@ -1,0 +1,8 @@
+@if(value.base === 0 && value.merits === 0 && value.tool === 0 && value.statusEffects === 0)
+{
+  <span style="opacity:0.5">&mdash;</span>
+}
+@for(s of stars; track $index)
+{
+  <span class="star">★</span>
+}

@@ -1,0 +1,21 @@
+<main>
+  <h2>Feeding Bugs</h2>
+  <small>Is this such a good idea?</small>
+  @if(!inventory)
+  {
+    <p><app-loading-throbber [randomText]="true"/></p>
+  }
+  @else if(inventory.length === 0)
+  {
+    <p>There aren't any edible items in your house right now...</p>
+  }
+  @else
+  {
+    <div class="inventory" [class.disabled]="feeding">
+      @for(i of inventory; track i.id)
+      {
+        <app-inventory-item [inventory]="i" tabindex="0" (click)="doFeedBug(i)" />
+      }
+    </div>
+  }
+</main>

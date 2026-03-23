@@ -1,0 +1,23 @@
+<div class="yield">
+  <div class="picture" [class.circled]="circled" [style.min-width.rem]="sizeInRem" [style.max-width.rem]="sizeInRem" [style.height.rem]="sizeInRem">
+    @if(costOrYield.type === 'money')
+    {
+      <i class="moneys" aria-hidden="true" [style.font-size.rem]="sizeInRem * 0.875" [style.line-height.rem]="sizeInRem"></i>
+      <div class="multiplier">&times;{{ costOrYield.quantity }}</div>
+    }
+    @else if(costOrYield.type === 'recyclingPoints')
+    {
+      <i class="recycle" aria-hidden="true" [style.font-size.rem]="sizeInRem * 0.875" [style.line-height.rem]="sizeInRem"></i>
+      <div class="multiplier">&times;{{ costOrYield.quantity }}</div>
+    }
+    @else if(costOrYield.type === 'item')
+    {
+      <img [src]="'/assets/images/items/' + costOrYield.item.image + '.svg'" aria-hidden="true" />
+      <div class="multiplier">&times;{{ costOrYield.quantity }}</div>
+    }
+  </div>
+  @if(!compact)
+  {
+    <div class="title">{{ costOrYield|costOrYieldTitle }}</div>
+  }
+</div>

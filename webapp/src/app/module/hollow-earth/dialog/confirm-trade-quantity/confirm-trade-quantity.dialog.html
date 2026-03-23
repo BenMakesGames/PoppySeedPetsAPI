@@ -1,0 +1,35 @@
+<div class="dialog">
+  <h4>Trade</h4>
+  <div class="dialog-body">
+    <form (submit)="doTrade()" [class.disabled]="trading">
+      <section>
+        <h5>Cost</h5>
+        <app-describe-trade-depot-cost [cost]="trade.cost" [quantity]="quantity" />
+      </section>
+
+      <section>
+        <h5>Makes</h5>
+        <div class="makes-item">
+          <span>{{ quantity }} &times;</span><img [src]="'/assets/images/items/' + trade.item.image + '.svg'" alt=""><span>{{ trade.item.name }}</span>
+        </div>
+      </section>
+
+      <section>
+        <h5>Quantity: {{ quantity }}</h5>
+        @if(trade.maxQuantity > 0)
+        {
+          <input type="range" min="0" [max]="trade.maxQuantity" [value]="quantity" (input)="quantity = $event.target.value" />
+        }
+        @else
+        {
+          <p>You do not have enough to make this exchange.</p>
+        }
+      </section>
+
+      <section class="buttons">
+        <button type="submit" [class.disabled]="quantity == 0">Confirm</button>
+        <button type="button" class="wire" (click)="doCancel()">Cancel</button>
+      </section>
+    </form>
+  </div>
+</div>

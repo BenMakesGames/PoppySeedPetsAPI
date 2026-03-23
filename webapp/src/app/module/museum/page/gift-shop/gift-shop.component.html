@@ -1,0 +1,57 @@
+<main>
+  <h2><a routerLink="/museum">Museum</a> » Gift Shop</h2>
+  <app-npc-dialog npc="museum-curator" name="Ridley">
+    @if(!giftShopSubscription.closed)
+    {
+      <p><app-loading-throbber [randomText]="true"/></p>
+    }
+    @if(giftShop)
+    {
+      <p>You have {{ giftShop.pointsAvailable }} Favor with the Museum.</p>
+    }
+  </app-npc-dialog>
+  @if(!giftShopSubscription.closed)
+  {
+    <p><app-loading-throbber [randomText]="true"/></p>
+  }
+  @if(giftShop)
+  {
+    <nav class="tabs-container">
+      <div class="tabs" role="tablist" [class.disabled]="buying">
+        @for(section of giftShop.giftShop; track section.category)
+        {
+          <button role="tab" (click)="tab = section.category" [class.active]="tab === section.category">{{ section.category }}</button>
+        }
+      </div>
+    </nav>
+    @for(section of giftShop.giftShop; track $index)
+    {
+      <section [hidden]="tab !== section.category">
+        @if(section.itemsDonated < section.requiredToUnlock)
+        {
+          <p>You've donated {{ section.itemsDonated }} items in this category. Donate <a routerLink="/poppyopedia/item" [queryParams]="{'filter.itemGroup': section.category, 'filter.hasDonated': false }">{{ section.requiredToUnlock - section.itemsDonated }} more</a> to unlock this section!</p>
+        }
+        @else
+        {
+          <table [class.disabled]="buying">
+            <thead>
+              <tr>
+                <th>Item</th>
+                <th>Price</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for(i of section.inventory; track $index)
+              {
+                <tr>
+                  <td><button type="button" class="link-text" (click)="doViewItem(i.item.name)"><app-inventory-item [inventory]="i" [lockedToOwner]="true" /></button></td>
+                  <td><button type="button" class="price" [class.disabled]="giftShop.pointsAvailable < i.cost" (click)="doBuy(section.category, i.item.name)">Buy ({{ i.cost }} Favor)</button></td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        }
+      </section>
+    }
+  }
+</main>

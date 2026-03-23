@@ -1,0 +1,26 @@
+.pet {
+  padding-right: 0;
+  padding-left: 0.25rem;
+
+  > * {
+    display: block;
+    margin: 0 auto;
+    padding: 0;
+  }
+
+  > a > app-pet-appearance {
+    display: block;
+    padding: 0;
+  }
+
+  > .activity-log-icon {
+    padding-top: 0.25rem;
+    float: none;
+  }
+}
+
+.pet-logs {
+  td {
+    vertical-align: top;
+  }
+}

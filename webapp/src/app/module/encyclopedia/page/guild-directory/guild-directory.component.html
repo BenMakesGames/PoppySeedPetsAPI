@@ -1,0 +1,21 @@
+<main>
+  <h2><a routerLink="/poppyopedia">Poppyopedia</a> » Guilds</h2>
+  @if(!guilds)
+  {
+    <p><app-loading-throbber/></p>
+  }
+  @else
+  {
+    <ul>
+      @for(guild of guilds; track guild.id)
+      {
+        <li>
+          <a [routerLink]="'/poppyopedia/guild/' + guild.id">
+            <img [src]="'/assets/images/guilds/' + guild.emblem + '.svg'" [alt]="guild.name + ' emblem'">
+            <span>{{ guild.name }}</span>
+          </a>
+        </li>
+      }
+    </ul>
+  }
+</main>

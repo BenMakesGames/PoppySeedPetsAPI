@@ -1,0 +1,13 @@
+<div class="dialog">
+  <h4>{{ event.type }} Event</h4>
+  <div class="dialog-body">
+    <p>Participants:</p>
+    <ul class="list">
+      @for(p of event.participants; track p.id)
+      {
+        <li><button type="button" (click)="doShowPet(p)" class="link-text">{{ p.name }}</button></li>
+      }
+    </ul>
+    <markdown [data]="event.results"></markdown>
+  </div>
+</div>

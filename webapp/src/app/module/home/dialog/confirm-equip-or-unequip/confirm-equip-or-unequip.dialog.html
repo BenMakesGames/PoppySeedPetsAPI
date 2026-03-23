@@ -1,0 +1,61 @@
+<div class="dialog">
+  <h4>{{ unequip ? "Unequip" : "Equip" }} this Item?</h4>
+  <div class="dialog-body">
+    @if(unequip)
+    {
+      <section>
+        @if(unequip.illusion)
+        {
+          <p><i class="fa-solid fa-eye"></i> Illusion: {{ unequip.illusion.name }}.</p>
+        }
+        @if(unequip.item?.tool)
+        {
+          <p><i [class]="itemOtherPropertiesIcons.Tool"></i> Tool: <ng-container *ngFor="let modifier of unequip.item.tool.modifiers; let i = index">{{ i > 0 ? ', ' : '' }}<span [class.loss]="modifier.startsWith('-')" [class.gain]="!modifier.startsWith('-')">{{ modifier }}</span></ng-container></p>
+        }
+        @else
+        {
+          <p><i [class]="itemOtherPropertiesIcons.Tool"></i> Tool: This item does nothing when equipped. Except maybe look fun.</p>
+        }
+        @if(unequip.enchantment && !unequip.enchantment.aura)
+        {
+          <p>{{ unequip.enchantment.name }} bonus: <ng-container *ngFor="let modifier of unequip.enchantment.effects.modifiers; let i = index">{{ i > 0 ? ', ' : '' }}<span [class.loss]="modifier.startsWith('-')" [class.gain]="!modifier.startsWith('-')">{{ modifier }}</span></ng-container><small *ngIf="unequip.item.hat"> (does not apply when worn as a Hat)</small></p>
+        }
+        @if(unequip.enchantment?.aura)
+        {
+          <p>{{ unequip.enchantment.name }} bonus: adds the "{{ unequip.enchantment.aura.name }}" styling</p>
+        }
+      </section>
+    }
+
+    @if(equip)
+    {
+      <section>
+        @if(equip.illusion)
+        {
+          <p><i class="fa-solid fa-eye"></i> Illusion: {{ equip.illusion.name }}.</p>
+        }
+        @if(equip.item?.tool)
+        {
+          <p><i [class]="itemOtherPropertiesIcons.Tool"></i> Tool: <ng-container *ngFor="let modifier of equip.item.tool.modifiers; let i = index">{{ i > 0 ? ', ' : '' }}<span [class.loss]="modifier.startsWith('-')" [class.gain]="!modifier.startsWith('-')">{{ modifier }}</span></ng-container></p>
+        }
+        @if(equip.enchantment && !equip.enchantment.aura)
+        {
+          <p>{{ equip.enchantment.name }} bonus: <ng-container *ngFor="let modifier of equip.enchantment.effects.modifiers; let i = index">{{ i > 0 ? ', ' : '' }}<span [class.loss]="modifier.startsWith('-')" [class.gain]="!modifier.startsWith('-')">{{ modifier }}</span></ng-container><small *ngIf="equip.item.hat"> (does not apply when worn as a Hat)</small></p>
+        }
+        @if(equip.enchantment?.aura)
+        {
+          <p>{{ equip.enchantment.name }} bonus: adds the "{{ equip.enchantment.aura.name }}" styling</p>
+        }
+        @if(!equip.item?.tool)
+        {
+          <p><i [class]="itemOtherPropertiesIcons.Tool"></i> Tool: This item does nothing when equipped. Except maybe look fun.</p>
+        }
+      </section>
+    }
+
+    <section class="buttons" style="margin-top: 1rem">
+      <button type="button" (click)="doSubmit()">{{ unequip ? "Unequip" : "Equip" }}</button>
+      <button type="button" class="wire" (click)="doCancel()">Cancel</button>
+    </section>
+  </div>
+</div>

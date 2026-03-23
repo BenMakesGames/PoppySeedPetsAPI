@@ -1,0 +1,88 @@
+:host
+{
+  display: flex;
+  flex-direction: row;
+  box-sizing: border-box;
+  height: calc(0.4in + 0.5rem);
+  align-items: center;
+  position: relative;
+
+  > .appearance {
+    position: relative;
+    width: 0.4in;
+    height: 0.4in;
+    padding: 0.25rem;
+    min-width: 0.4in;
+    max-width: 0.4in;
+
+    > img {
+      bottom: 0.25rem;
+      right: 0.25rem;
+      width: 0.4in;
+      height: 0.4in;
+      margin: 0;
+      display: block;
+      position: absolute;
+
+      &.illusion {
+        bottom: 0;
+        right: 0;
+        opacity: 0.5;
+        width: 0.2in;
+        height: 0.2in;
+      }
+    }
+  }
+
+  > .name {
+    padding: 0.25rem 0.25rem 0.25rem 0;
+    line-height: 1em;
+
+    > app-item-name-with-bonus {
+      line-height: 1em;
+    }
+  }
+}
+
+.badges {
+  display: block;
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  height: 0.2in;
+
+  img {
+    width: 0.2in;
+    height: 0.2in;
+    display: inline-block;
+    margin: 0;
+  }
+}
+
+.name {
+  position: relative;
+
+  &.long-name { font-size: 0.75em; }
+}
+
+.subtitle {
+  display: block;
+  font-size: 0.75em;
+  color: rgba(var(--color-text-on-content-background), 0.5);
+}
+
+.recycleValue {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  font-size: 75%;
+  background-color: rgb(var(--color-content-background));
+  color: rgb(var(--color-text-on-content-background));
+  height: 1rem;
+  line-height: 1rem;
+  padding: 0 0.125rem;
+  overflow: hidden;
+  border-top-right-radius: 0.5rem;
+  border: 1px solid rgb(var(--color-primary));
+}
+

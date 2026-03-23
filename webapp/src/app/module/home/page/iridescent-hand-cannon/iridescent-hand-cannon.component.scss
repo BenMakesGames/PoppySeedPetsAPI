@@ -1,0 +1,32 @@
+.radio-checkbox {
+  position: relative;
+  cursor: pointer;
+  align-items: center;
+  margin-top: 4px;
+
+  > span:last-child {
+    padding-left: 0.5rem;
+  }
+
+  input {
+    width: 1px;
+    height: 1px;
+    position: absolute;
+    left: -9999px;
+  }
+
+  &.selected {
+    outline: 2px solid rgb(var(--color-primary));
+  }
+
+  .color-box {
+    height: 2rem;
+    width: 2rem;
+    margin: 0.25rem;
+    display: block;
+  }
+
+  small {
+    display: block;
+  }
+}

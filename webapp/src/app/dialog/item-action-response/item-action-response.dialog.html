@@ -1,0 +1,16 @@
+<div class="dialog">
+  <h4>
+    @if(inventory)
+    {
+      <img [src]="'/assets/images/items/' + inventory.item.image + '.svg'" alt="" aria-hidden="true" />
+      <span>{{ inventory.item.name }}</span>
+    }
+    @else
+    {
+      <span>{{ randomTitle }}</span>
+    }
+  </h4>
+  <div class="dialog-body">
+    <markdown [data]="response.text" />
+  </div>
+</div>

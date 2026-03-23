@@ -1,0 +1,39 @@
+.yield {
+  display: flex;
+  flex-direction: row;
+  gap: 0.5em;
+  align-items: center;
+
+  > .picture {
+    width: 100%;
+    height: 100%;
+    position: relative;
+
+    &.circled {
+      background-color: rgba(var(--color-tab-bar-background));
+      border-radius: 50%;
+      padding: 0.5em;
+    }
+
+    > img {
+      width: 100%;
+      display: block;
+    }
+
+    > i {
+      display: block;
+      text-align: center;
+    }
+
+    > .multiplier {
+      background-color: rgba(var(--color-tab-bar-background));
+      text-align: center;
+      position: absolute;
+      top: calc(100% - 1em);
+      left: calc(100% - 1em);
+      font-size: 80%;
+      border-radius: 1.2em;
+      padding: 0 0.5em;
+    }
+  }
+}

@@ -1,0 +1,10 @@
+@let p = player();
+@if(p.icon)
+{
+  <img [src]="'/assets/images/' + p.icon + '.svg'" alt="" [class.includes-number]="includeNumber()">
+}
+{{ p.name }}
+@if(includeNumber())
+{
+  <small>#{{ p.id }}</small>
+}

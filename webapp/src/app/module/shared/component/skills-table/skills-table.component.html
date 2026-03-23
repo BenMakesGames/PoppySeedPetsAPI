@@ -1,0 +1,19 @@
+@if(hasAnySkills)
+{
+  <table class="skills-table">
+    <tbody>
+      @for(skill of skillList; let i = $index; track i)
+      {
+        <tr appSkillTableRow
+          [name]="skill"
+          [skill]="skills[skill]"
+          [index]="i"
+        ></tr>
+      }
+    </tbody>
+  </table>
+}
+@else
+{
+  <p>Level 0 pets have no skills... (that's what it means to be level 0!)</p>
+}

@@ -20,6 +20,7 @@ jobs:
         fetch-depth: 0
 
     - name: Check for Repository Pattern Usage
+      working-directory: api
       run: |
         echo "Checking for uses of Doctrine Repositories..."
         
@@ -83,6 +84,7 @@ jobs:
 
     - name: Get composer cache directory
       id: composer-cache
+      working-directory: api
       run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
 
     - name: Cache dependencies
@@ -93,16 +95,21 @@ jobs:
         restore-keys: ${{ runner.os }}-composer-
 
     - name: Install dependencies
+      working-directory: api
       run: composer install --prefer-dist
 
     - name: Run Composer Audit
+      working-directory: api
       run: composer audit
 
     - name: Check PSR-4
+      working-directory: api
       run: composer php-cs-fixer-dry-run
 
     - name: PHPStan
+      working-directory: api
       run: php vendor/bin/phpstan analyse
 
     - name: Test!
+      working-directory: api
       run: vendor/bin/phpunit --exclude-group requiresDatabase

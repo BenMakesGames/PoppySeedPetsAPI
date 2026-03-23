@@ -1,0 +1,9 @@
+<div class="hourglass">
+  <div class="top">
+    <div class="progress" [style.height.%]="seconds * 90 / 60"></div>
+  </div>
+  <div class="bottom">
+    <div class="progress" [style.height.%]="100 - seconds * 90 / 60"></div>
+  </div>
+</div>
+<div class="time-remaining">{{ minutesRemaining }}</div>

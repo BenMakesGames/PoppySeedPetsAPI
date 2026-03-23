@@ -1,0 +1,150 @@
+<img [src]="'/assets/images/items/' + item.image + '.svg'" class="appearance" alt="" aria-hidden="true" />
+<div style="margin:0.5rem 0;"><markdown>{{ item.description }}</markdown></div>
+@if(item.food)
+{
+  <div>
+    <h4>Edible</h4>
+    @if(item.food.candy && isOctober)
+    {
+      <p><img src="/assets/images/ui/halloween.svg" alt="Halloween" class="halloween" /> Can be given to trick-or-treaters!</p>
+    }
+    <p>You can feed this item to your pets.</p>
+    <ul class="list">
+      @for(modifier of item.food.modifiers; track $index)
+      {
+        <li>
+          {{ modifier }}
+          @if(modifier == 'a snack' && aSnack)
+          {
+            <small><em>you're</em> a snack! ;)</small>
+          }
+        </li>
+      }
+      @if(item.food.leftovers)
+      {
+        <li>after eating this, <a [routerLink]="['/poppyopedia/item/' + item.food.leftovers ]">{{ item.food.leftovers }}</a> is left over</li>
+      }
+      @if(item.food.grantedSkill)
+      {
+        <li>a pet that eats this food will gain a level of {{ item.food.grantedSkill|titlecase }}, if it has none</li>
+      }
+      @if(item.food && item.food.grantedStatusEffect)
+      {
+        <li>a pet that eats this food will become <a routerLink="/poppyopedia/statusEffects">{{ item.food.grantedStatusEffect }}</a></li>
+      }
+      @if(item.food.bringsLuck)
+      {
+        <li>eating this food can bring luck (<a routerLink="/poppyopedia/item" [queryParams]="{'filter.itemGroup': item.food.bringsLuck }" (click)="doClickLink()">{{ item.food.bringsLuck }}</a>)</li>
+      }
+    </ul>
+  </div>
+}
+@if(item.name === 'Green Egg')
+{
+  <div>
+    <h4><del>Edible</del></h4>
+    <p>You cannot feed this item to your pets...</p>
+    <ul class="list">
+      <li>they would not like it here or there</li>
+      <li>they would not like it anywhere</li>
+    </ul>
+  </div>
+}
+@if(item.spice)
+{
+  <div>
+    <h4>Spice: {{ item.spice.name }}</h4>
+    @if(item.spice.name === 'with Spider Roe')
+    {
+      <p>You can combine this item with a food to put tasty little spider eggs all over it! (They go pop in your mouth! (So fun!))</p>
+    }
+    @else
+    {
+      <p>You can combine this item with a food to give that food extra flavor!</p>
+    }
+    <ul class="list">
+      @for(modifier of item.spice.effects.modifiers; track $index)
+      {
+        <li><span [class.loss]="modifier.startsWith('-')" [class.gain]="!modifier.startsWith('-')">{{ modifier }}</span></li>
+      }
+      @if(item.spice.effects.leftovers)
+      {
+        <li>after eating food with this spice, <a [routerLink]="['/poppyopedia/item/' + item.spice.effects.leftovers ]" (click)="doClickLink()">{{ item.spice.effects.leftovers }}</a> is left over</li>
+      }
+      @if(item.spice.effects.grantedSkill)
+      {
+        <li>a pet that eats food with this spice will gain a level of {{ item.spice.effects.grantedSkill }}, if it has none</li>
+      }
+      @if(item.spice.effects && item.spice.effects.grantedStatusEffect)
+      {
+        <li>a pet that eats food with this spice will become <a routerLink="/poppyopedia/statusEffects">{{ item.spice.effects.grantedStatusEffect }}</a></li>
+      }
+      @if(item.spice.effects.bringsLuck)
+      {
+        <li>eating food with this spice can bring luck (<a routerLink="/poppyopedia/item" [queryParams]="{'filter.itemGroup': item.spice.effects.bringsLuck }" (click)="doClickLink()">{{ item.spice.effects.bringsLuck }}</a>)</li>
+      }
+    </ul>
+  </div>
+}
+@if(item.tool)
+{
+  <div>
+    <h4>Tool</h4>
+    <p>You can give this item to your pets, to improve their skills.</p>
+    <ul class="list">
+      @for(modifier of item.tool.modifiers; track $index)
+      {
+        <li><span [class.loss]="modifier.startsWith('-')" [class.gain]="!modifier.startsWith('-')">{{ modifier }}</span></li>
+      }
+    </ul>
+  </div>
+}
+@if(item.enchants)
+{
+  <div>
+    <h4>{{ item.name === 'Eggplant' ? '"Bonus"' : 'Bonus' }}: {{ item.enchants.name }}</h4>
+    <p>You can combine this item with a tool to give that tool a bonus.</p>
+    <ul class="list">
+      @for(modifier of item.enchants.effects.modifiers; track $index)
+      {
+        <li><span [class.loss]="modifier.startsWith('-')" [class.gain]="!modifier.startsWith('-')">{{ modifier }}</span></li>
+      }
+    </ul>
+  </div>
+}
+@if(item.hollowEarthTileCard)
+{
+  <div>
+    <h4>Hollow Earth Tile</h4>
+    <p>You can place this on {{ item.hollowEarthTileCard.type.article }} {{ item.hollowEarthTileCard.type.name }} space on the Hollow Earth map. It has the "{{ item.hollowEarthTileCard.name }}" adventure!</p>
+  </div>
+}
+@if(item.useActions && item.useActions.length > 0)
+{
+  <div>
+    <h4>Usable</h4>
+    <p>You can directly use this item.</p>
+    <ul class="list">
+      @for(action of item.useActions; track $index)
+      {
+        <li>
+          @if(action[0][0] != DOUBLE_QUOTE)
+          {
+            "{{ action[0] }}"
+          }
+          @else
+          {
+            {{ action[0] }}
+          }
+        </li>
+      }
+    </ul>
+  </div>
+}
+@if(item.greenhouseType || item.isFlammable || item.isFertilizer || item.recycleValue > 0 || item.hat || (item.itemGroups && item.itemGroups.length > 0))
+{
+  <div style="padding-bottom:0.5em">
+    <h4>Other Properties</h4>
+    <app-item-tags [item]="item" (onNav)="doClickLink()" />
+  </div>
+}

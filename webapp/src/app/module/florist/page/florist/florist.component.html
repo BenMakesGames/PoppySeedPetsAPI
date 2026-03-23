@@ -1,0 +1,68 @@
+<main>
+  <h2>Florist</h2>
+  <app-npc-dialog name="Kat" npc="kat">
+    @if(step === DialogStepEnum.Shop)
+    {
+      <p>Hello. Are you looking to send flowers to someone?</p>
+    }
+    @else if(step == DialogStepEnum.AfterShop)
+    {
+      <p>Great! Let me know if you want another.</p>
+    }
+    @else if(step === DialogStepEnum.AskForExplanation)
+    {
+      <p>So: you buy a Flowerbomb, and then you play "hot potato" with it, basically: try tossing it to another player, and if it explodes in your hand, you lose!</p>
+      <p>Except you actually kind of <em>win</em> when that happens, because it explodes into a bunch of flowers...</p>
+      <p>So maybe it's more like... reverse hot potato?</p>
+      <p>Cold potato?</p>
+      <p>I dunno!</p>
+      <p>Oh, also, the more times it's tossed before exploding, the more flowers come out!</p>
+      <p>(I'm not really sure how that, like... works??)</p>
+      <p>Anyway! Give it a try!</p>
+    }
+  </app-npc-dialog>
+  @if(step === DialogStepEnum.AskForExplanation)
+  {
+    <ul class="dialog-choices">
+      <li><button type="button" (click)="step = DialogStepEnum.Shop" class="link-text">"O-- okay..."</button></li>
+    </ul>
+  }
+  @else
+  {
+    <ul class="dialog-choices" [class.disabled]="loading">
+      <li><button type="button" (click)="step = DialogStepEnum.AskForExplanation">"What do Flowerbombs... <em>do</em>, exactly?"</button></li>
+      @if(user.recyclePoints > 0)
+      {
+        <li><a routerLink="/florist/satyrDice" class="button">"Help! I have an overabundance of <i class="recycle" title="recycling points" role="img"></i>!"</a></li>
+      }
+      @if(canTradeForGiftPackage)
+      {
+        <li><button type="button" (click)="doTradeForGiftPackage()">"I'd like to trade in one of every weekday coin for a gift package, please!"</button></li>
+      }
+    </ul>
+  }
+  @if(!inventorySubscription.closed)
+  {
+    <p><app-loading-throbber /></p>
+  }
+  @else
+  {
+    <table [class.disabled]="loading">
+      <thead>
+        <tr>
+          <th>Item</th>
+          <th>Price</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for(i of inventory; track $index)
+        {
+          <tr>
+            <td><button type="button" class="link-text" (click)="doViewItem(i.item.name)"><app-inventory-item [inventory]="i" [lockedToOwner]="true" /></button></td>
+            <td><button type="button" [class.disabled]="user.moneys < i.cost" (click)="doBuy(i.item.name)">Buy (<app-moneys [amount]="i.cost" />)</button></td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  }
+</main>

@@ -1,0 +1,148 @@
+main {
+  padding-left: 0;
+  padding-right: 0;
+  padding-bottom: 0;
+}
+
+.dragon-den {
+  padding-top: 1rem;
+  position: relative;
+  z-index: 0;
+  min-height: calc(100vh - 3.75rem);
+  display: flex;
+  flex-direction: column;
+
+  > .dragon-container {
+    background-image: url('/assets/images/locations/dragon-hoard.svg');
+    background-position: left bottom;
+    background-repeat: no-repeat;
+
+    position: relative;
+    z-index: 0;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+
+    > .dialog {
+      padding: 0 0.5rem;
+      margin-bottom: -4.5rem;
+      flex-grow: 1;
+    }
+
+    > .dragon {
+      width: min(65vw, 350px);
+      height: min(65vw, 350px);
+      flex-shrink: 0;
+      align-self: end;
+      pointer-events: none;
+    }
+
+    margin-bottom: -110px;
+  }
+
+  > .helper-container
+  {
+    position: relative;
+    z-index: 1;
+    height: 120px; // if you change this, change the pet placement (below)
+
+    background-image: url('/assets/images/locations/dragon-hoard-top.svg'), url('/assets/images/locations/dragon-hoard-top-2.svg') ;
+    background-position: left top, 640px top;
+    background-repeat: no-repeat, repeat-x;
+
+    > button {
+      position: absolute;
+      left: max(0.5rem, 100% - min(65vw, 350px) - 128px);
+      top: calc(80px - 1in + min(40px, 3vw)); // 80px + 40px = the 120px height of the container
+      width: 1in;
+      height: 1in;
+    }
+  }
+
+  > .treasure-container {
+    z-index: 1;
+    background-color: #dfc411;
+    &:not(.with-hostage)
+    {
+      background-image: url('/assets/images/locations/dragon-hoard-sparkles.svg'), linear-gradient(to bottom, #dfc41f, #bf8d0f);
+    }
+    &.with-hostage
+    {
+      background-image: url('/assets/images/locations/dragon-hoard-sparkles.svg'), linear-gradient(to bottom, #dfc41f, #cfa817);
+    }
+    background-repeat: repeat;
+    padding: 0.5rem 0.5rem 0;
+    flex-grow: 1;
+    font-size: 80%;
+
+    > .treasure {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      color: #000;
+      opacity: 0.75;
+
+      > .treasure-value
+      {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 0.25em;
+
+        > span + img {
+          margin-left: 0.5em;
+        }
+      }
+    }
+  }
+
+  > .hostage-container {
+    padding-top: 2rem;
+    position: relative;
+    z-index: 2;
+    background-color: #bfa80f;
+    background-image: url('/assets/images/locations/dragon-hoard-sparkles.svg'), linear-gradient(to bottom, #cfa817, #bf8d0f);
+    background-repeat: repeat;
+    background-position: 200px top;
+
+    display: grid;
+    grid-template-areas: 'dialog' 'hostage';
+
+    > .hostage {
+      grid-area: hostage;
+      transform: scaleX(-1);
+      width: min(50vw, 200px);
+      height: min(50vw, 200px);
+    }
+
+    > .dialog {
+      grid-area: dialog;
+      padding: 0 0.5rem;
+      margin-bottom: -4.5rem;
+    }
+  }
+}
+
+@media (min-width: 700px)
+{
+  .dragon-den {
+    > .dragon-container {
+      flex-direction: row;
+
+      > .dialog {
+        margin-bottom: 0;
+      }
+    }
+
+    > .hostage-container {
+      grid-template-areas: 'hostage dialog';
+      grid-template-columns: min-content auto;
+
+      > .dialog {
+        margin-bottom: 0;
+      }
+    }
+  }
+}

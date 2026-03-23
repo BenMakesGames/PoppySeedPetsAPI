@@ -1,0 +1,13 @@
+<main>
+  <h2>Rename... Yourself!</h2>
+  <p>It costs 500 Favor with the Museum to rename yourself. Probably for annoying <em>"game balance"</em> reasons, or something! (Ugh! "Game balance"! Such a party pooper!)</p>
+  <form (submit)="doRename()" [class.disabled]="renaming">
+    <p>
+      <label for="newName">Name</label>
+      <input type="text" name="newName" id="newName" [placeholder]="user.name" [(ngModel)]="newName" autocomplete="off">
+    </p>
+    <div class="buttons">
+      <button type="submit">Rename (500 Favor)</button>
+    </div>
+  </form>
+</main>

@@ -1,0 +1,33 @@
+<div class="dialog">
+  <app-dialog-title-with-icons [icon]="itemOtherPropertiesIcons.Fertilizer" iconLabel="fertilizer" title="Choose Fertilizers" />
+  <div class="dialog-body with-sticky-buttons">
+    <div class="buttons sticky">
+      <button type="button" (click)="doFeedComposter()" [class.disabled]="numSelected === 0">Feed</button>
+      @if(numSelected > 0)
+      {
+        <span>{{ numSelected }} selected</span>
+      }
+    </div>
+    <table>
+      <tbody>
+        @for(item of fertilizer; track item.id)
+        {
+          @if(item.fertilizerRating > 0)
+          {
+            <tr tabindex="0" (click)="doSelectFertilizer(item)" (dblclick)="doDoubleClickItem(item)" [class.selected]="selected[item.id]">
+              <td><app-inventory-item [inventory]="item" /></td>
+              <td class="rating">{{ item.fertilizerRating|fertilizerRating }}</td>
+            </tr>
+          }
+          @else
+          {
+            <tr class="disabled">
+              <td><app-inventory-item [inventory]="item" /></td>
+              <td class="rating">{{ item.fertilizerRating|fertilizerRating }}</td>
+            </tr>
+          }
+        }
+      </tbody>
+    </table>
+  </div>
+</div>

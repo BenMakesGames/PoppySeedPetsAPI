@@ -1,0 +1,76 @@
+.friend-grid:not(.friends-only)
+{
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-column-gap: 1rem;
+
+  grid-template-areas:
+    "friends other-relationships"
+  ;
+
+  > .friend-list {
+    grid-area: friends;
+  }
+
+  > .others-list {
+    grid-area: other-relationships;
+  }
+
+  @media (max-width:600px)
+  {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "other-relationships"
+      "friends"
+    ;
+  }
+}
+
+h5 {
+  margin: 0 0 0 0.5in;
+  padding: 0.5rem 0 0;
+}
+
+.group {
+  padding-bottom: 0.5rem;
+  clear: both;
+}
+
+app-pet-friend {
+  cursor: pointer;
+}
+
+.others-list {
+  .spirit-companion > img {
+    opacity: 0.5;
+  }
+
+  > div {
+    &:not(:first-child)
+    {
+      margin-top: 0.5rem;
+    }
+
+    img {
+      display: block;
+      float: left;
+      width: 0.3in;
+      height: 0.3in;
+      padding: 0.2in 0.1in 0;
+    }
+
+    > p {
+      margin-left: 0.5in;
+    }
+  }
+}
+
+.group {
+  cursor: pointer;
+
+  > app-progress-bar {
+    display: block;
+    margin-left: 0.5in;
+    padding-top: 0.25rem;
+  }
+}

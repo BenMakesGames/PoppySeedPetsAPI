@@ -1,0 +1,62 @@
+<main>
+  <h2>
+    <a routerLink="/museum">Museum</a> »
+    <a routerLink="/museum/topDonors">Donors</a> »
+    @if(profile)
+    {
+      <app-player-name [player]="profile" /> (#{{ profile.id }})
+    }
+    @else
+    {
+      #{{ profileId }}
+    }
+  </h2>
+  @if(!results || !profile)
+  {
+    <p><app-loading-throbber [randomText]="true"/></p>
+  }
+  @else
+  {
+    @if(results.resultCount === 0)
+    {
+      <p>{{ profile.name }} hasn't donated anything to the Museum yet.</p>
+    }
+    @if(results.resultCount)
+    {
+      <p>{{ profile.name }} has donated {{ results.resultCount }} {{ results.resultCount === 1 ? 'item' : 'items' }}.</p>
+      <ul class="list">
+        <li><a [routerLink]="'/poppyopedia/resident/' + profileId">View {{ profile.name }}'s full profile</a></li>
+      </ul>
+      <app-paginator [pageCount]="results.pageCount" [(page)]="page" (change)="getPage()" />
+      <table [class.disabled]="!museumPageAjax.closed">
+        <thead>
+          <tr>
+            <th></th>
+            <th>Item</th>
+            <th>Donated On</th>
+            <th class="created-by">Created By</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for(item of results.results; track $index)
+          {
+            <tr>
+              <td><img [src]="'/assets/images/items/' + item.item.image + '.svg'" alt=""></td>
+              <td>{{ item.item.name }}</td>
+              <td><app-date-and-time [dateString]="item.donatedOn" /></td>
+              @if(item.createdBy)
+              {
+                <td class="created-by"><a [routerLink]="[ '/poppyopedia/resident/' + item.createdBy.id ]"><app-player-name [player]="item.createdBy"></app-player-name></a></td>
+              }
+              @else
+              {
+                <td class="created-by">&mdash;</td>
+              }
+            </tr>
+          }
+        </tbody>
+      </table>
+      <app-paginator [pageCount]="results.pageCount" [(page)]="page" (change)="getPage()" />
+    }
+  }
+</main>

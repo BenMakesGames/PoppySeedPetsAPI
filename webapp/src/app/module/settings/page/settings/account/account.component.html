@@ -1,0 +1,44 @@
+<main>
+  <app-settings-panel page="Account">
+    <section>
+      <h4>Email Address</h4>
+      <form (submit)="doChangeEmail()" [class.disabled]="loading">
+        <p>
+          <label for="email">Email Address</label>
+          <input type="email" [(ngModel)]="email" name="email" id="email">
+        </p>
+        <p>
+          <button type="submit">Update Email Address</button>
+        </p>
+      </form>
+    </section>
+
+    <section>
+      <h4>Passphrase</h4>
+      <form (submit)="doChangePassphrase()" [class.disabled]="loading">
+        <p>
+          <label for="passphrase1">Passphrase</label>
+          <input type="password" [(ngModel)]="passphrase1" name="passphrase1" id="passphrase1">
+        </p>
+        <p>
+          <label for="passphrase2">Again</label>
+          <input type="password" [(ngModel)]="passphrase2" name="passphrase2" id="passphrase2">
+        </p>
+        @if(passphraseError)
+        {
+          <p class="error">{{ passphraseError }}</p>
+        }
+        <p>
+          <button type="submit">Change Passphrase</button>
+          <label>Oh! How responsible! Thanks! :)</label>
+        </p>
+      </form>
+    </section>
+
+    <section>
+      <h4>Account ID</h4>
+      <p class="input disabled">#{{ userId }}</p>
+      <label>This number can't be changed! But it can be useful... You'll know when the time is right.</label>
+    </section>
+  </app-settings-panel>
+</main>

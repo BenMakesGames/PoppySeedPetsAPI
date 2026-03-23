@@ -1,0 +1,55 @@
+<div class="pet-cell">
+  <div class="floor"></div>
+  <app-pet-appearance [pet]="pet" [emote]="pet.emoji" />
+</div>
+<div class="info-cell">
+  <h4>{{ pet.name }}</h4>
+  <div class="levels">
+    <div><app-minute-timer [minutesRemaining]="60 - pet.houseTime.activityTime" /></div>
+    @if(pet.level > 0)
+    {
+      <div class="skill-level">{{ pet.level }}</div>
+    }
+    @if(pet.canPickTalent || pet.affectionLevel > 0)
+    {
+      <div class="affection-level"
+        [class.heart-throb]="pet.canPickTalent || pet.affectionRewardsClaimed < pet.affectionLevel"
+      >{{ pet.affectionLevel || '' }}</div>
+    }
+  </div>
+  <ul class="status">
+    @if(pet.needs.food.percent !== undefined)
+    {
+      <li class="percent"><app-need-bar label="Food" [value]="pet.needs.food.percent" /></li>
+    }
+    @else
+    {
+      <li>{{ pet.needs.food.description }}</li>
+    }
+    @if(pet.needs.safety.percent !== undefined)
+    {
+      <li class="percent"><app-need-bar label="Safety" [value]="pet.needs.safety.percent" /></li>
+    }
+    @else
+    {
+      <li>{{ pet.needs.safety.description }}</li>
+    }
+    @if(pet.needs.love.percent !== undefined)
+    {
+      <li class="percent"><app-need-bar label="Love" [value]="pet.needs.love.percent" /></li>
+    }
+    @else
+    {
+      <li>{{ pet.needs.love.description }}</li>
+    }
+    @if(pet.needs.esteem.percent !== undefined)
+    {
+      <li class="percent"><app-need-bar label="Esteem" [value]="pet.needs.esteem.percent" /></li>
+    }
+    @else
+    {
+      <li>{{ pet.needs.esteem.description }}</li>
+    }
+  </ul>
+  <app-pet-status-effects [pet]="pet" />
+</div>

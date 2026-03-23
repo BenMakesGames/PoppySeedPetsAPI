@@ -1,0 +1,43 @@
+<div class="input" [class.disabled]="!loaded">
+  @for(tag of tags; track tag.title)
+  {
+    <button type="button" class="link-text" (click)="doRemoveTag(tag)"><app-pet-activity-log-tag [tag]="tag" /></button>
+  }
+  <input
+    #search
+    type="text"
+    name="tag-input"
+    placeholder="Add a tag"
+    autocomplete="off"
+    role="combobox"
+    aria-controls="suggestions"
+    aria-autocomplete="list"
+    [attr.aria-expanded]="suggestions ? 'true' : 'false'"
+    [attr.aria-activedescendant]="selectedTag >= 0 ? 'item' + selectedTag : undefined"
+  />
+</div>
+@if(suggestions)
+{
+  <div class="select" #options>
+    @if(suggestions.length === 0)
+    {
+      <p>No tags matched.</p>
+    }
+    @else
+    {
+      @for(tag of suggestions; let i = $index; track i)
+      {
+        <button
+          [class.selected]="i == selectedTag"
+          (click)="doSelectTag(tag)"
+          role="option"
+          (mouseover)="selectedTag = i"
+          [id]="'item' + i"
+        >
+          <span><app-emoji-or-fa [icon]="tag.emoji" /></span>
+          <span>{{ tag.title }}</span>
+        </button>
+      }
+    }
+  </div>
+}

@@ -1,0 +1,21 @@
+.troubled-relationships {
+  padding-bottom: 0.5rem;
+
+  > .radio-checkbox {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    > .radio {
+      padding-right: 0.5rem;
+    }
+
+    > app-pet-appearance {
+      width: 0.5in;
+    }
+
+    > .name {
+      padding-left: 0.5rem;
+    }
+  }
+}

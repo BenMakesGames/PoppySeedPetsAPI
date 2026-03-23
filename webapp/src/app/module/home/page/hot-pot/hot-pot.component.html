@@ -1,0 +1,21 @@
+<main>
+  <h2>Dip a Food in the Hot Pot</h2>
+  <small>It will receive a random spice!</small>
+  @if(!inventory)
+  {
+    <p><app-loading-throbber [randomText]="true" /></p>
+  }
+  @else if(inventory.length === 0)
+  {
+    <p>There aren't any foods in your house right now...</p>
+  }
+  @else
+  {
+    <div class="inventory" [class.disabled]="dipping">
+      @for(i of inventory; track i.id)
+      {
+        <app-inventory-item [inventory]="i" tabindex="0" (click)="doDipItem(i)" />
+      }
+    </div>
+  }
+</main>

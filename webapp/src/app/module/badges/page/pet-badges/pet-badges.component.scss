@@ -1,0 +1,51 @@
+.badges {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));;
+  margin: 0 auto;
+  gap: 1em;
+}
+
+.badge {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em;
+  background-color: rgb(var(--color-speech-bubble-background));
+  color: rgb(var(--color-text-on-content-background));
+  border-radius: 5px;
+  padding: 0.5em;
+  align-items: center;
+
+  &.unachieved {
+    > img {
+      filter: grayscale(1);
+    }
+  }
+
+  > img {
+    display: block;
+    margin: 0 auto;
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+  }
+
+  > .name {
+    text-align: center;
+  }
+
+  > .deets {
+    margin-top: auto;
+    font-size: 80%;
+    display: grid;
+    width: 100%;
+    grid-template-columns: auto 30px;
+    gap: 0.5em;
+
+    > span {
+      display: flex;
+      flex-direction: row;
+      gap: 0.25em;
+      align-items: center;
+    }
+  }
+}

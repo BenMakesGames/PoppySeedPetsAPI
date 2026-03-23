@@ -1,0 +1,16 @@
+.icon-grid {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 0.5em;
+  margin-bottom: 1em;
+
+  > button {
+    background-color: transparent;
+    color: rgb(var(--color-text-on-content-background));
+
+    &.selected {
+      outline: 2px solid rgb(var(--color-primary));
+    }
+  }
+}

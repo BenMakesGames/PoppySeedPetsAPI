@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="32" height="32" version="1.1" viewBox="0 0 8.4667 8.4667" xmlns="http://www.w3.org/2000/svg">
+ <g transform="translate(0 -288.53)">
+  <g transform="rotate(-15.893 2.5814 291.75)">
+   <g>
+    <path d="m1.6537 290.59 0.21716-0.51782 3.9589 0.51782v5.6461h-4.1761z" fill="#533f3f" stroke="#3d3232" stroke-linecap="square" stroke-miterlimit="40" stroke-width=".33073" style="paint-order:markers fill stroke"/>
+    <rect x="2.2384" y="290.07" width="3.8086" height="4.1093" fill="#fff" style="paint-order:markers fill stroke"/>
+    <rect x="2.2718" y="294.18" width="3.7752" height="1.5368" fill="#bdbdbd" style="paint-order:markers fill stroke"/>
+    <rect x="1.8709" y="290.07" width=".73499" height="5.6461" fill="#bd7474" style="paint-order:markers fill stroke"/>
+   </g>
+   <rect x="1.8709" y="290.07" width="4.1761" height="5.6461" fill="none" stroke="#3d3232" stroke-linecap="square" stroke-miterlimit="40" stroke-width=".33073" style="paint-order:markers fill stroke"/>
+   <path d="m2.9901 294.8c0.075749 0.15648-0.042465 0.19382 0.016581 0.35388 0.10411 0.0309 0.1448 4e-3 0.15388-0.0668 0.010699-0.11575 0.12125-0.11735 0.20732-0.11818 0.080496-0.0215 0.078092-0.18961 0.13328-0.17973-0.014486 0.0828 0.01353-0.0723 0.076115-0.018 0.087198 0.0544 0.076102 0.21559-0.035733 0.23234-0.061024 8e-3 -0.10622 0.0882-0.016329 0.0421 0.14298-0.0432 0.31266-0.10858 0.43969-0.0924 0.12702 0.0162 0.11296 0.16084 0.20682 0.19383 0.048007-0.0499-0.022364-0.23611 0.10977-0.23769-0.029083 0.0699-0.054583 0.2049 0.065599 0.17627m0.26282-8e-3c0.051737-0.22524 0.2253-0.0783 0.2253-0.0783s0.046117-0.0346 0.064665-0.11142c0.018548-0.0769 0.15013-0.17937 0.20128-0.0539 0.05115 0.12547 0.011175 0.23166-0.11693 0.23909-0.105 9e-3 0.067328 0.0876 0.1694 0.0383 0.12559-0.0262 0.09615-0.0447 0.22724-7e-3 0.042886 0.0145 0.16457-0.0192 0.064499-0.0502-0.020178-0.0105-0.016443-0.17422-0.016443-0.17422" fill="none" stroke="#3e2626" stroke-linecap="round" stroke-linejoin="round" stroke-width=".19844"/>
+   <g transform="translate(.082682)" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width=".26458">
+    <path d="m3.3075 292.74 1.6704-1.6704" stroke="#346b3c"/>
+    <path d="m4.3231 291.06h0.65482v0.67151" stroke="#346b3c"/>
+    <path d="m3.3048 291.14 0.50595 0.50595m0.60019 0.60019 0.5643 0.5643" stroke="#233666"/>
+    <path d="m4.3204 292.83h0.65482v-0.67151" stroke="#233666"/>
+   </g>
+  </g>
+ </g>
+</svg>

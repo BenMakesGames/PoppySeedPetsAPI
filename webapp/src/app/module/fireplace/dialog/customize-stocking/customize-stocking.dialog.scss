@@ -1,0 +1,8 @@
+app-image {
+  display: block;
+  margin: 0.25rem;
+
+  &.selected {
+    outline: 2px solid rgb(var(--color-primary));
+  }
+}

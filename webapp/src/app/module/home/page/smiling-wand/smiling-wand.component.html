@@ -1,0 +1,34 @@
+<main>
+  <h2>Smiling Wand</h2>
+  <p>This wand will let you change the emoticons a pet shows when it's pet.</p>
+
+  @if(state === 'findPet')
+  {
+    <div>
+      <h4>Which Pet?</h4>
+      <app-select-pet (selected)="doSelectPet($event)" />
+    </div>
+  }
+  @else if(state === 'changeExpressions')
+  {
+    <form (submit)="doSubmit()" [class.disabled]="!waveWandAjax.closed">
+      <h4>Choose Three Icons</h4>
+      <div class="icon-grid">
+        @for(letter of letters; track letter)
+        {
+          <button type="button" role="checkbox" (click)="doToggleIcon(letter)" [class.selected]="letter|inArray:iconsSelected">
+            <i [class]="emoteFontAwesomeClasses[letter]"></i>
+          </button>
+        }
+      </div>
+      <div class="buttons">
+        <button type="submit" [class.disabled]="iconsSelected.length != 3">Wave the Wand over {{ pet.name }}!</button>
+        <button class="link-text" type="button" (click)="doSelectPet(null)">Cancel</button>
+        @if(!waveWandAjax.closed)
+        {
+          <app-loading-throbber text=""/>
+        }
+      </div>
+    </form>
+  }
+</main>

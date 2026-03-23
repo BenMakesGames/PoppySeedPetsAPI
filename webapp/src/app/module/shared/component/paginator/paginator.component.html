@@ -1,0 +1,15 @@
+<span>Page</span>
+<ng-container *ngFor="let p of pages" class="page" [class.current]="p === page" [class.link-text]="p !== null && p !== page">
+  @if(p === null)
+  {
+    <span class="page">&ctdot;</span>
+  }
+  @else if(p === page)
+  {
+    <span class="page current">{{ p + 1 }}</span>
+  }
+  @else
+  {
+    <button class="page link-text" (click)="doSelectPage(p)">{{ p + 1 }}</button>
+  }
+</ng-container>

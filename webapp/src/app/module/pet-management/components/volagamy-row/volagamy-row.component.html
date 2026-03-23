@@ -1,0 +1,5 @@
+<h4>Volagamy</h4>
+<p>{{ pet.name }} {{ pet.isFertile ? 'CAN' : 'CANNOT' }} become pregnant.</p>
+<form (submit)="doToggleFertility()" [class.disabled]="togglingFertility">
+  <p class="buttons"><button type="submit">Toggle</button></p>
+</form>

@@ -1,0 +1,126 @@
+main {
+  padding: 2.3rem 0 0;
+  position: relative;
+}
+
+#map {
+  width: 100%;
+  height: calc(100vh - 2.3rem);
+  overflow: scroll;
+  position: relative;
+
+  > img, > app-pet-appearance {
+    position: absolute;
+    display: block;
+  }
+}
+
+.map-tile {
+  position: absolute;
+  width: 64px;
+  height: 64px;
+  background-color: transparent;
+  opacity: 0.2;
+  background-size: 80% 80%;
+  background-repeat: no-repeat;
+  background-position: center center;
+  border: none;
+}
+
+#controls {
+  position: absolute;
+  top: 3rem;
+  left: 1rem;
+  min-width: 280px;
+  max-width: calc(100% - 3rem);
+  width: max-content;
+  background-color: rgba(var(--color-content-background), 0.75);
+  box-sizing: border-box;
+  padding: 0.5rem 0.5rem 0;
+
+  ul#goods {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    column-gap: 1rem;
+    row-gap: 0.5rem;
+
+    li {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: nowrap;
+      gap: 0.25rem;
+      align-items: center;
+      img {
+        width: 1em;
+        height: 1em;
+      }
+      span {
+        font-size: 85%;
+      }
+    }
+  }
+
+  ul#dice {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 0.25rem;
+
+    > li {
+      > * {
+        position: relative;
+        width: 0.75in;
+        height: 0.75in;
+        padding: 0;
+        display: block;
+        img {
+          width: 0.5in;
+          height: 0.5in;
+          display: block;
+          margin: 0 auto;
+        }
+
+        span {
+          display: block;
+          position: absolute;
+
+          &.quantity {
+            opacity: 0.5;
+            font-size: 0.6667rem;
+            bottom: 0.1rem;
+            right: 0.25rem;
+          }
+
+          &.choose-pet,&.need-dice {
+            top: 50%;
+            left: 50%;
+            font-size: 0.85rem;
+            max-width: 100%;
+            transform: translate(-50%, -50%);
+          }
+        }
+
+        @media (max-width: 440px)
+        {
+          width: 0.6667in;
+          height: 0.6667in;
+          img {
+            width: 0.5in;
+            height: 0.5in;
+          }
+          span.choose-pet,span.need-dice {
+            font-size: 0.6667rem;
+          }
+          span.quantity {
+            font-weight: bold;
+          }
+        }
+      }
+    }
+  }
+}
+
+app-pet-appearance,.pet-shadow {
+  pointer-events: none;
+}

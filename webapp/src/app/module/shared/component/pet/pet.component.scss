@@ -1,0 +1,113 @@
+:host {
+  display: grid;
+  grid-template-rows: 1in auto;
+}
+
+.pet-cell {
+  position: relative;
+
+  > .floor {
+    position: absolute;
+    background-color: rgb(var(--color-tab-bar-background));
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 0.15in;
+    border-top-left-radius: 0.5em;
+    border-top-right-radius: 0.5rem;
+  }
+
+  > app-pet-appearance {
+    position: relative;
+    display: block;
+    margin: 0 auto;
+    width: 1in;
+    z-index: 1;
+  }
+}
+
+.info-cell {
+  background-color: rgb(var(--color-speech-bubble-background));
+  position: relative;
+  border-bottom-left-radius: 0.5rem;
+  border-bottom-right-radius: 0.5rem;
+  min-width: 0;
+
+  > h4 {
+    padding: 0 1.75rem 0.5rem 0.5rem;
+    margin: 0;
+    background-color: rgb(var(--color-tab-bar-background));
+    white-space: pre;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1em;
+  }
+
+  > .status {
+    padding: 0 0.5rem;
+    font-size: 80%;
+    font-weight: 400;
+
+    > li {
+      overflow: hidden;
+      white-space: pre;
+      text-overflow: ellipsis;
+
+      &.percent {
+        padding-top: 0.25em;
+        padding-right: 0.5em;
+      }
+    }
+  }
+
+  > app-pet-status-effects {
+    font-size: 1.2em;
+    display: block;
+    position: absolute;
+    right: -0.25em;
+    bottom: -0.25em;
+  }
+
+  > .levels
+  {
+    position: absolute;
+    right: -0.375em;
+    top: -0.375em;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25em;
+    z-index: 1; // be positioned above the status text/x-ray'd bars
+
+    > div {
+      text-align: center;
+      font-size: 0.75em;
+      width: 2.25em;
+      height: 2.25em;
+      line-height: 2.25em;
+      color: white;
+      font-weight: bold;
+
+      &.affection-level {
+        background-image: url(/assets/images/ui/affection.svg);
+        background-size: cover;
+      }
+      &.skill-level {
+        background-color: dodgerblue;
+        clip-path: polygon(10% 6%, 10% 100%, 50% 80%, 90% 100%, 90% 6%);
+      }
+    }
+  }
+}
+
+.heart-throb {
+  animation-name: doki-doki;
+  animation-duration: 1s;
+  animation-iteration-count: infinite;
+}
+
+@keyframes doki-doki {
+  0% { }
+  25% { transform: scale(1.2); }
+  50% { }
+}

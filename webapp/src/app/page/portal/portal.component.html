@@ -1,0 +1,41 @@
+<main>
+  <div id="start-playing">
+    <div id="banner">Poppy Seed Pets is a free virtual pet game set on an island filled with magic and strange technology...</div>
+    <img src="/assets/images/ui/harbor.svg" id="harbor" alt="a large research vessel at harbor; someone is disembarking, pulling a wheely suitcase behind them">
+    @if(!user)
+    {
+      <div class="options">
+        <button type="button" (click)="doLogIn()">Log in</button>
+        <a routerLink="/register" class="button" [class.notice-me]="callAttentionToSignUpButton">Adopt a Pet</a>
+      </div>
+    }
+  </div>
+  <div class="speech-bubble news-article" [class.contains-image]="article && article.imageUrl">
+    @if(!article)
+    {
+      <p><app-loading-throbber text="Loading latest news" /></p>
+    }
+    @else
+    {
+      @if(article.imageUrl)
+      {
+        <div class="image" [style.background-image]="'url(/assets/images/news/' + article.imageUrl + '.png)'"></div>
+      }
+      <header>
+        <h3>
+          {{ article.title }}
+          <small>written {{ article.createdOn|date:'yyyy-MM-dd':'UTC' }} <app-psp-time [date]="article.createdOn" /></small>
+        </h3>
+      </header>
+      @if(article)
+      {
+        <markdown [data]="article.body" />
+      }
+      <app-list-design-goals [goals]="article.designGoals" />
+    }
+  </div>
+  @if(article)
+  {
+    <a class="read-more-news" [routerLink]="[ '/news' ]">View older updates &raquo;</a>
+  }
+</main>

@@ -1,0 +1,79 @@
+app-pet,app-inventory-item
+{
+  cursor: pointer;
+}
+
+.to-top {
+  display: block;
+  float: right;
+  margin: 0;
+  padding: 0.3333rem;
+}
+
+.pets
+{
+  padding-top: 1rem;
+  position: relative;
+  z-index: 0;
+}
+
+.inventory-control .pulse-100
+{
+  color: rgb(var(--color-primary));
+  font-weight: var(--bold-weight);
+}
+
+h3 {
+  margin: 0.5rem 0 0;
+}
+
+.sort-and-filter
+{
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-column-gap: 0.5rem;
+  max-width: 5in;
+  > * {
+    width: 100%;
+  }
+}
+
+.quality-time-button
+{
+  position: relative;
+  z-index: 1;
+  padding-left: 1.25em;
+  padding-right: 1.25em;
+}
+
+.quality-time-button > i {
+  font-family: 'Font Awesome 7 Pro';
+  font-weight: 900; // FA "solid"
+  color: rgb(var(--color-link-and-button));
+  text-shadow: -1px -1px 0 rgb(var(--color-content-background)),
+    1px -1px 0 rgb(var(--color-content-background)),
+    -1px 1px 0 rgb(var(--color-content-background)),
+    1px 1px 0 rgb(var(--color-content-background));
+  position: absolute;
+  font-size: 1.2em;
+  display: block;
+  top: calc(50% - 0.45em);
+}
+
+.quality-time-button > .left-icon {
+  content: var(--quality-time-left-icon);
+  left: -0.75ch;
+}
+
+.quality-time-button > .right-icon {
+  content: var(--quality-time-right-icon);
+  right: -0.75ch;
+}
+
+.quality-time-button-container {
+  display:flex;
+  justify-content: center;
+  padding-top: 0.5em;
+  position: relative;
+  z-index: 1;
+}

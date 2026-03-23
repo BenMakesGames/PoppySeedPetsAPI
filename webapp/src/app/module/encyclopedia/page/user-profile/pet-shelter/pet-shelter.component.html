@@ -1,0 +1,64 @@
+<main>
+  <small>
+    <a [routerLink]="[ '/poppyopedia' ]">Poppyopedia</a> »
+    <a [routerLink]="[ '/poppyopedia/resident' ]">Resident</a> »
+    <a [routerLink]="[ '/poppyopedia/resident/' + profileId ]">
+      @if(profile)
+      {
+        <app-player-name [player]="profile" /> (#{{ profile.id }})
+      }
+      @else
+      {
+        #{{ profileId }}
+      }
+    </a>
+  </small>
+  <h2>Pet Shelter</h2>
+  @if(loadingProfile)
+  {
+    <p><app-loading-throbber /></p>
+  }
+  @else if(!profile)
+  {
+    <p>No such person exists...</p>
+  }
+  @else
+  {
+    @if(!loadingProfile && user)
+    {
+      <app-follow-unfollow [profile]="profile" />
+    }
+
+    @if(!petAjax.closed)
+    {
+      <p><app-loading-throbber /></p>
+    }
+    @else
+    {
+      @if(pets.resultCount === 0)
+      {
+        <p class="disabled">This player has no pets in Daycare right now.</p>
+      }
+      @else
+      {
+        @if(pets.pageCount > 1)
+        {
+          <app-paginator [page]="pets.page" [pageCount]="pets.pageCount" (pageChange)="doChangePage($event)"/>
+        }
+        <div class="pets-grid">
+          @for(pet of pets.results; track pet.id)
+          {
+            <a [routerLink]="[ '/poppyopedia/pet/' + pet.id ]">
+              <app-pet-appearance [pet]="pet" size="1in" />
+              <div>{{ pet.name }}</div>
+            </a>
+          }
+        </div>
+        @if(pets.pageCount > 1)
+        {
+          <app-paginator [page]="pets.page" [pageCount]="pets.pageCount" (pageChange)="doChangePage($event)"/>
+        }
+      }
+    }
+  }
+</main>

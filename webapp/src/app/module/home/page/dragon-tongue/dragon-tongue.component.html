@@ -1,0 +1,51 @@
+<main>
+  <h2>Dragon Tongue</h2>
+  @if(loading)
+  {
+    <app-loading-throbber />
+  }
+  @else if(!speech)
+  {
+    <div>
+      <p>You're not sure what to do with it. (Maybe if you knew any adult dragons? Like, personally?)</p>
+    </div>
+  }
+  @else
+  {
+    <div>
+      <p>Don't ask how, but this slimy muscle, brimming with magic, is capable of changing your dragon's speech. <small>(I guess it's all the magic the thing is brimming with, now that I think about it. It certainly isn't the saliva.)</small></p>
+      <form (submit)="doSetSpeech()" [class.disabled]="saving">
+        <h4>Greetings</h4>
+        <p>
+          <app-form-field label="Greeting A" labels="greeting1" [maxLength]="50" [value]="speech.greetings[0]">
+            <input type="text" name="greeting1" id="greeting1" maxlength="50" [(ngModel)]="speech.greetings[0]" />
+          </app-form-field>
+        </p>
+        <p>
+          <app-form-field label="Greeting B" labels="greeting2" [maxLength]="50" [value]="speech.greetings[1]">
+            <input type="text" name="greeting2" id="greeting2" maxlength="50" [(ngModel)]="speech.greetings[1]" />
+          </app-form-field>
+        </p>
+        <h4>Thanks</h4>
+        <p>
+          <app-form-field label="Thanks A" labels="thanks1" [maxLength]="50" [value]="speech.thanks[0]">
+            <input type="text" name="thanks1" id="thanks1" maxlength="50" [(ngModel)]="speech.thanks[0]" />
+          </app-form-field>
+        </p>
+        <p>
+          <app-form-field label="Thanks B" labels="thanks2" [maxLength]="50" [value]="speech.thanks[1]">
+            <input type="text" name="thanks2" id="thanks2" maxlength="50" [(ngModel)]="speech.thanks[1]" />
+          </app-form-field>
+        </p>
+        <div class="buttons">
+          <a routerLink="/home" class="button wire">nm, actually...</a>
+          <button type="submit" [class.disabled]="speech.greetings[0].length == 0 || speech.greetings[1].length == 0 || speech.thanks[0].length == 0 || speech.thanks[1].length == 0">Speak!</button>
+          @if(saving)
+          {
+            <app-loading-throbber text="Their word speaks only truth..." />
+          }
+        </div>
+      </form>
+    </div>
+  }
+</main>

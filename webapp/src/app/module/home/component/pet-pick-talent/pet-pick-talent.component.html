@@ -1,0 +1,40 @@
+<p style="margin-top:0.5rem">{{ pet.name }} has a... philosophical question.</p>
+<p>What is the better way to live?</p>
+@if(pet.canPickTalent === 'talent')
+{
+  <table>
+    <tbody>
+      <tr>
+        <td><button type="button" (click)="doPickTalent('talent', 'Mind Over Matter')">Mind Over Matter</button></td>
+        <td>Without our minds, we're just sacks of water and protein! Focus on your intelligence...</td>
+      </tr>
+      <tr>
+        <td><button type="button" (click)="doPickTalent('talent', 'Matter Over Mind')">Matter Over Mind</button></td>
+        <td>We live in a physical world defined by survival of the fittest! Focus on your strength...</td>
+      </tr>
+      <tr>
+        <td><button type="button" (click)="doPickTalent('talent', 'Moderation')">Moderation</button></td>
+        <td>The body cannot live without the mind; the mind cannot live without the body... take care of both!</td>
+      </tr>
+    </tbody>
+  </table>
+}
+@if(pet.canPickTalent === 'expertise')
+{
+  <table>
+    <tbody>
+      <tr>
+        <td><button type="button" (click)="doPickTalent('expertise', 'Force of Will')">Force of Will</button></td>
+        <td>There's no problem a brilliant mind can't solve! Focus on your intelligence!</td>
+      </tr>
+      <tr>
+        <td><button type="button" (click)="doPickTalent('expertise', 'Force of Nature')">Force of Nature</button></td>
+        <td>Through raw power, anything is possible! Focus on your strength!</td>
+      </tr>
+      <tr>
+        <td><button type="button" (click)="doPickTalent('expertise', 'Balance')">Balance</button></td>
+        <td>There must be balance, or we will topple. Tend to both the mental, and the physical.</td>
+      </tr>
+    </tbody>
+  </table>
+}

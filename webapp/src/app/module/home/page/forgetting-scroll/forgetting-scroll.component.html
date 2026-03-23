@@ -1,0 +1,45 @@
+<main>
+  <h2>Forgetting Scroll</h2>
+
+  @if(state === 'findPet')
+  {
+    <div [class.disabled]="loading">
+      <h4>
+        Which Pet?
+        @if(loading)
+        {
+          <app-loading-throbber text=""/>
+        }
+      </h4>
+      <app-select-pet (selected)="doSelectPet($event)" />
+    </div>
+  }
+  @else if(state === 'forgetStuff')
+  {
+    <form (submit)="doForget()" [class.disabled]="loading">
+      <h4>What Will {{ pet.name }} Forget?</h4>
+      <p>
+        <label>A Merit</label>
+        @for(merit of merits; track merit)
+        {
+          <label [for]="'forget' + merit" class="radio-checkbox"><input [id]="'forget' + merit" type="radio" name="forget" [(ngModel)]="forget" [value]="'merit:' + merit"> {{ merit }}</label>
+        }
+      </p>
+      <p>
+        <label>A Skill ({{ pet.name }} is currently Level {{ pet.level }})</label>
+        @for(skill of skills; track skill)
+        {
+          <label [for]="'forget' + skill" class="radio-checkbox"><input [id]="'forget' + skill" type="radio" name="forget" [(ngModel)]="forget" [value]="'skill:' + skill"> 1 point of {{ skill|titlecase }}</label>
+        }
+      </p>
+      <p>
+        <button type="submit" [class.disabled]="!forget">Forget!</button>
+        {{ ' ' }}
+        @if(loading)
+        {
+          <app-loading-throbber text=""/>
+        }
+      </p>
+    </form>
+  }
+</main>

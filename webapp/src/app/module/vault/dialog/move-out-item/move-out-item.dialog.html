@@ -1,0 +1,48 @@
+<div class="dialog">
+  <h4>Move Item</h4>
+  <div class="dialog-body">
+    <div class="item-info">
+      <img [src]="'/assets/images/items/' + item.itemImage + '.svg'" [alt]="item.itemName" />
+      <strong>{{ item.itemName }}</strong>
+      @if(item.makerName)
+      {
+        <small>Made by {{ item.makerName }}</small>
+      }
+    </div>
+
+    <form (submit)="doConfirm()" [class.disabled]="working">
+      <p>
+        <label>Quantity ({{ item.quantity }} available)</label>
+        <input type="number" [(ngModel)]="quantity" name="quantity" [min]="1" [max]="item.quantity" (blur)="clampQuantity()" />
+      </p>
+
+      <p>
+        <label>Destination:</label>
+        <select [(ngModel)]="location" name="location">
+          <option [ngValue]="0">Home</option>
+          @if(hasFeature('Basement'))
+          {
+            <option [ngValue]="1">Basement</option>
+          }
+          @if(hasFeature('Fireplace'))
+          {
+            <option [ngValue]="2">Mantle</option>
+          }
+          @if(hasFeature('Library'))
+          {
+            <option [ngValue]="6">Library</option>
+          }
+        </select>
+      </p>
+
+      <section class="buttons centered">
+        <button type="submit" [class.disabled]="working">Confirm</button>
+        <button type="button" class="wire" (click)="doCancel()">Cancel</button>
+        @if(working)
+        {
+          <app-loading-throbber text="" />
+        }
+      </section>
+    </form>
+  </div>
+</div>

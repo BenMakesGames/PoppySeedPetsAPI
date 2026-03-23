@@ -1,0 +1,40 @@
+.speech-bubble {
+  margin-bottom: 0.5rem;
+}
+
+.news-article
+{
+  > .image {
+    display: block;
+    border-top-left-radius: 0.5em;
+    width: calc(100% + 0.65rem * 2);
+    margin: -0.5rem 0.65rem 0.5rem -0.65rem;
+    padding-bottom: min(20%, 128px);
+    border-top-right-radius: 0.5rem;
+    height: 0;
+    background-size: cover;
+    background-position: center center;
+  }
+}
+
+.contains-image {
+  // slightly more than the image radius, to avoid bleeding pixels
+  border-top-left-radius: 0.6em;
+  border-top-right-radius: 0.6em;
+}
+
+header {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+
+  > h3 {
+    flex: 1 1 100%;
+  }
+
+  > .admin-button {
+    font-size: 75%;
+    padding: 0.25rem 0.5rem;
+    margin-right: 0.25rem;
+  }
+}

@@ -1,0 +1,14 @@
+h2 {
+  margin-bottom: 0;
+}
+
+app-inventory-item {
+  cursor: pointer;
+  text-decoration: underline;
+  color: rgb(var(--color-link-and-button));
+}
+
+small {
+  display: block;
+  margin-bottom: 1rem;
+}

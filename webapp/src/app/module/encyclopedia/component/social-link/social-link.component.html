@@ -1,0 +1,8 @@
+@if(link.website === 'Nintendo')
+{
+  <span><code>SW-{{ link.nameOrId }}</code> on Nintendo</span>
+}
+@else
+{
+  <a [href]="url(link)" target="_blank">{{ showUrl ? url(link) : title(link) }}</a>
+}

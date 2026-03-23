@@ -1,0 +1,20 @@
+<table>
+  <tbody>
+    @for(log of logs; track $index)
+    {
+      <div class="entry">
+        @if(log.icon)
+        {
+          <img [src]="'/assets/images/' + log.icon + '.svg'" alt="" aria-hidden="true" />
+        }
+        <div>
+          <markdown [data]="log.entry" />
+          @if(log.changes)
+          {
+            <app-pet-changes [changes]="log.changes" />
+          }
+        </div>
+      </div>
+    }
+  </tbody>
+</table>

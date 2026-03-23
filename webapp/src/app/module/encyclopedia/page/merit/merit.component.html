@@ -1,0 +1,23 @@
+<main>
+  <h2><a routerLink="/poppyopedia">Poppyopedia</a> » Merits</h2>
+  @if(!results)
+  {
+    <p><app-loading-throbber /></p>
+  }
+  @else
+  {
+    <div>
+      <p><app-url-paginator [pageCount]="results.pageCount" [page]="results.page" path="/poppyopedia/merit" /></p>
+      <div class="merits" [class.disabled]="loading">
+        @for(merit of results.results; track merit.name)
+        {
+          <div>
+            <h4>{{ merit.name }}</h4>
+            <markdown [data]="merit.description"></markdown>
+          </div>
+        }
+      </div>
+      <p><app-url-paginator [pageCount]="results.pageCount" [page]="results.page" path="/poppyopedia/merit" /></p>
+    </div>
+  }
+</main>

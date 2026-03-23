@@ -1,0 +1,84 @@
+<main>
+  <div class="profile-contents">
+    <small><a [routerLink]="['/poppyopedia']">Poppyopedia</a> » <a [routerLink]="[ '/poppyopedia/resident' ]">Resident</a> »</small>
+    <h2>
+      @if(profile)
+      {
+        <app-player-name [player]="profile" /> (#{{ profile.id }})
+      }
+      @else
+      {
+        #{{ profileId }}
+      }
+    </h2>
+    @if(loadingProfile)
+    {
+      <p><app-loading-throbber /></p>
+    }
+    @else if(!profile)
+    {
+      <p>No such person exists...</p>
+    }
+    @else
+    {
+      @if(!loadingProfile && user)
+      {
+        <app-follow-unfollow [profile]="profile" />
+      }
+      <div class="pets-grid">
+        @for(pet of pets; track pet.id)
+        {
+          <a [routerLink]="[ '/poppyopedia/pet/' + pet.id ]" class="link-text">
+            <app-pet-appearance [pet]="pet" />
+            <p>{{ pet.name }}</p>
+          </a>
+        }
+      </div>
+      <hr style="margin-top:1rem">
+      <ul class="list" style="font-size:80%;">
+        @if(user && profileTheme)
+        {
+          <li>
+            <button class="link-text" (click)="doUseTheme()" [class.disabled]="!useThemeSubscription.closed">Use this player's theme as your own</button>{{ ' ' }}
+            @if(!useThemeSubscription.closed)
+            {
+              <app-loading-throbber [text]="''"/>
+            }
+          </li>
+        }
+        <li><a [routerLink]="[ '/poppyopedia/resident/' + profile.id + '/petShelter' ]">View pets in Pet Shelter</a></li>
+        <li><a [routerLink]="[ '/museum/' + profile.id ]">View Museum donations</a></li>
+      </ul>
+      @if(links && links.length > 0)
+      {
+        <h3 style="font-size:80%; margin-bottom:0">Personal Links</h3>
+        <ul class="list" style="font-size:80%;">
+          @for(link of links; track $index)
+          {
+            <li><app-social-link [link]="link" /></li>
+          }
+        </ul>
+      }
+      @if((mantle && mantle.length > 0) || stocking)
+      {
+        <h2>Mantle</h2>
+        @if(stocking)
+        {
+          <div class="stocking">
+            <app-image [path]="'stockings/' + stocking.appearance" [colors]="{ colorA: stocking.colorA, colorB: stocking.colorB }" width="0.6in" height="0.6in" />
+            <span>Stocking</span>
+          </div>
+        }
+        @if(mantle && mantle.length > 0)
+        {
+          <div class="inventory">
+            @for(i of mantle; track $index)
+            {
+              <app-inventory-item [inventory]="i" />
+            }
+          </div>
+        }
+      }
+    }
+  </div>
+</main>

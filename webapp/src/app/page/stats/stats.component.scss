@@ -1,0 +1,17 @@
+@media (max-width: 550px)
+{
+  .first-time {
+    display: none;
+  }
+}
+
+.number {
+  text-align: right;
+}
+
+.global-stats {
+  // this table would NOT be easier to use if
+  // each row was an accordion; this table just
+  // wants to be a data table for nerds
+  overflow: auto;
+}

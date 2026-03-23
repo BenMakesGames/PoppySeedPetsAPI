@@ -1,0 +1,39 @@
+<main>
+  <h2><a [routerLink]="['/poppyopedia']">Poppyopedia</a> » Residents</h2>
+  @if(loggedIn)
+  {
+    <ul class="list">
+      <li><a [routerLink]="[ '/settings/following' ]">View residents I'm following</a></li>
+    </ul>
+  }
+  <app-player-search (filtersChange)="doFilter($event)" [(filters)]="filter" />
+  @if(!results)
+  {
+    <div><app-loading-throbber/></div>
+  }
+  @else
+  {
+    <p>Found {{ results.resultCount }} {{ results.resultCount === 1 ? 'resident' : 'residents' }}.</p>
+    <p><app-url-paginator path="/poppyopedia/resident" [page]="page" [pageCount]="results.pageCount" /></p>
+    <table [class.disabled]="!searchAjax.closed">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Joined On</th>
+          <th>Last Seen</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for(user of results.results; track user.id)
+        {
+          <tr [routerLink]="[ '/poppyopedia/resident/' + user.id ]" tabindex="0">
+            <td class="link-text"><app-player-name [player]="user" [includeNumber]="true" /></td>
+            <td><app-date-only [dateString]="user.registeredOn" /></td>
+            <td><app-date-and-time [dateString]="user.lastActivity" /></td>
+          </tr>
+        }
+      </tbody>
+    </table>
+    <p><app-url-paginator path="/poppyopedia/resident" [page]="page" [pageCount]="results.pageCount" /></p>
+  }
+</main>

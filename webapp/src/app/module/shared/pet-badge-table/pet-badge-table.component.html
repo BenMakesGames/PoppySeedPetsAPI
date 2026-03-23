@@ -1,0 +1,10 @@
+<div class="badges">
+  @for(b of sortedBadges(); track b.badge)
+  {
+    <div class="badge">
+      <img [src]="b.badge|petBadgeImgSrc" />
+      <div class="title">{{ b.badge|petBadgeName }}</div>
+      <div class="date-acquired">{{ b.dateAcquired|date:'mediumDate':'UTC' }}</div>
+    </div>
+  }
+</div>

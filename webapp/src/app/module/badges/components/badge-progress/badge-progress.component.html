@@ -1,0 +1,4 @@
+<div class="progress-container">
+  <div [style.width.%]="progress.current * 100 / progress.target"></div>
+  <span>{{ progress.current|number:'1.0-0' }} / {{ progress.target|number:'1.0-0' }}</span>
+</div>

@@ -1,0 +1,41 @@
+<ul class="list">
+  <li><a [routerLink]="[ '/poppyopedia/resident' ]">View directory</a></li>
+</ul>
+@if(!results)
+{
+  <p><app-loading-throbber [randomText]="true" /></p>
+}
+@else if(results.resultCount === 0)
+{
+  <p>You're not following any other players. (Yet?)</p>
+}
+@else
+{
+  <div>
+    @if(results.pageCount > 1)
+    {
+      <app-paginator [page]="results.page" (pageChange)="doChangePage($event)" [pageCount]="results.pageCount"/>
+    }
+    <table>
+      <thead>
+        <tr>
+          <th>Resident</th>
+          <th>Last Seen</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for(friend of results.results; track friend.id)
+        {
+          <tr [routerLink]="[ '/poppyopedia/resident/' + friend.id ]" tabindex="0">
+            <td class="link-text"><app-player-name [player]="friend" [includeNumber]="true" /></td>
+            <td><app-date-and-time [dateString]="friend.lastActivity" /></td>
+          </tr>
+        }
+      </tbody>
+    </table>
+    @if(results.pageCount > 1)
+    {
+      <app-paginator [page]="results.page" (pageChange)="doChangePage($event)" [pageCount]="results.pageCount" />
+    }
+  </div>
+}

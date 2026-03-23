@@ -1,0 +1,51 @@
+<div class="dialog">
+  <h4>Rewards</h4>
+  <div class="dialog-body" [class.disabled]="!claiming.closed">
+    @if(!rewards)
+    {
+      <p><app-loading-throbber /></p>
+    }
+    @else if(rewards.length == 0)
+    {
+      <p>These {{ voracious }} spirits reward only those who feed them...</p>
+    }
+    @else
+    {
+      <div class="rewards">
+        @for(reward of rewards; track reward.id)
+        {
+          <div class="reward">
+            <div class="picture">
+              <img [src]="'/assets/images/monster-of-the-week/' + (reward.type|spiritGraphic) + '.svg'" [alt]="reward.type" />
+            </div>
+            <div class="name">
+              <h4 style="margin:0">{{ reward.type|spiritName }}</h4>
+              <small>{{ reward.startDate|date:'MMMM d' }} - {{ reward.endDate|date:'MMMM d' }}</small>
+            </div>
+            <div class="progress">
+              <app-monster-progress [monster]="reward" [showPersonalContribution]="false" />
+            </div>
+            <div class="claim">
+              @if(today <= reward.endDate)
+              {
+                <div style="font-style:italic;font-size:80%;opacity:0.8;">Can claim rewards starting Monday!</div>
+              }
+              @else if(reward.rewardsClaimed)
+              {
+                <div style="text-align:center;">Got it!</div>
+              }
+              @else if(reward.personalContribution > 0)
+              {
+                <button type="button" (click)="doClaimReward(reward.id)">Claim</button>
+              }
+              @else
+              {
+                <div style="font-style: italic">You never fed this spirit.</div>
+              }
+            </div>
+          </div>
+        }
+      </div>
+    }
+  </div>
+</div>

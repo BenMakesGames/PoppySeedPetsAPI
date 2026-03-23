@@ -1,0 +1,47 @@
+<div class="dialog">
+  <app-dialog-title-with-icons
+    [icon]="itemOtherPropertiesIcons.Flower"
+    iconLabel="flower"
+    title="Choose &quot;Flowers&quot;"
+  />
+  <div class="dialog-body with-sticky-buttons">
+    @if(flowers === null)
+    {
+      <p><app-loading-throbber [randomText]="true"/></p>
+    }
+    @else if(flowers.length === 0)
+    {
+      <p>There are no items in your house of interest to the bees.</p>
+    }
+    @else
+    {
+      <div style="position: relative;" [class.disabled]="loading">
+        <div class="buttons sticky">
+          <button type="button" (click)="doFeedBeehive()" [class.disabled]="numSelected === 0">Feed</button>
+          @if(numSelected > 0)
+          {
+            <span>{{ numSelected }} selected</span>
+          }
+        </div>
+        <table>
+          <tbody>
+            @for(flower of flowers; track flower.id)
+            {
+              <tr
+                tabindex="0"
+                (click)="doSelectFlowers(flower)"
+                (dblclick)="doDoubleClickItem(flower)"
+                [class.selected]="selected[flower.id]"
+                role="checkbox"
+                [attr.aria-checked]="selected[flower.id] ? 'true' : 'false'"
+              >
+                <td><app-inventory-item [inventory]="flower" /></td>
+                <td class="rating">{{ flower.flowerPower }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </div>
+</div>

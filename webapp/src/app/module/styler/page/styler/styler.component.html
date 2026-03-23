@@ -1,0 +1,59 @@
+<main>
+  <nav class="tabs-container">
+    <div class="tabs">
+      <a class="active" [routerLink]="['/painter']">Painter</a>
+      <a [routerLink]="['/painter/manage']">My Themes</a>
+      <a [routerLink]="['/painter/find']">Player Themes</a>
+      <a [routerLink]="['/painter/builtIn']">Built-in Themes</a>
+    </div>
+  </nav>
+  <app-npc-dialog npc="painter" name="Robin">
+    @if(!showingPreview)
+    {
+      <p>Hello! You can customize your color scheme here.</p>
+      <p>Once you've saved your theme, you can share it with others. If you're looking for ideas, <a [routerLink]="['/painter/find']">browse other people's themes</a>.</p>
+      <p>Font and other display settings can be changed on <a [routerLink]="['/settings/visuals']">your settings page</a>.</p>
+    }
+    @else
+    {
+      <p>Of course!</p>
+      <p><a [routerLink]="['/settings/visuals']">Here's a link to your settings page, again, too</a>, in case you want to preview links.</p>
+    }
+  </app-npc-dialog>
+  @if(!showingPreview)
+  {
+    <ul class="dialog-choices">
+      <li><button type="button" (click)="showingPreview = true">"Can you show me some pets and items, so I can preview my color choices?"</button></li>
+    </ul>
+  }
+  @else
+  {
+    <div>
+      <h3>Pet Preview</h3>
+      <div class="pets">
+        <app-pet [pet]="samplePet" />
+      </div>
+      <h3>Item Preview</h3>
+      <div class="inventory">
+        <app-inventory-item [inventory]="sampleInventoryItem" [class.selected]="sampleInventoryItem.selected" (click)="sampleInventoryItem.selected = !sampleInventoryItem.selected" />
+        <app-inventory-item [inventory]="sampleInventoryItem2" [class.selected]="sampleInventoryItem2.selected" (click)="sampleInventoryItem2.selected = !sampleInventoryItem2.selected" />
+      </div>
+      <h3>Theme</h3>
+    </div>
+  }
+  <div [class.disabled]="!saveThemeSubscription.closed">
+    <section class="colors">
+      @for(v of Variables; track v.apiName)
+      {
+        <div [(colorPicker)]="RGBs[v.name]" (colorPickerChange)="doUpdateColor(v.name, $event)" cpPosition="top">
+          <span [id]="'input-' + v.name" class="color-preview" [style.background-color]="RGBs[v.name]"></span>
+          <label [for]="'input-' + v.name">{{ v.label }}</label>
+        </div>
+      }
+    </section>
+    <p class="buttons">
+      <button type="button" (click)="doSave()">I love it! Save it!</button>
+      <button type="button" (click)="doRevert()">Ugh, no, change it back!</button>
+    </p>
+  </div>
+</main>

@@ -1,0 +1,55 @@
+<main>
+  <h1 class="sr-only">Field Guide</h1>
+  <div class="book">
+    <div class="page-container">
+      <a routerLink="/fieldGuide" [queryParams]="{page:'toc'}" class="page cover" [style.display]="location === 'cover' ? 'block' : 'none'">
+        <img src="/assets/images/locations/field-guide.jpg" alt="book cover showing a bird, and reading &quot;Field Guide to Poppy Seed Pets Island. Revised & Updated.&quot;" />
+      </a>
+      <div class="page toc" [hidden]="location !== 'toc'">
+        <h2>Contents</h2>
+        @if(!fieldGuide)
+        {
+          <p><app-loading-throbber [randomText]="true" /></p>
+        }
+        @else
+        {
+          <a class="back-one-page" routerLink="/fieldGuide" [queryParams]="{page:'cover'}"><i class="fa-regular fa-arrow-left"></i></a>
+          <p class="comment">{{ fieldGuide.length }} entries discovered.</p>
+          <hr>
+          <ol class="list">
+            @for(entry of fieldGuide; let i = $index; track i)
+            {
+              <li>
+                <a routerLink="/fieldGuide" [queryParams]="{ page: 'entry-' + i }">{{ entry.entry.name }}</a>
+              </li>
+            }
+          </ol>
+        }
+      </div>
+      @if(entryIndex >= 0)
+      {
+        <div class="page entry">
+          @if(!fieldGuide)
+          {
+            <p><app-loading-throbber [randomText]="true" /></p>
+          }
+          @else
+          {
+            <a class="back-one-page" routerLink="/fieldGuide" [queryParams]="{page:'toc'}"><i class="fa-regular fa-arrow-left"></i></a>
+            <h2>{{ fieldGuide[entryIndex].entry.name }}</h2>
+            <div class="comment">{{ fieldGuide[entryIndex].comment }}</div>
+            <div class="discovered-on"><i class="fa-regular fa-telescope"></i>{{ ' ' }}<app-date-only [dateString]="fieldGuide[entryIndex].discoveredOn" /></div>
+            <hr>
+            <div class="image">
+              @if(fieldGuide[entryIndex].entry.image)
+              {
+                <img [src]="'/assets/images/field-guide/' + fieldGuide[entryIndex].entry.image + '.jpg'" [alt]="'picture of ' + fieldGuide[entryIndex].entry.name">
+              }
+            </div>
+            <markdown [data]="fieldGuide[entryIndex].entry.description"></markdown>
+          }
+        </div>
+      }
+    </div>
+  </div>
+</main>

@@ -1,0 +1,231 @@
+<div class="dialog">
+  <h4>
+    <img [src]="'/assets/images/items/' + inventory.item.image + '.svg'" alt="" aria-hidden="true" />
+    <app-item-name-with-bonus [item]="inventory.item" [bonus]="inventory.enchantment" [spice]="inventory.spice" />
+  </h4>
+  @if(inventory.comments.length > 0)
+  {
+    <div class="dialog-body comments">
+      @for(comment of inventory.comments; track $index)
+      {
+        <markdown [data]="comment" />
+      }
+    </div>
+  }
+  @if((inventory.item.useActions && inventory.item.useActions.length > 0) || inventory.enchantment)
+  {
+    <div class="dialog-body border-top">
+      <div class="buttons" [class.disabled]="waitingOnAjax">
+        @for(action of inventory.item.useActions; track $index)
+        {
+          <button type="button" (click)="doItemAction(action)">{{ action[0] }}</button>
+        }
+        @if(inventory.enchantment)
+        {
+          <button type="button" (click)="doRemoveBonus()">Remove "{{ inventory.enchantment.name}}" Bonus</button>
+        }
+        @if(waitingOnAjax)
+        {
+          <app-loading-throbber text="" />
+        }
+      </div>
+    </div>
+  }
+  @if(user|hasUnlockedFeature:'Market')
+  {
+    <div class="dialog-body sell border-top">
+      <div [class.disabled]="waitingOnAjax">
+        @if(inventory.lockedToOwner)
+        {
+          <p><img src="/assets/images/ui/locked.svg" alt="locked to account" class="locked"> This {{ inventory.item.name }} cannot be sold to other players.<app-help-link link="lockedInventory" (click)="doClose()" /></p>
+        }
+        @else if(!selling)
+        {
+          <button type="button" (click)="doStartSelling()"><i class="sell"></i> Sell...</button>
+        }
+        @else
+        {
+          <div>
+            <app-item-price-history-from-api [itemId]="inventory.item.id" />
+            @if(editSellPrice)
+            {
+              <form (submit)="doSell()">
+                <p>Enter a price to sell this item at. Other players will be able to find it in <a [routerLink]="[ '/market' ]" (click)="doClose()">the Market</a>.</p>
+                <p class="price">
+              <span>
+                <label>You Receive</label>
+                <input type="number" step="1" min="1" [max]="user.maxSellPrice" [(ngModel)]="sellPrice" name="sellPrice" class="sell-price">
+              </span>
+                  <span>
+                <label>Buyer Pays</label>
+                <span style="padding:0.25rem 0;display:block;opacity:0.6667;">
+                  @if(sellPrice)
+                  {
+                    <app-moneys [amount]="(sellPrice * 1.02) | ceil" />
+                  }
+                  @else
+                  {
+                    <span>&mdash;</span>
+                  }
+                </span>
+              </span>
+                </p>
+                <p class="buttons">
+                  <button type="submit" [class.disabled]="sellPrice < 1">Sell for <app-moneys [amount]="sellPrice" /></button>
+                  <button type="button" (click)="doStopSelling()">Don't Sell</button>
+                  <button type="button" class="wire" (click)="doCancelSelling()">Cancel</button>
+                </p>
+              </form>
+            }
+            @else
+            {
+              <p>This item is currently listed for sale. Other players will be able to find it in <a [routerLink]="[ '/market' ]" (click)="doClose()">the Market</a>.</p>
+              <p class="price">
+                <span>
+                  <label>You Receive</label>
+                  <span class="price-without-input">
+                    <app-moneys [amount]="sellPrice" />
+                  </span>
+                </span>
+                <span>
+                  <label>Buyer Pays</label>
+                  <span class="price-without-input" style="opacity:0.6667">
+                    @if(sellPrice)
+                    {
+                      <app-moneys [amount]="(sellPrice * 1.02) | ceil" />
+                    }
+                    @else
+                    {
+                      <span>&mdash;</span>
+                    }
+                  </span>
+                </span>
+              </p>
+              <p class="buttons">
+                <button type="button" (click)="editSellPrice = true">Change</button>
+              </p>
+            }
+          </div>
+        }
+      </div>
+    </div>
+  }
+  <!-- this is dumb, and should be fixed (use some smart CSS, or something; dang) -->
+  @if(inventory.item.food || inventory.item.tool || inventory.item.enchants || inventory.item.hat || inventory.item.greenhouseType || inventory.item.isFertilizer || inventory.item.isFlammable || inventory.item.spice || inventory.spice || inventory.item.hollowEarthTileCard || inventory.item.recycleValue > 0)
+  {
+    <div class="dialog-body border-top">
+      <ul>
+        @if(inventory.illusion)
+        {
+          <li><i class="fa-solid fa-eye"></i> Illusion: {{ inventory.illusion.name }}.</li>
+        }
+        @if(inventory.item.food)
+        {
+          @if(inventory.item.food.candy && isOctober)
+          {
+            <li><img src="/assets/images/ui/halloween.svg" alt="Halloween" class="halloween" /> Can be given to trick-or-treaters!</li>
+          }
+
+          <li><i class="feed"></i> Edible: <ng-container *ngFor="let modifier of inventory.item.food.modifiers; let i = index">{{ i > 0 ? ', ' : '' }}{{ modifier }}</ng-container> <app-help-link link="flavors" (click)="doClose()" /></li>
+          @if(inventory.item.food.leftovers)
+          {
+            <li>After eating this, <a [routerLink]="['/poppyopedia/item/' + inventory.item.food.leftovers ]" (click)="doClose()">{{ inventory.item.food.leftovers }}</a> is left over.</li>
+          }
+          @if(inventory.item.food.grantedSkill)
+          {
+            <li>A pet that eats this food will gain a level of {{ inventory.item.food.grantedSkill }}, if it has none.</li>
+          }
+          @if(inventory.item.food.grantedStatusEffect)
+          {
+            <li>A pet that eats this food will become <a routerLink="/poppyopedia/statusEffects">{{ inventory.item.food.grantedStatusEffect }}</a>.</li>
+          }
+          @if(inventory.item.food.bringsLuck)
+          {
+            <li>Eating this food can bring luck (<a routerLink="/poppyopedia/item" [queryParams]="{'filter.itemGroup': inventory.item.food.bringsLuck }" (click)="doClose()">{{ inventory.item.food.bringsLuck }}</a>).</li>
+          }
+        }
+
+        @if(inventory.item.name === 'Green Egg')
+        {
+          <li><del><i class="feed"></i> Edible:</del> your pets will not eat it here or there; they will not eat it anywhere</li>
+        }
+
+        @if(inventory.spice)
+        {
+          <li>{{ inventory.spice.name }} spice: <ng-container *ngFor="let modifier of inventory.spice.effects.modifiers; let i = index">{{ i > 0 ? ', ' : '' }}{{ modifier }}</ng-container> <app-help-link link="flavors" /></li>
+          @if(inventory.spice.effects.leftovers)
+          {
+            <li>After eating food with this spice, <a [routerLink]="['/poppyopedia/item/' + inventory.spice.effects.leftovers ]">{{ inventory.spice.effects.leftovers }}</a> is left over</li>
+          }
+          @if(inventory.spice.effects.grantedSkill)
+          {
+            <li>A pet that eats this spiced food will gain a level of {{ inventory.spice.effects.grantedSkill }}, if it has none.</li>
+          }
+          @if(inventory.spice.effects.grantedStatusEffect)
+          {
+            <li>A pet that eats this spiced food will become <a routerLink="/poppyopedia/statusEffects">{{ inventory.spice.effects.grantedStatusEffect }}</a>.</li>
+          }
+          @if(inventory.spice.effects.bringsLuck)
+          {
+            <li>Eating this spiced food can bring luck (<a routerLink="/poppyopedia/item" [queryParams]="{'filter.itemGroup': inventory.spice.effects.bringsLuck }" (click)="doClose()">{{ inventory.spice.effects.bringsLuck }}</a>).</li>
+          }
+        }
+
+        @if(inventory.item.spice)
+        {
+          <li><i class="cook-or-combine"></i> Combine with any food to add "{{ inventory.item.spice.name }}": <ng-container *ngFor="let modifier of inventory.item.spice.effects.modifiers; let i = index">{{ i > 0 ? ', ' : '' }}{{ modifier }}</ng-container> <app-help-link link="flavors" /></li>
+          @if(inventory.item.spice.effects.leftovers)
+          {
+            <li>After eating this, <a [routerLink]="['/poppyopedia/item/' + inventory.item.spice.effects.leftovers ]" (click)="doClose()">{{ inventory.item.spice.effects.leftovers }}</a> is left over.</li>
+          }
+          @if(inventory.item.spice.effects.grantedSkill)
+          {
+            <li>A pet that eats food with this spice will gain a level of {{ inventory.item.spice.effects.grantedSkill }}, if it has none.</li>
+          }
+          @if(inventory.item.spice.effects.grantedStatusEffect)
+          {
+            <li>A pet that eats food with this spice will become <a routerLink="/poppyopedia/statusEffects">{{ inventory.item.spice.effects.grantedStatusEffect }}</a>.</li>
+          }
+          @if(inventory.item.spice.effects.bringsLuck)
+          {
+            <li>Eating food with this spice can bring luck (<a routerLink="/poppyopedia/item" [queryParams]="{'filter.itemGroup': inventory.item.spice.effects.bringsLuck }" (click)="doClose()">{{ inventory.item.spice.effects.bringsLuck }}</a>).</li>
+          }
+        }
+
+        @if(inventory.item.tool)
+        {
+          <li><i [class]="itemOtherPropertiesIcons.Tool"></i> Tool: <ng-container *ngFor="let modifier of inventory.item.tool.modifiers; let i = index">{{ i > 0 ? ', ' : '' }}<span [class.loss]="modifier.startsWith('-')" [class.gain]="!modifier.startsWith('-')">{{ modifier }}</span></ng-container></li>
+        }
+
+        @if(inventory.enchantment)
+        {
+          @if(!inventory.enchantment.aura)
+          {
+            <li>{{ inventory.enchantment.name }} bonus: <ng-container *ngFor="let modifier of inventory.enchantment.effects.modifiers; let i = index">{{ i > 0 ? ', ' : '' }}<span [class.loss]="modifier.startsWith('-')" [class.gain]="!modifier.startsWith('-')">{{ modifier }}</span></ng-container><small *ngIf="inventory.item.hat"> (does not apply when worn as a Hat)</small></li>
+          }
+          @else
+          {
+            <li>{{ inventory.enchantment.name }} bonus: adds the "{{ inventory.enchantment.aura.name }}" styling</li>
+          }
+        }
+
+        @if(inventory.item.enchants)
+        {
+          <li><i class="equipment-bonus"></i> Combine with any tool to give that tool a bonus: <ng-container *ngFor="let modifier of inventory.item.enchants.effects.modifiers; let i = index">{{ i > 0 ? ', ' : '' }}<span [class.loss]="modifier.startsWith('-')" [class.gain]="!modifier.startsWith('-')">{{ modifier }}</span></ng-container></li>
+        }
+        @if(inventory.item.hollowEarthTileCard)
+        {
+          <li><i class="hollow-earth-tile"></i> Hollow Earth Tile: "{{ inventory.item.hollowEarthTileCard.name }}" adventure for {{ inventory.item.hollowEarthTileCard.type.name }} spaces.</li>
+        }
+      </ul>
+      <app-item-tags [item]="inventory.item" (onNav)="doClose()" />
+    </div>
+  }
+
+  @if(inventory.item.description)
+  {
+    <div class="dialog-body border-top description">
+      <markdown>{{ inventory.item.description }}</markdown>
+    </div>
+  }
+</div>

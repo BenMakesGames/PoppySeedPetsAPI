@@ -1,0 +1,191 @@
+<main [class]="mainClass">
+  <div class="monster">
+    @if(monsterOfTheWeek)
+    {
+      <img [src]="'/assets/images/monster-of-the-week/' + (monsterOfTheWeek.type|spiritGraphic) + '.svg'" [alt]="monsterOfTheWeek.type|spiritName" />
+      <div class="progress">
+        <app-monster-progress [monster]="monsterOfTheWeek" />
+      </div>
+      <div class="buttons">
+        <button type="button" (click)="doFeedMonster()">Feed</button>
+        <button type="button" (click)="doCollect()">Collect</button>
+      </div>
+    }
+  </div>
+  <div class="tess">
+    <div class="portrait">
+      <img [src]="tessImage" alt="Tess" />
+    </div>
+    <div class="talking">
+      @if(step === DialogStepEnum.Loading)
+      {
+        <app-npc-dialog name="Tess">
+          <app-loading-throbber [randomText]="true" />
+        </app-npc-dialog>
+      }
+      @else if(step === DialogStepEnum.GetBox)
+      {
+        <app-npc-dialog name="Tess">
+          <p>Ah, {{ user.name }}! Here to collect your weekly Care Package?</p>
+          <p>What'll it be?</p>
+        </app-npc-dialog>
+        <ul [class.disabled]="pickingBox" class="dialog-choices speech-arrows-on-the-right">
+          <li><button type="button" (click)="doPickCarePackage(1)">"The Fruits & Veggies Box, please!"</button></li>
+          <li><button type="button" (click)="doPickCarePackage(2)">"The Baker's Box, please!"</button></li>
+          @if(canGetHandicraftsBox)
+          {
+            <li><button type="button" (click)="doPickCarePackage(3)">"The Handicrafts Supply Box, please!"</button></li>
+          }
+          @if(canGetGamingBox)
+          {
+            <li><button type="button" (click)="doPickCarePackage(4)">"The Gaming Box, please!"</button></li>
+          }
+          @if(canGetFishBag)
+          {
+            <li><button type="button" (click)="doPickCarePackage(5)">"The Fish Bo--er, Bag? ... please!"</button></li>
+          }
+          <li><button type="button" (click)="doReturnToHello()">"Actually, I'd like to talk about something else..."</button></li>
+        </ul>
+      }
+      @else if(step === DialogStepEnum.GotBox)
+      {
+        <app-npc-dialog name="Tess">
+          <p>There you go! See you {{ nextCollectionDay }}.</p>
+        </app-npc-dialog>
+      }
+      @else if(step === DialogStepEnum.Hello)
+      {
+        <app-npc-dialog name="Tess">
+          <app-hello-dialog [holidayBoxes]="holidayBoxes" [firstLine]="helloDialogFirstLine" />
+        </app-npc-dialog>
+        <ul class="dialog-choices speech-arrows-on-the-right">
+          <li><button type="button" (click)="doAskAboutCarePackage()">"I'd like to pick up my Care Package."</button></li>
+          @for(holidayBox of holidayBoxes; track $index)
+          {
+            <li><button type="button" (click)="doGetHolidayBox(holidayBox)">"Can I get {{ holidayBox }}?"</button></li>
+          }
+          @for(holiday of allRelevantHolidays; track holiday)
+          {
+            <li><button type="button" (click)="doAskAboutHoliday(holiday)">"What happens during {{ holiday }}?"</button></li>
+          }
+          @if(!(user|hasUnlockedFeature:'Park'))
+          {
+            <li><button type="button" (click)="doAskAboutPark()">"I heard there's a park where pets can meet each other and play together. Where is that?"</button></li>
+          }
+          @if(user.moneys === 0)
+          {
+            <li><button type="button" (click)="doAskAboutMoneys()">"How can I get money?"</button></li>
+          }
+          <li><a routerLink="/plaza/calendar" class="button">"Can you show me the upcoming events this year?"</a></li>
+          <li><button type="button" (click)="step = DialogStepEnum.AskAboutMonster">"What's that flying in the distance?"</button></li>
+        </ul>
+      }
+      @else if(step === DialogStepEnum.AskAboutHoliday)
+      {
+        <app-npc-dialog name="Tess">
+          <app-explain-holiday [holiday]="askingAboutHoliday" />
+        </app-npc-dialog>
+        <ul class="dialog-choices speech-arrows-on-the-right">
+          <li><button type="button" (click)="doReturnToHello()">"👍"</button></li>
+        </ul>
+      }
+      @else if(step === DialogStepEnum.AskAboutBoxTime)
+      {
+        <app-npc-dialog name="Tess">
+          <p>Hm, let's see... {{ userShortName }}, {{ userShortName }}, {{ userShortName }}...</p>
+          <p>Ah, here you are. I have you down for {{user.lastAllowanceCollected|date:'EEEE':'UTC'}}s.</p>
+          <p>I've also marked it on the weather forecast with a <img src="/assets/images/items/box/fruits-n-veggies.svg" alt="Care Package icon" style="height:1em">.</p>
+        </app-npc-dialog>
+        <ul class="dialog-choices speech-arrows-on-the-right">
+          <li><button type="button" (click)="doReturnToHello()">"Ah, alright. Thanks."</button></li>
+        </ul>
+      }
+      @else if(step === DialogStepEnum.AskAboutPark)
+      {
+        <app-npc-dialog name="Tess">
+          <p>We like to ask that new players take some time to acclimate their pets to their new home before interacting with other pets.</p>
+          <p>Take good care of your pet, and it will eventually increase its Affection<app-help-link link="affection" /> for you. Once this has happened, the Park will become available.</p>
+        </app-npc-dialog>
+        <ul class="dialog-choices speech-arrows-on-the-right">
+          <li><button type="button" (click)="doReturnToHello()">"I guess that's fair..."</button></li>
+        </ul>
+      }
+      @else if(step === DialogStepEnum.AskAboutMoneys)
+      {
+        <app-npc-dialog name="Tess">
+          <p>The currency on the island is <i class="moneys" title="moneys"></i>, called "moneys". The main way to get moneys is for your pets to bring them back. When your pets go fishing, hunting, or doing other gathering activities<app-help-link link="petActivity" />, they can come back with all kinds of things, including moneys.</p>
+          <p>Don't forget about recycling points, too, which you can get by recycling things your pets make but don't need! You can spend those at the Grocer... or, if you don't mind trying your luck, I have a game we can play for some recycling points.</p>
+        </app-npc-dialog>
+        <ul class="dialog-choices speech-arrows-on-the-right">
+          <li><button type="button" (click)="doReturnToHello()">"Ah, cool; thanks!"</button></li>
+        </ul>
+      }
+      @else if(step === DialogStepEnum.AskAboutMonster)
+      {
+        <app-npc-dialog name="Tess">
+          @if(!monsterOfTheWeek)
+          {
+            <p><app-loading-throbber /></p>
+          }
+          @else
+          {
+            <p>Ah, {{ monsterOfTheWeek.type|theSpiritName }}?</p>
+            @if(monsterOfTheWeek.type.includes('&'))
+            {
+              <p>A couple of troublesome spirits that occasionally fly around the island. Their presence causes high winds and occasional flooding, making it difficult to get supplies to the island.</p>
+              <p>On Sunday night, at the stroke of midnight, they leave, and if they were satisfied by the "meal" everyone gave them, they'll bless those that fed them.</p>
+              <p>Like it or not, some other spirit will come to replace them, and the cycle continues...</p>
+            }
+            @else
+            {
+              <p>One of several types of troublesome spirits that occasionally flies around the island. Its presence causes high winds and occasional flooding, making it difficult to get supplies to the island.</p>
+              <p>On Sunday night, at the stroke of midnight, the spirit leaves, and if it was satisfied by the "meal" everyone gave it, it will bless those that fed it.</p>
+              <p>Like it or not, another one comes to replace the last, and the cycle continues...</p>
+            }
+          }
+        </app-npc-dialog>
+        <ul class="dialog-choices speech-arrows-on-the-right">
+          <li><button type="button" (click)="doReturnToHello()">"I'll keep that in mind..."</button></li>
+          @if(monsterOfTheWeek.type === 'Vaf & Nir')
+          {
+            <li><button type="button" (click)="step = DialogStepEnum.AskAboutVafAndNir">"Which one's Vaf and which one's Nir?"</button></li>
+          }
+          <li><button type="button" (click)="step = DialogStepEnum.AskAboutMonsterTypes">"What other kinds are there?"</button></li>
+        </ul>
+      }
+      @else if(step === DialogStepEnum.AskAboutMonsterTypes)
+      {
+        <app-npc-dialog name="Tess">
+          <p>We're aware of seven, so far:</p>
+          <ul class="list">
+            <li><strong>Boshinogami</strong> - a spirit of hats. I'm sure you can guess what <em>it's</em> fond of eating...</li>
+            <li><strong>Cardea's Lockbearer</strong> - a spirit of keys and locks. It takes the form of a bird, and certainly has an intelligence many of the other spirits lack.</li>
+            <li><strong>Dionysus' Hunger</strong> - this spirit is the embodiment of Dionysus' hedonistic side. Food, alcohol... Toadstools... it gobbles it <em>all</em> up!</li>
+            <li><strong>Eiri Persona</strong> - a spirit from the Internet, believe it or not. Anything computer-ish or science-y, it seems to like.</li>
+            <li><strong>Huehuecoyotl's Folly</strong> - a shapeshifting spirit that enjoys music and dance. Got any excess musical instruments?</li>
+            <li><strong>Hunter of Anhur</strong> - this spirit is particularly violent... and seems to feed on weapons of all types.</li>
+            <li><strong>Vaf & Nir</strong> - a goblin and dwarf that somehow became friends over a shared sense of greed, of all things. You can acquire the offerings needed for them from <a routerLink="/trader">The Trader</a>.</li>
+          </ul>
+        </app-npc-dialog>
+        <ul class="dialog-choices speech-arrows-on-the-right">
+          <li><button type="button" (click)="doReturnToHello()">"I'll keep that in mind..."</button></li>
+        </ul>
+      }
+      @else if(step === DialogStepEnum.AskAboutVafAndNir)
+      {
+        <app-npc-dialog name="Tess">
+          <p>Yeah... I don't actually know. I'm trying to remember how I even found out that their names <em>are</em> Vaf and Nir... <em>some</em>one must have told me... or maybe I read it somewhere?</p>
+          <p>I dunno; I don't remember.</p>
+        </app-npc-dialog>
+        <ul class="dialog-choices speech-arrows-on-the-right">
+          <li><button type="button" (click)="step = DialogStepEnum.AskAboutMonsterTypes">"What other spirits come by?"</button></li>
+          <li><button type="button" (click)="doReturnToHello()">"Okay, then."</button></li>
+        </ul>
+      }
+    </div>
+  </div>
+  @if(mainClass === 'rainy' || mainClass === 'stormy')
+  {
+    <div class="rain"></div>
+  }
+</main>

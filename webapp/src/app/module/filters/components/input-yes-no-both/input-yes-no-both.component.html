@@ -1,0 +1,5 @@
+<div class="selection-grid">
+  <label class="radio-checkbox" [for]="id + '-yes'"><input type="radio" [id]="id + '-yes'" [name]="'yesNoBoth' + id" [(ngModel)]="value" (ngModelChange)="valueChange.emit($event)" [value]="true"> Yes</label>
+  <label class="radio-checkbox" [for]="id + '-no'"><input type="radio" [id]="id + '-no'" [name]="'yesNoBoth' + id" [(ngModel)]="value" (ngModelChange)="valueChange.emit($event)" [value]="false"> No</label>
+  <label class="radio-checkbox" [for]="id + '-both'"><input type="radio" [id]="id + '-both'" [name]="'yesNoBoth' + id" [(ngModel)]="value" (ngModelChange)="valueChange.emit($event)" [value]="null"> {{ nullLabel }}</label>
+</div>

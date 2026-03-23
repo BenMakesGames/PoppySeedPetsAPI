@@ -1,0 +1,28 @@
+<div class="dialog">
+  <h4>{{ item.item.name }}</h4>
+  <div class="dialog-body">
+    @if(item.comments.length > 0)
+    {
+      <section>
+        <p class="comments">
+          @for(comment of item.comments; track $index)
+          {
+            <markdown [data]="comment"></markdown>
+          }
+        </p>
+      </section>
+      <hr>
+    }
+    <section>
+      <div class="text">
+        <img [src]="'/assets/images/items/' + item.item.image + '.svg'" [alt]="item.item.name">
+        <p>Set this as your avatar image?</p>
+      </div>
+      <p class="buttons" [class.disabled]="!savingSubscription.closed">
+        <button type="button" (click)="doClose()">Nah...</button>
+        <button type="button" (click)="doSelectIcon()">Yes, please!</button>
+        <a [routerLink]="['/poppyopedia/item/' + item.item.name ]" (click)="doClose()">View in Poppyopedia</a>
+      </p>
+    </section>
+  </div>
+</div>

@@ -1,0 +1,45 @@
+@if(month && year)
+{
+  <div>
+    <ul>
+      <li><button type="button" (click)="doPreviousMonth()">&lt;</button></li>
+      <li class="month">{{ monthName }}<small>month {{ month }}</small></li>
+      <li><button type="button" (click)="doNextMonth()">&gt;</button></li>
+    </ul>
+  </div>
+}
+@if(!ajaxSubscription.closed)
+{
+  <p><app-loading-throbber /></p>
+}
+@else
+{
+  @if(!days)
+  {
+    <p>{{ pet.name }} didn't do anything this month.</p>
+  }
+  @else
+  {
+    <ul class="calendar">
+      <li class="day-of-week">Mon</li>
+      <li class="day-of-week">Tue</li>
+      <li class="day-of-week">Wed</li>
+      <li class="day-of-week">Thu</li>
+      <li class="day-of-week">Fri</li>
+      <li class="day-of-week">Sat</li>
+      <li class="day-of-week">Sun</li>
+      @for(day of emptyDays; track $index)
+      {
+        <li></li>
+      }
+      @for(day of days; let i = $index; track i)
+      {
+        <li (click)="doViewDaysLogs(i + 1)" tabindex="0" class="calendar-day" [class.quantity-0]="day.quantity === 0" [class.today]="year === currentYear && month === currentMonth && i + 1 === currentDay">
+          <small class="day-of-month">{{ i + 1 }}</small>
+          <span class="quantity">{{ day.quantity }}</span>
+          <span class="interestingness">{{ day.averageInterestingness|number:'1.0' }}</span>
+        </li>
+      }
+    </ul>
+  }
+}

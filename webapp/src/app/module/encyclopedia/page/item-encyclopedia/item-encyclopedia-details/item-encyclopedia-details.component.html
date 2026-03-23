@@ -1,0 +1,36 @@
+<main>
+  <small><a [routerLink]="[ '/poppyopedia' ]">Poppyopedia</a> » <a [routerLink]="[ '/poppyopedia/item' ]">Item</a> »</small>
+  <h2>{{ itemName }}</h2>
+  @if(loading)
+  {
+    <p><app-loading-throbber /></p>
+  }
+  @else if(!item)
+  {
+    <p>No such item exists...</p>
+  }
+  @else
+  {
+    @if(item)
+    {
+      <app-item-details [item]="item" />
+    }
+    @if(user|hasUnlockedFeature:'Market')
+    {
+      <div>
+        <h4>Market History</h4>
+        <app-item-price-history-from-api [itemId]="item.id" />
+      </div>
+    }
+    <ul class="list">
+      @if(user|hasUnlockedFeature:'Market')
+      {
+        <li><a [routerLink]="[ '/market' ]" [queryParams]="{ 'filter.name': item.name }">Search the Market for {{ item.name }}</a></li>
+      }
+      @if(user|hasUnlockedFeature:'Basement')
+      {
+        <li><a [routerLink]="[ '/basement' ]" [queryParams]="{ 'filter.name': item.name }">Search my Basement for {{ item.name }}</a></li>
+      }
+    </ul>
+  }
+</main>

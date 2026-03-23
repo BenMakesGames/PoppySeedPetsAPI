@@ -1,0 +1,249 @@
+body {
+  background-image: url(/assets/backgrounds/floral.png);
+  background-attachment: fixed;
+}
+
+html,body {
+  padding: 0;
+  margin: 0;
+  min-height: 100%;
+  height: 100%;
+  width: 100%;
+  font-family: var(--font-family);
+  font-size: var(--font-size);
+  font-weight: var(--normal-weight);
+  line-height: 100%;
+  overflow-wrap: break-word;
+  position: absolute;
+  box-sizing: border-box;
+}
+
+body.scroll-lock {
+  overflow: hidden;
+}
+
+* {
+  font-size: 1em;
+  line-height: 1.5em;
+}
+
+a {
+  cursor: pointer;
+}
+
+h1,h2,h3,h4,h5,h6,p,q,table,ul,ol,dl {
+  padding: 0;
+  margin: 0 0 0.5rem;
+}
+h1 {
+  font-size: 1.45rem;
+  text-align: center;
+}
+h2 {
+  font-size: 1.3rem;
+}
+h3 {
+  font-size: 1.15rem;
+}
+h4 {
+  font-size: 1rem;
+}
+h5 {
+  font-size: 1rem;
+  font-weight: var(--normal-weight);
+  text-decoration: underline;
+}
+h6 {
+  font-size: 1rem;
+  font-weight: var(--normal-weight);
+}
+
+ul,ol
+{
+  list-style: none;
+}
+
+label {
+  display: block;
+
+  &:not(.radio-checkbox) {
+    font-size: 0.75em;
+    line-height: 1.25em;
+    opacity: 0.6667;
+    > * {
+      font-size: 1em;
+      line-height: 1.25em;
+    }
+  }
+}
+
+.link-text,a[href] {
+  text-decoration: underline;
+  color: rgb(var(--color-link-and-button));
+  cursor: pointer;
+
+  &.danger {
+    color: rgb(var(--color-warning));
+  }
+}
+
+[role="button"]
+{
+  cursor: pointer;
+}
+
+button,input[type=button],input[type=submit],.button,a.button
+{
+  font-family: var(--font-family);
+  font-weight: var(--normal-weight);
+  text-decoration: none;
+  padding: 0.5em 1em;
+  cursor: pointer;
+  border: none;
+  background-color: rgb(var(--color-link-and-button));
+  border-radius: 0.25rem;
+  color: rgb(var(--color-text-on-button));
+
+  &.danger {
+    background-color: rgb(var(--color-warning));
+  }
+
+  &.wire {
+    padding: calc(0.5em - 1px) calc(1em - 1px);
+    border: 1px solid rgb(var(--color-link-and-button));
+    color: rgb(var(--color-link-and-button));
+    background-color: transparent;
+  }
+
+  &.link-text {
+    background: none;
+    display: inline;
+    padding: 0;
+    text-align: left;
+  }
+
+
+  &.notice-me {
+    outline: 12px solid rgba(var(--color-link-and-button), 0.5);
+    outline-offset: -4px;
+
+    animation-name: notice-me;
+    animation-timing-function: linear;
+    animation-duration: 1.3333s;
+    animation-iteration-count: infinite;
+  }
+
+}
+
+@keyframes notice-me
+{
+  0% {
+    opacity: 0.75;
+    outline-offset: -12px;
+    outline-color: rgba(var(--color-link-and-button), 0.5);
+  }
+
+  75% {
+    opacity: 1;
+  }
+
+  75%,100% {
+    outline-offset: 0;
+    outline-color: rgba(var(--color-link-and-button), 0);
+  }
+}
+
+input[type=text],input[type=url],input[type=number],input[type=email],input[type=password],input[type=search],
+textarea,.input {
+  cursor: text;
+}
+
+input[type=text],input[type=url],input[type=number],input[type=email],input[type=password],input[type=search],
+textarea,.input,select {
+  font-family: var(--font-family);
+  font-weight: var(--normal-weight);
+  display: block;
+  width: 2.75in;
+  max-width: 100%;
+  border: none;
+  border-radius: 0.25rem;
+  box-shadow: inset 2px 2px 1px rgba(0, 0, 0, 0.2);
+  min-height: 1.75rem;
+  padding: 0.25rem 0.5rem;
+  outline: none;
+  background-color: rgb(var(--color-input-background));
+  color: rgb(var(--color-input-foreground));
+  box-sizing: border-box;
+
+  &:focus:not([readonly])
+  {
+    box-shadow: inset 2px 2px 1px rgba(0, 0, 0, 0.2), 0 0 3px rgb(var(--color-primary));
+  }
+}
+
+input[type=range]
+{
+  display: block;
+  width: 100%;
+  max-width: 320px;
+}
+
+select {
+  padding: 0.25rem 0.5rem;
+
+  option {
+    padding: 0.25rem 0.5rem;
+  }
+}
+
+small {
+  font-size: 0.75em;
+}
+
+h1,h2,h3,h4,h5,h6 {
+  font-weight: var(--bold-weight);
+  > small {
+    display: block;
+    font-weight: var(--normal-weight);
+    opacity: 0.5;
+  }
+}
+
+.disabled
+{
+  opacity: 0.5;
+  pointer-events: none;
+  cursor: not-allowed;
+}
+
+hr
+{
+  display: block;
+  border-top: 1px solid rgb(var(--color-text-on-content-background));
+  border-bottom: none;
+  margin: 0 0 0.5rem;
+  padding: 0;
+  opacity: 0.2;
+  height: 0;
+}
+
+dl {
+  > dt { margin: 0; font-weight: var(--bold-weight); }
+  > dd { margin: 0; }
+}
+
+code {
+  font-family: Lucida Console, monospace;
+  background-color: rgba(192, 192, 192, 0.33);
+  font-size: 80%;
+  padding: 0.1rem 0.2rem 0;
+  display: inline-block;
+}
+
+q {
+  display: block;
+  font-style: italic;
+  &::before, &::after {
+    content: '"';
+  }
+}

@@ -1,0 +1,55 @@
+<div class="dialog">
+  <h4>
+    <span>Trade</span>
+    <button type="button" class="link-text fave" (click)="doFavorite()">
+      @if(!favoriting.closed)
+      {
+        <app-loading-throbber text="" />
+      }
+      @else
+      {
+        <i [class.fa-regular]="!isFavorite" [class.fa-solid]="isFavorite" class="fa-heart"></i>
+      }
+    </button>
+  </h4>
+  <div class="dialog-body">
+    <form (submit)="doTrade()" [class.disabled]="!trading.closed">
+      <section>
+        <h5>Cost</h5>
+        <ul class="cost-or-yield-list">
+          @for(cost of trade.cost; track $index)
+          {
+            <li><app-describe-trader-cost-or-yield [costOrYield]="cost" [multiplier]="quantity < 1 ? 1 : quantity" /></li>
+          }
+        </ul>
+      </section>
+
+      <section>
+        <h5>Makes</h5>
+        <ul class="cost-or-yield-list">
+          @for(yields of trade.yield; track $index)
+          {
+            <li><app-describe-trader-cost-or-yield [costOrYield]="yields" [multiplier]="quantity < 1 ? 1 : quantity" /></li>
+          }
+        </ul>
+      </section>
+
+      <section>
+        <h5>Quantity: {{ quantity }}</h5>
+        @if(trade.canMakeExchange > 0)
+        {
+          <input type="range" min="0" [max]="trade.canMakeExchange" [value]="quantity" (input)="quantity = $event.target.value" />
+        }
+        @if(!trade.canMakeExchange)
+        {
+          <p>You do not have enough to make this exchange.</p>
+        }
+      </section>
+
+      <section class="buttons">
+        <button type="submit" [class.disabled]="quantity == 0">Confirm</button>
+        <button type="button" class="wire" (click)="doCancel()">Cancel</button>
+      </section>
+    </form>
+  </div>
+</div>

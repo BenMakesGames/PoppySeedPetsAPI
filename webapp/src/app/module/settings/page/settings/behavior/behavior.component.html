@@ -1,0 +1,26 @@
+<main>
+  <app-settings-panel page="Behavior">
+    <p>
+      <label>Default House Item Sort</label>
+      <label class="radio-checkbox" for="houseSort1" (click)="doSetSort('modifiedOn')"><input type="radio" id="houseSort1" [checked]="sort === 'modifiedOn'"> Newest First</label>
+      <label class="radio-checkbox" for="houseSort2" (click)="doSetSort('name')"><input type="radio" id="houseSort2" [checked]="sort === 'name'"> Alphabetical</label>
+    </p>
+<!--
+    <p>
+      <label>Multi-select Inventory With...</label>
+      <label class="radio-checkbox" for="multiSelect1" (click)="doSetMultiSelect('longPress')"><input type="radio" id="multiSelect1" [checked]="multiSelect === 'longPress'"> Long-press</label>
+      <label class="radio-checkbox" for="multiSelect2" (click)="doSetMultiSelect('doubleClick')"><input type="radio" id="multiSelect2" [checked]="multiSelect === 'doubleClick'"> Double-tap/Double-click</label>
+      <label class="radio-checkbox" for="multiSelect3" (click)="doSetMultiSelect('never')"><input type="radio" id="multiSelect3" [checked]="multiSelect === 'never'"> Just don't.</label>
+    </p>
+-->
+    <p>
+      <label for="numberOfLegs">Number of Legs</label>
+      <select id="numberOfLegs" (change)="doUpdateNumberOfLegs($event)">
+        @for(n of allowedNumberOfLegs; track n)
+        {
+          <option [value]="n" [selected]="numberOfLegs === n">{{ n }}</option>
+        }
+      </select>
+    </p>
+  </app-settings-panel>
+</main>

@@ -1,0 +1,49 @@
+textarea {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.stocking {
+
+  position: relative;
+
+  > app-image {
+    display: block;
+  }
+
+  > span
+  {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    left: 0.5in;
+  }
+}
+
+main {
+  position: relative;
+
+  > .profile-contents {
+    position: relative;
+  }
+
+  > .wallpaper {
+    position: absolute;
+    top: 2.3333rem;
+    max-height: calc(100% - 2.3333rem);
+    left: 0;
+    z-index: 0;
+
+    &.repeat-x {
+      mask-repeat: repeat-x;
+    }
+
+    &.repeat-y {
+      mask-repeat: repeat-y;
+    }
+
+    &.repeat-both {
+      mask-repeat: repeat;
+    }
+  }
+}

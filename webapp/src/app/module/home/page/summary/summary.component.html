@@ -1,0 +1,7 @@
+<main>
+  <h2>Inventory Summary</h2>
+  @for(location of unlockedLocations; track $index)
+  {
+    <app-summary-location [location]="location" />
+  }
+</main>

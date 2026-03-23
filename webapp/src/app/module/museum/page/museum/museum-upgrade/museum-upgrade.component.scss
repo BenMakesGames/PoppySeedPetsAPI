@@ -1,0 +1,11 @@
+app-inventory-item {
+  cursor: pointer;
+}
+
+.inventory {
+  margin: 0.5rem 0;
+
+  > div {
+    position: relative;
+  }
+}

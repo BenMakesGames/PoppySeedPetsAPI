@@ -1,0 +1,12 @@
+@if(min !== max)
+{
+  Between {{ min }} and {{ max }} Pets can go.
+}
+@else if(min === 1)
+{
+  Only {{ min }} Pet may go.
+}
+@else if(min > 1)
+{
+  Exactly {{ min }} Pets must go.
+}

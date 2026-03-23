@@ -1,0 +1,23 @@
+textarea,input[type=text] {
+  width: 100%;
+}
+
+textarea {
+  min-height: 3in;
+}
+
+img {
+  display: block;
+  width: 3rem;
+  height: auto;
+  margin: 0 auto;
+}
+
+h5 {
+  text-align: center;
+  text-decoration: none;
+}
+
+.holiday + .holiday {
+  margin-top: 1rem;
+}

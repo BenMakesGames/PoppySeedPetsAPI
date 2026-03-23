@@ -1,0 +1,16 @@
+<div class="dialog">
+  <h4>Quality Time!</h4>
+  <div class="dialog-body">
+    @if(!qualityTimeText)
+    {
+      <p><app-loading-throbber text="Deciding what to do" /></p>
+    }
+    @else
+    {
+      <markdown [data]="qualityTimeText" />
+      <div class="buttons centered" style="padding-top:1em;">
+        <button type="button" (click)="doClose()">Fun!</button>
+      </div>
+    }
+  </div>
+</div>

@@ -1,0 +1,8 @@
+<div>
+  <span class="color-preview" [colorPicker]="'#' + colorA" (colorPickerChange)="doColorPickerA($event)" cpPosition="top" cpAlphaChannel="disabled" [style.background]="'#' + colorA" [title]="'color A: #' + colorA"></span>
+</div>
+<div>
+  <span class="color-preview" [colorPicker]="'#' + colorB" (colorPickerChange)="doColorPickerB($event)" cpPosition="top" cpAlphaChannel="disabled" [style.background]="'#' + colorB" [title]="'color B: #' + colorB"></span>
+</div>
+<button type="button" class="link-text" (click)="doSwapColors()"><img alt="swap pet colors" src="/assets/images/ui/swap.svg"></button>
+<button type="button" class="link-text" (click)="doRandomizeColors()"><img alt="generate random pet colors" src="/assets/images/ui/die.svg"></button>

@@ -1,0 +1,57 @@
+<main>
+  <small><a [routerLink]="['/poppyopedia']">Poppyopedia</a> » <a [routerLink]="[ '/poppyopedia/group' ]">Group</a> »</small>
+  <h2>
+    @if(group)
+    {
+      <ng-container>{{ group.name }} (#{{ group.id }})</ng-container>
+    }
+    @else
+    {
+      <ng-container>#{{ groupId }}</ng-container>
+    }
+  </h2>
+  @if(loading)
+  {
+    <p><app-loading-throbber/></p>
+  }
+  @else if(!group)
+  {
+    <p>No such group exists...</p>
+  }
+  @else
+  {
+    <table class="list">
+      <tbody>
+        <tr>
+          <th>Type</th>
+          <td>{{ group.type|petGroupLabel }}</td>
+        </tr>
+        @if(group.makesStuff)
+        {
+          <tr>
+            <th>{{ group.type|petGroupProductsLabel }}</th>
+            <td>{{ group.numberOfProducts }}</td>
+          </tr>
+        }
+        <tr>
+          <th>Created</th>
+          <td><app-date-only [dateString]="group.createdOn" /></td>
+        </tr>
+        <tr>
+          <th>Last Met</th>
+          <td><app-date-and-time [dateString]="group.lastMetOn" /></td>
+        </tr>
+      </tbody>
+    </table>
+    <h4>Members</h4>
+    <div class="pets-grid">
+      @for(pet of group.members; track pet.id)
+      {
+        <div [routerLink]="[ '/poppyopedia/pet/' + pet.id ]" tabindex="0">
+          <app-pet-appearance [pet]="pet" size="1in" />
+          <p class="link-text">{{ pet.name }}</p>
+        </div>
+      }
+    </div>
+  }
+</main>

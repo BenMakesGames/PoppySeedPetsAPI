@@ -1,0 +1,81 @@
+<main>
+  <h2>Daycare Drop-off/Pick-up</h2>
+  <app-npc-dialog npc="pet-shelter-kid" name="???">
+    <markdown [data]="dialog"></markdown>
+  </app-npc-dialog>
+  <ul class="dialog-choices">
+    <li><a [routerLink]="'/petShelter'" class="button">"I'd like to adopt a pet!"</a></li>
+    @if(daycareResults && daycareResults.unfilteredTotal < 3)
+    {
+      <li><button type="button" (click)="doExplainMechanics1()">"What do pets do while in daycare?"</button></li>
+      <li><button type="button" (click)="doExplainMechanics2()">"Why would I put pets into daycare?"</button></li>
+    }
+    <li><button type="button" (click)="doExplainMechanics3()">"What happens to pets I 'Give Up'?"</button></li>
+  </ul>
+  @if(!loaded)
+  {
+    <p><app-loading-throbber [randomText]="true" /></p>
+  }
+  @else
+  {
+    <div appObserveOnScreen (isOnScreen)="doSetSticky(!$event)" class="sticky-sentinel"></div>
+    <div class="save-changes-container" [class.is-sticking]="actionsBarIsSticking">
+      <div [class.disabled]="takingAction || !houseHasChanges" class="buttons">
+        <button (click)="doSaveChanges()" [class.disabled]="housePets.length > user.maxPets">Save</button>
+        <button type="button" class="wire" (click)="doRevert()">Cancel</button>
+        @if(housePets.length > user.maxPets)
+        {
+          <span class="house-overfull"><i class="fa-solid fa-triangle-exclamation"></i> {{ housePets.length }} / {{ user.maxPets }} pets</span>
+        }
+      </div>
+    </div>
+    <h3>At Home ({{ housePets.length }} / {{ user.maxPets }})</h3>
+    @if(housePets.length === 0)
+    {
+      <p class="disabled">You have no pets at home right now.</p>
+    }
+    @else
+    {
+      <div class="pets-grid" [class.disabled]="takingAction">
+        @for(pet of housePets; track pet.id)
+        {
+          <div class="pet-container">
+            <button (click)="doClickPet(pet)" class="pet"><app-pet-mini [pet]="pet" size="0.75in" /></button>
+            <button (click)="dropOff(pet)" class="move"><i class="fa-solid fa-down"></i></button>
+          </div>
+        }
+      </div>
+    }
+    <h3>All Pets</h3>
+    <p><app-pet-search [(filters)]="filter" (filtersChange)="doFilter($event)" /></p>
+    @if(daycareResults.resultCount === 0)
+    {
+      <p class="disabled">No pets were found.</p>
+    }
+    @else
+    {
+      <div [class.disabled]="takingAction || !daycarePageAjax.closed" style="z-index:0;position:relative;">
+        @if(daycareResults.pageCount > 1)
+        {
+          <app-paginator [page]="daycareResults.page" [pageCount]="daycareResults.pageCount" (pageChange)="doChangePage($event)"/>
+        }
+        <div class="pets-grid" style="margin:0.5rem 0;">
+          @for(pet of daycareResults.results; track pet.id)
+          {
+            <div class="pet-container">
+              <button (click)="doClickPet(pet)" class="pet"><app-pet-mini [pet]="pet" size="0.75in" /></button>
+              @if(!petIsAtHome(pet))
+              {
+                <button (click)="pickUp(pet)" class="move"><i class="fa-solid fa-up"></i></button>
+              }
+            </div>
+          }
+        </div>
+        @if(daycareResults.pageCount > 1)
+        {
+          <app-paginator [page]="daycareResults.page" [pageCount]="daycareResults.pageCount" (pageChange)="doChangePage($event)"/>
+        }
+      </div>
+    }
+  }
+</main>

@@ -1,0 +1,49 @@
+<main>
+  <h2><a [routerLink]="[ '/poppyopedia' ]">Poppyopedia</a> » Species</h2>
+  <form (submit)="doSearch()" [class.disabled]="!resultsSubscription.closed">
+    <p>
+      <label for="speciesName">Name (or part thereof)</label>
+      <input id="speciesName" name="speciesName" type="text" [(ngModel)]="search.name">
+    </p>
+    @if(user?.id)
+    {
+      <p>
+        <label>I Have One</label>
+        <app-input-yes-no-both [(value)]="search.hasPet" />
+      </p>
+      @if(user|hasUnlockedFeature:'Zoologist')
+      {
+        <p>
+          <label>Shown to Zoologist?</label>
+          <app-input-yes-no-both [(value)]="search.hasDiscovered" />
+        </p>
+      }
+    }
+    <p>
+      <button type="submit">Search</button>
+    </p>
+  </form>
+  @if(!results)
+  {
+    <div><app-loading-throbber /></div>
+  }
+  @else
+  {
+    <p>Found {{ results.resultCount }} species.</p>
+    @if(results.resultCount > 0)
+    {
+      <p><app-url-paginator path="/poppyopedia/species" [page]="page" [pageCount]="results.pageCount" [params]="{ filter: search }" /></p>
+      <section class="species" [class.disabled]="!resultsSubscription.closed">
+        @for(item of results.results; track item.id)
+        {
+          <a [routerLink]="[ '/poppyopedia/species/' + item.name ]" class="button link-text">
+            <img class="pet-image" [src]="'/assets/images/pets/' + item.image + '.svg'" alt="" />
+            <div class="name link-text">{{ item.name }}</div>
+            <div class="family">{{ item.family|titlecase }}</div>
+          </a>
+        }
+      </section>
+      <p><app-url-paginator path="/poppyopedia/species" [page]="page" [pageCount]="results.pageCount" [params]="{ filter: search }" /></p>
+    }
+  }
+</main>

@@ -1,0 +1,19 @@
+tr {
+  cursor: pointer;
+}
+
+.quantity {
+  opacity: 0.5;
+  font-size: 80%;
+  text-align: right;
+  padding-right: 0;
+
+  + td {
+    padding-left: 0;
+  }
+}
+
+.rating {
+  font-variant-caps: small-caps;
+  text-align: center;
+}

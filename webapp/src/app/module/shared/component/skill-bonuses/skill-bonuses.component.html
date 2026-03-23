@@ -1,0 +1,54 @@
+<ul>
+  @if(showClimbingBonus)
+  {
+    <li>Climbing: <app-pet-skill-modifiers [skill]="skills.climbingBonus" /></li>
+  }
+  @if(showElectronicsBonus)
+  {
+    <li>Electronics: <app-pet-skill-modifiers [skill]="skills.electronicsBonus" /></li>
+  }
+  @if(showFishingBonus)
+  {
+    <li>Fishing: <app-pet-skill-modifiers [skill]="skills.fishingBonus" /></li>
+  }
+  @if(showGatheringBonus)
+  {
+    <li>Gathering: <app-pet-skill-modifiers [skill]="skills.gatheringBonus" /></li>
+  }
+  @if(showHackingBonus)
+  {
+    <li>Hacking: <app-pet-skill-modifiers [skill]="skills.hackingBonus" /></li>
+  }
+  @if(showMagicBindingBonus)
+  {
+    <li>Magic-binding: <app-pet-skill-modifiers [skill]="skills.magicBindingBonus" /></li>
+  }
+  @if(showMiningBonus)
+  {
+    <li>Mining: <app-pet-skill-modifiers [skill]="skills.miningBonus" /></li>
+  }
+  @if(showPhysicsBonus)
+  {
+    <li>Physics: <app-pet-skill-modifiers [skill]="skills.physicsBonus" /></li>
+  }
+  @if(showSmithingBonus)
+  {
+    <li>Smithing: <app-pet-skill-modifiers [skill]="skills.smithingBonus" /></li>
+  }
+  @if(showUmbraBonus)
+  {
+    <li>Umbra: <app-pet-skill-modifiers [skill]="skills.umbraBonus" /></li>
+  }
+  @if(skills.canSeeInTheDark.merits || skills.canSeeInTheDark.tool || skills.canSeeInTheDark.statusEffects)
+  {
+    <li>Can see in the dark <app-trait-source-list [skills]="skills.canSeeInTheDark" /></li>
+  }
+  @if(skills.hasProtectionFromHeat.merits || skills.hasProtectionFromHeat.tool || skills.hasProtectionFromHeat.statusEffects)
+  {
+    <li>Protection from heat <app-trait-source-list [skills]="skills.hasProtectionFromHeat" /></li>
+  }
+  @if(skills.hasProtectionFromElectricity.merits || skills.hasProtectionFromElectricity.tool || skills.hasProtectionFromElectricity.statusEffects)
+  {
+    <li>Protection from electricity <app-trait-source-list [skills]="skills.hasProtectionFromElectricity" /></li>
+  }
+</ul>

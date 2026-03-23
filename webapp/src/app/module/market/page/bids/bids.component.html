@@ -1,0 +1,91 @@
+<main>
+  <nav class="tabs-container">
+    <div class="tabs" role="tablist">
+      <a role="tab" routerLink="/market">Market</a>
+      <a role="tab" class="active" routerLink="/market/bids">Your Bids</a>
+      <a role="tab" routerLink="/market/manager">Argentelle</a>
+    </div>
+  </nav>
+  @if(!bidsSubscription.closed)
+  {
+    <p><app-loading-throbber /></p>
+  }
+  @else if(myBids)
+  {
+    @if(myBids.length === 0)
+    {
+      <div style="padding-top:0.5rem;">
+        <app-npc-dialog npc="market-fairy" name="Argentelle" [smallerImage]="true" [showBorder]="false" [removeNegativeMargins]="true">
+          <p>If an item you want isn't available for sale, create a bid for that item! As soon as someone lists the item for sale (assuming you have bid at least as much as they want), you'll buy it!</p>
+          <p>If multiple people want the same item, the highest bidder gets it; if there's still a tie, the FIRST person to place the highest bid gets the item!</p>
+        </app-npc-dialog>
+      </div>
+      <ul class="dialog-choices">
+        <li><button type="button" (click)="doCreateBid()">"I'd like to create a new bid!"</button></li>
+      </ul>
+    }
+    @else
+    {
+      <h3>{{ bidCount }} / {{ user.maxMarketBids }} Bids</h3>
+      <p class="buttons">
+        <button (click)="doCreateBid()">Create a Bid</button>
+      </p>
+      <table class="wide-view">
+        <thead>
+          <tr>
+            <th class="item-image-column"></th>
+            <th>Item</th>
+            <th class="quantity">Qty</th>
+            <th class="bid">Bid per Item</th>
+            <th>Location</th>
+            <th>Placed On</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for(bid of myBids; track bid.id)
+          {
+            <tr [class.disabled]="deleting[bid.id]">
+              <td class="item-image-column"><img [src]="'/assets/images/items/' + bid.item.image + '.svg'" alt="" /></td>
+              <td>{{ bid.item.name }}</td>
+              <td class="quantity">{{ bid.quantity }}</td>
+              <td class="bid"><app-moneys [amount]="bid.bid" /></td>
+              <td>{{ bid.targetLocation === 0 ? 'Home' : 'Basement' }}</td>
+              <td><app-date-and-time [dateString]="bid.createdOn" /></td>
+              <td><button (click)="doCancelBid(bid)">Cancel</button></td>
+            </tr>
+          }
+        </tbody>
+      </table>
+      <div class="narrow-view">
+        <header>
+          <span></span>
+          <span>Item</span>
+          <span>Quantity<br>&amp; Bid</span>
+        </header>
+        @for(bid of myBids; track bid.id)
+        {
+          <button (click)="doToggleBid(bid)" [class.disabled]="deleting[bid.id]">
+            <span class="accordion-arrow">
+              <span [class.open]="openBid === bid.id"></span>
+            </span>
+            <span class="item-image-and-name">
+              <img [src]="'/assets/images/items/' + bid.item.image + '.svg'" alt="">
+              <span>{{ bid.item.name }}</span>
+            </span>
+            <span>&times;{{ bid.quantity }}<br><app-moneys [amount]="bid.bid" /> each</span>
+          </button>
+          <div [class.open]="openBid === bid.id" [class.disabled]="deleting[bid.id]">
+            <dl>
+              <dt>Location</dt>
+              <dd>{{ bid.targetLocation === 0 ? 'Home' : 'Basement' }}</dd>
+              <dt>Bid Placed On</dt>
+              <dd><app-date-and-time [dateString]="bid.createdOn" /></dd>
+            </dl>
+            <button type="button" (click)="doCancelBid(bid)">Cancel Bid</button>
+          </div>
+        }
+      </div>
+    }
+  }
+</main>

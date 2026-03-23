@@ -1,0 +1,47 @@
+<main>
+  <h2><a [routerLink]="['/poppyopedia']">Poppyopedia</a> » Pets</h2>
+  <p><app-pet-search (filtersChange)="doFilter($event)" [(filters)]="filter" /></p>
+  @if(!results)
+  {
+    <div><app-loading-throbber /></div>
+  }
+  @else
+  {
+    <p>Found {{ results.resultCount }} {{ results.resultCount === 1 ? 'pet' : 'pets' }}.</p>
+    @if(results.resultCount > 0)
+    {
+      <p><app-url-paginator path="/poppyopedia/pet" [page]="results.page" [pageCount]="results.pageCount" [params]="{ filter: filter }" /></p>
+      <table [class.disabled]="!petSearchAjax.closed">
+        <thead>
+          <tr>
+            <th></th>
+            <th class="pet-name">Name</th>
+            <th class="pet-level">Level</th>
+            <th>Birthday</th>
+            <th>Owner</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for(pet of results.results; track pet.id)
+          {
+            <tr>
+              <td class="link-text" [routerLink]="[ '/poppyopedia/pet/' + pet.id ]" tabindex="0">
+                <app-pet-appearance [pet]="pet" />
+              </td>
+              <td class="link-text pet-name" [routerLink]="[ '/poppyopedia/pet/' + pet.id ]" tabindex="0">
+                {{ pet.name }}
+                <small>#{{ pet.id }}</small>
+              </td>
+              <td class="pet-level">{{ pet.level }}</td>
+              <td><app-date-and-time [dateString]="pet.birthDate" /></td>
+              <td class="link-text" [routerLink]="[ '/poppyopedia/resident/' + pet.owner.id ]" tabindex="0">
+                <app-player-name [player]="pet.owner" [includeNumber]="true" />
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+      <p><app-url-paginator path="/poppyopedia/pet" [page]="results.page" [pageCount]="results.pageCount" [params]="{ filter: filter }" /></p>
+    }
+  }
+</main>

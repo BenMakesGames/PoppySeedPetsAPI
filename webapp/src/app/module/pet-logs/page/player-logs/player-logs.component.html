@@ -1,0 +1,56 @@
+<main>
+  <app-journal-nav active="player" />
+
+  <form (submit)="doFilter()">
+    <p>
+      <label>Tag</label>
+      <app-user-activity-tag-input [(tags)]="tags" />
+    </p>
+    <p class="buttons">
+      <button type="submit">Search</button>
+    </p>
+  </form>
+  @if(!searchSubscription.closed)
+  {
+    <p><app-loading-throbber [randomText]="true"/></p>
+  }
+  @else if(results)
+  {
+    @if(results.resultCount === 0)
+    {
+      <p>No results found.</p>
+    }
+
+    @if(results.pageCount > 1)
+    {
+      <app-url-paginator [path]="'/journal/player'" [page]="page" [pageCount]="results.pageCount" [params]="{ filter: filter }" />
+    }
+
+    @if(results.resultCount > 0)
+    {
+      <table class="pet-logs">
+        <tbody>
+          @for(log of results.results; track $index)
+          {
+            <tr>
+              <td>
+                <markdown [data]="log.entry" />
+                @for(tag of log.tags; track tag.title)
+                {
+                  <a [routerLink]="'/journal/player'" [queryParams]="{ page: 0, 'filter.tags[]': tag.title }">
+                    <app-pet-activity-log-tag [tag]="tag" />
+                  </a>
+                }
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    }
+
+    @if(results && results.pageCount > 1)
+    {
+      <app-url-paginator [path]="'/journal/player'" [page]="page" [pageCount]="results.pageCount" [params]="{ filter: filter }" />
+    }
+  }
+</main>

@@ -1,0 +1,6 @@
+@let icon = weatherIcon();
+<div class="force-aspect-ratio"></div>
+@if(icon)
+{
+  <img [src]="'/assets/images/ui/clock/' + icon + '.svg'" [alt]="icon" />
+}

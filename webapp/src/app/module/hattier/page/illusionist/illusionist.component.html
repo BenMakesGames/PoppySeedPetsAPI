@@ -1,0 +1,30 @@
+<main>
+  <h2><a routerLink="/hattier">Hattier</a> » Lysander's Goods</h2>
+  <app-npc-dialog name="Lysander" npc="lysander">
+    <markdown [data]="dialog" />
+  </app-npc-dialog>
+  @if(!askedAboutAura)
+  {
+    <ul class="dialog-choices">
+      <li><button (click)="doAskAboutAura()">Ask about his... <em>unique</em> aura.</button></li>
+    </ul>
+  }
+  <p>
+    <label>Pay With...</label>
+    <select [(ngModel)]="payWith">
+      <option value="moneys">Moneys</option>
+      <option value="recyclingPoints">Recycling Points</option>
+      <option value="bloodWine">Blood Wine</option>
+    </select>
+  </p>
+  <div class="shop-inventory" [class.disabled]="!buyAjax.closed">
+    @for(item of inventory; track $index)
+    {
+      <div>
+        <img [ngSrc]="'/assets/images/items/' + item.image + '.svg'" alt="" width="48" height="48" />
+        <div>{{ item.name }}</div>
+        <button type="button" (click)="doBuy(item.name, payWith)">Buy (<app-illusionist-cost [amount]="item.cost[payWith]" [currency]="payWith" />)</button>
+      </div>
+    }
+  </div>
+</main>

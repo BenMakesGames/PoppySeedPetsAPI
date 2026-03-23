@@ -1,0 +1,25 @@
+.flower-select
+{
+  display:flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+
+  > span {
+    cursor: pointer;
+    text-align: center;
+    width: 1in;
+    padding: 0.5rem;
+
+    &.selected
+    {
+      outline: 2px solid rgb(var(--color-primary));
+    }
+
+    > img {
+      display: block;
+      margin: 0 auto;
+      width: 0.5in;
+      height: 0.5in;
+    }
+  }
+}

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="32" height="32" version="1.1" viewBox="0 0 8.4667 8.4667" xmlns="http://www.w3.org/2000/svg">
+ <g transform="translate(0 -288.53)">
+  <path d="m4.9408 293.31c-0.011812 0.91332-0.44579 0.46141-0.98113 0.46141s-0.96932 0.35741-0.95751-0.46141c0.00772-0.53529 0.43398-0.96932 0.96932-0.96932s0.97625 0.43402 0.96932 0.96932z" stroke-linecap="round" stroke-miterlimit="8" stroke-width=".26458" style="paint-order:markers fill stroke"/>
+  <g>
+   <ellipse transform="rotate(-15)" cx="-72.304" cy="282.65" rx=".3842" ry=".53036" style="paint-order:markers fill stroke"/>
+   <ellipse transform="rotate(15)" cx="79.931" cy="280.59" rx=".3842" ry=".53036" style="paint-order:markers fill stroke"/>
+   <ellipse transform="rotate(30)" cx="150.87" cy="250.66" rx=".28815" ry=".40713" style="paint-order:markers fill stroke"/>
+   <ellipse transform="rotate(-30)" cx="-144.03" cy="254.65" rx=".28815" ry=".40713" style="paint-order:markers fill stroke"/>
+  </g>
+  <circle cx="3.9392" cy="292.59" r="2.2265" fill="#66babf" fill-opacity=".25352" style="paint-order:markers fill stroke"/>
+  <path d="m5.665 294.22 1.9991 1.4933s0.31985 0.2203 0.52975-0.0606c0.2099-0.28084-0.069967-0.51114-0.069967-0.51114l-2.069-1.533" fill="#b86019" stroke="#402109" stroke-width=".26458px"/>
+  <path d="m3.9548 290.05a2.5516 2.5516 0 0 0-2.5518 2.5514 2.5516 2.5516 0 0 0 2.5518 2.5518 2.5516 2.5516 0 0 0 2.5514-2.5518 2.5516 2.5516 0 0 0-2.5514-2.5514zm0 0.41786a2.1333 2.1333 0 0 1 2.133 2.1335 2.1333 2.1333 0 0 1-2.133 2.1335 2.1333 2.1333 0 0 1-2.1335-2.1335 2.1333 2.1333 0 0 1 2.1335-2.1335z" fill="#b8b8b8" stroke="#2b2b2b" stroke-linecap="round" stroke-miterlimit="8" stroke-width=".26458" style="paint-order:markers fill stroke"/>
+ </g>
+</svg>

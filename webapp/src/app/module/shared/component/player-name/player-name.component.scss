@@ -1,0 +1,19 @@
+img {
+  display: inline-block;
+  width: 1.25em;
+  height: 1.25em;
+  vertical-align: text-bottom;
+  padding-right: 0.25rem;
+
+  &.includes-number {
+    float: left;
+    width: 2.25em;
+    height: 2.25em;
+    display: block;
+    margin: 0;
+  }
+}
+
+small {
+  display: block;
+}

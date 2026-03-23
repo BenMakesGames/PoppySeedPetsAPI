@@ -1,0 +1,75 @@
+<main>
+  <h2>Magic Crystal Ball</h2>
+
+  @if(state == 'chooseOne')
+  {
+    <p>What do you want to see...?</p>
+    <div class="choose-one" [class.disabled]="disableButtons">
+      <button type="button" (click)="state = 'predictOffspring'">
+        <i class="fa-regular fa-egg"></i>
+        <span>Predict Offspring</span>
+      </button>
+      <button type="button" (click)="state = 'createFate'">
+        <i class="fa-regular fa-sparkles"></i>
+        <span>Find a Fated Encounter</span>
+      </button>
+      <form (submit)="doSeeNextRarePetDay()">
+        <button type="submit">
+          <i class="fa-regular fa-calendar-days"></i>
+          <span>See Next Rare Pet Day</span>
+        </button>
+      </form>
+    </div>
+  }
+  @else if(state == 'predictOffspring')
+  {
+    <p>Choose a pregnant pet...</p>
+    <div [class.disabled]="disableButtons">
+      <app-select-pet (selected)="doPredictOffspring($event)" />
+      <ul class="dialog-choices">
+        <li><button type="button" class="link-text" (click)="state = 'chooseOne'">"Wait, I changed my mind!"</button></li>
+      </ul>
+    </div>
+  }
+  @else if(state == 'showOffspring')
+  {
+    <div class="show-offspring">
+      <p>The crystal ball begins to glow. Then rays of light fill the room; amidst them you see an image of a baby!</p>
+      <app-image width="64px" height="64px" [path]="'pets/' + offspringData.speciesImage" [colors]="{ colorA: offspringData.colorA, colorB: offspringData.colorB }" />
+      <p>After a moment, the image fades, and you notice the crystal ball has vanished, leaving only its gold base behind...</p>
+      <ul class="dialog-choices">
+        <li><a routerLink="/home">"Neat!"</a></li>
+      </ul>
+    </div>
+  }
+  @else if(state == 'createFate')
+  {
+    <p>Select a pet to gain a random Fated encounter.</p>
+    <div [class.disabled]="disableButtons">
+      <app-select-pet (selected)="doCreateFate($event)" />
+      <ul class="dialog-choices">
+        <li><button type="button" class="link-text" (click)="state = 'chooseOne'">"Wait, I changed my mind!"</button></li>
+      </ul>
+    </div>
+  }
+  @else if(state == 'showFate')
+  {
+    <p>The crystal ball begins to glow. Then rays of light fill the room; amidst them you see {{ fateData.description }}! ({{ fatedPetName }} has gained a Fated encounter!)</p>
+    <p>After a moment, the image fades, and you notice the crystal ball has vanished, leaving only its gold base behind...</p>
+    <ul class="dialog-choices">
+      <li><a routerLink="/home">"Neat!"</a></li>
+    </ul>
+  }
+  @else if(state == 'nextPetDay')
+  {
+    <p>The crystal ball begins to glow. Then rays of light fill the room; amidst them you see an image of the pet shelter. The strange man that works there is checking his phone, and in the corner of the phone you see the date:</p>
+    @if(rarePetDayData)
+    {
+      <p style="text-align:center;font-size:1.5em;">{{ rarePetDayData.date|date:'mediumDate':'UTC' }}</p>
+    }
+    <p>After a moment, the image fades, and you notice the crystal ball has vanished, leaving only its gold base behind...</p>
+    <ul class="dialog-choices">
+      <li><a routerLink="/home">"Neat!"</a></li>
+    </ul>
+  }
+</main>

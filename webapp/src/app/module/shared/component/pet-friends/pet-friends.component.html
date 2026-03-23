@@ -1,0 +1,91 @@
+@if(loadingFriends)
+{
+  <p><app-loading-throbber /></p>
+}
+@else
+{
+  <div class="friend-grid" [class.friends-only]="!showSecondColumn">
+    @if(showSecondColumn)
+    {
+      <div class="others-list">
+        @if(relationships.groups.length > 0)
+        {
+          <div>
+            <h4>Groups</h4>
+            @for(group of relationships.groups; track group.id)
+            {
+              <div class="group" (click)="doViewGroup(group)" tabindex="0">
+                <img [src]="'/assets/images/groups/' + GROUP_TYPE_IMAGES[group.type] + '.svg'" [alt]="group.type|petGroupLabel">
+                <h5 class="link-text">{{ group.name }}</h5>
+                @if(group.makesStuff)
+                {
+                  <app-progress-bar [percent]="group.progress / 100" [label]="(group.type|petGroupProductLabel) + ' progress'" />
+                }
+              </div>
+            }
+          </div>
+        }
+
+        @if(relationships.spiritCompanion)
+        {
+          <div class="spirit-companion">
+            <h4>Spirit Companion</h4>
+            <img [src]="'/assets/images/companions/' + pet.spiritCompanion.image + '.svg'" [alt]="">
+            <h5>{{ pet.spiritCompanion.name }}</h5>
+            <p>
+              Spirit companion from {{ pet.spiritCompanion.star }}.
+              @if(pet.id % 7 === 2)
+              {
+                Friends for life (and probably quite longer...)
+              }
+            </p>
+          </div>
+        }
+
+        @if(relationships.guild)
+        {
+          <div class="guild">
+            <h4>Guild</h4>
+            <img [src]="'/assets/images/guilds/' + relationships.guild.guild.emblem + '.svg'" [alt]="relationships.guild.guild.name + ' emblem'">
+            <h5><a [routerLink]="['/poppyopedia/guild/' + relationships.guild.guild.id ]" (click)="doClose()">{{ relationships.guild.guild.name }}</a></h5>
+            <p>{{ relationships.guild.rank }}. Joined <app-date-only [dateString]="relationships.guild.joinedOn" />.</p>
+          </div>
+        }
+      </div>
+    }
+
+    <div class="friend-list">
+      @if(relationships.friends.length === 0)
+      {
+        <h4>Friends</h4>
+        @if(!(user|hasUnlockedFeature:'Park'))
+        {
+          <p>Before your pets can be comfortable meeting other pets, they need to feel comfortable with <em>you</em>. Pet them and feed them their favorite foods to increase their Affection<app-help-link link="affection" (click)="doClose()" /> for you!</p>
+        }
+        @else
+        {
+          <p>Your pets are ready to meet other pets! <a [routerLink]="[ '/park' ]" (click)="doClose()">Sign them up for park events</a>, and see what happens!</p>
+        }
+      }
+      @else
+      {
+        <h4>Friends ({{ relationships.friends.length }})</h4>
+        @for(friend of relationships.friends; track friend.relationship.id)
+        {
+          <app-pet-friend
+            class="friend"
+            (click)="doViewFriend(friend)"
+            tabindex="0"
+            [pet]="pet"
+            [friend]="friend"
+            [showRating]="true"
+          />
+        }
+        @if(relationships.relationshipCount > pet.maximumFriends)
+        {
+          <p><a [routerLink]="[ '/poppyopedia/pet/' + pet.id + '/relationships' ]" (click)="doClose()">View all {{ relationships.relationshipCount }} relationships...</a></p>
+        }
+      }
+    </div>
+  </div>
+}

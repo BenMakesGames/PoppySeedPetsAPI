@@ -1,0 +1,30 @@
+input[type=number] {
+  width: 1in;
+}
+
+.number {
+  text-align: right;
+}
+
+@media (max-width: 480px)
+{
+  .subtotal {
+    display: none;
+  }
+}
+
+select {
+  display: inline-block;
+  width: min-content;
+}
+
+.buy-bar {
+  display: flex;
+  flex-direction: row;
+  margin-bottom: 0.5rem;
+  align-items: center;
+
+  > select {
+    margin-right: 0.5rem;
+  }
+}

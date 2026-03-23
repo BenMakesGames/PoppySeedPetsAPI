@@ -1,0 +1,108 @@
+<main>
+  @if(!dragonSubscription.closed)
+  {
+    <div style="padding: 0 0.5rem">
+      <h2>Dragon Den</h2>
+      <p><app-loading-throbber [randomText]="true"/></p>
+    </div>
+  }
+  @if(dragon)
+  {
+    <div class="dragon-den">
+      <section class="dragon-container" [style.background-position-y]="'calc(100% + ' + treasureHoardOffset + 'px)'">
+        <div class="dialog">
+          <app-npc-dialog [name]="dragon.name" [removeNegativeMargins]="true">
+            @if(!dragon.hostage)
+            {
+              <p>{{ dialog }}</p>
+            }
+            @else
+            {
+              <p>Royalty from the {{ dragon.hostage.type }} kingdom snuck into my den last night and has been causing a ruckus. Can you please do something?</p>
+            }
+          </app-npc-dialog>
+          @if(!dragon.hostage)
+          {
+            <button type="button" (click)="doGiveTreasure()" [class.disabled]="!assignHelperAjax.closed">Give <i [class]="itemOtherPropertiesIcons.Treasure"></i></button>
+          }
+        </div>
+        <div class="dragon">
+          <app-image
+            class="npc"
+            [path]="'npcs/dragon-' + dragon.appearance"
+            [colors]="{colorA: dragon.colorA, colorB: dragon.colorB }"
+            width="100%"
+            height="100%"
+          />
+        </div>
+      </section>
+
+      <section class="helper-container">
+        @if(dragon.helper)
+        {
+          <button type="button" (click)="doViewHelper()" [class.disabled]="!assignHelperAjax.closed" class="link-text"><app-pet-appearance [pet]="dragon.helper" /></button>
+        }
+        @else if(user.canAssignHelpers)
+        {
+          <button type="button" (click)="doAssignHelper()" [class.disabled]="!assignHelperAjax.closed" class="wire" style="font-size:80%;border-style:dashed;">Assign an Assistant</button>
+        }
+      </section>
+
+      <section class="treasure-container" [class.with-hostage]="!!dragon.hostage">
+        <div class="treasure">
+          <span>{{ hoardDescription }} {{ dragon.treasureCount }} treasure{{ dragon.treasureCount == 1 ? '' : 's' }}, valued at...</span>
+          @if(dragon.treasureCount > 0)
+          {
+            <div class="treasure-value">
+              @if(dragon.gems > 0)
+              {
+                <img src="/assets/images/dragons/coins/gems.svg" alt="gems:"><span>{{ dragon.gems }}</span>
+              }
+              @if(dragon.gold > 0)
+              {
+                <img src="/assets/images/dragons/coins/gold.svg" alt="gold:"><span>{{ dragon.gold }}</span>
+              }
+              @if(dragon.silver > 0)
+              {
+                <img src="/assets/images/dragons/coins/silver.svg" alt="silver:"><span>{{ dragon.silver }}</span>
+              }
+            </div>
+          }
+        </div>
+      </section>
+
+      @if(dragon.hostage)
+      {
+        <section class="hostage-container">
+          <div class="dialog">
+            <app-npc-dialog [name]="dragon.hostage.name" [removeNegativeMargins]="true">
+              @if(dismissingHostageAjax.closed)
+              {
+                <markdown [data]="dragon.hostage.dialog"></markdown>
+              }
+              @else
+              {
+                <div>
+                  Agk! Hey! Cut it out!
+                  <app-loading-throbber text="" />
+                </div>
+              }
+            </app-npc-dialog>
+            <div [class.disabled]="!dismissingHostageAjax.closed">
+              <button type="button" (click)="doKickOutHostage()" style="float:right">Shoo! Git!</button>
+            </div>
+          </div>
+          <div class="hostage">
+            <app-image
+              class="npc"
+              [path]="'npcs/royalty/' + dragon.hostage.type + '-' + dragon.hostage.appearance"
+              [colors]="{ colorA: dragon.hostage.colorA, colorB: dragon.hostage.colorB }"
+              width="100%"
+              height="100%"
+            />
+          </div>
+        </section>
+      }
+    </div>
+  }
+</main>
