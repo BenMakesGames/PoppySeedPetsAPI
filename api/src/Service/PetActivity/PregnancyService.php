@@ -273,8 +273,7 @@ class PregnancyService
 
             $pet->setLocation(PetLocationEnum::DAYCARE);
 
-            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% gave birth to ' . $describeBabies . '! (There wasn\'t enough room at Home, so the birth took place at the Pet Shelter.)');
-                
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% gave birth to ' . $describeBabies . '! (There wasn\'t enough room at Home, so the birth took place at the Pet Shelter.)');               
         }
         else
         {
@@ -293,7 +292,7 @@ class PregnancyService
                 ? PetActivityLogFactory::createReadLog($this->em, $otherParent, '%pet:' . $pet->getId() . '.name% gave birth to ' . $describeBabies . '! %pet:' . $otherParent->getId() . '.name% is a proud parent!' )
                 : PetActivityLogFactory::createUnreadLog($this->em, $otherParent, '%pet:' . $pet->getId() . '.name% gave birth to ' . $describeBabies . '! %pet:' . $otherParent->getId() . '.name% is a proud parent!' );
 
-                //should they get the badge too?
+            PetBadgeHelpers::awardBadge($this->em, $otherParent, PetBadgeEnum::HadABaby, $otherActivityLog);
 
             $otherActivityLog
                 ->addInterestingness(PetActivityLogInterestingness::GaveBirth)
