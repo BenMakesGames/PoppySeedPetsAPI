@@ -42,15 +42,16 @@ button.trade {
   align-items: stretch;
   transition: transform 0.2s, filter 0.2s;
   overflow: hidden;
+  border-radius: 5px;
+  position: relative;
+  z-index: 0;
+  text-align: left;
+
   @media (max-width: 400px) {
     grid-template-columns: 1fr 1fr;
     // for "can trade" banner, which is positioned on the top @ <=400px
     overflow: visible;
   }
-  border-radius: 5px;
-  position: relative;
-  z-index: 0;
-  text-align: left;
 
   @media (max-width: 400px)
   {
