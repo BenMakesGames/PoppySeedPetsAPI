@@ -13,6 +13,7 @@ import { ThemeService } from "../../service/theme.service";
 import { ItemOtherPropertiesIcons } from "../../../../model/item-other-properties-icons";
 import { SkillNamePipe } from "../../pipe/skill-name.pipe";
 import { InputYesNoBothComponent } from "../../../filters/components/input-yes-no-both/input-yes-no-both.component";
+import { ApiService } from "../../service/api.service";
 
 @Component({
   templateUrl: './item-search.dialog.html',
@@ -30,6 +31,8 @@ import { InputYesNoBothComponent } from "../../../filters/components/input-yes-n
 export class ItemSearchDialog implements OnInit
 {
   isOctober = false;
+  itemGroups: string[] = [];
+  filteredItemGroups: string[] = [];
   itemTag: { title: string, color: string }|null;
 
   foodFlavors: string[] = [];
@@ -64,7 +67,8 @@ export class ItemSearchDialog implements OnInit
     @Inject(MAT_DIALOG_DATA) data,
     private dialogRef: MatDialogRef<ItemSearchDialog>,
     private userData: UserDataService,
-    private themeService: ThemeService
+    private themeService: ThemeService,
+    private api: ApiService
   )
   {
     this.filter = data.filter;
@@ -81,6 +85,20 @@ export class ItemSearchDialog implements OnInit
     this.isOctober = (new Date()).getUTCMonth() === 9;
 
     this.doChange();
+
+    this.api.get<string[]>('/encyclopedia/item-groups').subscribe({
+      next: r => {
+        this.itemGroups = r.data ?? [];
+        this.filterItemGroups();
+      }
+    });
+  }
+
+  filterItemGroups() {
+    const val = (this.filter.itemGroup ?? '').toLowerCase();
+    this.filteredItemGroups = val
+      ? this.itemGroups.filter(g => g.toLowerCase().includes(val))
+      : this.itemGroups;
   }
 
   doSearch()
@@ -136,6 +154,8 @@ export class ItemSearchDialog implements OnInit
     }
     else
       this.itemTag = null;
+
+    this.filterItemGroups();
   }
 
   public static open(matDialog: MatDialog, filter: ItemSearchModel): MatDialogRef<ItemSearchDialog>
