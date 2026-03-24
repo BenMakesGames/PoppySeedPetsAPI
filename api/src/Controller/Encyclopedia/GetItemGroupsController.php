@@ -41,4 +41,3 @@ class GetItemGroupsController
         return $responseService->success($names);
     }
 }
-```
