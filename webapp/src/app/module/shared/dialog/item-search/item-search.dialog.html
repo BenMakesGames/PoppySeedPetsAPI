@@ -81,8 +81,27 @@
         <p>
           <label>Item Tag</label>
           <span class="input">
-          <button (click)="doClearTag()" class="link-text"><app-pet-activity-log-tag [tag]="itemTag" /></button>
-        </span>
+            <button (click)="doClearTag()" class="link-text"><app-pet-activity-log-tag [tag]="itemTag" /></button>
+          </span>
+        </p>
+      }
+      @else
+      {
+        <p>
+          <label>Item Tag</label>
+          <input
+            type="text"
+            [(ngModel)]="filter.itemGroup"
+            (ngModelChange)="doChange()"
+            placeholder="e.g. Fresh Fruit"
+            list="item-group-list"
+          />
+          <datalist id="item-group-list">
+            @for(group of filteredItemGroups; track group)
+            {
+              <option [value]="group" />
+            }
+          </datalist>
         </p>
       }
       <div class="buttons centered" style="margin-top:1rem">
