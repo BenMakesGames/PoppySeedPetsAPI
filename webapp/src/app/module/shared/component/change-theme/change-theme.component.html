@@ -1,0 +1,7 @@
+<p>
+  <label>Style</label>
+  @for(theme of themes; let i = $index; track $index)
+  {
+    <label class="radio-checkbox" [for]="'theme-' + i" (click)="doSetTheme(theme, i)"><input type="radio" [id]="'theme-' + i" [checked]="i === currentThemeIndex"> {{ theme.name }}</label>
+  }
+</p>

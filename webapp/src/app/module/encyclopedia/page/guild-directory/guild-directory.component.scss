@@ -1,0 +1,26 @@
+ul {
+  max-width: 6.5in;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-column-gap: 1rem;
+  grid-row-gap: 2rem;
+
+  > li {
+    a {
+      display: block;
+    }
+
+    img {
+      width: 100%;
+      display: block;
+      margin: 0 auto;
+    }
+
+    span {
+      display: block;
+      text-align: center;
+      word-break: break-word;
+    }
+  }
+}

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="32" height="32" version="1.1" viewBox="0 0 8.4667 8.4667" xmlns="http://www.w3.org/2000/svg">
+ <g transform="translate(0 -288.53)">
+  <g>
+   <g>
+    <path d="m2.378 295.21-1.5856 1.112 1.2375-1.5219 0.47856-0.12383z" fill="#856029" stroke="#3f3322" stroke-linecap="round" stroke-linejoin="round" stroke-width=".26458"/>
+    <path d="m5.6948 291.28s0.43436-0.41723 0.15132-0.74665c-0.28304-0.32943-1.0183-6e-3 -1.0183-6e-3l-0.03212 0.424-0.3769-0.0285-0.26483-0.25696s0.093864-0.30088 0.70916-0.91763c0.61531-0.61673 1.1371-0.62461 1.1371-0.62461l0.30481 0.35476s-0.46005 0.131-0.22413 0.45685c0.071379 0.0986 0.2228 0.28565 0.3993 0.49861 0.082357 0.0994 0.32373 0.0627 0.41142 0.16696 0.077435 0.0921 0.00122 0.32539 0.074615 0.412 0.25411 0.29988 0.46096 0.54063 0.46096 0.54063l0.2973 0.14097 0.17418 0.20272-0.70953 0.60962-0.21415-0.30051 0.097432-0.34799-0.23236-0.37297s-0.22486-0.15918-0.3769-0.0285l-0.40544 0.34835-3.6798 3.4081-0.34802-0.40994z" fill="#bebebe" stroke="#3e3e3e" stroke-linejoin="bevel" stroke-width=".26458"/>
+    <circle transform="rotate(139.33)" cx="186.33" cy="-225.01" r=".83522" fill="#8dbdbf" stroke="#223839" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="40" stroke-width=".26458" style="paint-order:markers fill stroke"/>
+    <circle transform="rotate(139.33)" cx="188.57" cy="-225.07" r=".53454" fill="#8dbdbf" stroke="#223839" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="40" stroke-width=".26458" style="paint-order:markers fill stroke"/>
+   </g>
+   <circle cx="5.0797" cy="291.89" r=".3232" fill="#fff" opacity=".56782" style="paint-order:markers fill stroke"/>
+   <circle cx="3.5553" cy="293.48" r=".15783" fill="#fff" opacity=".3817" style="paint-order:markers fill stroke"/>
+  </g>
+  <g fill="none">
+   <path d="m5.9467 290.7s-0.058466 0.1921 0.24221 0.46772c0.30068 0.27563 0.45102 0.24221 0.45102 0.24221" opacity=".33438" stroke="#3d3d3d" stroke-width=".26458px"/>
+   <path d="m4.1206 292.64 0.36616 0.73232" stroke="#912e2e" stroke-linecap="round" stroke-width=".26458"/>
+   <path d="m4.3266 292.48 0.36616 0.73232s1.0099 1.3111 1.0099 0.56696c0-0.74414 1.4292-1.1576 1.3229-0.5079-0.10631 0.64965-0.56696 1.2875 0.16536 1.382 0.73233 0.0945 0.6024-0.74414 0.2008-0.82682-0.4016-0.0827-1.2875 0.24805-1.2402 1.1457 0.047247 0.8977-1.8781 0.54334-1.8781 0.54334" stroke="#912e2e" stroke-linecap="round" stroke-width=".26458"/>
+  </g>
+ </g>
+</svg>

@@ -1,0 +1,162 @@
+<main>
+  <h2>Florist</h2>
+  <div>
+    @if(state === 'welcome')
+    {
+      <app-npc-dialog name="Kat" npc="kat">
+        <p>Oh, what a terrible fate! ;) Not to worry: I believe I can help! I bought some magic dice off a Satyr a while ago - would you like to give them a roll for <app-recycling-points [amount]="100" />?</p>
+      </app-npc-dialog>
+      <ul class="dialog-choices">
+        @if(user.recyclePoints >= 100)
+        {
+          <li><button type="button" (click)="state = 'play'">"I'm so here for this. Let's go!"</button></li>
+          <li><a routerLink="/florist" class="button">"Hm. Another time, maybe."</a></li>
+        }
+        @else
+        {
+          <li><a routerLink="/florist" class="button">"Hm. Another time, maybe. I don't have <app-recycling-points [amount]="100" />, anyway..."</a></li>
+        }
+        <li><button type="button" (click)="state = 'rules'">"Er... Magic Satyr dice? How does this work?"</button></li>
+      </ul>
+    }
+    @else if(state === 'rules')
+    {
+      <app-npc-dialog name="Kat" npc="kat">
+        <p>So: you roll the dice, and depending on the result, it summons some stuff, and you can keep the stuff!</p>
+        <table>
+          <thead>
+            <tr><th>Roll</th><th>Winnings</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>12</td><td>Two Shiny Baabbles</td>
+            </tr>
+            <tr>
+              <td>11</td><td>Shiny Baabble</td>
+            </tr>
+            <tr>
+              <td>10</td><td>Gold Baabble</td>
+            </tr>
+            <tr>
+              <td>9</td><td>White Baabble</td>
+            </tr>
+            <tr>
+              <td>8</td><td>Black Baabble &amp; <app-recycling-points [amount]="75" /></td>
+            </tr>
+            <tr>
+              <td>5 - 7</td><td>Black Baabble</td>
+            </tr>
+            <tr>
+              <td>3, 4</td><td>Creamy Milk &amp; Paper Bag</td>
+            </tr>
+            <tr>
+              <td>2</td><td>Creamy Milk</td>
+            </tr>
+            <tr>
+              <td>1</td><td>Quintessence</td>
+            </tr>
+            <tr>
+              <td>0</td><td>Ten Quintessence</td>
+            </tr>
+          </tbody>
+        </table>
+        <p>Ooh! Also! One more thing! Before rolling, you can guess if the roll will be higher than 8, lower than 8, or exactly 8. If you guess right, I'll double your winnings! (That's not part of the magic of the dice - I just toss that in to make things spicier!)</p>
+      </app-npc-dialog>
+      <ul class="dialog-choices">
+        <li><button type="button" (click)="state = 'baabble'">"What's a... 'Baabble'? (How do you even say that?)"</button></li>
+        <li><button type="button" (click)="state = 'weekday-symbols'">"Wait: how can I roll a 1? Or zero!?"</button></li>
+        @if(user.recyclePoints >= 100)
+        {
+          <li><button type="button" (click)="state = 'play'">"I'm so here for this. Let's go!"</button></li>
+          <li><a routerLink="/florist" class="button">"Hm. Another time, maybe."</a></li>
+        }
+        @else
+        {
+          <li><a routerLink="/florist" class="button">"Hm. Another time, maybe. I don't have <app-recycling-points [amount]="100" />, anyway..."</a></li>
+        }
+      </ul>
+    }
+    @else if(state === 'weekday-symbols')
+    {
+      <app-npc-dialog name="Kat" npc="kat">
+        <p>Oh yeah! The day-of-week sides! I forgot about that!</p>
+        <p>Somehow, sometimes the die lands on a <em>seventh side</em> representing the current day of the week!</p>
+        <p>When that happens, it counts as a zero, but the dice also summon a coin that corresponds to the day of the week...</p>
+        <p>You can keep 'em if you want, but they don't seem to do much, so if you bring me a set of all 7, I'll exchange them for one of my very own "Kat's Gift Package"s! You'll have to have given me a lot of <i class="recycle" title="recycling points" role="img"></i> to get a full set, after all! Least I can do! ;)</p>
+      </app-npc-dialog>
+      <ul class="dialog-choices">
+        @if(user.recyclePoints >= 100)
+        {
+          <li><button type="button" (click)="state = 'play'">"Sure. Well, okay, I'm ready to roll!"</button></li>
+          <li><a routerLink="/florist" class="button">"Huh. Well, another time, maybe."</a></li>
+        }
+        @else
+        {
+          <li><a routerLink="/florist" class="button">"Huh. Well, another time, maybe. I don't have <app-recycling-points [amount]="100" />, anyway..."</a></li>
+        }
+      </ul>
+    }
+    @else if(state === 'baabble')
+    {
+      <app-npc-dialog name="Kat" npc="kat">
+        <p>I guess it's supposed to be like a bauble, or bubble, or something, but it's "baa", like a goat bleating?</p>
+        <p>I dunno, man. Satyrs are weird. Say it however you want; <em>I'm</em> certainly not gonna... bleat...</p>
+        <p>Anyway, they're little plastic things, but when you open them, they're <em>crazy</em>-full of stuff! "Bigger on the inside", like in that show, I guess...</p>
+      </app-npc-dialog>
+      <ul class="dialog-choices">
+        @if(user.recyclePoints >= 100)
+        {
+          <li><button type="button" (click)="state = 'play'">"Sure. Well anyway, yeah, let's roll some dice!"</button></li>
+          <li><a routerLink="/florist" class="button">"Huh. Well, another time, maybe."</a></li>
+        }
+        @else
+        {
+          <li><a routerLink="/florist" class="button">"Huh. Well, another time, maybe. I don't have <app-recycling-points [amount]="100" />, anyway..."</a></li>
+        }
+      </ul>
+    }
+    @else if(state === 'play')
+    {
+      @if(!results)
+      {
+        <app-npc-dialog name="Kat" npc="kat">
+          <p>Alright! You've got <app-recycling-points [amount]="user.recyclePoints" />. What's your guess?</p>
+        </app-npc-dialog>
+        @if(user.recyclePoints >= 100)
+        {
+          <div style="margin:0 auto; width: max-content;">
+            <app-spinning-d6 size="4rem" />
+            <app-spinning-d6 size="4rem" />
+          </div>
+          <ul class="dialog-choices" [class.disabled]="rolling">
+            <li><button type="button" (click)="doRoll(1)">"Higher than 8!"</button></li>
+            <li><button type="button" (click)="doRoll(0)">"Exactly 8!"</button></li>
+            <li><button type="button" (click)="doRoll(-1)">"Lower than 8!"</button></li>
+            <li><a routerLink="/florist" class="button">"Ah! I don't want to play, after all!"</a></li>
+          </ul>
+        }
+      }
+      @else
+      {
+        <app-npc-dialog name="Kat" npc="kat">
+          <p>{{ resultsDialog }}</p>
+        </app-npc-dialog>
+        <div style="margin:0 auto; width: max-content;">
+          <app-spinning-d6 size="4rem" [result]="results.dice[0] > 0 ? results.dice[0] : results.dayOfTheWeek" />
+          <app-spinning-d6 size="4rem" [result]="results.dice[1] > 0 ? results.dice[1] : results.dayOfTheWeek" />
+        </div>
+        <ul class="dialog-choices">
+          @if(user.recyclePoints >= 100)
+          {
+            <li><button type="button" (click)="results = null">"Again!"</button></li>
+            <li><a routerLink="/florist" class="button">"That was fun, but I'm done for now."</a></li>
+          }
+          @else
+          {
+            <li><a routerLink="/florist" class="button">"That was fun, but I'm done for now. I don't have another <app-recycling-points [amount]="100" />, anyway..."</a></li>
+          }
+        </ul>
+      }
+    }
+  </div>
+</main>

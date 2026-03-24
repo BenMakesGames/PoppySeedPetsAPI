@@ -1,0 +1,22 @@
+.pets > button {
+  background-color: transparent;
+  color: rgb(var(--color-text-on-content-background));
+  border-radius: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  &.selected {
+    background-color: rgb(var(--color-link-and-button));
+    color: rgb(var(--color-text-on-button));
+  }
+
+  .pet-name {
+    font-weight: var(--bold-weight);
+  }
+
+  .species {
+    font-style: italic;
+    opacity: 66.6667%;
+  }
+}

@@ -1,0 +1,67 @@
+:host {
+  display: block;
+  width: 2.25em;
+  height: 2.25em;
+  position: relative;
+}
+
+.hourglass {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+
+  > * {
+    position: relative;
+    width: 100%;
+    height: 50%;
+    background-color: #fff;
+  }
+
+  > .top {
+    clip-path: polygon(10% 0, 90% 0, 50% 100%);
+  }
+
+  > .bottom {
+    clip-path: polygon(50% 0, 90% 100%, 10% 100%);
+
+    &::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: calc(50% - 1px);
+      width: 2px;
+      height: 100%;
+      background-color: #bf8d0f;
+    }
+  }
+
+  .progress {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-color: #bf8d0f;
+  }
+}
+
+.time-remaining {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  line-height: 2.25em;
+  text-align: center;
+  color: rgba(var(--color-text-on-content-background));
+  text-shadow:
+    1px 1px 0 rgba(var(--color-content-background)),
+    1px -1px 0 rgba(var(--color-content-background)),
+    -1px -1px 0 rgba(var(--color-content-background)),
+    -1px 1px 0 rgba(var(--color-content-background)),
+    1px 0 1px rgba(var(--color-content-background)),
+    -1px 0 1px rgba(var(--color-content-background)),
+    0 1px 1px rgba(var(--color-content-background)),
+    0 -1px 1px rgba(var(--color-content-background));
+}

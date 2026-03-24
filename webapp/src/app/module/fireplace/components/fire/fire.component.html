@@ -1,0 +1,53 @@
+@let str = Math.max(0, Math.min(100, strength()));
+<div class="fireplace">
+  <div class="fire">
+    @if(str > 0)
+    {
+      <div class="fire-red">
+        <div class="flame" [style.height.px]="135 * str / 100"></div>
+        <div class="flame" [style.height.px]="200 * str / 100"></div>
+        <div class="flame" [style.height.px]="250 * str / 100"></div>
+        <div class="flame" [style.height.px]="300 * str / 100"></div>
+        <div class="flame" [style.height.px]="260 * str / 100"></div>
+        <div class="flame" [style.height.px]="190 * str / 100"></div>
+        <div class="flame" [style.height.px]="115 * str / 100"></div>
+      </div>
+      <div class="fire-orange">
+        <div class="flame" [style.height.px]="115 * str / 100"></div>
+        <div class="flame" [style.height.px]="175 * str / 100"></div>
+        <div class="flame" [style.height.px]="210 * str / 100"></div>
+        <div class="flame" [style.height.px]="250 * str / 100"></div>
+        <div class="flame" [style.height.px]="215 * str / 100"></div>
+        <div class="flame" [style.height.px]="135 * str / 100"></div>
+        <div class="flame" [style.height.px]="90 * str / 100"></div>
+      </div>
+      <div class="fire-yellow">
+        <div class="flame" [style.height.px]="115 * str / 100"></div>
+        <div class="flame" [style.height.px]="145 * str / 100"></div>
+        <div class="flame" [style.height.px]="165 * str / 100"></div>
+        <div class="flame" [style.height.px]="165 * str / 100"></div>
+        <div class="flame" [style.height.px]="120 * str / 100"></div>
+      </div>
+      <div class="fire-white">
+        <div class="flame" [style.height.px]="85 * str / 100"></div>
+        <div class="flame" [style.height.px]="100 * str / 100"></div>
+        <div class="flame" [style.height.px]="140 * str / 100"></div>
+        <div class="flame" [style.height.px]="175 * str / 100"></div>
+        <div class="flame" [style.height.px]="140 * str / 100"></div>
+        <div class="flame" [style.height.px]="90 * str / 100"></div>
+        <div class="flame" [style.height.px]="85 * str / 100"></div>
+      </div>
+    }
+    @else
+    {
+      <p class="oh-dang">Your fireplace has no fire!</p>
+    }
+  </div>
+  <div class="log" [title]="str + '%'">
+    <div
+      [style.width.%]="str"
+      role="progressbar"
+      [attr.aria-valuenow]="str"
+    ></div>
+  </div>
+</div>

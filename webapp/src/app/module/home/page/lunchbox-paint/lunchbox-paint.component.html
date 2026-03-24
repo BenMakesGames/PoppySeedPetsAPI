@@ -1,0 +1,32 @@
+<main>
+  <h2>Lunchbox Paint</h2>
+
+  @if(state === 'findPet')
+  {
+    <div [class.disabled]="loading">
+      <h4>Whose Lunchbox?</h4>
+      <app-select-pet (selected)="doSelectPet($event)" [showLunchbox]="true" />
+    </div>
+  }
+  @else if(state === 'injectPet')
+  {
+    <form [class.disabled]="loading" (submit)="doPaint()">
+      <h4>Whose Lunchbox?</h4>
+      <app-pet-appearance [pet]="pet" [showLunchbox]="true" [overrideLunchboxIndex]="newPattern" />
+      <h4 style="margin-top:1rem;">New Pattern...</h4>
+      <div class="patterns">
+        @for(pattern of LUNCHBOXES; let i = $index; track i)
+        {
+          <label [class.selected]="newPattern === i">
+            <input type="radio" name="lunchboxIndex" [value]="i" [(ngModel)]="newPattern" />
+            <img [src]="'/assets/images/lunchboxes/' + pattern + '.svg'" [alt]="pattern" />
+          </label>
+        }
+      </div>
+      <p class="buttons">
+        <button type="submit" [class.disabled]="newPattern == pet.lunchboxIndex">Paint!</button>
+        <button type="button" class="wire" (click)="doCancel()">Wait, no, not {{ pet.name }}...</button>
+      </p>
+    </form>
+  }
+</main>

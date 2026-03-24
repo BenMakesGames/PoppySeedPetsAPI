@@ -1,0 +1,13 @@
+<div class="dialog">
+  <h4>Really Give Up {{ pet.name }}?</h4>
+  <div class="dialog-body">
+    <div class="pet-columns">
+      <div><app-pet-appearance [pet]="pet" size="1in" /></div>
+      <div>{{ guiltText }}</div>
+    </div>
+    <p class="buttons" style="margin-top:0.5rem;">
+      <button type="button" (click)="doConfirm()">This is goodbye...</button>
+      <button type="button" (click)="doCancel()">I changed my mind!</button>
+    </p>
+  </div>
+</div>

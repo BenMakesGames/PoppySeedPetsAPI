@@ -1,0 +1,20 @@
+@if(pet.merits.length === 0)
+{
+  <p>{{ pet.name }} has... no Merits! (How'd <em>that</em> happen...)</p>
+}
+@else
+{
+  <p>{{ pet.name }} has the following Merits:</p>
+  <ul class="accordion" [class.disabled]="meritAjax && !meritAjax.closed">
+    @for(merit of pet.merits; track merit.name)
+    {
+      <li [class.open]="visibleMerit?.name === merit.name">
+        <button class="link-text" type="button" (click)="doSelectMerit(merit.name)">{{ merit.name }}</button>
+        @if(visibleMerit?.name === merit.name)
+        {
+          <markdown [data]="visibleMerit.description" />
+        }
+      </li>
+    }
+  </ul>
+}

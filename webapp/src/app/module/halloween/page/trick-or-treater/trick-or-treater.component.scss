@@ -1,0 +1,28 @@
+.pet {
+  display: flex;
+  flex-direction: row;
+  margin-bottom: 0.5rem;
+
+  > app-pet-appearance {
+    width: 1in;
+  }
+
+  > div {
+    padding-left: 0.5rem;
+  }
+}
+
+app-inventory-item {
+  cursor: pointer;
+}
+
+app-milestone-progress {
+  display: block;
+  max-width: 6in; // 6in is good
+  padding: 0 0 0.5rem;
+}
+
+.bad-taste {
+  font-size: 80%;
+  opacity: 0.6667;
+}

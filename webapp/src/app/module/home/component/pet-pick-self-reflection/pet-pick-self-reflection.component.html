@@ -1,0 +1,63 @@
+<p style="font-style:italic;">{{ pet.name }} is feeling... self-reflective.</p>
+@if(loading)
+{
+  <p><app-loading-throbber/></p>
+}
+@else
+{
+  <h5>Reconcile with Another Pet</h5>
+  @if(!response.troubledRelationships)
+  {
+    <p>There are {{ response.troubledRelationshipsCount }} possible pets to reconcile with.</p>
+    <app-select-pet
+      apiEndpoint="/pet/typeahead/troubledRelationships"
+      [additionalFilters]="{ petId: pet.id }"
+      [petMapper]="petMapper"
+      (selected)="doSelectReconcileWith($event)"
+      [highlightSelected]="true"
+    />
+    @if(possibleRelationships)
+    {
+      <p class="possible-relationships">Possible relationships: {{ possibleRelationships }}</p>
+    }
+    <p class="buttons"><button type="button" (click)="doReconcile()" [class.disabled]="!reconcileWith">Reconcile!</button></p>
+  }
+  @else
+  {
+    <form (submit)="doReconcile()">
+      <div class="troubled-relationships">
+        @for(relationship of response.troubledRelationships; track relationship.pet.id)
+        {
+          <label class="radio-checkbox">
+            <span class="radio"><input type="radio" name="pet" [value]="relationship.pet.id" [(ngModel)]="reconcileWith" (change)="doSetPossibleRelationships(relationship.possibleRelationships)"></span>
+            <app-pet-appearance [pet]="relationship.pet" size="0.5in" />
+            <span class="name">{{ relationship.pet.name }}</span>
+          </label>
+        }
+      </div>
+      @if(possibleRelationships)
+      {
+        <p class="possible-relationships">Possible relationships: {{ possibleRelationships }}</p>
+      }
+      <p class="buttons"><button type="submit" [class.disabled]="!reconcileWith">Reconcile!</button></p>
+    </form>
+  }
+  @if(response.membership)
+  {
+    <form (submit)="doChangeGuild()">
+      <h5>Join a Different Guild</h5>
+      <p>
+        <select name="newGuild" [(ngModel)]="newGuild">
+          @for(g of response.guilds; track g.id)
+          {
+            @if(g.id !== response.membership.guild.id)
+            {
+              <option [value]="g.id">{{ g.name }}</option>
+            }
+          }
+        </select>
+      </p>
+      <p class="buttons"><button type="submit">Switch!</button></p>
+    </form>
+  }
+}

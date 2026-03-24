@@ -1,0 +1,69 @@
+<main>
+  <nav class="tabs-container">
+    <div class="tabs" role="tablist">
+      <button role="tab" type="button" [class.active]="active === 'private'" (click)="active = 'private'">My Stats</button>
+      <button role="tab" type="button" [class.active]="active === 'global'" (click)="active = 'global'">Global Stats</button>
+    </div>
+  </nav>
+  <div [hidden]="active !== 'private'">
+    <p>
+      @if(!myStatsAjax.closed)
+      {
+        <app-loading-throbber [randomText]="true" />
+      }
+    </p>
+    @if(myStats)
+    {
+      @if(myStats.length === 0)
+      {
+        <p>No stats have been measured yet...</p>
+        <ul class="dialog-choices">
+          <li><a [routerLink]="['/home']" class="button">"Oh, uh... okay..."</a></li>
+        </ul>
+      }
+      @else
+      {
+        <p>
+          <select [(ngModel)]="sort" (change)="doSortBy()">
+            <option value="lastTime">Recently Increased</option>
+            <!--<option value="firstTime">First Time Increased</option>-->
+            <option value="stat">Alphabetical</option>
+            <option value="value">Largest Value</option>
+          </select>
+        </p>
+        <table>
+          <thead>
+            <tr>
+              <th>Stat</th>
+              <th class="number">Value</th>
+              <th class="first-time">First Time</th>
+              <th>Last Time</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for(stat of myStats; track stat.stat)
+            {
+              <tr>
+                <td>{{ stat.stat }}</td>
+                <td class="number">{{ stat.value }}</td>
+                <td class="first-time"><app-date-and-time [dateString]="stat.firstTime" /></td>
+                <td><app-date-and-time [dateString]="stat.lastTime" /></td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      }
+    }
+  </div>
+  <div [hidden]="active !== 'global'" class="global-stats">
+    <p>
+      @if(!globalStatsAjax.closed)
+      {
+        <app-loading-throbber [randomText]="true" />
+      }
+    </p>
+    @if(globalStats) {
+      <app-global-stats-chart [data]="globalStats" />
+    }
+  </div>
+</main>

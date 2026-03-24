@@ -1,0 +1,215 @@
+<div class="dialog">
+  <h4>
+    {{ pet.name }}
+    @if(loading)
+    {
+      <app-loading-throbber text=""/>
+    }
+  </h4>
+  <div class="tabs-container">
+    <div class="tabs" role="tablist" [class.disabled]="loading">
+      <button role="tab" type="button" aria-controls="tab-status-effects" (click)="doChangeTab(InteractTabEnum.STATUS_EFFECTS)" [class.active]="tab === InteractTabEnum.STATUS_EFFECTS">Status</button>
+      <button role="tab" type="button" aria-controls="tab-notes" (click)="doChangeTab(InteractTabEnum.NOTE)" [class.active]="tab === InteractTabEnum.NOTE">Notes</button>
+      @if(pet.affectionRewardsClaimed < pet.affectionLevel || pet.canPickTalent || pet.selfReflectionPoint > 0)
+      {
+        <button role="tab" type="button" aria-controls="tab-affection" (click)="doChangeTab(InteractTabEnum.AFFECTION_REWARDS)" [class.active]="tab === InteractTabEnum.AFFECTION_REWARDS"><i class="fa-solid fa-heart" style="color:red" role="img" aria-description="Affection Rewards"></i></button>
+      }
+      @if(isOctober)
+      {
+        <button role="tab" type="button" aria-controls="tab-halloween" (click)="doChangeTab(InteractTabEnum.HALLOWEEN)" [class.active]="tab === InteractTabEnum.HALLOWEEN"><img src="/assets/images/ui/halloween.svg" [alt]="isHalloween ? 'Halloween!' : 'Halloween?'"></button>
+      }
+      <button role="tab" type="button" aria-controls="tab-lunchbox" (click)="doChangeTab(InteractTabEnum.LUNCHBOX)" [class.active]="tab === InteractTabEnum.LUNCHBOX">Lunchbox</button>
+      <button role="tab" type="button" aria-controls="tab-logs" (click)="doChangeTab(InteractTabEnum.LOGS)" [class.active]="tab === InteractTabEnum.LOGS">Logs</button>
+      <button role="tab" type="button" aria-controls="tab-friends" (click)="doChangeTab(InteractTabEnum.FRIENDS)" [class.active]="tab === InteractTabEnum.FRIENDS">Friends</button>
+      <button role="tab" type="button" aria-controls="tab-tool" (click)="doChangeTab(InteractTabEnum.TOOL)" [class.active]="tab === InteractTabEnum.TOOL">
+        <i [class]="itemOtherPropertiesIcons.Tool"></i> Tool
+      </button>
+      @if(canWearHats)
+      {
+        <button role="tab" type="button" aria-controls="tab-hat" (click)="doChangeTab(InteractTabEnum.HAT)" [class.active]="tab === InteractTabEnum.HAT">
+          <i class="{{ itemOtherPropertiesIcons.Hat }}"></i> Hat
+        </button>
+      }
+      <button role="tab" type="button" aria-controls="tab-skills" (click)="doChangeTab(InteractTabEnum.SKILLS)" [class.active]="tab === InteractTabEnum.SKILLS">Skills</button>
+      <button role="tab" type="button" aria-controls="tab-merits" (click)="doChangeTab(InteractTabEnum.MERITS)" [class.active]="tab === InteractTabEnum.MERITS">Merits</button>
+      <button role="tab" type="button" aria-controls="tab-badges" (click)="doChangeTab(InteractTabEnum.BADGES)" [class.active]="tab === InteractTabEnum.BADGES">Badges</button>
+    </div>
+  </div>
+  <div class="dialog-body">
+    <div role="tabpanel" id="tab-affection" [hidden]="tab !== InteractTabEnum.AFFECTION_REWARDS" [class.disabled]="loading">
+      @if(viewedAffectionRewards)
+      {
+        @if(pet.canPickTalent)
+        {
+          <app-pet-pick-talent [pet]="pet" (selectTalent)="doPickTalent($event)" />
+        }
+        @if(pet.selfReflectionPoint > 0)
+        {
+          @if(pet.canPickTalent)
+          {
+            <hr />
+          }
+          <app-pet-pick-self-reflection [class.disabled]="loading" [pet]="pet" (selectSelfReflection)="doPickSelfReflection($event)" />
+        }
+        @if(pet.affectionRewardsClaimed < pet.affectionLevel)
+        {
+          @if(pet.canPickTalent || pet.selfReflectionPoint > 0)
+          {
+            <hr />
+          }
+          <app-pet-pick-affection-reward [pet]="pet" (selectAffectionReward)="doAffectionReward($event)" />
+        }
+      }
+    </div>
+    @if(tab === InteractTabEnum.NOTE)
+    {
+      <div role="tabpanel" id="tab-notes" [class.disabled]="loading">
+        <app-pet-notes [(pet)]="pet" (loading)="doLoading($event)" (done)="doClose()" />
+      </div>
+    }
+    @else if(tab === InteractTabEnum.STATUS_EFFECTS)
+    {
+      <div role="tabpanel" id="tab-status-effects">
+        <app-pet-status-effects-tab [pet]="pet" (onNavigate)="doClose()" />
+      </div>
+    }
+    @else if(tab === InteractTabEnum.HALLOWEEN)
+    {
+      <div role="tabpanel" id="tab-halloween">
+        @if(isHalloween)
+        {
+          <p>Halloween is upon us! To go trick-or-treating, your pet must be holding a tool, and wearing a hat...</p>
+        }
+        @else
+        {
+          <p>Halloween takes place from October 29th through the 31st! To go trick-or-treating, your pet must be holding a tool, and wearing a hat...</p>
+        }
+        <ul>
+          @if(pet.tool)
+          {
+            <li class="gain">&#x2713; {{ pet.tool.item.name }}</li>
+          }
+          @else
+          {
+            <li class="loss">&#x274C; No tool!</li>
+          }
+          @if(pet.hat)
+          {
+            <li class="gain">&#x2713; {{ pet.hat.item.name }}</li>
+          }
+          @else
+          {
+            <li class="loss">&#x274C; No hat!</li>
+          }
+        </ul>
+        @if(pet.tool && pet.hat)
+        {
+          <form (submit)="doSaveCostume()" [class.disabled]="loading">
+            <p>
+              <label for="costume">{{ pet.name }} is dressed as...</label>
+              <input type="text" name="costume" id="costume" [(ngModel)]="petCostume" maxlength="30">
+            </p>
+            <div class="buttons">
+              <button type="submit">Save</button>
+            </div>
+          </form>
+        }
+      </div>
+    }
+    @else if(tab === InteractTabEnum.LUNCHBOX)
+    {
+      <div role="tabpanel" id="tab-lunchbox">
+        <app-pet-lunchbox [pet]="pet" [inventory]="inventory" (inventoryChanged)="doInventoryChanged()" />
+      </div>
+    }
+    <div role="tabpanel" id="tab-friends" [hidden]="tab !== InteractTabEnum.FRIENDS">
+      @if(viewedFriends)
+      {
+        <app-pet-friends [pet]="pet" (linkClick)="doClose()" />
+      }
+    </div>
+    @if(tab === InteractTabEnum.LOGS)
+    {
+      <div role="tabpanel" id="tab-logs">
+        @if(!logs)
+        {
+          <p><app-loading-throbber/></p>
+        }
+        @else
+        {
+          <app-pet-logs-links [petId]="pet.id" [hasMultiplePages]="logs.pageCount > 1" [onClose]="doClose.bind(this)" />
+          <app-pet-activity-log-table [logs]="logs.results" />
+          <app-pet-logs-links [petId]="pet.id" [hasMultiplePages]="logs.pageCount > 1" [onClose]="doClose.bind(this)" />
+        }
+      </div>
+    }
+    @else if(tab === InteractTabEnum.TOOL)
+    {
+      <div role="tabpanel" id="tab-tool" [class.disabled]="loading">
+        <h5>Current Tool</h5>
+        @if(pet.tool)
+        {
+          <app-inventory-item [inventory]="pet.tool" tabindex="0" (click)="doMaybeUnequip()" />
+        }
+        @else
+        {
+          <p>Nothing.</p>
+        }
+        <h5 style="margin-top:1em">Change Tool</h5>
+        <div class="items">
+          @for(tool of tools; track tool.id)
+          {
+            <app-inventory-item [inventory]="tool" tabindex="0" (click)="doMaybeEquip(tool)" />
+          }
+        </div>
+      </div>
+    }
+    @else if(tab === InteractTabEnum.HAT)
+    {
+      <div role="tabpanel" id="tab-hat">
+        <h5>Current Hat</h5>
+        @if(pet.hat)
+        {
+          <app-inventory-item [inventory]="pet.hat" tabindex="0" (click)="doUnhat()" />
+        }
+        @else
+        {
+          <p>Nothing.</p>
+        }
+        <h5 style="margin-top:1em">Change Hat</h5>
+        <div class="items">
+          @for(hat of hats; track hat.id)
+          {
+            <app-inventory-item [inventory]="hat" tabindex="0" (click)="doHat(hat)" />
+          }
+        </div>
+      </div>
+    }
+    @else if(tab === InteractTabEnum.SKILLS)
+    {
+      <div role="tabpanel" id="tab-skills">
+        <app-pet-skills-and-attributes-panel [pet]="pet" (clickedHelpLink)="doClose()" />
+      </div>
+    }
+    @else if(tab === InteractTabEnum.MERITS)
+    {
+      <div role="tabpanel" id="tab-merits">
+        <app-pet-merits [pet]="pet" />
+      </div>
+    }
+    @else if(tab === InteractTabEnum.BADGES)
+    {
+      <div role="tabpanel" id="tab-badges" [class.disabled]="loading">
+        @if(pet.badges.length > 0)
+        {
+          <app-pet-badge-table [badges]="pet.badges" />
+        }
+        @else
+        {
+          <p>This pet has no badges...</p>
+          <p style="opacity:0.8;font-style:italic;">(A couple easy first ones to get are from winning in a park event, and from correctly guessing the pet's favorite flavor!)</p>
+        }
+      </div>
+    }
+  </div>
+</div>

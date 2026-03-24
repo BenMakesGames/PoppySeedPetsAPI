@@ -1,0 +1,30 @@
+<main>
+  <h2>Hattier</h2>
+  <app-npc-dialog [name]="npcName" [npc]="npcImage">
+    <markdown [data]="hattierDialog"></markdown>
+  </app-npc-dialog>
+  @if(!myPetsAjax.closed)
+  {
+    <app-loading-throbber />
+  }
+  @else
+  {
+    <div>
+      <section>
+        <ul class="dialog-choices">
+          @if(isOctober)
+          {
+            <li><a routerLink="/hattier/illusionist" class="button"><img src="/assets/images/ui/halloween.svg" alt="Halloween"> "What are you selling?"</a></li>
+          }
+          <li><a routerLink="/hattier/collection" class="button">"Can you show me details about the styles I've found?"</a></li>
+        </ul>
+        <div style="padding-top:1rem">
+          @for(pet of pets; track pet.id)
+          {
+            <app-pet-customer [pet]="pet" (select)="doSelectPet(pet)" />
+          }
+        </div>
+      </section>
+    </div>
+  }
+</main>

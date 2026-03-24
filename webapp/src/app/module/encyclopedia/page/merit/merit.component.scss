@@ -1,0 +1,13 @@
+.merits {
+  margin-bottom: 0.5rem;
+
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+
+  > div {
+    background-color: rgb(var(--color-speech-bubble-background));
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+  }
+}

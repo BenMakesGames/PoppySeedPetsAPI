@@ -1,0 +1,10 @@
+<ul [class.centered]="centered">
+  @for(status of statusEffectImages; track status)
+  {
+    <li><img [src]="'/assets/images/icons/status-effect/' + status + '.svg'" [alt]="status" /></li>
+  }
+  @if(showEllipsis)
+  {
+    <li style="text-align:center;"><i class="fa-light fa-ellipsis" style="display:block;opacity:0.4;"></i></li>
+  }
+</ul>

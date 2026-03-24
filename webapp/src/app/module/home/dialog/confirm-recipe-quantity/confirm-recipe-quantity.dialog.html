@@ -1,0 +1,57 @@
+<div class="dialog">
+  <h4>{{ recipe.name }}</h4>
+  <div class="dialog-body">
+    <form (submit)="doSubmit()" [class.disabled]="cooking">
+      <section>
+        <h5>Ingredients</h5>
+        <ul class="list">
+          @for(ingredient of recipe.ingredients; track ingredient.item.name)
+          {
+            <li [class.error]="ingredient.available < ingredient.quantity">
+              @if(ingredient.quantity !== 1)
+              {
+                {{ ingredient.quantity }}&times;{{ ' ' }}
+              }
+              {{ ingredient.item.name }}
+            </li>
+          }
+        </ul>
+      </section>
+
+      <section>
+        <h5>Makes</h5>
+        <ul class="list">
+          @for(makes of recipe.makes; track $index)
+          {
+            <li>
+              @if(makes.quantity !== 1)
+              {
+                {{ makes.quantity }}&times;{{ ' ' }}
+              }
+              {{ makes.item.name }}
+            </li>
+          }
+        </ul>
+      </section>
+
+      @if(!recipe.canPrepare)
+      {
+        <section>
+          <p class="error">You don't have enough ingredients to make this item.</p>
+        </section>
+      }
+      @else
+      {
+        <section>
+          <h5>Quantity: {{ quantity }}</h5>
+          <input type="range" min="0" [max]="maxQuantity" [value]="quantity" (input)="quantity = $event.target.value" />
+        </section>
+      }
+
+      <section class="buttons">
+        <button type="submit" [class.disabled]="!recipe.canPrepare">Confirm</button>
+        <button type="button" class="wire" (click)="doCancel()">Cancel</button>
+      </section>
+    </form>
+  </div>
+</div>

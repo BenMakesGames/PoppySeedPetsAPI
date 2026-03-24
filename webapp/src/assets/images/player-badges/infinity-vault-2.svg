@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="32" height="32" version="1.1" viewBox="0 0 8.4667 8.4667" xmlns="http://www.w3.org/2000/svg">
+ <g transform="translate(0 -288.53)">
+  <g fill="#6d6a00" stroke="#4a492d" stroke-linecap="round" stroke-miterlimit="40" stroke-width=".26458">
+   <rect x=".85795" y="294.26" width="1.4032" height=".50518" style="paint-order:markers fill stroke"/>
+   <rect x="3.9543" y="294.5" width="1.4032" height=".50518" style="paint-order:markers fill stroke"/>
+   <rect x="2.8912" y="294.72" width="1.4032" height=".50518" style="paint-order:markers fill stroke"/>
+   <rect transform="scale(-1,1)" x="-4.2907" y="294.16" width="1.4032" height=".50518" style="paint-order:markers fill stroke"/>
+   <rect transform="scale(-1,1)" x="-7.9274" y="294.4" width="1.4032" height=".50518" style="paint-order:markers fill stroke"/>
+   <rect transform="scale(-1,1)" x="-7.6005" y="293.88" width="1.4032" height=".50518" style="paint-order:markers fill stroke"/>
+  </g>
+  <g fill="#dbd500" stroke="#373500" stroke-linecap="round" stroke-miterlimit="40" stroke-width=".26458">
+   <rect transform="scale(-1,1)" x="-6.916" y="294.62" width="1.4032" height=".50518" style="paint-order:markers fill stroke"/>
+   <rect transform="scale(-1,1)" x="-6.916" y="294.11" width="1.4032" height=".50518" style="paint-order:markers fill stroke"/>
+   <rect transform="scale(-1,1)" x="-6.2293" y="294.94" width="1.4032" height=".50518" style="paint-order:markers fill stroke"/>
+   <rect transform="scale(-1,1)" x="-6.2293" y="294.43" width="1.4032" height=".50518" style="paint-order:markers fill stroke"/>
+   <rect x="5.664" y="293.54" width="1.4032" height=".50518" style="paint-order:markers fill stroke"/>
+   <rect x="5.7585" y="293.04" width="1.4032" height=".50518" style="paint-order:markers fill stroke"/>
+   <rect x="5.6335" y="292.53" width="1.4032" height=".50518" style="paint-order:markers fill stroke"/>
+  </g>
+  <path d="m2.5828 291.48c-0.2736 3e-3 -0.49471 0.11809-0.63562 0.29094-0.14545 0.17844-0.2096 0.40829-0.20671 0.63666 0.00289 0.22838 0.073253 0.45972 0.21859 0.63872 0.14534 0.17899 0.3713 0.30075 0.64854 0.30075 0.78389 0 1.3348-0.44156 1.5508-0.64957 0.21602 0.20801 0.76692 0.64957 1.5508 0.64957 0.27723 0 0.50268-0.12176 0.64802-0.30075 0.14534-0.179 0.21621-0.41034 0.21911-0.63872 0.00289-0.22837-0.063835-0.45822-0.20929-0.63666-0.14545-0.17843-0.37607-0.29588-0.66198-0.29094-0.79179 0.0137-1.3288 0.54452-1.5477 0.80874-0.21873-0.26413-0.75617-0.79501-1.5482-0.80874-0.00893-1.5e-4 -0.017529-8e-5 -0.026355 0zm0.00258 0.26355c0.00656-4e-5 0.01345-1.1e-4 0.020154 0 0.80716 0.014 1.2656 0.61719 1.3632 0.7519-0.10849 0.1174-0.56721 0.58807-1.3612 0.58807-0.20276 0-0.34233-0.0807-0.44338-0.20515s-0.15798-0.29807-0.1602-0.47284c-0.00222-0.17477 0.049934-0.34595 0.14831-0.46664 0.095304-0.11691 0.22969-0.194 0.43305-0.19534zm3.1254 0c0.21454-4e-3 0.35276 0.0746 0.45114 0.19534 0.098378 0.12069 0.15104 0.29187 0.14883 0.46664-0.00222 0.17477-0.057081 0.34839-0.15813 0.47284-0.10105 0.12445-0.24062 0.20515-0.44338 0.20515-0.79526 0-1.2564-0.47181-1.3637-0.58807 0.097581-0.13471 0.55813-0.73791 1.3653-0.7519z" color="#000000" fill="#bd3675" stroke="#000" stroke-width=".52917" style="paint-order:markers stroke fill"/>
+  <g fill="#dbd500" stroke="#373500" stroke-linecap="round" stroke-miterlimit="40" stroke-width=".26458">
+   <rect x="4.8298" y="293.87" width="1.4032" height=".50518" style="paint-order:markers fill stroke"/>
+   <rect x="4.6762" y="293.37" width="1.4032" height=".50518" style="paint-order:markers fill stroke"/>
+   <rect x="1.5356" y="295.13" width="1.4032" height=".50518" style="paint-order:markers fill stroke"/>
+   <rect x="1.3821" y="294.63" width="1.4032" height=".50518" style="paint-order:markers fill stroke"/>
+   <rect x="1.5356" y="294.12" width="1.4032" height=".50518" style="paint-order:markers fill stroke"/>
+   <rect x="1.5356" y="293.62" width="1.4032" height=".50518" style="paint-order:markers fill stroke"/>
+   <rect x="1.76" y="293.11" width="1.4032" height=".50518" style="paint-order:markers fill stroke"/>
+   <rect x="1.5356" y="292.61" width="1.4032" height=".50518" style="paint-order:markers fill stroke"/>
+   <rect x="2.2529" y="295.45" width="1.4032" height=".50518" style="paint-order:markers fill stroke"/>
+   <rect x="4.0968" y="296.22" width="1.4032" height=".50518" style="paint-order:markers fill stroke"/>
+   <rect x="6.8331" y="295.5" width="1.4032" height=".50518" style="paint-order:markers fill stroke"/>
+   <rect x="2.3474" y="294.95" width="1.4032" height=".50518" style="paint-order:markers fill stroke"/>
+   <rect x="2.2223" y="294.44" width="1.4032" height=".50518" style="paint-order:markers fill stroke"/>
+   <rect x="2.2223" y="293.94" width="1.4032" height=".50518" style="paint-order:markers fill stroke"/>
+   <rect x=".39601" y="295.52" width="1.4032" height=".50518" style="paint-order:markers fill stroke"/>
+   <rect x=".39601" y="295.02" width="1.4032" height=".50518" style="paint-order:markers fill stroke"/>
+  </g>
+ </g>
+</svg>

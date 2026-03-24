@@ -1,0 +1,12 @@
+<nav class="tabs-container">
+  <div class="tabs" role="tablist">
+    <a role="tab" [class.active]="active === 'Visuals'" routerLink="/settings/visuals">Visuals</a>
+    <a role="tab" [class.active]="active === 'Audio'" routerLink="/settings/audio">Audio</a>
+    <a role="tab" [class.active]="active === 'Behavior'" routerLink="/settings/behavior">Behavior</a>
+    <a role="tab" [class.active]="active === 'Following'" routerLink="/settings/following">Following</a>
+    <a role="tab" [class.active]="active === 'Followers'" routerLink="/settings/followers">Followers</a>
+    <a role="tab" [class.active]="active === 'MyProfile'" routerLink="/settings/myProfile">My Profile</a>
+    <a role="tab" [class.active]="active === 'MyAccount'" routerLink="/settings/myAccount">My Account</a>
+    <!--<a role="tab" [class.active]="active === 'Patreon'" routerLink="/settings/patreon">Patron Rewards</a>-->
+  </div>
+</nav>

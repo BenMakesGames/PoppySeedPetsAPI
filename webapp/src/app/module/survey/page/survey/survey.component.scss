@@ -1,0 +1,22 @@
+section {
+  margin-top: 1em;
+  border-top: 2px solid rgba(var(--color-text-on-content-background), 0.1);
+  padding-top: 1em;
+
+  app-form-field {
+    display: block;
+    margin-top: 0.5em;
+  }
+
+  textarea {
+    display: block;
+    width: 100%;
+  }
+}
+
+.note {
+  margin-top: 1em;
+  font-size: 80%;
+  font-style: italic;
+  opacity: 0.6667;
+}

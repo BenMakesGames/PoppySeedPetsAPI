@@ -1,0 +1,35 @@
+.extra-trade-button {
+  display: none;
+  > td {
+    text-align: center;
+  }
+}
+
+.item > img {
+  vertical-align: middle;
+}
+
+table.trades {
+  > tbody {
+    > tr {
+      background-color: transparent;
+
+      &:nth-child(4n),&:nth-child(4n+3)
+      {
+        background-color: rgba(0, 0, 0, 0.15);
+      }
+    }
+  }
+}
+
+@media (max-width: 400px)
+{
+  .third-column {
+    display: none;
+  }
+
+  .extra-trade-button {
+    display: table-row;
+  }
+
+}

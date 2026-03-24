@@ -1,0 +1,128 @@
+<main>
+  <h2>Grocer</h2>
+  @if(!grocerData)
+  {
+    <p><app-loading-throbber [randomText]="true"/></p>
+  }
+  @else
+  {
+    <app-npc-dialog name="Bells" npc="bells">
+      @if(dialogStep == 'shopping')
+      {
+        <p>Welcome to the Grocer.</p>
+        <p>Today at the hot bar, we have {{ hotBarItems.listNice() }}.</p>
+        @if(grocerData.maxRemainingToday >= grocerData.maxPerDay)
+        {
+          <p>To ensure there's enough stock for everyone, please limit yourself to {{ grocerData.maxPerDay }} items per day.</p>
+        }
+        @if(grocerData.maxRemainingToday < grocerData.maxPerDay && grocerData.maxRemainingToday > 0)
+        {
+          <p>You can still buy up to {{ grocerData.maxRemainingToday }} item{{ grocerData.maxRemainingToday === 1 ? '' : 's' }} today.</p>
+        }
+        @if(grocerData.maxRemainingToday <= 0)
+        {
+          <p>You've already bought {{ grocerData.maxPerDay }} items today, but feel free to come back tomorrow!</p>
+        }
+      }
+      @else if(dialogStep == 'askAboutMoneys')
+      {
+        <p>Moneys? That's one of the main currencies around here!</p>
+        <p>If you're new to the island, you'll probably have to rely on your pets to find some. Fishing isn't a bad way to find moneys... also, Thieving Magpies often have some moneys, usually stolen from other players! If your pet is inclined to go out hunting, it may steal some moneys back from those things!</p>
+        <p>As time goes on, you'll probably discover other ways to make moneys, too. But: if you <em>are</em> new to the island, Recycling Points are probably easier to come by, and also super-useful!</p>
+      }
+      @else if(dialogStep == 'askAboutRecycling')
+      {
+        <p>Recycling Points! That's one of the main currencies around here!</p>
+        <p>Anything pets make can be recycled. We reward recycling here on the island by giving people "Recycling Points", which they can spend in various ways... like to buy food here!</p>
+        <p>Tess, at the Plaza, also has some services you can spend recycling points on...</p>
+        <p>I'm trying to remember if there was anything else...</p>
+        <p>Anyway, if you're new to the island, Recycling Points are probably easier to come by than Moneys. Don't be afraid to recycle things you don't need!</p>
+      }
+    </app-npc-dialog>
+    <ul class="dialog-choices">
+      @if(dialogStep == 'shopping')
+      {
+        @if(payWith !== 'recycling')
+        {
+          <li><button type="button" (click)="doPayWith('recycling')">"I'd like to pay with recycling points, instead."</button></li>
+        }
+        @if(payWith !== 'moneys')
+        {
+          <li><button type="button" (click)="doPayWith('moneys')">"I'd like to pay with moneys, instead."</button></li>
+        }
+      }
+      @if(user.moneys == 0 && dialogStep !== 'askAboutMoneys')
+      {
+        <li><button type="button" (click)="dialogStep = 'askAboutMoneys'">How do I get... <i class="moneys" title="moneys" role="img"></i>? (What are <i class="moneys" title="moneys" role="img"></i>, anyway?)</button></li>
+      }
+      @if(user.recyclePoints == 0 && dialogStep !== 'askAboutRecycling')
+      {
+        <li><button type="button" (click)="dialogStep = 'askAboutRecycling'">How do I get... <i class="recycle" title="recycling points" role="img"></i>? (What are <i class="recycle" title="recycling points" role="img"></i>, anyway?)</button></li>
+      }
+      @if(dialogStep !== 'shopping')
+      {
+        <li><button type="button" (click)="dialogStep = 'shopping'">Got it - thanks!</button></li>
+      }
+    </ul>
+    @if(grocerData.maxRemainingToday > 0)
+    {
+      <form (submit)="doBuy()" [class.disabled]="!buySubscription.closed">
+        <table>
+          <thead>
+            <tr>
+              <th>Item</th>
+              <th class="number">Cost</th>
+              <th>Quantity</th>
+              <th class="subtotal number">Subtotal</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for(i of grocerData.inventory; let j = $index; track j)
+            {
+              <tr>
+                <td>
+                  <button type="button" class="link-text" (click)="doViewItem(i.item.name)"><app-inventory-item [inventory]="i" [lockedToOwner]="true" /></button>
+                </td>
+                <td class="number">
+                  @if(payWith === 'moneys')
+                  {
+                    <app-moneys [amount]="i.moneysCost" />
+                  }
+                  @else if(payWith === 'recycling')
+                  {
+                    <app-recycling-points [amount]="i.recyclingCost" />
+                  }
+                </td>
+                <td><input type="number" [(ngModel)]="quantity[i.item.name]" min="0" [max]="grocerData.maxRemainingToday" maxlength="3" [name]="'item' + j" (change)="doRecalculateTotalCost()" (keyup)="doRecalculateTotalCost()"></td>
+                <td class="subtotal number">
+                  @if(quantity[i.item.name] >= 0 && payWith === 'moneys')
+                  {
+                    <app-moneys [amount]="quantity[i.item.name] * i.moneysCost" />
+                  }
+                  @else if(quantity[i.item.name] >= 0 && payWith === 'recycling')
+                  {
+                    <app-recycling-points [amount]="quantity[i.item.name] * i.recyclingCost" />
+                  }
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+        <div class="buy-bar">
+          @if(user|hasUnlockedFeature:'Basement')
+          {
+            <select name="location" [(ngModel)]="location">
+              <option [ngValue]="0">Home</option>
+              <option [ngValue]="1">Basement</option>
+            </select>
+          }
+          <button type="submit" [class.disabled]="totalCost <= 0 || (payWith === 'moneys' && totalCost > user.moneys) || (payWith === 'recycling' && totalCost > user.recyclePoints) || totalQuantity > grocerData.maxRemainingToday">Buy {{ totalQuantity }} Items (<app-moneys *ngIf="payWith === 'moneys'" [amount]="totalCost" /><app-recycling-points *ngIf="payWith === 'recycling'" [amount]="totalCost" />)</button>
+        </div>
+        @if(totalQuantity > grocerData.maxRemainingToday)
+        {
+          <p class="error">{{ totalQuantity }} items?? That's too many items!</p>
+        }
+      </form>
+    }
+  }
+</main>

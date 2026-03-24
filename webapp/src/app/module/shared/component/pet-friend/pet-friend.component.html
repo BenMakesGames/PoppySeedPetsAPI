@@ -1,0 +1,17 @@
+<div class="relationship-container">
+  <app-pet-appearance [pet]="friend.relationship" size="0.75in" />
+  <div>
+    <h5 class="link-text">{{ friend.relationship.name }}</h5>
+    @if(showRating)
+    {
+      <app-heart-meter [commitment]="friend.commitment / 2" />
+    }
+    <p>
+      {{ friend.metDescription }} {{ pet.name }} and {{ friend.relationship.name }} {{ DESCRIBE_CURRENT_RELATIONSHIP[friend.currentRelationship] }}.
+      @if(friend.relationshipWanted && friend.relationshipWanted != friend.currentRelationship)
+      {
+        {{ pet.name }} would like to {{ DESCRIBE_GOAL_RELATIONSHIP[friend.relationshipWanted] }}.
+      }
+    </p>
+  </div>
+</div>

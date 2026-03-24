@@ -1,0 +1,42 @@
+<main>
+  <h2>News</h2>
+
+  @if(user|hasRole:'admin')
+  {
+    <div class="buttons">
+      <button type="button" (click)="doNew()">New</button>
+    </div>
+  }
+
+  @if(!results)
+  {
+    <div><app-loading-throbber/></div>
+  }
+  @else
+  {
+    <p><app-paginator [(page)]="page" [pageCount]="results.pageCount" (change)="doSearch()" /></p>
+    @for(article of results.results; track article.id)
+    {
+      <div class="speech-bubble news-article" [class.contains-image]="article.imageUrl" [id]="'article-' + article.id">
+        @if(article.imageUrl)
+        {
+          <div class="image" [style.background-image]="'url(/assets/images/news/' + article.imageUrl + '.png)'"></div>
+        }
+        <header>
+          <h3>
+            {{ article.title }}
+            <small>written {{ article.createdOn|date:'yyyy-MM-dd':'UTC' }} <app-psp-time [date]="article.createdOn" /></small>
+          </h3>
+          @if(user|hasRole:'admin')
+          {
+            <button [class.disabled]="postingToSocialMedia" class="admin-button" type="button" (click)="doReddit(article)">Reddit</button>
+            <button [class.disabled]="postingToSocialMedia" class="admin-button" type="button" (click)="doEdit(article)">Edit</button>
+          }
+        </header>
+        <markdown [data]="article.body" />
+        <app-list-design-goals [goals]="article.designGoals" />
+      </div>
+    }
+    <app-paginator [(page)]="page" [pageCount]="results.pageCount" (change)="doSearch()" />
+  }
+</main>

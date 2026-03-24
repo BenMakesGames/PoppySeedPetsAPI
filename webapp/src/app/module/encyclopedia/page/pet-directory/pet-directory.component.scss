@@ -1,0 +1,35 @@
+.pet-name {
+  word-break: break-word;
+}
+
+td > small {
+  display: block;
+}
+
+td.pet-level {
+  text-align: right;
+}
+
+app-pet-appearance {
+  margin-right: 0.5rem;
+  display: block;
+}
+
+@media (max-width: 420px) {
+  tr {
+    > *:nth-child(4)
+    {
+      display: none;
+    }
+  }
+}
+
+
+@media (max-width: 560px) {
+  tr {
+    > *:nth-child(5)
+    {
+      display: none;
+    }
+  }
+}

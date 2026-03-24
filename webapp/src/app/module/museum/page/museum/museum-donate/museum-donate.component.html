@@ -1,0 +1,63 @@
+<main>
+  <nav class="tabs-container">
+    <h2><a routerLink="/museum">Museum</a> » Donate</h2>
+    <div class="tabs" [class.disabled]="donating">
+      <a class="active" [routerLink]="['/museum/donate']">New Donations</a>
+      <a [routerLink]="['/museum/upgrade']">Re-donate</a>
+    </div>
+  </nav>
+  @if(loading)
+  {
+    <p><app-loading-throbber [randomText]="true"/></p>
+  }
+  @else if(results)
+  {
+    @if(results.resultCount === 0)
+    {
+      <p>You don't currently have any items you haven't already donated.</p>
+    }
+    @else
+    {
+      <p>Select items to donate, then click "Donate". Every item donated earns Favor, which can be spent at the <a routerLink="/museum/giftShop">Gift Shop</a>.</p>
+      <hr>
+      @if(results.pageCount > 1)
+      {
+        <p class="buttons">
+          <button type="button" (click)="doDonate()">Donate</button>
+        </p>
+        <app-paginator [pageCount]="results.pageCount" [(page)]="page" (change)="doSearch()"/>
+      }
+      <div class="inventory">
+        @for(i of results.results; track i.id)
+        {
+          <div>
+            <app-inventory-item
+              [inventory]="i"
+              [class.selected]="i.selected"
+              [museumPoints]="i.item.museumPoints"
+              tabindex="0"
+              (click)="doClickItem(i)"
+              role="checkbox"
+              [attr.aria-checked]="i.selected ? 'true' : 'false'"
+            />
+            @if(i.item.name === 'House Fairy' && i.selected)
+            {
+              <img src="/assets/images/ui/im-disappointed.svg" class="fairyComplaint" alt="word bubble that says 'Really?'">
+            }
+          </div>
+        }
+      </div>
+      @if(results.pageCount > 1)
+      {
+        <app-paginator [pageCount]="results.pageCount" [(page)]="page" (change)="doSearch()"/>
+      }
+      <div class="buttons" style="margin-top:0.5rem">
+        <button type="button" (click)="doDonate()">Donate</button>
+        @if(noteAboutItemBonuses)
+        {
+          <label>Items with bonuses - like "{{ noteAboutItemBonuses.enchantment ? noteAboutItemBonuses.enchantment.name : noteAboutItemBonuses.spice.name }}" - do not count as distinct items. The "<app-item-name-with-bonus [item]="noteAboutItemBonuses.item" [bonus]="noteAboutItemBonuses.enchantment" [spice]="noteAboutItemBonuses.spice"></app-item-name-with-bonus>" is still just a plain ol' "{{noteAboutItemBonuses.item.name}}" as far as the Museum is concerned!</label>
+        }
+      </div>
+    }
+  }
+</main>

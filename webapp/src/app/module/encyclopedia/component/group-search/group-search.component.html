@@ -1,0 +1,35 @@
+<p>
+  <label for="itemName">Name (or part thereof)</label>
+  <input type="text" id="itemName" name="itemName" [(ngModel)]="search.name" (keyup)="doChange()">
+</p>
+@if(!showMore)
+{
+  <p><button type="button" (click)="showMore = true" class="link-text">Show more...</button></p>
+}
+@else
+{
+  <div>
+    <p><button type="button" (click)="doShowLess()" class="link-text">Show less...</button></p>
+    <p>
+      <label for="groupType">Type</label>
+      <span>
+        <select id="groupType" [(ngModel)]="search.type" (change)="doChange()">
+          <option value="">Any</option>
+          <option [value]="2">Astronomy Lab</option>
+          <option [value]="1">Band</option>
+          <option [value]="3">Gaming Group</option>
+          <option [value]="4">Sportsball</option>
+        </select>
+      </span>
+    </p>
+    @if(user)
+    {
+      <p>
+        <label>Other Options</label>
+        <span>
+          <label class="radio-checkbox"><input name="onlyMyGroups" type="checkbox" [(ngModel)]="withPetsOwnedByCheckbox" (change)="doSetFilter('withPetsOwnedBy', withPetsOwnedByCheckbox ? user.id : null)"> Only show groups my pets are in</label>
+        </span>
+      </p>
+    }
+  </div>
+}

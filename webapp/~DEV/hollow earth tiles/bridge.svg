@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="32" height="32" version="1.1" viewBox="0 0 8.4667 8.4667" xmlns="http://www.w3.org/2000/svg" xmlns:cc="http://creativecommons.org/ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+ <metadata>
+  <rdf:RDF>
+   <cc:Work rdf:about="">
+    <dc:format>image/svg+xml</dc:format>
+    <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
+    <dc:title/>
+   </cc:Work>
+  </rdf:RDF>
+ </metadata>
+ <path d="m8.3027 6.3645-2.86e-5 0.79847-4.0716 1.2597-4.0892-1.281-1.909e-5 -0.77617z" fill="#0065a5"/>
+ <path d="m0.29151 6.3645 3.9396-1.2361 3.9396 1.2361-3.9396 1.2361z" fill="#008de6" stroke="#0065a5" stroke-linejoin="round" stroke-width=".26458"/>
+ <g stroke="#3c2e10">
+  <path d="m4.2311 5.1284s1.0556-0.37702 2.1759 0.010772c1.1203 0.38779 1.8743 1.1849 1.8743 1.1849l-4.048 1.1193s-0.7188-0.84356-1.8743-1.1849-2.1759-0.010772-2.1759-0.010772z" fill="#826423" stroke-linejoin="bevel" stroke-width=".26458"/>
+  <g fill="none">
+   <g stroke-width=".26458px">
+    <path d="m4.2333 7.4434-0.010771-0.98024"/>
+    <path d="m8.1707 6.3645-0.010771-0.98024"/>
+    <path d="m4.3388 5.1284-0.010771-0.82944"/>
+    <path d="m0.29084 6.2477-0.010771-0.82944"/>
+   </g>
+   <path d="m4.2477 4.7117s1.0556-0.37702 2.1759 0.010772c0.41728 0.14444 0.7688 0.32177 1.0457 0.48743 0.46642 0.2791 0.72093 0.52512 0.72093 0.52512m-3.9403 1.1516s-0.7188-0.70353-1.8743-1.0449c-1.1555-0.34135-2.1759-0.010772-2.1759-0.010772" stroke-linejoin="bevel" stroke-width=".26458"/>
+  </g>
+ </g>
+ <g fill="none" stroke="#3c2e10" stroke-opacity=".45564" stroke-width=".26458px">
+  <path d="m1.8128 6.124 4.0674-1.0511"/>
+  <path d="m2.6354 6.2915 4.0217-1.0359"/>
+  <path d="m3.26 6.6267 4.0217-1.0359"/>
+ </g>
+ <path d="m5.0874 5.0839-0.84938 1.2826-0.84938-1.2826" fill="#fff"/>
+ <circle cx="4.2754" cy="2.7437" r="2.7437" fill="#fff"/>
+ <path d="m3.8389 7.0075 4.0217-1.0359" fill="none" stroke="#3c2e10" stroke-opacity=".45564" stroke-width=".26458px"/>
+</svg>

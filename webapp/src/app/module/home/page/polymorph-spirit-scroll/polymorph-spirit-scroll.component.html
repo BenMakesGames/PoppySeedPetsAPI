@@ -1,0 +1,8 @@
+<main>
+  <h2>Spirit Polymorph Potion</h2>
+
+  <h4>Which Pet?</h4>
+  <div [class.disabled]="polymorphing">
+    <app-select-pet (selected)="doPolymorph($event)" />
+  </div>
+</main>

@@ -1,0 +1,21 @@
+<main>
+  <h2>Glitch Out Some Electronics</h2>
+  <p>Select one of the following items to glitch out:</p>
+  @if(!inventory)
+  {
+    <p><app-loading-throbber [randomText]="true"/></p>
+  }
+  @else if(inventory.length === 0)
+  {
+    <p>There aren't any eligible items in your house right now...</p>
+  }
+  @else
+  {
+    <div class="inventory" [class.disabled]="bugging">
+      @for(i of inventory; track i.id)
+      {
+        <app-inventory-item [inventory]="i" tabindex="0" (click)="doUse(i)" />
+      }
+    </div>
+  }
+</main>

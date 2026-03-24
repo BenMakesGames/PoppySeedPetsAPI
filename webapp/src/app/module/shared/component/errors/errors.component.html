@@ -1,0 +1,9 @@
+@if(errors)
+{
+  <ul class="error">
+    @for(error of errors; track $index)
+    {
+      <li>{{ error }}</li>
+    }
+  </ul>
+}

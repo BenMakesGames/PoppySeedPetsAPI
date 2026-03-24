@@ -1,0 +1,200 @@
+.weeds {
+  width: 2in;
+  height: 1in;
+  display: block;
+  margin-bottom: 0.5em;
+}
+
+.plants {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-evenly;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+button.plant {
+  display: flex;
+  flex-direction: column;
+  width: 1.5in;
+  padding: 0.5rem;
+  text-align: center;
+  position: relative;
+  background: transparent;
+  color: rgb(var(--color-text-on-content-background));
+  border-radius: 0;
+
+  > .background
+  {
+    display: block;
+    position: absolute;
+    top: 0.625in;
+    left: 0.5rem;
+    width: calc(100% - 1rem);
+    height: 0.5in;
+    border-radius: 0.25in;
+  }
+
+  &.earth > .background {
+    background: #370;
+  }
+
+  &.dark > .background {
+    background: #523;
+  }
+
+  &.water > .background {
+    background: #369;
+  }
+
+  > .plant-name {
+    font-size: 0.8rem;
+    display: block;
+  }
+
+  > img,> i {
+    position: relative;
+    display: block;
+    margin: 0 auto;
+    width: 1in;
+    height: 1in;
+    align-content: center;
+  }
+
+  > app-progress-bar {
+    padding-top: 0.25em;
+    width: 80%;
+    align-self: center;
+  }
+}
+
+.shaking
+{
+  animation: shake 0.82s linear both;
+  animation-iteration-count: infinite;
+  transform: translate3d(0, 0, 0);
+}
+
+@keyframes shake {
+  10%, 90% {
+    transform: translate3d(-1px, 0, 0);
+  }
+
+  20%, 80%, 100% {
+    transform: translate3d(0, 1px, 0);
+  }
+
+  30%, 50%, 70% {
+    transform: translate3d(0, -1px, 0);
+  }
+
+  0%, 40%, 60% {
+    transform: translate3d(1px, 0, 0);
+  }
+}
+
+.add-ons
+{
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(1.8in, 1fr));
+  gap: 1rem;
+
+  > div {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: center;
+
+    > h4 {
+      display: block;
+      font-weight: var(--normal-weight);
+      font-size: 0.8rem;
+      margin: 0;
+    }
+
+    > .add-on-image-container {
+      height: 1in;
+      width: 1in;
+    }
+
+    > button {
+      font-size: 80%;
+    }
+  }
+}
+
+.move-left,.move-right {
+  position: absolute;
+  bottom: 0.75in;
+  padding: 0;
+  height: 0.5in;
+  width: 0.5in;
+  border-radius: 50%;
+  text-align: center;
+  background-color: rgba(var(--color-content-background), 0.85);
+}
+
+.move-left {
+  left: 0.25rem;
+}
+
+.move-right {
+  right: 0.25rem;
+}
+
+.controls {
+  padding-top: 0.25rem;
+  padding-bottom: 0.5rem;
+  position: sticky;
+  top: 2.0625rem;
+  background-color: rgb(var(--color-content-background));
+  z-index: 1;
+}
+
+.moved {
+  outline: 1px solid rgba(var(--color-primary), 0.5);
+}
+
+.add-on-image {
+  width: 100%;
+  height: 100%;
+}
+
+.bird-bath {
+  position: relative;
+
+  > img {
+    display: block;
+    position: absolute;
+    height: 1in;
+    width: 1in;
+
+    &.bird {
+      width: 0.5in;
+      top: -60%;
+      left: 60%;
+
+      &.toucan {
+        top: -55%;
+        left: -5%;
+      }
+    }
+
+    &.bubblegum {
+      width: calc(15in / 64);
+      height: auto;
+      left: calc(11.805% / 64 * 100);
+      top: calc(3.366% / 64 * 100);
+    }
+
+    &.oil {
+      width: calc(10in / 64);
+      height: auto;
+      left: calc(35.756% / 64 * 100);
+      top: calc(4.790% / 64 * 100);
+    }
+  }
+}

@@ -1,0 +1,37 @@
+.species {
+  width: 1in;
+  height: 1in;
+  display: block;
+  margin: 0 auto;
+  position: relative;
+
+  > img {
+    position: absolute;
+    bottom: 0.1in;
+
+    &:not(.flipX) {
+      left: -0.1in;
+    }
+
+    &.flipX {
+      right: -0.1in;
+    }
+  }
+
+  > img.egg {
+    width: 0.5in;
+    height: 0.5in;
+  }
+
+  > img.pet {
+    position: absolute;
+    width: 1in;
+    height: 1in;
+    top: 0;
+    left: 0;
+  }
+}
+
+h2 > small {
+  display: inline;
+}

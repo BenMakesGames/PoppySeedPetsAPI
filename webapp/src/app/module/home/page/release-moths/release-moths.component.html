@@ -1,0 +1,51 @@
+<main>
+  <h2>Release Moths to the Moon</h2>
+  <p>How many moths would you like to release? More moths will get you more <em>stuff</em>, and the more moths you send, the more likely they are to receive Chang'e's Love. (The odds are best during a full moon!)</p>
+
+  @if(mothsAvailable === null)
+  {
+    <p><app-loading-throbber/></p>
+  }
+  @else if(mothsAvailable === 0)
+  {
+    <p>Oh! You don't have any moths {{ locationDescription }} :(</p>
+  }
+  @else if(mothsAvailable > 0)
+  {
+    <form [class.disabled]="sendingMoths" (submit)="doSendMoths()" style="padding-top: 1rem; padding-bottom: 1rem">
+      <h5>Moths to Send: {{ numberToSend }}</h5>
+      @if(mothsAvailable > 1)
+      {
+        <div>
+          <input type="range" min="1" [max]="mothsAvailable" [value]="numberToSend" (input)="numberToSend = $event.target.value" />
+        </div>
+      }
+      @else
+      {
+        <p>
+          (You only have one moth {{ locationDescription }}.)
+        </p>
+      }
+      <table>
+        <tr>
+          <th>Items Received</th>
+          <td>{{ (numberToSend / 2)|floor }}</td>
+        </tr>
+        <tr>
+          <th>Chance of Chang'e's Love</th>
+          <td>{{ numberToSend|chanceOfChangesLove:now }}%</td>
+        </tr>
+      </table>
+
+      <div class="buttons">
+        <button type="submit">Go Forth, Moths!</button>
+        @if(sendingMoths)
+        {
+          <app-loading-throbber [text]="null" />
+        }
+      </div>
+    </form>
+  }
+
+  <p><a [routerLink]="['/home']">Return to house...</a></p>
+</main>

@@ -1,0 +1,25 @@
+.hint {
+  padding-bottom: 0.5em;
+}
+
+.hint-text {
+  padding-bottom: 0.5em;
+  border-bottom: 1px solid rgba(var(--color-text-on-content-background), 0.3333);
+}
+
+.hint-buttons {
+  display: flex;
+  flex-direction: row;
+  gap: 0.5em;
+  font-size: 80%;
+
+  > button{
+    background-color: transparent;
+    border: 2px transparent solid;
+    color: rgb(var(--color-link-and-button));
+
+    &.checked {
+      border-color: rgb(var(--color-link-and-button));
+    }
+  }
+}

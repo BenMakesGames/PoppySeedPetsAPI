@@ -1,0 +1,42 @@
+markdown {
+  display: block;
+  margin-bottom: 1em;
+}
+
+.rewards {
+  list-style: none;
+  padding-left: 0;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 0.5em;
+  justify-content: center;
+
+  > li {
+    margin: 0;
+    position: relative;
+
+    > img {
+      display: block;
+      width: 3em;
+      height: 3em;
+      border-radius: 5px;
+      background-color: #fff;
+
+      &.decorations {
+        background-color: #29a33f;
+      }
+    }
+
+    > span {
+      position: absolute;
+      bottom: -0.5em;
+      right: -0.5em;
+      border-radius: 1em;
+      background-color: #666;
+      padding: 0.25em 0.5em;
+      color: #eee;
+      font-size: 80%;
+    }
+  }
+}

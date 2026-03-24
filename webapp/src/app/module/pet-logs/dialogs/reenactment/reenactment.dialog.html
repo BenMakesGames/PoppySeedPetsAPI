@@ -1,0 +1,37 @@
+<div class="dialog">
+  <div class="dialog-body">
+    <div class="reenactments" #reenactmentsContainer>
+      @for(r of reenactments; let i = $index; track i)
+      {
+        <div class="reenactment" [id]="'reenactment' + i">
+          <div class="scene">
+            <img [src]="r.image" class="location-background" />
+            @if(r.item)
+            {
+              <div class="item-container" [style.left.%]="r.petPosition.x" [style.top.%]="r.petPosition.y - r.petPosition.scale / 2" [style.width.%]="r.petPosition.scale">
+                <img class="shine shine1" src="/assets/images/camera/shine.svg" aria-hidden="true" alt="">
+                <img class="shine shine2" src="/assets/images/camera/shine.svg" alt="*shine!*">
+                <img class="item" [src]="'/assets/images/items/' + r.item.image + '.svg'" [alt]="r.item.name">
+              </div>
+            }
+            <div class="pet-container" [style.left.%]="r.petPosition.x" [style.top.%]="r.petPosition.y" [style.width.%]="r.petPosition.scale">
+              <app-pet-appearance size="100%" [pet]="r.pet" [disableEgg]="true" [flipped]="r.petPosition.flipped === true" />
+            </div>
+          </div>
+          <p class="caption">{{ r.caption }}</p>
+        </div>
+      }
+      @if(howManyMore > 0)
+      {
+        <div class="reenactment and-more" [id]="'reenactment' + reenactments.length">
+          <a routerLink="/journal/pet" (click)="doCloseDialog()">... and {{ howManyMore }} more thing{{ howManyMore == 1 ? '' : 's' }}!</a>
+        </div>
+      }
+    </div>
+  </div>
+  @if(slideCount > 1)
+  {
+    <button class="previous" (click)="doPrevious()"><i class="fa-solid fa-left"></i></button>
+    <button class="next" (click)="doNext()"><i class="fa-solid fa-right"></i></button>
+  }
+</div>

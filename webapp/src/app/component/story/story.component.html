@@ -1,0 +1,34 @@
+@if(!storyStep)
+{
+  <div><app-loading-throbber [randomText]="true"/></div>
+}
+@else
+{
+  @if(storyStep.style === 'dialog')
+  {
+    <app-npc-dialog [npc]="storyStep.image" [smallerImage]="smallerNPCImage" [removeNegativeMargins]="removeNegativeMargins">
+      <markdown [data]="storyStepContent"></markdown>
+    </app-npc-dialog>
+  }
+  @else if(storyStep.style === 'description')
+  {
+    <markdown [data]="storyStepContent"></markdown>
+  }
+  @else if(storyStep.style === 'fullFramePicture')
+  {
+    <img [src]="'/assets/images/story/' + storyStep.image + '.svg'" [alt]="storyStepContent">
+  }
+  <ul class="dialog-choices" [class.disabled]="choosing">
+    @for(choice of storyStep.choices; let i = $index; track i)
+    {
+      @if(choice.enabled)
+      {
+        <li><button type="button" (click)="doMakeChoice(choice)"><markdown [data]="choiceText[i]"></markdown></button></li>
+      }
+      @else
+      {
+        <li><a class="button disabled"><markdown [data]="choiceText[i]"></markdown></a></li>
+      }
+    }
+  </ul>
+}

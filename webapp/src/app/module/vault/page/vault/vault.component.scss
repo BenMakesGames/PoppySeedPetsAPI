@@ -1,0 +1,38 @@
+.vault-items {
+  margin-bottom: 0.5rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, 200px);
+  justify-content: center;
+  gap: 1rem;
+}
+
+.vault-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.item-image {
+  width: 48px;
+  height: 48px;
+  position: relative;
+  margin-bottom: 1em;
+
+  > img {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    display: block;
+  }
+}
+
+.quantity {
+  font-size: 0.6667em;
+  position: absolute;
+  background-color: rgba(var(--color-link-and-button));
+  color: rgba(var(--color-text-on-button));
+  padding: 0.125em 0.5em;
+  border-radius: 1em;
+  bottom: -0.75em;
+  right: -0.75em;
+}

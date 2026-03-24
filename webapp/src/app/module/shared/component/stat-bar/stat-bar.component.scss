@@ -1,0 +1,33 @@
+:host
+{
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  gap: 2px;
+
+  > div {
+    height: 1rem;
+    width: 4px;
+    @media (max-width: 420px)
+    {
+      width: 3px;
+    }
+    @media (max-width: 360px)
+    {
+      width: 2px;
+    }
+  }
+}
+
+.omg {
+  animation-name: shine;
+  animation-duration: 3s;
+  animation-iteration-count: infinite;
+}
+
+@keyframes shine {
+  0% { opacity: 1; }
+  8% { opacity: 0.5; }
+  16% { opacity: 1; }
+  100% { opacity: 1; }
+}

@@ -1,0 +1,82 @@
+<button type="button" (click)="doSkipMenu()" class="sr-only">Skip menu</button>
+@if(user)
+{
+  <div class="weather-container">
+    <app-weather-report />
+  </div>
+  @if(isHalloween)
+  {
+    <ul>
+      <li><a routerLink="/halloween/trickOrTreater" routerLinkActive="activeLink"><app-svg-icon sheet="menu6" icon="front-door" aria-hidden="true" /> Front Door<span class="badge halloween"><img src="/assets/images/icons/menu/badge/halloween.svg" alt=""></span></a></li>
+    </ul>
+  }
+  <ul [class.editing]="editing" [class.disabled]="savingMenuOrder">
+    @for(m of menu; let i = $index; track i)
+    {
+      <li>
+        <a [appHotKey]="MENU_ITEMS[m.location].shortcutKey" [class.with-kbd]="showKeyboardShortcuts" [routerLink]="MENU_ITEMS[m.location].url" routerLinkActive="activeLink" #routerLink="routerLinkActive" [attr.aria-current]="routerLink.isActive ? 'page' : undefined">
+          <app-svg-icon sheet="menu6" [icon]="MENU_ITEMS[m.location].icon" aria-hidden="true" />
+          <span class="label">{{ MENU_ITEMS[m.location].name }}</span>
+          @if(showKeyboardShortcuts)
+          {
+            <kbd>{{ MENU_ITEMS[m.location].shortcutDisplay || MENU_ITEMS[m.location].shortcutKey.replace('.', '+') }}</kbd>
+          }
+          @if(m.isNew)
+          {
+            <span class="badge new">new</span>
+          }
+          @if(m.location === 'mailbox' && user.unreadLetters > 0)
+          {
+            <span class="count">{{ user.unreadLetters > 99 ? '!' : user.unreadLetters }}</span>
+          }
+        </a>
+        <button type="button" class="up" (click)="doMoveUp(m)" [class.disabled]="i === 0"><i class="fa-regular fa-chevron-left"></i></button>
+        <button type="button" class="down" (click)="doMoveDown(m)" [class.disabled]="i === menu.length - 1"><i class="fa-regular fa-chevron-right"></i></button>
+      </li>
+    }
+  </ul>
+  @if(menu)
+  {
+    <div class="teaser-and-edit-container">
+      @if(user.menu.numberLocked > 0)
+      {
+        <p class="teaser">There's {{ user.menu.numberLocked }} thing{{ user.menu.numberLocked === 1 ? '' : 's' }} left to unlock, still...</p>
+      }
+      @if(!editing)
+      {
+        <div>
+          <button class="link-text" (click)="doEditMenu()">Rearrange menu items...</button>
+        </div>
+      }
+      @else
+      {
+        <div [class.disabled]="savingMenuOrder">
+          <button type="button" (click)="doSaveEdit()">Save</button>{{ ' '}}<button type="button" class="wire" (click)="doCancelEdit()">Cancel</button>
+        </div>
+      }
+      <button type="button" (click)="showKeyboardShortcuts = !showKeyboardShortcuts" class="link-text">{{ !showKeyboardShortcuts ? 'Show keyboard shortcuts' : 'Hide keyboard shortcuts' }}</button>
+    </div>
+  }
+}
+@else if(!menu)
+{
+  <div class="loading-menu">
+    <app-loading-throbber />
+  </div>
+}
+<ul>
+  <li><a routerLink="/news" routerLinkActive="activeLink"><app-svg-icon sheet="menu6" icon="news" aria-hidden="true" /> News<span *ngIf="user && user.unreadNews > 0" class="count">{{ user.unreadNews > 99 ? '!' : user.unreadNews }}</span></a></li>
+  <li><a routerLink="/poppyopedia" routerLinkActive="activeLink"><app-svg-icon sheet="menu6" icon="encyclopedia" aria-hidden="true" /> Poppyopedia</a></li>
+  <li><a href="https://patreon.com/BenMakesGames"><img src="/assets/images/ui/patreon.svg" alt="Patreon logo" /> Support <span style="white-space: pre">PSP <i class="fa-light fa-arrow-up-right-from-square"></i></span></a></li>
+  <li><a href="https://github.com/BenMakesGames/PoppySeedPets"><img src="/assets/images/ui/github.svg" alt="GitHub logo" style="padding:0.25em" /> Source <span style="white-space: pre">Code <i class="fa-light fa-arrow-up-right-from-square"></i></span></a></li>
+  <li><a href="https://docs.google.com/forms/d/e/1FAIpQLSczeBLNsktkSBbPZjyooHw5sEVJOBimJDS6xgEgIgFJvgqM8A/viewform?usp=sf_link" target="_blank"><app-svg-icon sheet="menu6" icon="feedback" aria-hidden="true" /> Feedback <i class="fa-light fa-arrow-up-right-from-square"></i></a></li>
+</ul>
+@if(user)
+{
+  <ul>
+    <li><a routerLink="/stats" routerLinkActive="activeLink"><app-svg-icon sheet="menu6" icon="stats" aria-hidden="true" /> Stats</a></li>
+    <li><a routerLink="/settings/visuals" routerLinkActive="activeLink"><app-svg-icon sheet="menu6" icon="settings" aria-hidden="true" /> Settings</a></li>
+    <li><button (click)="doLogOut()"><app-svg-icon sheet="menu6" icon="log-out" aria-hidden="true" /> Log Out</button></li>
+  </ul>
+}
+<div #skipTarget (blur)="doSkipTargetBlur()" [attr.tabindex]="skipTargetTabIndex"></div>

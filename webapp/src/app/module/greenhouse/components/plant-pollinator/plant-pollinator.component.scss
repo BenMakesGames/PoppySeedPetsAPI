@@ -1,0 +1,56 @@
+img {
+  animation-name: pollinator-orbit, go-sinusoidally;
+  animation-iteration-count: infinite, infinite;
+  animation-duration: 14s, 2.13s;
+  animation-timing-function: ease-in-out, ease-in-out;
+  position: absolute;
+  display: block;
+  width: 1em;
+  height: 1em;
+}
+
+@keyframes go-sinusoidally {
+  0% {
+    top: 25%;
+  }
+
+  50% {
+    top: 30%;
+  }
+
+  100% {
+    top: 25%;
+  }
+}
+
+@keyframes pollinator-orbit {
+  0% {
+    left: 0;
+    transform: scaleX(-1);
+    z-index: var(--z-index-spirit-companion-in-front);
+  }
+
+  2% {
+    left: 0;
+    transform: scaleX(1);
+    z-index: var(--z-index-spirit-companion-in-front);
+  }
+
+  50% {
+    left: calc(100% - 1em);
+    transform: scaleX(1);
+    z-index: var(--z-index-spirit-companion-in-front);
+  }
+
+  52% {
+    left: calc(100% - 1em);
+    transform: scaleX(-1);
+    z-index: var(--z-index-spirit-companion-behind);
+  }
+
+  100% {
+    left: 0;
+    transform: scaleX(-1);
+    z-index: var(--z-index-spirit-companion-behind);
+  }
+}

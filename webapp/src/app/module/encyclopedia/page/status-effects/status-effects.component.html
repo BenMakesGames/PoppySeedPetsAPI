@@ -1,0 +1,22 @@
+<main>
+  <h2><a routerLink="/poppyopedia">Poppyopedia</a> » Status Effects</h2>
+  <p>
+    <label>Name (or part thereof)</label>
+    <input type="text" name="nameFilter" [(ngModel)]="nameFilter" />
+  </p>
+  <div class="status-effects">
+    @for(name of StatusEffectNames; track name)
+    {
+      @if(nameFilter.trim().length === 0 || name.toLowerCase().includes(nameFilter.trim().toLowerCase()))
+      {
+        <div>
+          <h4>
+            <img [src]="'/assets/images/icons/status-effect/' + StatusEffects[name].icon + '.svg'" aria-hidden="true" alt="" />
+            <span>{{ name }}</span>
+          </h4>
+          <markdown [data]="StatusEffects[name].description" />
+        </div>
+      }
+    }
+  </div>
+</main>

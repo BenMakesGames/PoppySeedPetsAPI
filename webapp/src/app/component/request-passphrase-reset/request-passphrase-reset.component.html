@@ -1,0 +1,21 @@
+@if(!done)
+{
+  <p>Enter the e-mail address associated with your account; an e-mail will be sent to you with instructions for resetting your passphrase.</p>
+  <form (submit)="doRequestReset()" [class.disabled]="loading">
+    <p>
+      <label for="email">E-mail Address</label>
+      <input type="email" id="email" name="email" [(ngModel)]="email">
+    </p>
+    <p class="buttons">
+      <button type="submit">Send</button>
+      @if(loading)
+      {
+        <app-loading-throbber text=""/>
+      }
+    </p>
+  </form>
+}
+@else
+{
+  <p>Done! You should receive the e-mail in a minute or two. Check your e-mail, and don't forget to check your junk folder, juuuuuuust in case!</p>
+}

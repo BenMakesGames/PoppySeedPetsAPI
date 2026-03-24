@@ -1,0 +1,60 @@
+<main>
+  <h2>Pet Shelter</h2>
+  @if(!shelter)
+  {
+    <p><app-loading-throbber [randomText]="true"/></p>
+  }
+  @else
+  {
+    @if(dialogStep == 'default')
+    {
+      <app-npc-dialog npc="pet-shelter-kid" name="???">
+        <markdown [data]="shelter.dialog"></markdown>
+      </app-npc-dialog>
+      <ul class="dialog-choices" [class.disabled]="acting">
+        <li><a routerLink="/petShelter/daycare" class="button">"I'd like to drop off or pick up a pet up from Daycare."</a></li>
+        @if(user.moneys == 0)
+        {
+          <li><button type="button" (click)="dialogStep = 'askAboutMoneys'">How do I get... <i class="moneys" title="moneys"></i>? (What are <i class="moneys" title="moneys"></i>, anyway?)</button></li>
+        }
+        <li><a routerLink="/poppyopedia/species" class="button thinking">Learn more about the different species.</a></li>
+      </ul>
+    }
+    @else if(dialogStep == 'askAboutMoneys')
+    {
+      <app-npc-dialog npc="pet-shelter-kid" name="???">
+        <p>Oh, sorry, I guess you just got here recently!</p>
+        <p><i class="moneys" title="moneys"></i> is the currency around here; called "moneys". Your pets should find some before too long, when they go out gathering, fishing, etc.</p>
+      </app-npc-dialog>
+      <ul class="dialog-choices" [class.disabled]="acting">
+        <li><a routerLink="/petShelter/daycare" class="button">"I'd like to drop off or pick up a pet up from Daycare."</a></li>
+        <li><a routerLink="/poppyopedia/species" class="button thinking">Learn more about the different species.</a></li>
+      </ul>
+    }
+    @if(shelter.pets && shelter.pets.length > 0)
+    {
+      <table [class.disabled]="acting">
+        <tbody>
+          @for(pet of shelter.pets; track pet.id)
+          {
+            <tr>
+              <td class="appearance">
+                @if(pet.label)
+                {
+                  <div class="rare-container">
+                    <div class="rare">{{ pet.label }}</div>
+                  </div>
+                }
+                <app-pet-appearance [pet]="pet" />
+              </td>
+              <td class="adopt">
+                <input type="text" name="name{{ pet.id }}" [(ngModel)]="pet.name" maxlength="30">
+                <button type="button" (click)="doAdopt(pet)">Adopt (<app-moneys [amount]="shelter.costToAdopt" />)</button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    }
+  }
+</main>

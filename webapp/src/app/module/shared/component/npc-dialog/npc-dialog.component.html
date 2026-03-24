@@ -1,0 +1,33 @@
+<div
+  class="dialog-container"
+  [class.smaller]="smallerImage"
+  [class.no-sneaky-padding]="removeNegativeMargins"
+  [class.no-npc-image]="!fullPath"
+>
+  <div class="speech-bubble">
+    @if(name)
+    {
+      <div class="name">{{ name }}</div>
+    }
+    @if(fullPath)
+    {
+      <div class="speech-bubble-arrow"></div>
+    }
+    <ng-content></ng-content>
+  </div>
+  @if(fullPath)
+  {
+    <div class="image">
+      <div class="image-container">
+        <app-image
+          class="npc"
+          [class.include-border]="showBorder"
+          [path]="fullPath"
+          [colors]="colors"
+          width="100%"
+          height="100%"
+        />
+      </div>
+    </div>
+  }
+</div>

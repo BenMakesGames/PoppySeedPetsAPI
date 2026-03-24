@@ -1,0 +1,21 @@
+<main>
+  <h2>Dip a Tool in the Vase</h2>
+  <small>It will receive an enchantment depending on the day of the week!</small>
+  @if(!inventory)
+  {
+    <p><app-loading-throbber [randomText]="true"/></p>
+  }
+  @else if(inventory.length === 0)
+  {
+    <p>There aren't any tools in your house right now...</p>
+  }
+  @else
+  {
+    <div class="inventory" [class.disabled]="dipping">
+      @for(i of inventory; track i.id)
+      {
+        <app-inventory-item [inventory]="i" tabindex="0" (click)="doDipItem(i)" />
+      }
+    </div>
+  }
+</main>

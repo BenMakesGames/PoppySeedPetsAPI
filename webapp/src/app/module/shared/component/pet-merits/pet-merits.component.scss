@@ -1,0 +1,25 @@
+ul.accordion {
+  max-width: 6.5in;
+  > li {
+
+    position: relative;
+    padding-left: 1rem;
+
+    &::before
+    {
+      content: "▸";
+      position: absolute;
+      display: block;
+      top: 0;
+      left: 0;
+      transition: transform 0.25s;
+    }
+
+    &.open
+    {
+      &::before {
+        transform: rotateZ(90deg);
+      }
+    }
+  }
+}

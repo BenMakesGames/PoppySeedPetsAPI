@@ -1,0 +1,6 @@
+<div class="dialog" [style.background-image]="storyStep && storyStep.background ? ('url(\'/assets/backgrounds/story/' + storyStep.background + '.svg\')') : ''">
+  <h4>{{ storyStep?.storyTitle ?? '...' }}</h4>
+  <div class="dialog-body">
+    <app-story [endpoint]="storyEndpoint" [smallerNPCImage]="true" [removeNegativeMargins]="true" (storyStep)="storyStep = $event" (exit)="doClose()" />
+  </div>
+</div>

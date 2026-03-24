@@ -1,0 +1,13 @@
+<div style="container-type: inline-size">
+  <div class="columns">
+    <div>
+      <h4>Skills<app-help-link link="skillsAndAttributes" (click)="clickedHelpLink.emit()" /></h4>
+      <app-skills-table [skills]="pet().skills" />
+      <app-skill-bonuses [skills]="pet().skills" />
+    </div>
+    <div>
+      <h4>Attributes<app-help-link link="skillsAndAttributes" (click)="clickedHelpLink.emit()" /></h4>
+      <app-attributes-table [attributes]="pet().skills" />
+    </div>
+  </div>
+</div>

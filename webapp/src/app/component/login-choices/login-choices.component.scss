@@ -1,0 +1,15 @@
+app-login {
+  margin-bottom: 0.5rem;
+  display: block;
+}
+
+.container {
+  margin-top: 0.25rem;
+
+  @media (min-width: 600px)
+  {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-column-gap: 1.5rem;
+  }
+}

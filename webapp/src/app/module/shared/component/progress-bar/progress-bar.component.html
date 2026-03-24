@@ -1,0 +1,8 @@
+<label>{{ label() }}</label>
+<div class="progress" role="progressbar" [title]="humanReadablePercent()" [attr.aria-valuenow]="humanReadablePercent()">
+  <div [style.width.%]="percent() * 100"></div>
+  @if(nextPercent())
+  {
+    <div class="pulse-50" [style.left.%]="percent() * 100" [style.width.%]="(nextPercent() - percent()) * 100"></div>
+  }
+</div>

@@ -1,0 +1,28 @@
+:host {
+  display: grid;
+  grid-template-columns: 5ch auto;
+  align-items: center;
+}
+
+.bar-container {
+  display: block;
+  position: relative;
+  height: 1em;
+  border: 1px solid rgba(var(--color-text-on-content-background), 0.25);
+  border-radius: 2px;
+
+  > .bar {
+    height: 100%;
+    position: absolute;
+    top: 0;
+  }
+}
+
+.middle-line {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 1px;
+  background-color: rgba(var(--color-text-on-content-background), 0.25);
+}

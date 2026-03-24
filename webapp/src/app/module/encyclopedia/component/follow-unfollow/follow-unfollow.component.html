@@ -1,0 +1,21 @@
+<div [class.disabled]="updatingFollow">
+  @if(profile.following)
+  {
+    <div>
+      <p>
+        <label for="personalNote">Personal Note ({{ profile.following.note ? profile.following.note.length : 0 }} / 255)</label>
+        <textarea id="personalNote" [(ngModel)]="profile.following.note" maxlength="255"></textarea>
+      </p>
+      <p class="buttons">
+        <button (click)="doUpdateNote()">Update Note</button>
+        <button (click)="doStopFollowing()">Stop Following</button>
+      </p>
+    </div>
+  }
+  @else if(profile.id !== user?.id)
+  {
+    <p>
+      <button (click)="doFollow()">+ Follow</button>
+    </p>
+  }
+</div>

@@ -1,0 +1,23 @@
+:host {
+  display: flex;
+  flex-direction: row;
+
+  > span {
+    width: 0.75em;
+    height: 0.75em;
+    display: block;
+    background-size: contain;
+
+    &.f {
+      background-image: url('/assets/images/ui/commitment/full.svg');
+    }
+
+    &.h {
+      background-image: url('/assets/images/ui/commitment/half.svg');
+    }
+
+    &.e {
+      background-image: url('/assets/images/ui/commitment/empty.svg');
+    }
+  }
+}

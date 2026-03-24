@@ -1,0 +1,74 @@
+<main>
+  <app-journal-nav active="pet" />
+
+  <form (submit)="doFilter()">
+    <p>
+      <label>Tag</label>
+      <app-activity-tag-input [(tags)]="tags" />
+    </p>
+    <p class="buttons">
+      <button type="submit">Search</button>
+    </p>
+  </form>
+  @if(results && results.pageCount > 1)
+  {
+    <app-url-paginator [path]="'/journal/pet'" [page]="page" [pageCount]="results.pageCount" [params]="{ filter: filter }" />
+  }
+  @if(!searchSubscription.closed)
+  {
+    <p><app-loading-throbber [randomText]="true"/></p>
+  }
+  @else if(results)
+  {
+    @if(results.resultCount === 0)
+    {
+      <p>No results found.</p>
+    }
+    @else
+    {
+      <section class="pet-logs">
+        @for(log of results.results; track $index)
+        {
+          <div class="entry">
+            <div class="pet">
+              <a [routerLink]="'/poppyopedia/pet/' + log.pet.id"><app-pet-appearance [pet]="log.pet" [showTool]="false" [showHat]="false" size="0.5in" /></a>
+              @if(log.icon)
+              {
+                <img [src]="'/assets/images/' + log.icon + '.svg'" alt="" aria-hidden="true">
+              }
+            </div>
+            <div>
+              <markdown [data]="log.entry" />
+              @if(log.changes)
+              {
+                <app-pet-changes [changes]="log.changes" />
+              }
+              @if(log.tags)
+              {
+                <div>
+                  @for(tag of log.tags; track tag.title)
+                  {
+                    <a [routerLink]="'/journal/pet'" [queryParams]="{ page: 0, 'filter.tags[]': tag.title }">
+                      <app-pet-activity-log-tag [tag]="tag" />
+                    </a>
+                  }
+                </div>
+              }
+            </div>
+            @if(log.tags|containsLocationTag)
+            {
+              <div style="margin-left: auto">
+                <button type="button" class="link-text" style="padding:0.5em" (click)="doViewEvent(log)"><i class="fa-regular fa-eye"></i></button>
+              </div>
+            }
+          </div>
+        }
+      </section>
+    }
+
+    @if(results && results.pageCount > 1)
+    {
+      <app-url-paginator [path]="'/journal/pet'" [page]="page" [pageCount]="results.pageCount" [params]="{ filter: filter }" />
+    }
+  }
+</main>

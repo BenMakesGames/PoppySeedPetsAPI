@@ -1,0 +1,53 @@
+.container {
+  display: block;
+  width: 100%;
+  position: relative;
+  background-color: rgb(var(--color-input-background));
+  height: 1rem;
+  margin-bottom: 0.8rem;
+  box-sizing: border-box;
+  border-radius: 9999px;
+
+  > .progress-container {
+    border-radius: 9999px;
+    overflow: hidden;
+    height: 1rem;
+    position: relative;
+
+    > .progress {
+      position: absolute;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      background-color: rgb(var(--color-primary));
+    }
+  }
+
+  > .milestone {
+    position: absolute;
+    top: 0;
+
+    &::before {
+      content: '';
+      display: block;
+      width: 1px;
+      height: 1rem;
+    }
+
+    &:not(.end)::before
+    {
+      border-left: 1px solid rgb(var(--color-text-on-content-background));
+    }
+
+    > span {
+      display: block;
+      transform: translateX(-50%);
+      font-size: 80%;
+
+      @media (max-width:450px)
+      {
+        font-size: 65%;
+      }
+    }
+  }
+}

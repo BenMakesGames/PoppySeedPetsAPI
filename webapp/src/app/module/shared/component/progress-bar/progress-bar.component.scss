@@ -1,0 +1,17 @@
+.progress {
+  display: block;
+  height: 1rem;
+  box-sizing: border-box;
+  background-color: rgb(var(--color-input-background));
+  position: relative;
+  border-radius: 9999px;
+  overflow: hidden;
+
+  > div {
+    background-color: rgb(var(--color-primary));
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+  }
+}

@@ -1,0 +1,30 @@
+.progress-container {
+  position: relative;
+  width: 100%;
+  max-width: 200px;
+  margin: 0 auto;
+  border: 1px solid rgb(var(--color-link-and-button));
+  border-radius: 0.25rem;
+  height: 2rem;
+
+  > div {
+    position: absolute;
+    height: 2rem;
+    background-color: rgb(var(--color-link-and-button));
+  }
+
+  > span {
+    position: absolute;
+    height: 2rem;
+    line-height: 2rem;
+    display: block;
+    width: 100%;
+    text-align: center;
+    color: rgb(var(--color-text-on-button));
+    text-shadow:
+        1px 1px 0 rgb(var(--color-link-and-button)),
+        -1px 1px 0 rgb(var(--color-link-and-button)),
+        1px -1px 0 rgb(var(--color-link-and-button)),
+        -1px -1px 0 rgb(var(--color-link-and-button));
+  }
+}

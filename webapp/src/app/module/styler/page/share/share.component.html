@@ -1,0 +1,47 @@
+<main>
+  <nav class="tabs-container">
+    <div class="tabs">
+      <a [routerLink]="['/painter']">Painter</a>
+      <a [routerLink]="['/painter/manage']">My Themes</a>
+      <a class="active" [routerLink]="['/painter/find']">Player Themes</a>
+      <a [routerLink]="['/painter/builtIn']">Built-in Themes</a>
+    </div>
+  </nav>
+  @if(results)
+  {
+    <div [class.disabled]="!this.useThemeSubscription.closed">
+      @if(results.resultCount === 0)
+      {
+        <p>No one you're following has shared any themes!</p>
+        <ul class="list">
+          <li><a [routerLink]="['/poppyopedia/resident']">Find other players</a></li>
+        </ul>
+      }
+      @else
+      {
+        <p>These are the themes shared by players you're currently following.</p>
+        <ul class="list">
+          <li><a [routerLink]="['/poppyopedia/resident']">Find other players</a></li>
+        </ul>
+        @if(results.pageCount > 1)
+        {
+          <app-url-paginator path="/painter/find" [page]="results.page" [pageCount]="results.pageCount" />
+        }
+        <app-theme-grid [class.disabled]="!this.searchSubscription.closed">
+          @for(theme of results.results; track theme.id)
+          {
+            <app-theme-preview [theme]="theme" (use)="doUse(theme)" />
+          }
+        </app-theme-grid>
+        @if(results.pageCount > 1)
+        {
+          <app-url-paginator path="/painter/find" [page]="results.page" [pageCount]="results.pageCount" />
+        }
+      }
+    </div>
+  }
+  @else if(!this.searchSubscription.closed)
+  {
+    <p><app-loading-throbber /></p>
+  }
+</main>

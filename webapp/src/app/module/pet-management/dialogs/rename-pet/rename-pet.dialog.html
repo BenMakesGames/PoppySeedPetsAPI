@@ -1,0 +1,17 @@
+<div class="dialog">
+  <h4>Rename</h4>
+  <div class="dialog-body">
+    <p>{{ pet.name }} has {{ pet.renamingCharges }} Renaming Charge{{ pet.renamingCharges == 1 ? '' : 's' }} remaining.</p>
+    <form (submit)="doRename()">
+      <p>
+        <label for="newName">New Name</label>
+        <input id="newName" name="newName" type="text" [(ngModel)]="newName" [class.disabled]="renaming" autocomplete="off" />
+      </p>
+
+      <div class="buttons" [class.disabled]="renaming">
+        <button type="submit" [class.disabled]="newName.trim().length == 0">Rename</button>
+        <button type="button" class="wire" (click)="doCancel()">Cancel</button>
+      </div>
+    </form>
+  </div>
+</div>

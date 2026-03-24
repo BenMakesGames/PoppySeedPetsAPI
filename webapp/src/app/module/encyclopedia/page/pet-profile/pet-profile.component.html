@@ -1,0 +1,247 @@
+<main>
+  @if(!pet)
+  {
+    <h2><app-loading-throbber text=""/></h2>
+  }
+  @else
+  {
+    <small><a [routerLink]="['/poppyopedia']">Poppyopedia</a> » <a [routerLink]="[ '/poppyopedia/resident' ]">Resident</a> » <a [routerLink]="[ '/poppyopedia/resident/' + pet.owner.id ]"><app-player-name [player]="pet.owner" /> (#{{ pet.owner.id }})</a> »</small>
+    <h2>{{ pet.name }}</h2>
+    <div class="pet-preview">
+      <app-pet-appearance [pet]="pet" size="1.5in" />
+      <app-pet-badge-list [badges]="pet.badges" />
+    </div>
+
+    <div class="tabs-container">
+      <div class="tabs" role="tablist">
+        @for(t of tabs; track t.key)
+        {
+          <button role="tab" (click)="doChangeTab(t.key)" [class.active]="tab === t.key">{{ t.label }}</button>
+        }
+      </div>
+    </div>
+
+    <div [hidden]="tab !== 'logs'">
+      <p class="logs-header">
+        <select [(ngModel)]="logsView" (change)="doChangeLogView()">
+          <option value="table">Table</option>
+          <option value="calendar">Calendar</option>
+          <option value="donut-chart">Donut Chart</option>
+        </select>
+      </p>
+      <div [hidden]="logsView !== 'donut-chart'">
+        @if(!activityStatsCharts)
+        {
+          <p><app-loading-throbber [randomText]="true" /></p>
+        }
+        @else
+        {
+          <app-pet-activity-stats-details [charts]="activityStatsCharts" />
+        }
+      </div>
+      <div [hidden]="logsView !== 'table'">
+        @if(!logs)
+        {
+          <p><app-loading-throbber [randomText]="true" /></p>
+        }
+        @else if(logs.resultCount === 0)
+        {
+          <p>No activity yet!</p>
+        }
+        @else
+        {
+          @if(logs.pageCount > 1)
+          {
+            <app-paginator [page]="logs.page" (pageChange)="loadPetLogs($event)" [pageCount]="logs.pageCount"/>
+          }
+          <section style="margin:0.5em 0">
+            @for(log of logs.results; let i = $index; track i)
+            {
+              <div class="entry">
+                <div>
+                  @if(log.icon)
+                  {
+                    <img [src]="'/assets/images/' + log.icon + '.svg'" alt="" />
+                  }
+                  <div style="text-align: center;font-size:80%">#{{ i + logs.page * logs.pageSize + 1 }}</div>
+                </div>
+                <div>
+                  <markdown [data]="log.entry" />
+                  @if(log.changes)
+                  {
+                    <app-pet-changes [changes]="log.changes" />
+                  }
+                  <div>
+                    @for(tag of log.tags; track tag.title)
+                    {
+                      <app-pet-activity-log-tag [tag]="tag" />
+                    }
+                  </div>
+                </div>
+              </div>
+            }
+          </section>
+          @if(logs.pageCount > 1)
+          {
+            <app-paginator [page]="logs.page" (pageChange)="loadPetLogs($event)" [pageCount]="logs.pageCount" />
+          }
+        }
+      </div>
+      <div [hidden]="logsView !== 'calendar'">
+        @if(viewedActivityCalendar)
+        {
+          <app-pet-activity-log-calendar [pet]="pet" />
+        }
+      </div>
+    </div>
+
+    <div [hidden]="tab !== 'familyTree'" class="family-tree">
+      <dl>
+        <dt>Birthday</dt>
+        <dd><app-date-only [dateString]="pet.birthDate" /></dd>
+      </dl>
+      @if(!familyTree)
+      {
+        <p><app-loading-throbber /></p>
+      }
+      @else
+      {
+        @if(familyTree.grandparents.length > 0 || familyTree.spiritGrandparents.length > 0)
+        {
+          <h4>Grandparents</h4>
+          <div class="pets-grid">
+            @for(p of familyTree.grandparents; track p.id)
+            {
+              <a [routerLink]="[ '/poppyopedia/pet/' + p.id ]">
+                <app-pet-appearance [pet]="p" size="1in" />
+                <div class="link-text">{{ p.name }}</div>
+              </a>
+            }
+            @for(s of familyTree.spiritGrandparents; track s.id)
+            {
+              <div>
+                <div class="spirit-companion-ancestor">
+                  <img [src]="'/assets/images/companions/' + s.image + '.svg'" [alt]="s.image + ' spirit companion'" />
+                </div>
+                <div>{{ s.name }}</div>
+              </div>
+            }
+          </div>
+        }
+
+        <h4>Parents</h4>
+        @if(familyTree.parents.length === 0 && !familyTree.spiritParent)
+        {
+          <p>{{ pet.name }}'s parents are unknown.</p>
+        }
+
+        @if(familyTree.parents.length > 0 || familyTree.spiritParent)
+        {
+          <div class="pets-grid">
+            @for(p of familyTree.parents; track p.id)
+            {
+              <a [routerLink]="[ '/poppyopedia/pet/' + p.id ]">
+                <app-pet-appearance [pet]="p" size="1in" />
+                <div class="link-text">{{ p.name }}</div>
+              </a>
+            }
+            @if(familyTree.spiritParent)
+            {
+              <div>
+                <div class="spirit-companion-ancestor">
+                  <img [src]="'/assets/images/companions/' + familyTree.spiritParent.image + '.svg'" [alt]="familyTree.spiritParent.image + ' spirit companion'" />
+                </div>
+                <div>{{ familyTree.spiritParent.name }}</div>
+              </div>
+            }
+          </div>
+        }
+
+        @if(familyTree.siblings.length > 0)
+        {
+          <h4>Siblings</h4>
+          <div class="pets-grid">
+            @for(p of familyTree.siblings; track p.id)
+            {
+              <a [routerLink]="[ '/poppyopedia/pet/' + p.id ]">
+                <app-pet-appearance [pet]="p" size="1in" />
+                <div class="link-text">{{ p.name }}</div>
+              </a>
+            }
+          </div>
+        }
+
+        @if(familyTree.children.length > 0)
+        {
+          <h4>Children</h4>
+          <div class="pets-grid">
+            @for(child of familyTree.children; track child.id)
+            {
+              <a [routerLink]="[ '/poppyopedia/pet/' + child.id ]">
+                <app-pet-appearance [pet]="child" size="1in" />
+                <div class="link-text">{{ child.name }}</div>
+              </a>
+            }
+          </div>
+        }
+      }
+    </div>
+
+    <div [hidden]="tab !== 'relationships'">
+      @if(viewedRelationshipTab)
+      {
+        <app-pet-relationships [pet]="pet" />
+      }
+    </div>
+
+    @if(tab === 'groups')
+    {
+      <div>
+        @if(pet.groups.length == 0)
+        {
+          <p>This pet is not in any groups.</p>
+        }
+        @for(group of pet.groups; track group.id)
+        {
+          <div>
+            <h4><a [routerLink]="[ '/poppyopedia/group/' + group.id ]">{{ group.name }}</a></h4>
+            <table class="list">
+              <tr>
+                <th>Type</th>
+                <td>{{ group.type|petGroupLabel }}</td>
+              </tr>
+              <tr>
+                <th>Created</th>
+                <td>{{ group.createdOn|date:'shortDate':'UTC' }}</td>
+              </tr>
+              <tr>
+                <th>Members</th>
+                <a [routerLink]="[ '/poppyopedia/group/' + group.id ]" class="link-text">{{ group.memberCount }}</a>
+              </tr>
+            </table>
+          </div>
+        }
+        @if(pet.guildMembership)
+        {
+          <div>
+            <h4><a [routerLink]="[ '/poppyopedia/guild/' + pet.guildMembership.guild.id ]">{{ pet.guildMembership.guild.name }}</a></h4>
+            <table class="list">
+              <tr>
+                <th>Type</th>
+                <td>Guild<app-help-link link="guilds" /></td>
+              </tr>
+              <tr>
+                <th>Rank</th>
+                <td>{{ pet.guildMembership.rank }}</td>
+              </tr>
+              <tr>
+                <th>Joined</th>
+                <td>{{ pet.guildMembership.joinedOn|date:'shortDate':'UTC' }}</td>
+              </tr>
+            </table>
+          </div>
+        }
+      </div>
+    }
+  }
+</main>

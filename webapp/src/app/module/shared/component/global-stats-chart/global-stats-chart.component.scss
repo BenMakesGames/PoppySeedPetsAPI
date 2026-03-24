@@ -1,0 +1,39 @@
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  column-gap: 1rem;
+  row-gap: 0.5em;
+  margin-bottom: 1rem;
+  
+  .select-container {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+
+    select {
+      width: 200px;
+    }
+  }
+}
+
+.chart-container {
+  overflow-x: auto;
+  background: transparent;
+
+  svg {
+    font-size: 0.8em;
+
+    path {
+      fill: none;
+    }
+    
+    .domain,
+    .tick line {
+      stroke: rgba(var(--color-text-on-content-background), 0.2);
+    }
+    
+    .tick text {
+      fill: rgba(var(--color-text-on-content-background), 0.7);
+    }
+  }
+} 

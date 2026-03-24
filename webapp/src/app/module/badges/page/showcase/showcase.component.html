@@ -1,0 +1,45 @@
+<main>
+  <nav class="tabs-container">
+    <div class="tabs">
+      <a routerLink="/achievements">Unclaimed</a>
+      <a routerLink="/achievements/claimed">Claimed</a>
+      <a class="active" routerLink="/achievements/showcase">Showcase</a>
+      <a routerLink="/achievements/petBadges">Pet Badges</a>
+    </div>
+  </nav>
+
+  @if(!showcasePage)
+  {
+    <app-loading-throbber />
+  }
+  @else
+  {
+    @if(showcasePage.pageCount > 1)
+    {
+      <p><app-url-paginator [page]="showcasePage.page" [pageCount]="showcasePage.pageCount" path="/achievements/showcase" /></p>
+    }
+    <table>
+      <thead>
+        <tr>
+          <th>Rank</th>
+          <th>Achievos</th>
+          <th>Resident</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for(result of showcasePage.results; let i = $index; track i)
+        {
+          <tr (click)="doViewPlayer(result.resident.id)">
+            <td>#{{ i + showcasePage.page * showcasePage.pageSize + 1 }}</td>
+            <td>{{ result.achievementCount }}</td>
+            <td><a [routerLink]="'/poppyopedia/resident/' + result.resident.id"><app-player-name [player]="result.resident" /></a></td>
+          </tr>
+        }
+      </tbody>
+    </table>
+    @if(showcasePage.pageCount > 1)
+    {
+      <p><app-url-paginator [page]="showcasePage.page" [pageCount]="showcasePage.pageCount" path="/achievements/showcase" /></p>
+    }
+  }
+</main>

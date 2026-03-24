@@ -1,0 +1,12 @@
+@if(currency === 'moneys')
+{
+  {{ amount }}<i class="moneys" title="moneys" role="img"></i>
+}
+@else if(currency === 'recyclingPoints')
+{
+  {{ amount }}<i class="recycle" title="recycling points" role="img"></i>
+}
+@else if(currency === 'bloodWine')
+{
+  {{ amount }}<i class="fa-solid fa-wine-glass" title="blood wine" role="img"></i>
+}

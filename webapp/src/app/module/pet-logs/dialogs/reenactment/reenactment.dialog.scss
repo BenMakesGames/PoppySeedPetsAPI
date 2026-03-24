@@ -1,0 +1,149 @@
+.previous,.next {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 3em;
+  height: 3em;
+  padding: 1em 0;
+  line-height: 1;
+  text-align: center;
+  border-radius: 50%;
+  z-index: 1;
+
+  &.disabled {
+    pointer-events: all;
+  }
+}
+
+.previous {
+  left: -1.5em;
+}
+
+.next {
+  right: -1.5em;
+}
+
+.dialog-body {
+  padding: 0;
+  overflow: hidden;
+}
+
+.reenactments {
+  display: flex;
+  flex-direction: row;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+
+  > .reenactment
+  {
+    scroll-snap-align: start;
+    width: min(480px, 80vw, 80vh - 4rem);
+    min-height: min(480px, 80vw, 80vh - 4rem);
+    flex-shrink: 0;
+  }
+}
+
+.scene {
+  width: min(480px, 80vw, 80vh - 4rem);
+  height: min(480px, 80vw, 80vh - 4rem);
+  position: relative;
+  overflow: hidden;
+
+  > .location-background {
+    width: 100%;
+    height: 100%;
+    display: block;
+    position: relative;
+    z-index: 0;
+  }
+
+  > .pet-container {
+    position: absolute;
+    width: 20%;
+    aspect-ratio: 1 / 1;
+    z-index: 1;
+    transform: translate(-50%, -100%);
+  }
+
+  > .item-container {
+    position: absolute;
+    width: 20%;
+    aspect-ratio: 1 / 1;
+    z-index: 1;
+    transform: translate(-50%, -100%);
+
+    > img.item {
+      width: 50%;
+      height: 50%;
+      position: absolute;
+      top: 25%;
+      left: 25%;
+      animation: floating 3s infinite ease-in-out;
+    }
+
+    > img.shine {
+      position: absolute;
+    }
+
+    > .shine1 {
+      width: 500%;
+      height: 500%;
+      top: -200%;
+      left: -200%;
+      animation: spin-clockwise 20s infinite linear;
+    }
+
+    > .shine2 {
+      width: 700%;
+      height: 700%;
+      top: -300%;
+      left: -300%;
+
+      animation: spin-anticlockwise 23s infinite linear;
+      opacity: 0.25;
+    }
+  }
+}
+
+.caption {
+  width: 100%;
+  max-width: 480px;
+  padding: 0.25em 2em;
+  margin: 0;
+  box-sizing: border-box;
+  text-align: center;
+  font-style: italic;
+
+  @media (max-height: 480px)
+  {
+    padding: 0.25em;
+  }
+}
+
+@keyframes spin-clockwise {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes spin-anticlockwise {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(-360deg); }
+}
+
+@keyframes floating {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10%);
+  }
+}
+
+.and-more {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.2em;
+}

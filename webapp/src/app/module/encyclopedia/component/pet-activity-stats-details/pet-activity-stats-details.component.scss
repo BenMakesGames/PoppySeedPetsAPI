@@ -1,0 +1,46 @@
+.container {
+  display: flex;
+  flex-direction: row;
+  gap: 1em;
+
+  @media (max-width: 480px)
+  {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+}
+
+app-donut-chart {
+  width: 100%;
+  max-width: 320px;
+
+  @media (max-width: 480px) {
+    width: 60vw;
+  }
+}
+
+.legend {
+  width: 320px;
+  margin: 0;
+  list-style: none;
+
+  @media (max-width: 480px)
+  {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    column-gap: 1em;
+    row-gap: 0.5em;
+    align-content: center;
+  }
+}
+
+
+.legend span {
+  display: inline-block;
+  width: 0.75rem;
+  height: 0.75rem;
+}
+

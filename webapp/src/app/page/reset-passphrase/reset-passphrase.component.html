@@ -1,0 +1,26 @@
+<main>
+  <h2>Reset Passphrase</h2>
+  @if(!success)
+  {
+    <form [class.disabled]="loading" (submit)="doReset()">
+      <p>
+        <label for="passphrase">New Passphrase</label>
+        <input type="password" id="passphrase" name="passphrase" [(ngModel)]="passphrase">
+      </p>
+      <p class="buttons">
+        <button type="submit">Make it So!</button>
+      </p>
+    </form>
+  }
+  @else
+  {
+    <div>
+      <p>IT IS DONE.</p>
+      @if(!user)
+      {
+        <h2>Try it Out! Log In Now!</h2>
+        <app-login (onLogIn)="doLoggedIn()" />
+      }
+    </div>
+  }
+</main>

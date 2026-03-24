@@ -1,0 +1,33 @@
+@let inv = inventory();
+<div class="appearance">
+  @if(inv.illusion)
+  {
+    <img [src]="'assets/images/items/' + inv.illusion.image + '.svg'" alt="" aria-hidden="true" />
+    <img [src]="'assets/images/items/' + inv.item.image + '.svg'" alt="" aria-hidden="true" class="illusion" />
+  }
+  @else
+  {
+    <img [src]="'assets/images/items/' + inv.item.image + '.svg'" alt="" aria-hidden="true" />
+  }
+  <div class="badges">
+    @if(inv.sellPrice)
+    {
+      <img src="/assets/images/ui/for-sale.svg" alt="for sale" />
+    }
+    @if((inv.lockedToOwner || lockedToOwner()) && (user|hasUnlockedFeature:'Market'))
+    {
+      <img src="/assets/images/ui/locked.svg" alt="locked to account" />
+    }
+  </div>
+</div>
+<div class="name" [class.long-name]="nameIsLong()"><app-item-name-with-bonus [bonus]="inv.enchantment" [spice]="inv.spice" [item]="inv.item" />@if(subtitle()){ <span class="subtitle">{{ subtitle() }}</span>}</div>
+@if(showRecycleValue() && inv.item.recycleValue > 0)
+{
+  <div class="recycleValue">
+    <app-recycling-points [amount]="inv.item.recycleValue" />
+  </div>
+}
+@if(museumPoints())
+{
+  <div class="recycleValue">{{ museumPoints() }} Favor</div>
+}

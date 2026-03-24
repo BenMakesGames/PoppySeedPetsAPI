@@ -1,0 +1,47 @@
+<div class="dialog">
+  <app-dialog-title-with-icons
+    [icon]="itemOtherPropertiesIcons.Flammable"
+    iconLabel="flammable"
+    title="Choose Fuel"
+  />
+  <div class="dialog-body with-sticky-buttons">
+    @if(fuels === null)
+    {
+      <p><app-loading-throbber [randomText]="true"/></p>
+    }
+    @else if(fuels.length === 0)
+    {
+      <p>There are no items in your house which can serve as fuel.</p>
+    }
+    @else
+    {
+      <div style="position: relative;" [class.disabled]="loading">
+        <div class="buttons sticky">
+          <button type="button" (click)="doFeedFireplace()" [class.disabled]="numSelected === 0">Feed</button>
+          @if(numSelected > 0)
+          {
+            <span>{{ numSelected }} selected</span>
+          }
+        </div>
+        <table>
+          <tbody>
+            @for(fuel of fuels; track fuel.id)
+            {
+              <tr
+                tabindex="0"
+                (click)="doSelectFuel(fuel)"
+                (dblclick)="doDoubleClickItem(fuel)"
+                [class.selected]="selected[fuel.id]"
+                role="checkbox"
+                [attr.aria-checked]="selected[fuel.id] ? 'true' : 'false'"
+              >
+                <td><app-inventory-item [inventory]="fuel" /></td>
+                <td class="rating">{{ fuel.item.fuelRating|fuelRating }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </div>
+</div>

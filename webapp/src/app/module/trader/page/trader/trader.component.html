@@ -1,0 +1,116 @@
+<main>
+  <h2>Trader</h2>
+  @if(!trader)
+  {
+    <p><app-loading-throbber [randomText]="true"/></p>
+  }
+  @else
+  {
+    <app-npc-dialog npc="merchant-fish" [name]="trader.name" [colors]="traderColors"><markdown [data]="dialog"></markdown></app-npc-dialog>
+
+    <div appObserveOnScreen (isOnScreen)="doSetSticky(!$event)" class="sticky-sentinel"></div>
+    <div class="filter-bar" [class.is-sticking]="filterIsSticky">
+      <div>
+        <input type="text" placeholder="Search" [(ngModel)]="filters.text" (input)="afterUpdateFilters()">
+      </div>
+      <div>
+        <label class="radio-checkbox" style="white-space:pre;">
+          <input type="checkbox" [checked]="filters.onlyAvailable" (change)="doToggleUnavailableTrades()">
+          Hide unavailable trades
+        </label>
+      </div>
+    </div>
+    @if(favoriteTrades.length > 0)
+    {
+      <section>
+        <h3>Favorites</h3>
+        @if(filteredFavoriteTrades.length === 0)
+        {
+          <p>None of your favorite trades match the selected filters.</p>
+        }
+        @else
+        {
+          <div [class.disabled]="trading" class="trades compact">
+            @for(offer of filteredFavoriteTrades; track offer.id)
+            {
+              <button
+                type="button"
+                (click)="doTrade(offer)"
+                class="trade"
+                [class.unavailable]="!offer.canMakeExchange"
+              >
+                <div class="items-in">
+                  <ul>
+                    @for(cost of offer.cost; track $index)
+                    {
+                      <li><app-describe-yield [costOrYield]="cost" [sizeInRem]="1" [compact]="true" /></li>
+                    }
+                  </ul>
+                </div>
+                <div class="items-out">
+                  <ul>
+                    @for(y of offer.yield; track $index)
+                    {
+                      <li><app-describe-yield [costOrYield]="y" [sizeInRem]="3" [circled]="false" [compact]="true" /></li>
+                    }
+                  </ul>
+                  @if(offer.lockedToAccount)
+                  {
+                    <img class="locked-to-account" src="/assets/images/ui/locked.svg" alt="locked to account" />
+                  }
+                  @if(offer.canMakeExchange)
+                  {
+                    <div class="can-trade">Can Trade</div>
+                  }
+                </div>
+              </button>
+            }
+          </div>
+        }
+      </section>
+    }
+    @for(tradeGroup of filteredTrades; track tradeGroup.title)
+    {
+      <section>
+        <h3>{{ tradeGroup.title }}</h3>
+
+        <div [class.disabled]="trading" class="trades">
+          @for(offer of tradeGroup.trades; track offer.id)
+          {
+            <button
+              type="button"
+              (click)="doTrade(offer)"
+              class="trade"
+              [class.unavailable]="!offer.canMakeExchange"
+            >
+              <div class="items-in">
+                <ul>
+                  @for(cost of offer.cost; track $index)
+                  {
+                    <li><app-describe-yield [costOrYield]="cost" [sizeInRem]="1" /></li>
+                  }
+                </ul>
+              </div>
+              <div class="items-out">
+                <ul>
+                  @for(y of offer.yield; track $index)
+                  {
+                    <li><app-describe-yield [costOrYield]="y" [sizeInRem]="3" [circled]="false" /></li>
+                  }
+                </ul>
+                @if(offer.lockedToAccount)
+                {
+                  <img class="locked-to-account" src="/assets/images/ui/locked.svg" alt="locked to account" />
+                }
+                @if(offer.canMakeExchange)
+                {
+                  <div class="can-trade">Can Trade</div>
+                }
+              </div>
+            </button>
+          }
+        </div>
+      </section>
+    }
+  }
+</main>

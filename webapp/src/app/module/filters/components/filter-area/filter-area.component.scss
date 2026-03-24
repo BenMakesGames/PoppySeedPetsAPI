@@ -1,0 +1,60 @@
+form {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  max-width: 6in;
+
+  > input {
+    flex-grow: 1;
+    flex-shrink: 0;
+    width: 1rem;
+  }
+
+  > button
+  {
+    margin-left: 0.5rem;
+  }
+}
+
+.more-button {
+  position: relative;
+  padding-right: 0.5rem;
+
+  .filter-count {
+    position: absolute;
+    top: 0.25rem;
+    right: 0;
+    background-color: rgb(var(--color-link-and-button));
+    color: rgb(var(--color-text-on-button));
+    border-radius: 100%;
+    width: 1rem;
+    height: 1rem;
+    display: block;
+    text-align: center;
+    line-height: 1rem;
+    font-size: 80%;
+  }
+}
+
+.exact-match {
+  position: relative;
+  color: rgb(var(--color-link-and-button));
+  opacity: 1;
+  cursor: pointer;
+  align-self: center;
+
+  > input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    left: -9999px;
+  }
+
+  > i {
+    box-sizing: content-box;
+    padding: 0.65rem 0.5rem 0.65rem 0.25rem;
+    display: block;
+    width: 16px;
+    text-align: center;
+  }
+}

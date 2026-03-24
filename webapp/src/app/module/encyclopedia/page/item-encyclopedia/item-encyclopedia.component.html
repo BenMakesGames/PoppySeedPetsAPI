@@ -1,0 +1,32 @@
+<main>
+  <h2><a [routerLink]="[ '/poppyopedia' ]">Poppyopedia</a> » Items</h2>
+  <p><app-item-search [filters]="search" (filtersChange)="doSearch($event)" /></p>
+  @if(!results)
+  {
+    <p><app-loading-throbber /></p>
+  }
+  @else
+  {
+    <p>
+      Found {{ results.resultCount }} {{ results.resultCount === 1 ? 'item' : 'items' }}.
+      @if(user|hasUnlockedFeature:'Market')
+      {
+        <small><a [routerLink]="[ '/market' ]" [queryParams]="queryParams">(Search the Market.)</a></small>
+      }
+    </p>
+    @if(results.resultCount)
+    {
+      <p><app-url-paginator path="/poppyopedia/item" [page]="page" [pageCount]="results.pageCount" [params]="{ filter: search }" /></p>
+      <div class="items" [class.disabled]="!searchAjax.closed">
+        @for(item of results.results; track item.id)
+        {
+          <a [routerLink]="[ '/poppyopedia/item/' + item.name ]" class="button link-text">
+            <img [src]="'/assets/images/items/' + item.image + '.svg'" alt="" />
+            <div class="name link-text">{{ item.name }}</div>
+          </a>
+        }
+      </div>
+      <p><app-url-paginator path="/poppyopedia/item" [page]="page" [pageCount]="results.pageCount" [params]="{ filter: search }" /></p>
+    }
+  }
+</main>

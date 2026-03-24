@@ -1,0 +1,39 @@
+<main>
+  <nav class="tabs-container">
+    <div class="tabs" role="tablist">
+      <a role="tab" class="active" routerLink="/market">Market</a>
+      <a role="tab" routerLink="/market/bids">Your Bids</a>
+      <a role="tab" routerLink="/market/manager">Argentelle</a>
+    </div>
+  </nav>
+  <p><app-item-search [(filters)]="search" (filtersChange)="doSearch()" /></p>
+  @if(!results)
+  {
+    <p><app-loading-throbber [randomText]="true" /></p>
+  }
+  @else
+  {
+    <p>Found {{ results.resultCount }} {{ results.resultCount === 1 ? 'item' : 'items' }}.</p>
+    @if(results.resultCount > 0)
+    {
+      <div [class.disabled]="buying">
+        <p><app-url-paginator path="/market" [page]="page" [pageCount]="results.pageCount" [params]="{ filter: search }" /></p>
+        <table class="market-listings" [class.disabled]="!marketSearchAjax.closed">
+          <thead>
+          </thead>
+          <tbody>
+            @for(listing of results.results; track $index)
+            {
+              <tr>
+                <td><img [src]="'/assets/images/items/' + listing.item.image + '.svg'" alt="" /></td>
+                <td><button type="button" class="link-text" (click)="doViewItem(listing)"><app-item-name-with-bonus [item]="listing.item" [bonus]="listing.enchantment" [spice]="listing.spice" /></button></td>
+                <td><button type="button" class="buy-button" (click)="doBuy(listing)">Buy (<app-moneys [amount]="(listing.minimumSellPrice * 1.02)|ceil" />)</button></td>
+              </tr>
+            }
+          </tbody>
+        </table>
+        <p><app-url-paginator path="/market" [page]="page" [pageCount]="results.pageCount" [params]="{ filter: search }" /></p>
+      </div>
+    }
+  }
+</main>

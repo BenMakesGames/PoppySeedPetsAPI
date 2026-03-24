@@ -1,0 +1,16 @@
+<main>
+  <nav class="tabs-container">
+    <div class="tabs">
+      <a [routerLink]="['/painter']">Painter</a>
+      <a [routerLink]="['/painter/manage']">My Themes</a>
+      <a [routerLink]="['/painter/find']">Player Themes</a>
+      <a class="active" [routerLink]="['/painter/builtIn']">Built-in Themes</a>
+    </div>
+  </nav>
+  <app-theme-grid [class.disabled]="!useThemeSubscription.closed">
+    @for(theme of themes; track theme.name)
+    {
+      <app-theme-preview [theme]="theme" (use)="doUse(theme)" />
+    }
+  </app-theme-grid>
+</main>

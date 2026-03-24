@@ -1,0 +1,108 @@
+@if(stickingSentinelTop)
+{
+  <div appObserveOnScreen (isOnScreen)="doSetSticky(!$event)" class="sticky-sentinel" [style.top.rem]="stickingSentinelTop - 30"></div>
+}
+<div [class.disabled]="waitingOnAjax" style="padding-bottom:0.5rem">
+  @if(mode === InventoryModeEnum.Browsing)
+  {
+    <div class="buttons">
+      <button type="button" [appHotKey]="'c'" (click)="doChangeMode(InventoryModeEnum.Cooking)"><i class="cook-or-combine" *ngIf="inventoryButtons !== 'text-only'"></i><ng-container *ngIf="inventoryButtons !== 'icon-only'"> <u>C</u>ook or Combine...</ng-container></button>
+      <button type="button" [appHotKey]="'f'" (click)="doChangeMode(InventoryModeEnum.Feeding)" [class.disabled]="!allowFeeding || !pets || pets.length === 0"><i class="feed" *ngIf="inventoryButtons !== 'text-only'"></i><ng-container *ngIf="inventoryButtons !== 'icon-only'"> <u>F</u>eed...</ng-container></button>
+      @if(allowMoving)
+      {
+        <button type="button" [appHotKey]="'m'" (click)="doChangeMode(InventoryModeEnum.Moving)"><i class="move" *ngIf="inventoryButtons !== 'text-only'"></i><ng-container *ngIf="inventoryButtons !== 'icon-only'"> <u>M</u>ove...</ng-container></button>
+      }
+      <button type="button" [appHotKey]="'r'" (click)="doChangeMode(InventoryModeEnum.Trashing)"><i class="recycle" *ngIf="inventoryButtons !== 'text-only'"></i><ng-container *ngIf="inventoryButtons !== 'icon-only'"> <u>R</u>ecycle...</ng-container></button>
+      @if(user|hasUnlockedFeature:'Bulk Selling')
+      {
+        <button type="button" [appHotKey]="'s'" (click)="doChangeMode(InventoryModeEnum.Selling)"><i class="sell" *ngIf="inventoryButtons !== 'text-only'"></i><ng-container *ngIf="inventoryButtons !== 'icon-only'"> <u>S</u>ell...</ng-container></button>
+      }
+      @if(waitingOnAjax)
+      {
+        <app-loading-throbber text=""/>
+      }
+    </div>
+  }
+  @if(mode === InventoryModeEnum.Cooking)
+  {
+    <p><span class="pulse-100"><i class="cook-or-combine"></i> Cooking</span> &mdash; Select one or more items, then click "Cook or Combine" again.</p>
+    <div class="buttons">
+      <button type="button" [appHotKey]="'c'" (click)="doCookForReal()" [class.disabled]="inventorySelected === 0"><u>C</u>ook or Combine</button>
+      <button type="button" class="wire" [appHotKey]="'esc'" (click)="doChangeMode(InventoryModeEnum.Browsing)">Cancel</button>
+      @if(waitingOnAjax)
+      {
+        <app-loading-throbber text=""/>
+      }
+    </div>
+  }
+  @else if(mode === InventoryModeEnum.Feeding)
+  {
+    <p><span class="pulse-100"><i class="feed"></i> Feeding</span> &mdash; Select one or more food items, then click a pet to feed.</p>
+    <div class="buttons">
+      <button type="button" class="wire" [appHotKey]="'esc'" (click)="doChangeMode(InventoryModeEnum.Browsing)">Cancel</button>
+      @if(waitingOnAjax)
+      {
+        <app-loading-throbber text=""/>
+      }
+      <button (click)="doScrollToTop()" class="link-text to-top">scroll to pets</button>
+    </div>
+  }
+  @else if(mode === InventoryModeEnum.Moving)
+  {
+    <p><span class="pulse-100"><i class="move"></i> Moving</span> &mdash; Select items to move, then click the location to move them to.</p>
+    <div class="buttons">
+      @if(currentLocation !== 0)
+      {
+        <button type="button" [appHotKey]="'h'" (click)="doMoveForReal(0)" [class.disabled]="inventorySelected === 0">To <u>H</u>ome</button>
+      }
+      @if(currentLocation !== 1 && (user|hasUnlockedFeature:'Basement'))
+      {
+        <button type="button" [appHotKey]="'a'" (click)="doMoveForReal(1)" [class.disabled]="inventorySelected === 0">To B<u>a</u>sement</button>
+      }
+      @if(currentLocation !== 2 && (user|hasUnlockedFeature:'Fireplace'))
+      {
+        <button type="button" [appHotKey]="'m'" (click)="doMoveForReal(2)" [class.disabled]="inventorySelected === 0">To <u>F</u>ireplace Mantle</button>
+      }
+      @if(currentLocation !== 6 && (user|hasUnlockedFeature:'Library'))
+      {
+        <button type="button" [appHotKey]="'y'" (click)="doMoveForReal(6)" [class.disabled]="inventorySelected === 0">To Librar<u>y</u></button>
+      }
+      @if(user|hasUnlockedFeature:'Infinity Vault')
+      {
+        @if(user.isVaultOpen)
+        {
+          <button type="button" [appHotKey]="'v'" (click)="doMoveToVault()" [class.disabled]="inventorySelected === 0">To <u>V</u>ault</button>
+        }
+      }
+      <button type="button" class="wire" [appHotKey]="'esc'" (click)="doChangeMode(InventoryModeEnum.Browsing)">Cancel</button>
+      @if(waitingOnAjax)
+      {
+        <app-loading-throbber text=""/>
+      }
+    </div>
+  }
+  @else if(mode === InventoryModeEnum.Trashing)
+  {
+    <p><span class="pulse-100"><i class="recycle"></i> Recycling</span> &mdash; Select items to throw out/recycle, then click "Recycle" again.</p>
+    <div class="buttons">
+      <button type="button" [appHotKey]="'r'" (click)="doTrashForReal()" [class.disabled]="inventorySelected === 0"><u>R</u>ecycle</button>
+      <button type="button" class="wire" [appHotKey]="'esc'" (click)="doChangeMode(InventoryModeEnum.Browsing)">Cancel</button>
+      @if(waitingOnAjax)
+      {
+        <app-loading-throbber text=""/>
+      }
+    </div>
+  }
+  @else if(mode === InventoryModeEnum.Selling)
+  {
+    <p><span class="pulse-100"><i class="sell"></i> Selling</span> &mdash; Select items to sell, then click "Sell" again.</p>
+    <div class="buttons">
+      <button type="button" [appHotKey]="'s'" (click)="doSellForReal()" [class.disabled]="inventorySelected === 0"><u>S</u>ell</button>
+      <button type="button" class="wire" [appHotKey]="'esc'" (click)="doChangeMode(InventoryModeEnum.Browsing)">Cancel</button>
+      @if(waitingOnAjax)
+      {
+        <app-loading-throbber text=""/>
+      }
+    </div>
+  }
+</div>

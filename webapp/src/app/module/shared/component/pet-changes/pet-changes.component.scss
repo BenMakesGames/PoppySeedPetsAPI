@@ -1,0 +1,13 @@
+app-vague-change {
+  display: inline;
+
+  @media (max-width: 640px)
+  {
+    font-size: 80%;
+  }
+
+  + app-vague-change::before {
+    content: ', ';
+  }
+}
+

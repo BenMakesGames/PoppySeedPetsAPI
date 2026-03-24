@@ -1,0 +1,108 @@
+<main>
+  @if(pets === null)
+  {
+    <div style="padding-top:1rem"><app-loading-throbber text="Loading pets"/></div>
+  }
+  @else
+  {
+    @if(canPerformQualityTime)
+    {
+      <div class="quality-time-button-container">
+        <button class="quality-time-button" (click)="doQualityTime()">
+          <i [class]="qualityTimeIcon" class="left-icon"></i>
+          <span>Do quality time!</span>
+          <i [class]="qualityTimeIcon" class="right-icon"></i>
+        </button>
+      </div>
+    }
+    @if(inventory !== null && pets.length === 0)
+    {
+      <p style="padding-top:1rem">You don't have any pets at home. <a [routerLink]="'/petShelter/daycare'">Want to pick one up from Daycare?</a></p>
+    }
+    @if(pets.length > 0)
+    {
+      <div
+        class="pets"
+        [class.disabled]="inventory === null || mode === InventoryModeEnum.Cooking || mode === InventoryModeEnum.Trashing || mode === InventoryModeEnum.Selling || (mode === InventoryModeEnum.Feeding && inventorySelected === 0) || mode == InventoryModeEnum.Moving || waitingOnAjax"
+      >
+        @for(pet of pets; let i = $index; track $index)
+        {
+          <app-pet [pet]="pet" tabindex="0" role="button" [appHotKey]="(i + 1).toString()" (click)="doInteractWithPet(pet, $event)" />
+        }
+      </div>
+    }
+  }
+  @if(inventory === null)
+  {
+    <div [style.padding-top.rem]="pets !== null ? 1 : 0"><app-loading-throbber text="Loading inventory"/></div>
+  }
+  @else
+  {
+    <h3>{{ inventory.length }} / 100 Items<ng-container *ngIf="inventory.length >= 100"> - Full!</ng-container><app-help-link link="maxInventory" /></h3>
+    <app-inventory-control
+      [stickingSentinelTop]="-2.5"
+      [currentLocation]="LocationEnum.Home"
+      [inventory]="filteredInventory"
+      [allowFeeding]="true"
+      [allowMoving]="(user|hasUnlockedFeature:'Basement') || (user|hasUnlockedFeature:'Fireplace') || (user|hasUnlockedFeature:'Library')"
+      [pets]="pets"
+      (inventoryRemoved)="doInventoryRemoved($event)"
+      (petsChanged)="doPetsChanged()"
+      [(mode)]="mode"
+      [(inventorySelected)]="inventorySelected"
+    />
+    <div [class.disabled]="waitingOnAjax">
+      @if(inventory.length >= 6)
+      {
+        <p class="sort-and-filter">
+          <select [(ngModel)]="sort" (change)="doSortAndFilter()">
+            <option value="modifiedOn">Newest First</option>
+            <option value="name">Alphabetical</option>
+          </select>
+          @if(hasAnyFilters)
+          {
+            <select [(ngModel)]="filter" (change)="doSortAndFilter()">
+              <option value="all">Show all items</option>
+              @if(hasAnyEdible)
+              {
+                <option value="edible">Edible</option>
+              }
+              @if(hasAnyCandy)
+              {
+                <option value="candy">🎃 Candy</option>
+              }
+              @if(hasAnyCooking)
+              {
+                <option value="cooking">Cooking</option>
+              }
+              @if(hasAnyUsable)
+              {
+                <option value="usable">Readable/usable</option>
+              }
+              @if(hasAnyToolsOrBonuses)
+              {
+                <option value="toolsAndBonuses">Tools & bonuses</option>
+              }
+            </select>
+          }
+        </p>
+      }
+      <div class="inventory">
+        @for(i of filteredInventory; track i.id)
+        {
+          <app-inventory-item
+            [attr.role]="this.mode === InventoryModeEnum.Browsing ? 'button' : 'checkbox'"
+            [attr.aria-checked]="i.selected ? 'true' : 'false'"
+            [inventory]="i"
+            [class.selected]="i.selected"
+            [class.disabled]="i.lockedToOwner && mode === InventoryModeEnum.Selling"
+            tabindex="0"
+            (click)="doClickItem(i)"
+            (dblclick)="doDoubleClickItem(i)"
+            [showRecycleValue]="mode === InventoryModeEnum.Trashing"
+          />
+        }
+      </div>
+    </div>
+  }
+</main>

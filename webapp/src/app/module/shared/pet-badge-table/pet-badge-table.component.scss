@@ -1,0 +1,29 @@
+.badges {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(15em, 1fr));
+  gap: 1em;
+}
+
+.badge {
+  display: grid;
+  grid-template-columns: 3em auto;
+  grid-template-areas: 'icon name' 'icon date';
+  column-gap: 0.5em;
+  align-content: start;
+
+  > img {
+    grid-area: icon;
+    width: 3em;
+    height: 3em;
+    border-radius: 50%;
+  }
+
+  > .title {
+    grid-area: name;
+  }
+
+  > .date-acquired {
+    grid-area: date;
+    font-size: 80%;
+  }
+}

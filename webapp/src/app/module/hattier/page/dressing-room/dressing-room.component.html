@@ -1,0 +1,66 @@
+<main style="padding-bottom: 0;">
+  <h2><a routerLink="/hattier">Hattier</a> » Dressing Room</h2>
+  @if(!petSubscription.closed || !availableStylesSubscription.closed)
+  {
+    <app-loading-throbber />
+  }
+  @else if(selectedPet)
+  {
+    <div>
+      <section [class.disabled]="!buySubscription.closed">
+        <div class="before-and-after">
+          <h6>Preview</h6>
+          <app-pet-appearance [pet]="previewPet" [flipped]="false" />
+        </div>
+        @if(!availableStylesSubscription.closed)
+        {
+          <app-loading-throbber />
+        }
+        @else if(!availableStyles)
+        {
+          <p>Failed to load styles :| Reload and try again??</p>
+        }
+        @else
+        {
+          <p>
+            <select (change)="doSort()" [(ngModel)]="sortBy">
+              <option value="unlockedOn">Newest First</option>
+              <option value="name">Alphabetical</option>
+            </select>
+          </p>
+          <div class="styles">
+            @for(s of availableStyles; track s.name)
+            {
+              <label [class.disabled]="!s.aura" [class.selected]="s.aura && selectedStyleId === s.aura.id" class="radio-checkbox">
+                @if(s.aura)
+                {
+                  <input type="radio" name="style" [value]="s.aura.id" [(ngModel)]="selectedStyleId" (change)="doUpdateStyle()" />
+                }
+                <span>{{ s.name }}</span>
+                @if(s.aura)
+                {
+                  <img [src]="'/assets/images/auras/' + s.aura.image + '.svg'" alt="" [style.filter]="'hue-rotate(' + newHue + 'deg)'" />
+                }
+                @else
+                {
+                  <img src="/assets/images/hollow-earth/tile/no-image.svg" alt="(to be unlocked...)" />
+                }
+              </label>
+            }
+          </div>
+          <div class="buy-buttons">
+            <div class="hue-range-container">
+              <label for="auraHue">Hue</label>
+              <input id="auraHue" type="range" min="0" max="359" [(ngModel)]="newHue" (input)="doUpdateHue()" />
+            </div>
+            <div class="buttons centered">
+              <button type="button" (click)="doBuy('moneys')" [class.disabled]="((selectedStyleId === null || selectedStyleId === initialStyleId) && newHue === oldHue) || user.moneys < 200">Buy (<app-moneys [amount]="200" />)</button>
+              <button type="button" (click)="doBuy('recycling')" [class.disabled]="((selectedStyleId === null || selectedStyleId === initialStyleId) && newHue === oldHue) || user.recyclePoints < 100">Buy (<app-recycling-points [amount]="100" />)</button>
+              <a routerLink="/hattier">Never mind...</a>
+            </div>
+          </div>
+        }
+      </section>
+    </div>
+  }
+</main>

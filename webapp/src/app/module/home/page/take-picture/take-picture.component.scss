@@ -1,0 +1,107 @@
+.picture-and-controls
+{
+  @media (min-width: 900px)
+  {
+    display: grid;
+    column-gap: 1rem;
+
+    grid-template-columns: 1fr calc(430px + 2rem) 1fr;
+
+    grid-template-areas:
+      '. picture controls'
+      '. download controls'
+    ;
+  }
+}
+
+.polaroid {
+  margin: 0.5rem -0.5rem 0;
+  grid-area: picture;
+}
+
+.download {
+  grid-area: download;
+  justify-self: center;
+  text-align: center;
+
+  > button {
+    position: relative;
+    border-radius: 9999px;
+    top: -0.5em;
+  }
+}
+
+.controls {
+  grid-area: controls;
+
+  margin-top: 0.5rem;
+
+  @media (min-width: 900px) {
+    margin-top: 0;
+  }
+}
+
+.caption {
+  max-width: 430px;
+  border: none;
+  padding: 0 1rem 1rem;
+  margin: 0 auto;
+  background-color: white;
+
+  > input {
+    border: none;
+    width: 100%;
+    text-align: center;
+    background-color: white;
+    color: #333;
+  }
+}
+
+.scene {
+  height: 0;
+  padding-bottom: calc(min(430px, 100% - 2rem));
+  position: relative;
+  max-width: 430px;
+  border: 1em solid white;
+  margin: 0 auto;
+  overflow: hidden;
+
+  > img {
+    width: 100%;
+    display: block;
+  }
+
+  > app-pet-appearance
+  {
+    position: absolute;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    touch-action: none;
+  }
+}
+
+.background-selector {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+
+  > button {
+    width: 64px;
+    height: 64px;
+    padding: 0;
+    border-radius: 0.5rem;
+    overflow: hidden;
+
+    &.selected {
+      outline: 2px solid rgb(var(--color-link-and-button));
+    }
+
+    > img {
+      width: 100%;
+    }
+  }
+}
+

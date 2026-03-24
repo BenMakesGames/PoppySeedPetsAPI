@@ -1,0 +1,21 @@
+.species {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+
+  > div {
+    padding: 0.125in;
+    cursor: pointer;
+    width: 1in;
+
+    > app-pet-appearance {
+      display: block;
+    }
+
+    > span {
+      display: block;
+      text-align: center;
+    }
+
+  }
+}

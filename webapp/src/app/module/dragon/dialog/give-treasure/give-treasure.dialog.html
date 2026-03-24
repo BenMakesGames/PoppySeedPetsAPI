@@ -1,0 +1,55 @@
+<div class="dialog">
+  <app-dialog-title-with-icons
+    [icon]="itemOtherPropertiesIcons.Treasure"
+    iconLabel="gem"
+    title="Choose Treasures"
+  />
+  <div class="dialog-body with-sticky-buttons">
+    @if(!treasuresSubscription.closed)
+    {
+      <p><app-loading-throbber [randomText]="true"/></p>
+    }
+    @if(treasures)
+    {
+      @if(treasures.length === 0)
+      {
+        <p>There are no items in your house suitable for a dragon hoard.</p>
+      }
+      @else
+      {
+        <div style="position: relative;" [class.disabled]="!giveTreasureSubscription.closed">
+          <div class="buttons sticky">
+            <button type="button" (click)="doGiveTreasures()" [class.disabled]="numSelected === 0">Give</button>
+            @if(numSelected > 0)
+            {
+              <span>{{ numSelected }} selected</span>
+            }
+          </div>
+          <table>
+            <tbody>
+              @for(t of treasures; track t.id)
+              {
+                <tr
+                  tabindex="0"
+                  (click)="doSelectTreasure(t)"
+                  (dblclick)="doDoubleClickItem(t)"
+                  [class.selected]="selected[t.id]"
+                  role="checkbox"
+                  [attr.aria-checked]="selected[t.id] ? 'true' : 'false'"
+                >
+                  <td><app-inventory-item [inventory]="t" /></td>
+                  <td class="rating">
+                    @for(coin of coins[t.id]; track $index)
+                    {
+                      <img [src]="'/assets/images/dragons/coins/' + coin + '.svg'" [alt]="coin" />
+                    }
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+    }
+  </div>
+</div>

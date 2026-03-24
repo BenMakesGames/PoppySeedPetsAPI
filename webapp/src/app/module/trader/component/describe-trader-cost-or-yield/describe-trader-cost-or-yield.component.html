@@ -1,0 +1,12 @@
+@if(costOrYield.type === 'money')
+{
+  <div><app-moneys [amount]="costOrYield.quantity * multiplier" /></div>
+}
+@else if(costOrYield.type === 'item')
+{
+  <div><span *ngIf="costOrYield.quantity * multiplier !== 1">{{ costOrYield.quantity * multiplier }}&times;</span><button type="button" class="link-text" (click)="doViewItem(costOrYield.item.name)"><img [src]="'/assets/images/items/' + costOrYield.item.image + '.svg'" alt=""><span>{{ costOrYield.item.name }}</span><img *ngIf="lockedToAccount" src="/assets/images/ui/locked.svg" alt="locked to account" class="locked"></button></div>
+}
+@else if(costOrYield.type === 'recyclingPoints')
+{
+  <div><app-recycling-points [amount]="costOrYield.quantity * multiplier" /></div>
+}

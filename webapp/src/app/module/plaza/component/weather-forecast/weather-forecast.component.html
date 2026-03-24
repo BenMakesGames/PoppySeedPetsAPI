@@ -1,0 +1,50 @@
+@if(!today)
+{
+  <app-loading-throbber [randomText]="true" />
+}
+@else
+{
+  <div class="forecast">
+    <div class="today">
+      <app-current-weather [sky]="today.sky" />
+      <label class="day">Now</label>
+      <div class="holidays">
+        @if((currentDate|date:'EEEE':'UTC') === allowanceDayOfWeek)
+        {
+          <img src="/assets/images/items/box/fruits-n-veggies.svg" alt="Care Package" title="Care Package">
+        }
+        @for(holiday of today.holidays; track $index)
+        {
+          <img
+            [src]="'/assets/images/calendar/holidays/' + (holiday|sluggify) + '.svg'"
+            [alt]="holiday"
+            [title]="holiday"
+          />
+        }
+      </div>
+    </div>
+    <div class="gap"><div></div></div>
+    @for(day of forecast; track $index)
+    {
+      <div>
+        <app-current-weather [sky]="day.sky" />
+        <label class="day">{{ day.date|date:'EEE':'UTC'}}</label>
+        <div class="holidays">
+          @if((day.date|date:'EEEE':'UTC') === allowanceDayOfWeek)
+          {
+            <img src="/assets/images/items/box/fruits-n-veggies.svg" alt="Care Package" title="Care Package">
+          }
+          @for(holiday of day.holidays; track $index)
+          {
+            <img
+              [src]="'/assets/images/calendar/holidays/' + (holiday|sluggify) + '.svg'"
+              [alt]="holiday"
+              [title]="holiday"
+            />
+          }
+        </div>
+      </div>
+    }
+  </div>
+}
+

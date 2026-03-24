@@ -1,0 +1,114 @@
+<main>
+  <h2>Sign Up!</h2>
+  <section [style.display]="step === 1 ? 'block' : 'none'" data-test-step="1">
+    <app-npc-dialog name="Mia" npc="mia">
+      <p>Hello! Welcome to Poppy Seed Pets Island!</p>
+      <p>How was the trip over?</p>
+    </app-npc-dialog>
+    <ul class="dialog-choices">
+      <li><button type="button" (click)="goToStep2('Glad to hear it!')">"It was fun!"</button></li>
+      <li><button type="button" (click)="goToStep2('Ah, sorry! My partner gets seasick, too. It\'s awful.')">"I got a bit seasick..."</button></li>
+      <li><button type="button" (click)="goToStep2('It\'s a work in progress...')">"Is that <em>really</em> the name of the island?"</button></li>
+    </ul>
+  </section>
+
+  <form (submit)="doEnterName()" [style.display]="step === 2 ? 'block' : 'none'" data-test-step="2">
+    @if(!error)
+    {
+      <app-npc-dialog name="Mia" npc="mia">
+        <p>{{ step2Dialog }}</p>
+        <p>Well, what would you like to be called here? Oh! And what kind of color scheme do you prefer?</p>
+      </app-npc-dialog>
+    }
+    @else
+    {
+      <app-npc-dialog name="Mia" npc="mia" class="error">{{ error }}</app-npc-dialog>
+    }
+    <p>
+      <label for="name">Name (doesn't have to be unique!)</label>
+      <input type="text" id="name" name="name" autocomplete="given-name" [(ngModel)]="name" minlength="2" maxlength="30">
+      <button type="button" class="link-text" (click)="doRandomizeName()" style="vertical-align: middle; margin-left:0.5rem;"><img class="randomize" alt="generate a random name" src="/assets/images/ui/die.svg"></button>
+    </p>
+    <app-change-theme (change)="theme = $event" />
+    <div class="buttons">
+      <button type="submit">Next &rarr;</button>
+    </div>
+  </form>
+
+  <form (submit)="doCustomizePet()" [style.display]="step === 3 ? 'block' : 'none'" data-test-step="3">
+    <app-npc-dialog name="Mia" npc="mia"><p>"{{ name }}", is it?</p><p>Alright, then!</p><p>Let's hop into picking a pet for you! After that, I have just a couple more questions, and we'll be good to go!</p></app-npc-dialog>
+    <p>
+      <label>Species</label>
+      @for(pet of availablePets; let i = $index; track i)
+      {
+        <button type="button" (click)="selectedPet = i" class="link-text" [title]="pet.name"><app-image [path]="'pets/' + pet.image" [colors]="petColors" width="64px" height="64px" [class.selected]="selectedPet === i" /></button>
+      }
+    </p>
+    <p class="colors">
+      <label>Colors</label>
+      <app-choose-two-colors [(colorA)]="colorA" [(colorB)]="colorB" (colorAChange)="updatePetColors()" (colorBChange)="updatePetColors()" />
+    </p>
+    <div class="buttons">
+      <button type="button" class="wire" (click)="goToStep2('Oh, did I get something wrong? Sorry about that...')">Wait, go back...</button>
+      <button type="submit">Next &rarr;</button>
+    </div>
+  </form>
+
+  <form (submit)="doNamePet()" [style.display]="step === 4 ? 'block' : 'none'" data-test-step="4">
+    @if(!error)
+    {
+      <app-npc-dialog name="Mia" npc="mia"><p>Aw, what a cutie! What's their name?</p></app-npc-dialog>
+    }
+    @else
+    {
+      <app-npc-dialog name="Mia" npc="mia" class="error">{{ error }}</app-npc-dialog>
+    }
+    @if(step === 4)
+    {
+      <app-image [path]="'pets/' + availablePets[selectedPet].image" [colors]="petColors" width="96px" height="96px" />
+    }
+    <p>
+      <label for="petName">Name</label>
+      <input type="text" id="petName" name="petName" autocomplete="off" [(ngModel)]="petName" minlength="2" maxlength="30">
+      <button type="button" class="link-text" (click)="doRandomizePetName()" style="vertical-align: middle; margin-left:0.5rem;"><img class="randomize" alt="generate a random pet name" src="/assets/images/ui/die.svg"></button>
+    </p>
+    <div class="buttons">
+      <button type="button" class="wire" (click)="doGoBack(3)">Wait, go back...</button>
+      <button type="submit">Next &rarr;</button>
+    </div>
+  </form>
+
+  <form (submit)="doRegister()" [style.display]="step === 5 ? 'block' : 'none'" data-test-step="5">
+    @if(!error)
+    {
+      <app-npc-dialog name="Mia" npc="mia">
+        <p>Perfect!</p>
+        <p>Last step, and we're good to go!</p>
+        <p>You'll use your e-mail address to log in, and we'll use it to help you with your account (like to reset your password), and that's it! If you're <em>really</em> not comfy sharing your e-mail address, that's cool, and you can lie; if you <em>do</em> lie, know that we'll be unable to help you recover your account if you forget the password!</p>
+      </app-npc-dialog>
+    }
+    @else
+    {
+      <app-npc-dialog name="Mia" npc="mia" class="error">{{ error }}</app-npc-dialog>
+    }
+    <p>
+      <label for="email">Email (has to be unique...)</label>
+      <input type="email" id="email" name="email" autocomplete="email" [(ngModel)]="email">
+    </p>
+    <p>
+      <label for="passphrase">Passphrase (at least 12 characters!)</label>
+      <input #passphraseInput [type]="passphraseType" id="passphrase" name="passphrase" autocomplete="off" [(ngModel)]="passphrase" (change)="doChangePassword()" (keyup)="doChangePassword()" minlength="10">
+      <button type="button" class="link-text" style="vertical-align: middle; margin-left:0.5rem;" (click)="doRandomizePassphrase()"><img class="randomize" alt="generate a random phass phrase" src="/assets/images/ui/die.svg"></button>
+    </p>
+    <p class="please-agree">
+      <label class="radio-checkbox"><input type="checkbox" name="iCanInternet" value="on" [(ngModel)]="iCanInternet"> "I'm 14 years old, or older."</label>
+      <label class="radio-checkbox"><input type="checkbox" name="iPlayNice" value="on" [(ngModel)]="iPlayNice"> "I won't use Poppy Seed Pets in a way that harasses others. If I do, the developer may deny me access to the game, possibly without warning."</label>
+      <label class="radio-checkbox"><input type="checkbox" name="cookiesAreOkay" value="on" [(ngModel)]="cookiesAreOkay"> "I'm okay with Poppy Seed Pets using cookies and collecting some information about my device (like IP address, and screen width)."</label>
+    </p>
+    <div class="buttons" [class.disabled]="loading">
+      <button type="button" class="wire" (click)="doGoBack(4)">Wait, go back...</button>
+      <button type="submit" [class.disabled]="!cookiesAreOkay || !iPlayNice || !iCanInternet">Sign Up!</button>
+    </div>
+    <p><small><a [routerLink]="[ '/poppyopedia/privacyPolicy' ]">Tell me more about how you use cookies and information about my device...</a></small></p>
+  </form>
+</main>

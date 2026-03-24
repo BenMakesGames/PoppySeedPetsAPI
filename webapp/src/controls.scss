@@ -1,0 +1,277 @@
+/***** dialogs ***************************************************************/
+
+.mat-mdc-dialog-container .mdc-dialog__container .mdc-dialog__surface {
+  background: rgb(var(--color-content-background));
+  box-shadow: 5px 5px 1px rgba(0, 0, 0, 0.15);
+  border-radius: 0;
+}
+
+.reenactment-dialog .mat-mdc-dialog-container .mdc-dialog__container .mdc-dialog__surface {
+  overflow: visible;
+}
+
+.cdk-overlay-container {
+  > * {
+    z-index: var(--z-index-dialog);
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+  }
+
+  .cdk-overlay-backdrop {
+    background-color: rgba(0, 0, 0, 0.5);
+  }
+
+  .cdk-global-overlay-wrapper {
+    display: flex;
+    pointer-events: none;
+
+    .cdk-overlay-pane {
+      max-height: calc(100vh - 5rem);
+      display: flex;
+      pointer-events: auto;
+    }
+  }
+}
+
+.dialog {
+  > h4 {
+    background-color: rgb(var(--color-primary));
+    color: rgb(var(--color-text-on-primary));
+    padding: 0.25rem 1rem;
+    margin: 0;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+
+    > app-loading-throbber {
+      display: block;
+      float: right;
+    }
+
+    > app-item-name-with-bonus
+    {
+      margin-left: 0.25rem;
+    }
+  }
+
+  > .tabs-container {
+    position: sticky;
+    top: 2rem;
+    z-index: 1;
+  }
+
+  > .dialog-body
+  {
+    padding: 0.5rem 1rem;
+    background-color: rgb(var(--color-content-background));
+
+    &.border-top {
+      border-top: 1px solid rgba(var(--color-text-on-content-background), 0.2);
+    }
+
+    &.with-sticky-buttons {
+      padding-top: 0;
+
+      .buttons.sticky {
+        margin-left: -1rem;
+        margin-right: -1rem;
+        padding-left: 1rem;
+        padding-right: 1rem;
+        box-shadow: 0 5px 1px rgba(0, 0, 0, 0.15);
+
+        + * {
+          margin-top: 1rem;
+        }
+      }
+    }
+
+    > :last-child,
+    > markdown > :last-child
+    {
+      margin-bottom: 0;
+    }
+
+    img.float-right {
+      float: right;
+      margin-left: 0.5rem;
+      margin-bottom: 0.5rem;
+      display: block;
+    }
+  }
+
+  > :last-child
+  {
+    margin-bottom: 0;
+  }
+
+  .buttons.sticky {
+    position: sticky;
+    top: 2rem;
+    padding: 0.5rem 0;
+    background-color: rgb(var(--color-content-background));
+    z-index: 1;
+  }
+}
+
+/***** tabs ******************************************************************/
+
+.tabs-container {
+  background-color: rgb(var(--color-tab-bar-background));
+  margin-bottom: 0.5rem;
+
+  @media (max-width:640px)
+  {
+    font-size: 80%;
+  }
+
+  > h2 {
+    padding: 0.5rem 0.5rem 0;
+    margin: 0;
+  }
+
+  > .tabs
+  {
+    padding: 0.25em 0.25em 0;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+
+    > a, > button {
+      color: rgb(var(--color-text-on-content-background));
+      text-decoration: none;
+      display: inline-block;
+      padding: 0.5em 1em;
+      background-color: transparent;
+      border-radius: 0;
+
+      &.active {
+        background-color: rgb(var(--color-content-background));
+        text-decoration: none;
+        cursor: default;
+        border-top-left-radius: 0.25rem;
+        border-top-right-radius: 0.25rem;
+      }
+
+      &.disabled {
+        cursor: default;
+      }
+    }
+  }
+}
+
+/***** data tables ***********************************************************/
+
+table {
+  border-collapse: collapse;
+
+  > thead, > tbody > tr.selected {
+    background-color: rgb(var(--color-primary));
+    color: rgb(var(--color-text-on-primary));
+  }
+
+  td,th {
+    text-align: left;
+  }
+
+  &:not(.list) {
+    > tbody {
+      > :nth-child(2n+1):not(.selected) {
+        background-color: rgba(0, 0, 0, 0.15);
+      }
+    }
+
+    td,th {
+      padding: 0.25rem 0.5rem;
+    }
+  }
+
+  &.list {
+    td, th {
+      vertical-align: top;
+    }
+
+    td {
+      padding: 0;
+    }
+
+    th {
+      padding: 0 0.5rem 0 0;
+    }
+
+    tr + tr {
+      > td, > th {
+        padding-top: 0.25rem;
+      }
+    }
+  }
+}
+
+/***** animations ************************************************************/
+
+.pulse-50
+{
+  animation: opacity-pulse-50;
+  animation-iteration-count: infinite;
+  animation-duration: 1s;
+  animation-direction: alternate;
+  animation-timing-function: ease-in-out;
+}
+
+.pulse-100
+{
+  animation: opacity-pulse-100;
+  animation-iteration-count: infinite;
+  animation-duration: 0.5s;
+  animation-direction: alternate;
+  animation-timing-function: ease-in-out;
+}
+
+@keyframes opacity-pulse-50
+{
+  0% { opacity: 0.5; }
+  100% { opacity: 0; }
+}
+
+@keyframes opacity-pulse-100
+{
+  0% { opacity: 1; }
+  100% { opacity: 0.5; }
+}
+
+/***** forms *****************************************************************/
+
+.radio-checkbox {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  cursor: pointer;
+
+  > input {
+    margin: 0 0.3333rem 0 0;
+    min-width: 1rem;
+    min-height: 1rem;
+  }
+}
+
+.color-preview {
+  display: inline-block;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 0.25rem;
+  box-shadow: inset 5px 5px 1px rgb(0, 0, 0, 0.15);
+  vertical-align: middle;
+}
+
+.selection-grid
+{
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+
+  > label {
+    width: 1.75in;
+  }
+}

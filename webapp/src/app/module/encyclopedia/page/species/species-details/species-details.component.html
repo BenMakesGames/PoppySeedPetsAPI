@@ -1,0 +1,66 @@
+<main>
+  <small><a [routerLink]="[ '/poppyopedia' ]">Poppyopedia</a> » <a [routerLink]="[ '/poppyopedia/species' ]">Species</a> »</small>
+  <h2>{{ speciesName }}
+    @if(species)
+    {
+      <small>({{ species.family }})</small>
+    }
+  </h2>
+  @if(loading)
+  {
+    <p><app-loading-throbber/></p>
+  }
+  @else if(!species)
+  {
+    <p>No such species exists...</p>
+  }
+  @else
+  {
+    <div class="species">
+      @if(species.eggImage)
+      {
+        <img [src]="'/assets/images/eggs/' + species.eggImage + '.svg'" class="egg" [class.flipX]="species.flipX" alt="picture of the species' egg" />
+      }
+      <img [src]="'/assets/images/pets/' + species.image + '.svg'" class="pet" alt="picture of the species" />
+    </div>
+    <div style="margin-top:0.25rem">
+      <markdown [data]="species.description"></markdown>
+    </div>
+    @if(species.physicalDescription)
+    {
+      <div style="margin-top:1rem">
+        <h4>Physical Description</h4>
+        <markdown [data]="species.physicalDescription"></markdown>
+      </div>
+    }
+    <div style="margin-top:1rem">
+      <h4>Availability</h4>
+      <ul class="list">
+        @if(species.availableAtSignup)
+        {
+          <li>Can be picked as a starter pet</li>
+        }
+        @if(species.availableFromPetShelter)
+        {
+          <li>Can be found in the Shelter</li>
+        }
+        @if(species.pregnancyStyle === -1)
+        {
+          <li>Incapable of conceiving children</li>
+        }
+        @else
+        {
+          <li>Can be conceived by pets of the <em>same</em> species</li>
+        }
+        @if(species.availableFromBreeding)
+        {
+          <li>Can be conceived by pets of <em>other</em> species</li>
+        }
+      </ul>
+    </div>
+    <div>
+      <h4>Stats</h4>
+      <p><a [routerLink]="['/poppyopedia/pet']" [queryParams]="{'filter.species': species.id }">{{ species.numberOfPets }} {{ species.numberOfPets === 1 ? 'pet' : 'pets' }}</a> in the game are of this species.</p>
+    </div>
+  }
+</main>

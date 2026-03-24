@@ -1,0 +1,60 @@
+<main>
+  <h2><a routerLink="/hattier">Hattier</a> » Collection</h2>
+  @if(!isOctober)
+  {
+    <app-npc-dialog name="Myles" npc="hattier">
+      @if(hattierDialog)
+      {
+        <markdown [data]="hattierDialog"></markdown>
+      }
+      @if(!myStylesSubscription.closed)
+      {
+        <app-loading-throbber text="Ah, yes. Let me see"/>
+      }
+    </app-npc-dialog>
+  }
+  @else
+  {
+    <app-npc-dialog name="Lysander" npc="lysander">
+      @if(!myStylesSubscription.closed)
+      {
+        <app-loading-throbber text="Let me find Myles' notes"/>
+      }
+      @if(hattierDialog)
+      {
+        <p>Here we are.</p>
+      }
+    </app-npc-dialog>
+  }
+  <ul class="dialog-choices">
+    <li><a routerLink="/hattier" class="button">"Thanks! Now: back to the dressing rooms!"</a></li>
+    @if(isOctober)
+    {
+      <li><a routerLink="/hattier/illusionist" class="button">"Thanks! Can I check out your specialty goods?"</a></li>
+    }
+  </ul>
+  @if(!myStylesSubscription.closed)
+  {
+    <app-loading-throbber />
+  }
+  @else
+  {
+    <section class="styles">
+      <div class="header">
+        <span class="image"></span>
+        <span class="name">Styling</span>
+        <span class="unlocked-on">Unlocked</span>
+        <span class="comment hidden-when-small">Comment</span>
+      </div>
+      @for(s of myStyles; track $index)
+      {
+        <div>
+          <span class="image"><img [src]="'/assets/images/auras/' + s.aura.image + '.svg'" alt=""></span>
+          <span class="name">{{ s.name }}</span>
+          <span class="unlocked-on"><app-date-only [dateString]="s.unlockedOn" /></span>
+          <span class="comment">{{ s.comment }}</span>
+        </div>
+      }
+    </section>
+  }
+</main>

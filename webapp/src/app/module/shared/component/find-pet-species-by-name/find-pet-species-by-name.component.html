@@ -1,0 +1,44 @@
+@if(value)
+{
+  <p>
+    <label for="search">{{ label }}</label>
+    <span class="input">
+      @if(selected)
+      {
+        <img [src]="'/assets/images/pets/' + selected.image + '.svg'" width="24" height="24" alt="">
+        {{ selected.name }}
+      }
+      @else
+      {
+        Species #{{ value }}
+      }
+    <button class="link-text" type="button" (click)="doClear()" aria-label="Clear"><i class="fa-solid fa-close"></i></button>
+  </span>
+  </p>
+}
+<form (submit)="doSelectFirstResult()" [hidden]="!!value">
+  <p>
+    <label for="search">{{ label }}</label>
+    <input #search type="search" id="search" name="search" autocomplete="off">
+  </p>
+  @if(searching)
+  {
+    <p><app-loading-throbber text="Searching"/></p>
+  }
+  @if(results)
+  {
+    @if(results.length === 0)
+    {
+      <p>No species with that name were found.</p>
+    }
+    @else
+    {
+      <ul class="list">
+        @for(result of results; track result.id)
+        {
+          <li><button class="link-text" (click)="doSelect(result)"><img [ngSrc]="'/assets/images/pets/' + result.image + '.svg'" width="32" height="32" alt=""> {{ result.name }}</button></li>
+        }
+      </ul>
+    }
+  }
+</form>

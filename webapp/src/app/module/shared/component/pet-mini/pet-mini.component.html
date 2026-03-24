@@ -1,0 +1,6 @@
+<app-pet-appearance [pet]="pet" [size]="size" [style.width]="size" />
+<div style="position:relative;">
+  {{ pet.name }}<br>
+  <small>Level {{ pet.level }}</small>
+</div>
+<app-pet-status-effects [pet]="pet" [centered]="true" />

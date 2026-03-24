@@ -1,0 +1,65 @@
+:host {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+  max-width: 5in;
+}
+
+.input {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  box-sizing: border-box;
+  width: 100%;
+
+  > button {
+    display: inline-block;
+  }
+
+  > input {
+    box-shadow: none;
+    background: transparent;
+    padding: 0;
+    min-width: 5em;
+    flex: 1;
+    display: inline-block;
+  }
+}
+
+.select {
+  position: absolute;
+  width: 100%;
+  top: 100%;
+  border: 1px solid #ccc;
+  background-color: rgb(var(--color-input-background));
+  border-radius: 3px;
+  z-index: var(--z-index-dialog);
+
+  max-height: calc(100vh - 10rem);
+  overflow-y: auto;
+
+  > button {
+    display: grid;
+    width: 100%;
+    grid-template-columns: minmax(min-content, 2rem) auto;
+    background: transparent;
+    color: rgb(var(--color-input-foreground));
+    padding: 0;
+    border-radius: 0;
+
+    &.selected {
+      background-color: rgb(var(--color-link-and-button));
+      color: rgb(var(--color-text-on-button));
+    }
+
+    > :last-child {
+      text-align: left;
+    }
+  }
+
+  > p {
+    padding: 0.5em;
+    margin: 0;
+    opacity: 0.5;
+  }
+}

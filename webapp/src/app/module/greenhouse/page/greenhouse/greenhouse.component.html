@@ -1,0 +1,207 @@
+<main>
+  <h2>Greenhouse</h2>
+  @if(!allPlants || !fertilizer || !user || !greenhouse)
+  {
+    <p><app-loading-throbber [randomText]="true" /></p>
+  }
+  @if(greenhouse)
+  {
+    <div>
+      <div [class.with-helper]="user.canAssignHelpers">
+        <div>
+          <h4>Weeds</h4>
+          @if(weeds)
+          {
+            <p>Hey, there's, like, weeds and stuff all over the place!</p>
+            <img src="/assets/images/plants/weeds.svg" class="weeds" alt="weeds" />
+            <div class="buttons">
+              <button type="button" (click)="doWeed()" [class.disabled]="waitingOnAJAX">{{ weeds }}</button>
+            </div>
+          }
+          @else
+          {
+            <p>No weeds here!</p>
+          }
+        </div>
+        @if(user.canAssignHelpers)
+        {
+          <div>
+            <h4>Helper</h4>
+            @if(!greenhouse.helper)
+            {
+              <p>No one is helping tend the greenhouse right now. (A pet that knows a lot about Nature would be good!)</p>
+              <div class="buttons">
+                <button type="button" (click)="doAssignHelper()" [class.disabled]="waitingOnAJAX">Assign a Helper</button>
+              </div>
+            }
+            @else
+            {
+              <p>{{ greenhouse.helper.name }} is helping tend the greenhouse!</p>
+              <p><button type="button" class="link-text" (click)="doViewHelper()"><app-pet-appearance [pet]="greenhouse.helper" /></button></p>
+              <div class="buttons" [class.disabled]="waitingOnAJAX">
+                <button type="button" (click)="doRecallHelper()">Take Home</button>
+              </div>
+            }
+          </div>
+        }
+      </div>
+      <hr style="margin-top:1em;">
+    </div>
+  }
+  @if(allPlants && fertilizer && user && greenhouse)
+  {
+    <h3 style="margin-bottom: 0">{{ earthPlants.length + darkPlants.length + waterPlants.length }} / {{ greenhouse.maxPlants + greenhouse.maxDarkPlants + greenhouse.maxWaterPlants }} Plants</h3>
+    <div class="controls">
+      <div [class.disabled]="waitingOnAJAX">
+        @if(mode === 'tend')
+        {
+          <p>Touch a plant to fertilize or harvest it.</p>
+          <div class="buttons"><button type="button" (click)="mode = 'rearrange'">Rearrange</button> <button type="button" (click)="mode = 'pull-up'">Pull-up</button></div>
+        }
+        @else if(mode === 'pull-up')
+        {
+          <p>Touch a plant to pull it up.</p>
+          <div class="buttons"><button type="button" (click)="mode = 'tend'">Done</button></div>
+        }
+        @else if(mode === 'rearrange')
+        {
+          <p>Click the arrows to move plants.</p>
+          <div class="buttons"><button type="button" (click)="doSavePlantOrder()">Done</button></div>
+        }
+      </div>
+    </div>
+    <div class="plants" [class.disabled]="waitingOnAJAX">
+      @for(plant of allPlants; let i = $index; track i)
+      {
+        <button
+          (click)="doTouchPlant(plant)"
+          class="plant"
+          [class.dark]="plant.plant.type === GreenhousePlantTypeEnum.Dark"
+          [class.earth]="plant.plant.type === GreenhousePlantTypeEnum.Earth"
+          [class.water]="plant.plant.type === GreenhousePlantTypeEnum.Water"
+          [class.moved]="lastMovedPlant == plant.id"
+        >
+          <div class="background"></div>
+          <img [src]="'/assets/images/plants/' + plant.image + '.svg'" [class.shaking]="mode === 'pull-up'" [alt]="plant.plant.name" />
+          @if(plant.pollinators)
+          {
+            <app-plant-pollinator [pollinator]="plant.pollinators" />
+          }
+          @if(canInteract[plant.id])
+          {
+            <app-progress-bar [percent]="plant.progress" [label]="plant.isAdult && plant.progress >= 1 ? (plant.plant.name === 'Earth Tree' ? 'replant!' : 'harvest!') : 'fertilize!'" />
+          }
+          @else
+          {
+            <app-progress-bar [percent]="plant.previousProgress" [nextPercent]="plant.progress" [label]="plant.isAdult ? 'growing fruit' : 'growing up'" />
+          }
+          <span class="plant-name link-text" aria-hidden="true">{{ plant.plant.name }}</span>
+          @if(mode === 'rearrange')
+          {
+            <div class="buttons">
+              @if(i > 0)
+              {
+                <button class="move-left wire" type="button" (click)="doMovePlant(plant, -1)"><i class="fa-solid fa-arrow-left"></i></button>
+              }
+              @if(i < allPlants.length - 1)
+              {
+                <button class="move-right wire" type="button" (click)="doMovePlant(plant, 1)"><i class="fa-solid fa-arrow-right"></i></button>
+              }
+            </div>
+          }
+        </button>
+      }
+      @if(earthPlants.length < greenhouse.maxPlants)
+      {
+        <button class="plant" type="button" (click)="doAddPlant(GreenhousePlantTypeEnum.Earth)">
+          <i class="fa-regular fa-plus"></i>
+          <label style="height:2.5em">Add Plant</label>
+        </button>
+      }
+      @if(waterPlants.length < greenhouse.maxWaterPlants)
+      {
+        <button class="plant" type="button" (click)="doAddPlant(GreenhousePlantTypeEnum.Water)">
+          <i class="fa-regular fa-plus"></i>
+          <label style="height:2.5em">Add Water Plant</label>
+        </button>
+      }
+      @if(darkPlants.length < greenhouse.maxDarkPlants)
+      {
+        <button class="plant" type="button" (click)="doAddPlant(GreenhousePlantTypeEnum.Dark)">
+          <i class="fa-regular fa-plus"></i>
+          <label style="height:2.5em">Add Dark Plant</label>
+        </button>
+      }
+    </div>
+    @if(greenhouse.hasBirdBath || greenhouse.hasComposter || greenhouse.hasFishStatue)
+    {
+      <h3>Add-ons</h3>
+      <div class="add-ons" [class.disabled]="waitingOnAJAX">
+        @if(greenhouse.hasBirdBath)
+        {
+          <div>
+            <h4>Bird Bath</h4>
+            <div class="add-on-image-container bird-bath">
+              <img src="/assets/images/locations/bird-bath.svg" class="add-on-image" alt="" aria-hidden="true">
+              @if(greenhouse.visitingBird)
+              {
+                <img [src]="'/assets/images/visiting-birds/' + greenhouse.visitingBird + '.svg'" [class]="'bird ' + greenhouse.visitingBird" [alt]="greenhouse.visitingBird">
+              }
+              @if(hasBubblegum)
+              {
+                <img src="/assets/images/locations/bird-bath-bubblegum.svg" class="bubblegum" alt="there's bubblegum on this birdbath!">
+              }
+              @if(hasOil)
+              {
+                <img src="/assets/images/locations/bird-bath-oil.svg" class="oil" alt="there's oil on this birdbath!">
+              }
+            </div>
+            @if(greenhouse.visitingBird)
+            {
+              <button type="button" (click)="doTalkToBird()">Approach Bird</button>
+            }
+            @if(hasBubblegum || hasOil)
+            {
+              <button type="button" (click)="doClean()">Clean</button>
+            }
+          </div>
+        }
+        @if(greenhouse.hasComposter)
+        {
+          <div>
+            <h4>Composter</h4>
+            <div class="add-on-image-container">
+              <img src="/assets/images/items/furniture/composter.svg" class="add-on-image" alt="" aria-hidden="true">
+            </div>
+            @if(fertilizer.length > 0)
+            {
+              <button type="button" (click)="doFeedComposter()">Add <i [class]="itemOtherPropertiesIcons.Fertilizer"></i></button>
+            }
+            @else
+            {
+              <p>You have no items to compost...</p>
+            }
+          </div>
+        }
+        @if(greenhouse.hasFishStatue)
+        {
+          <div>
+            <h4>Fish Statue</h4>
+            <div class="add-on-image-container">
+              <img src="/assets/images/items/furniture/fish-statue.svg" class="add-on-image" alt="" aria-hidden="true">
+            </div>
+          </div>
+        }
+        @if(greenhouse.hasMoondial)
+        {
+          <div>
+            <h4>Moondial</h4>
+            <div class="add-on-image-container">
+              <img src="/assets/images/locations/moondial.svg" class="add-on-image" alt="" aria-hidden="true">
+            </div>
+          </div>
+        }
+      </div>
+    }
+  }
+</main>

@@ -1,0 +1,82 @@
+main {
+  background-image: url(/assets/images/locations/park.svg);
+  background-repeat: no-repeat;
+  background-size: min(75vw, 75vh);
+  background-attachment: fixed;
+
+  background-position: calc(100vw - min(75vw, 75vh) - 0.15in) bottom;
+
+  @media (min-width: 6in)
+  {
+    background-position: calc(100vw - min(75vw, 75vh) - 0.15in - (100vw - 6in) / 4) bottom;
+  }
+}
+
+.past-park-events {
+  display: flex;
+  flex-direction: column;
+  max-width: 540px;
+  gap: 0.5em;
+  margin-bottom: 0.5em;
+
+  > button {
+    display: grid;
+    grid-template-areas: 'header what when' 'header who who';
+    grid-template-columns: max(3rem, 20%) auto auto;
+    grid-template-rows: min-content auto;
+    background-color: rgb(var(--color-speech-bubble-background));
+    color: rgb(var(--color-text-on-content-background));
+    padding: 0;
+    overflow: hidden;
+
+    > .header {
+      grid-area: header;
+      background-size: cover;
+      height: 100%;
+
+      &.tri-d-chess-event {
+        background-image: url(/assets/images/park-event-types/tri-d-chess.svg);
+        background-position: center center;
+      }
+
+      &.jousting-event {
+        background-image: url(/assets/images/park-event-types/jousting.svg);
+        background-position: center top;
+      }
+
+      &.kin-ball-event {
+        background-image: url(/assets/images/park-event-types/kin-ball.svg);
+        background-position: center center;
+      }
+    }
+
+    > .what {
+      grid-area: what;
+      text-align: left;
+      font-weight: var(--bold-weight);
+      padding-left: 0.5rem;
+      padding-top: 0.5rem;
+    }
+
+    > .when {
+      text-align: right;
+      grid-area: when;
+      font-size: 80%;
+      padding-right: 0.5rem;
+      padding-top: 0.5rem;
+    }
+
+    > .who {
+      padding: 0 0.5rem;
+      grid-area: who;
+      text-align: left;
+    }
+
+    @media (min-width: 480px)
+    {
+      > .what { padding-left: 1rem; }
+      > .when { padding-right: 1rem; }
+      > .who { padding: 0 1rem; }
+    }
+  }
+}

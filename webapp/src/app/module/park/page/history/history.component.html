@@ -1,0 +1,49 @@
+<main>
+  <nav class="tabs-container">
+    <div class="tabs" role="tablist">
+      <a role="tab" routerLink="/park">Park</a>
+      <a role="tab" class="active" routerLink="/park/history">History</a>
+    </div>
+  </nav>
+
+  @if(!parkHistoryAjax.closed)
+  {
+    <p><app-loading-throbber [randomText]="true" /></p>
+  }
+  @else if(history.resultCount === 0)
+  {
+    <p>Your pets have not participated in any park events.</p>
+  }
+  @else
+  {
+    @if(history.pageCount > 1)
+    {
+      <p><app-url-paginator [page]="history.page" [pageCount]="history.pageCount" path="/park/history" /></p>
+    }
+    <div class="past-park-events">
+      @for(event of history.results; track event.id)
+      {
+        <button (click)="doShowEvent(event)">
+          <div class="header" [class]="(event.type|sluggify) + '-event'"></div>
+          <div class="what link-text">{{ event.type }}</div>
+          <div class="when">
+            <i class="fa-regular fa-clock"></i>{{ ' ' }}<app-date-and-time [dateString]="event.date" />
+          </div>
+          <ul class="who list">
+            @for(pet of event.participants; track pet.id)
+            {
+              @if(pet.owner.id === user.id)
+              {
+                <li>{{ pet.name }}</li>
+              }
+            }
+          </ul>
+        </button>
+      }
+    </div>
+    @if(history.pageCount > 1)
+    {
+      <p><app-url-paginator [page]="history.page" [pageCount]="history.pageCount" path="/park/history" /></p>
+    }
+  }
+</main>

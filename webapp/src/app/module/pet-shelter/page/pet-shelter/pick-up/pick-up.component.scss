@@ -1,0 +1,55 @@
+.pet-container {
+  position: relative;
+  background-color: rgb(var(--color-speech-bubble-background));
+  border-radius: 5px;
+  padding: 0 0.5rem 0.5rem;
+}
+
+button.pet {
+  background: transparent;
+  color: rgb(var(--color-text-on-content-background));
+  padding: 0;
+}
+
+button.move {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+}
+
+.house-overfull {
+  color: rgb(var(--color-warning));
+}
+
+h3 {
+  padding-top: 0.5rem;
+}
+
+.save-changes-container {
+  position: sticky;
+  top: 2.35rem;
+  background-color: rgb(var(--color-content-background));
+  z-index: 1;
+  padding: 0.5rem;
+  margin: 0 -0.5rem;
+
+  &.is-sticking {
+    box-shadow: 0 5px 1px rgba(0, 0, 0, 0.15);
+  }
+}
+
+.sticky-sentinel {
+  position: relative;
+  top: -2.5rem;
+}
+
+app-paginator {
+  position: relative;
+  z-index: 1;
+}
+
+.filters {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}

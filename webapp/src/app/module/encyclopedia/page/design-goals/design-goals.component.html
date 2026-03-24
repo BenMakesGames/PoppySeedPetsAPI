@@ -1,0 +1,16 @@
+<main>
+  <h2><a routerLink="/poppyopedia">Poppyopedia</a> » Design Goals</h2>
+  @if(designGoals.length === 0)
+  {
+    <p><app-loading-throbber/></p>
+  }
+  @else
+  {
+    <ul class="list">
+      @for(designGoal of designGoals; track designGoal.id)
+      {
+        <li><a [routerLink]="'/poppyopedia/designGoal/' + designGoal.id">{{ designGoal.name }}</a></li>
+      }
+    </ul>
+  }
+</main>

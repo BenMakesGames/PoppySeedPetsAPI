@@ -1,0 +1,27 @@
+.forecast {
+  display: grid;
+  grid-template-columns: 1fr 1px 1fr 1fr 1fr 1fr 1fr 1fr;
+  max-width: 5in;
+  grid-column-gap: 0.5rem;
+}
+
+.day {
+  text-align: center;
+}
+
+.gap {
+  padding: 1rem 0 1.5rem;
+  > div {
+    background: rgba(var(--color-text-on-content-background), 0.3333);
+    width: 1px;
+    height: 100%;
+  }
+}
+
+.holidays {
+  text-align: center;
+  > img {
+    display: inline-block;
+    width: 0.25in;
+  }
+}

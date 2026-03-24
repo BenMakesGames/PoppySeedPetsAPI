@@ -1,0 +1,11 @@
+span.input,.dialog-choices > li > button {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  gap: 0.25rem;
+  align-items: center;
+}
+
+span.input > button {
+  margin-left: auto;
+}

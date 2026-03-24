@@ -1,0 +1,57 @@
+<main>
+  <h3>Infinity Vault</h3>
+
+  @if(!status)
+  {
+    <div><app-loading-throbber [randomText]="true" /></div>
+  }
+  @else
+  {
+    @if(!status.isOpen)
+    {
+      <p>The vault is <strong>closed</strong>.</p>
+      @if(openSubscription.closed && statusAjax.closed)
+      {
+        <button (click)="doOpenVault()">Open Vault for 1 Hour (<app-moneys [amount]="status.openCost" />)</button>
+      }
+      @else
+      {
+        <button class="disabled">Open Vault for 1 Hour (<app-moneys [amount]="status.openCost" />) <app-loading-throbber text="" /></button>
+      }
+    }
+    @else
+    {
+      <p>The vault is <strong>open</strong>. It will close again in <strong>{{ timeRemaining }}</strong>.</p>
+
+      @if(!contents)
+      {
+        <div><app-loading-throbber text="Loading vault contents" /></div>
+      }
+      @else if(contents.resultCount === 0)
+      {
+        <p>The vault is empty.</p>
+      }
+      @else
+      {
+        <p><app-url-paginator [pageCount]="contents.pageCount" [page]="page" path="/infinityVault" /></p>
+        <div class="vault-items" [class.disabled]="!contentsAjax.closed">
+          @for(item of contents.results; track item.id)
+          {
+            <button class="wire vault-item" (click)="doStartMoveOut(item)">
+              <div class="item-image">
+                <img [src]="'/assets/images/items/' + item.itemImage + '.svg'" [alt]="item.itemName" />
+                <span class="quantity">&times; {{ item.quantity }}</span>
+              </div>
+              <strong>{{ item.itemName }}</strong>
+              @if(item.makerName)
+              {
+                <small>Made by {{ item.makerName }}</small>
+              }
+            </button>
+          }
+        </div>
+        <p><app-url-paginator [pageCount]="contents.pageCount" [page]="page" path="/infinityVault" /></p>
+      }
+    }
+  }
+</main>

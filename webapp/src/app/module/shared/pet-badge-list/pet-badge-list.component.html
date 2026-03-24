@@ -1,0 +1,6 @@
+<div>
+  @for(b of sortedBadges(); track b.badge)
+  {
+    <img [src]="b.badge|petBadgeImgSrc" [alt]="b.badge|petBadgeName" [title]="(b.badge|petBadgeName) + ' - ' + (b.dateAcquired|date:'mediumDate':'UTC')" />
+  }
+</div>

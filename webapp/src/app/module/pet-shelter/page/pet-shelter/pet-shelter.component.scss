@@ -1,0 +1,55 @@
+.adopt {
+
+  > input {
+    width: 100%;
+    margin: 0 0 0.5rem;
+  }
+
+  @media (min-width: 640px)
+  {
+    > input {
+      width: auto;
+      margin: 0 0.5rem 0 0;
+    }
+
+    > * {
+      display: inline-block;
+    }
+  }
+}
+
+.appearance {
+  position: relative;
+  overflow: visible;
+  padding: 0;
+  height: 1.1in;
+  width: 1.1in;
+
+  > .rare-container {
+    position: absolute;
+    width: 1.1in;
+    height: 1.1in;
+    overflow: hidden;
+    top: 0;
+    left: 0;
+
+    > .rare {
+      display: block;
+      position: absolute;
+      top: 15%;
+      right: -75%;
+      transform: rotate(45deg);
+      width: 200%;
+      text-align: center;
+      background-color: red;
+    }
+  }
+
+  > app-pet-appearance {
+    position: absolute;
+    width: 1in;
+    height: 1in;
+    bottom: 0.1in;
+    left: 0.05in;
+  }
+}

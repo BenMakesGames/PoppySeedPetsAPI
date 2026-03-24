@@ -1,0 +1,36 @@
+<div class="dialog">
+  <h4>Choose Food</h4>
+  <div class="dialog-body with-sticky-buttons">
+    @if(food === null)
+    {
+      <p><app-loading-throbber [randomText]="true"/></p>
+    }
+    @else if(food.length === 0)
+    {
+      <p>There are no items in your house that {{ whelpName }} wants to eat.</p>
+    }
+    @else
+    {
+      <div style="position: relative;" [class.disabled]="loading">
+        <div class="buttons sticky">
+          <button type="button" (click)="doFeedWhelp()" [class.disabled]="numSelected === 0">Feed</button>
+          @if(numSelected > 0)
+          {
+            <span>{{ numSelected }} selected</span>
+          }
+        </div>
+        <table>
+          <tbody>
+            @for(f of food; track f.id)
+            {
+              <tr tabindex="0" (click)="doSelectFood(f)" (dblclick)="doDoubleClickItem(f)" [class.selected]="selected[f.id]">
+                <td><app-inventory-item [inventory]="f" /></td>
+                <td class="rating">{{ f.item.food.modifiers|describeDragonFood }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </div>
+</div>

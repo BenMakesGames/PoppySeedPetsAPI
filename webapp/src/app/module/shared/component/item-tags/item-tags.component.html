@@ -1,0 +1,42 @@
+@let i = item();
+<div class="tags">
+  @if(i.hat)
+  {
+    <i class="{{ itemOtherPropertiesIcons.Hat }}" role="img" aria-label="hat"></i>
+  }
+  @if(i.greenhouseType == 'earth')
+  {
+    <i class="{{ itemOtherPropertiesIcons.SeedlingEarth }}" role="img" aria-label="seed"></i>
+  }
+  @else if(i.greenhouseType == 'dark')
+  {
+    <i class="{{ itemOtherPropertiesIcons.SeedlingDark }}" role="img" aria-label="seed (dark)"></i>
+  }
+  @else if(i.greenhouseType == 'water')
+  {
+    <i class="{{ itemOtherPropertiesIcons.SeedlingWater }}" role="img" aria-label="seed (water)"></i>
+  }
+  @if(i.isFlammable)
+  {
+    <i class="{{ itemOtherPropertiesIcons.Flammable }}" role="img" aria-label="fire"></i>
+  }
+  @if(i.isFertilizer)
+  {
+    <i class="{{ itemOtherPropertiesIcons.Fertilizer }}" role="img" aria-label="poop"></i>
+  }
+  @if(i.isTreasure)
+  {
+    <i class="{{ itemOtherPropertiesIcons.Treasure }}" role="img" aria-label="gem"></i>
+  }
+  @if(i.recycleValue > 0)
+  {
+    <app-recycling-points [amount]="i.recycleValue" />
+  }
+  @if(i.itemGroups && i.itemGroups.length > 0)
+  {
+    @for(group of i.itemGroups; track group.name)
+    {
+      <a routerLink="/poppyopedia/item" [queryParams]="{'filter.itemGroup': group.name }" (click)="doNav()" class="button item-group">{{ group.name }}</a>
+    }
+  }
+</div>

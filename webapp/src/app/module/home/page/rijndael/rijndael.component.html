@@ -1,0 +1,47 @@
+@if(!results)
+{
+  <main>
+    <h2>Select an Item</h2>
+    <p>Any item! You don't even have to have one!</p>
+    <div [class.disabled]="doingIt">
+      <app-find-item-by-name (valueChange)="doIt($event)" />
+    </div>
+  </main>
+}
+@else
+{
+  <main>
+    <h2>The Top 20 Owners</h2>
+    <p>(Alas: the Rijndael has lost its power, reverting to an Elvish Magnifying Glass.)</p>
+    @if(results.length > 0)
+    {
+      <table>
+        <thead>
+          <tr>
+            <th>Player</th>
+            <th class="quantity">Quantity</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for(result of results; track result.id)
+          {
+            <tr>
+              <td><a [routerLink]="[ '/poppyopedia/resident/' + result.id ]">{{ result.name }}</a></td>
+              <td class="quantity">{{ result.quantity }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+      @if(results.length < 20)
+      {
+        <p><small>(Oh, but there were only {{ results.length }}, I guess...)</small></p>
+      }
+    }
+    @else
+    {
+      <p>Oh, dang, wait! NO ONE has any?!?!</p>
+      <p>Well, I mean, that <em>is</em> interesting information, I guess...</p>
+    }
+    <p><a [routerLink]="['/home']">Return to house...</a></p>
+  </main>
+}
