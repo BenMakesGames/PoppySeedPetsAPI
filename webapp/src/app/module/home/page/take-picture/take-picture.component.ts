@@ -1,7 +1,7 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import {ActivatedRoute} from "@angular/router";
 import { MyPetSerializationGroup } from "../../../../model/my-pet/my-pet.serialization-group";
-import * as htmlToImage from 'html-to-image';
+import { domToPng } from 'modern-screenshot';
 import download from 'downloadjs';
 
 @Component({
@@ -238,8 +238,10 @@ export class TakePictureComponent implements OnInit {
 
     this.downloading = true;
 
-    htmlToImage.toPng(this.polaroid.nativeElement).then(dataUrl => {
+    domToPng(this.polaroid.nativeElement).then(dataUrl => {
       download(dataUrl, this.caption.replace(/[^a-zA-Z0-9() !_'".+$\[\]=]/g, '-') + '.png');
+      this.downloading = false;
+    }).catch(() => {
       this.downloading = false;
     });
   }
