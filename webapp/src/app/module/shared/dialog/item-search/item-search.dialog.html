@@ -99,7 +99,7 @@
           <datalist id="item-group-list">
             @for(group of filteredItemGroups; track group)
             {
-              <option [value]="group" />
+              <option [value]="group">{{ group }}</option>
             }
           </datalist>
         </p>
