@@ -16,14 +16,13 @@ $collapseBelowThisWidth: 640px;
   grid-template-columns: 200px auto 85px;
   align-items: center;
   width: 500px;
+  gap: 0.5rem;
 
   @media (max-width: $collapseBelowThisWidth) {
     grid-template-areas: 'name' 'picture' 'progress' 'claim';
     grid-template-columns: 1fr;
     width: 100%;
   }
-
-  gap: 0.5rem;
 
   + .reward {
     border-top: 1px solid rgb(var(--color-text-on-content-background));
