@@ -42,16 +42,16 @@
   label {
     --image-width: 1in;
 
-    @media (max-width:540px)
-    {
-      --image-width: 0.75in;
-    }
-
     cursor: pointer;
     display: block;
     width: calc(var(--image-width) + 1rem);
     height: calc(var(--image-width) + 2rem);
     position: relative;
+
+    @media (max-width:540px)
+    {
+      --image-width: 0.75in;
+    }
 
     &.selected {
       outline: 2px solid rgb(var(--color-primary));

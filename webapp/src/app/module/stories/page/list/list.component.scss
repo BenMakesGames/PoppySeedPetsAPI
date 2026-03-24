@@ -2,6 +2,7 @@
   > div {
     display: flex;
     flex-direction: row;
+    background-color: rgb(var(--color-speech-bubble-background));
 
     + div {
       margin-top: 1em;
@@ -26,8 +27,6 @@
         width: 5em;
       }
     }
-
-    background-color: rgb(var(--color-speech-bubble-background));
   }
 }
 
