@@ -31,6 +31,7 @@ use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\PetExperienceService;
 use Doctrine\ORM\EntityManagerInterface;
+use App\Enum\GuildEnum;
 
 class PetSummonedAwayService
 {
@@ -52,12 +53,13 @@ class PetSummonedAwayService
 
         $pet->increaseSafety(-$this->rng->rngNextInt(2, 4));
 
-        $activityLog = match($this->rng->rngNextInt(1, 4))
+        $activityLog = match($this->rng->rngNextInt(1, 4 + ($pet->isInGuild(GuildEnum::Correspondence) ? 1 : 0)))
         {
             1 => $this->doSummonedToFight($petWithSkills),
             2 => $this->doSummonedToCleanAndHost($petWithSkills),
             3 => $this->doSummonedToAssistWithRitual($petWithSkills),
             4 => $this->doSummonedToAssistWithGathering($petWithSkills),
+            5 => $this->doSummonedToDeliverMessage($petWithSkills),
             default => throw new UnreachableException(),
         };
 
@@ -288,5 +290,30 @@ class PetSummonedAwayService
         {
             return [ 'mine for gold', 'mining for gold', 'Gold Ore' ];
         }
+    }
+
+    private function doSummonedToDeliverMessage(ComputedPetSkills $petWithSkills): PetActivityLog
+    {
+        $pet = $petWithSkills->getPet();
+
+        $member = $pet->getGuildMembership()
+            ?? throw new \RuntimeException('Pet is not in a guild?!');
+
+        $recipient = $this->rng->rngNextFromArray([
+            'another wizard',
+            'a king',
+            'fairies'
+        ]);
+
+        $member->increaseReputation();
+
+        $message = 'While ' . $pet->getName() . ' was thinking about what to do, they were magically summoned! The wizard that summoned them gave them a task as a Correspondence member to deliver a letter to ' . $recipient . '. Once the letter was delivered, ' . $pet->getName() . ' returned home!';
+
+        $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, $message)
+            ->setIcon('icons/activity-logs/summoned')
+            ->addTags(PetActivityLogTagHelpers::findByNames($this->em, ['Guild']))
+        ;
+
+        return $activityLog;
     }
 }
