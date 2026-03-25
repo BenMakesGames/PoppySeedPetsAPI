@@ -1231,8 +1231,12 @@ class HuntingService implements IPetActivity
         {
             $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% encountered a Satyr, who invited them to party! The Satyr danced with ' . $pet->getName() . ' and shared some gifts before leaving in peace.')
                 ->setIcon('icons/activity-logs/drunk-satyr')
-                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, $pet->isInGuild(GuildEnum::GizubisGarden) ? ['Fae-kind', 'Guild'] : ['Fae-kind']))
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, ['Fae-kind']))
             ;
+
+            if ($pet->isInGuild(GuildEnum::GizubisGarden))
+                $pet->getGuildMembership()->increaseReputation();
+
             $pet->increaseEsteem(1);
             $this->inventoryService->petCollectsItem('Blackberry Wine', $pet, 'Gifts for ' . $pet->getName() . ', from a Satyr.', $activityLog);
 
