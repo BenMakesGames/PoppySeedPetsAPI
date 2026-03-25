@@ -86,7 +86,7 @@
             <label class="radio-checkbox"><input type="checkbox" [(ngModel)]="selectedSubject.showHat" name="show_hat" /> Hat</label>
           </div>
         }
-        @if((selectedSubject.pet.hat && selectedSubject.pet.hat.enchantment.aura) || (selectedSubject.pet.tool && selectedSubject.pet.tool.enchantment.aura))
+        @if((selectedSubject.pet.hat?.enchantment?.aura) || (selectedSubject.pet.tool?.enchantment?.aura))
         {
           <div>
             <label class="radio-checkbox"><input type="checkbox" [(ngModel)]="selectedSubject.showAura" name="show_aura" /> Aura</label>
