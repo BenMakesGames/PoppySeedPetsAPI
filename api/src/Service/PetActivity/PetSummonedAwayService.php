@@ -59,7 +59,7 @@ class PetSummonedAwayService
             2 => $this->doSummonedToCleanAndHost($petWithSkills),
             3 => $this->doSummonedToAssistWithRitual($petWithSkills),
             4 => $this->doSummonedToAssistWithGathering($petWithSkills),
-            5 => $this->doSummonedToDeliverMessage($petWithSkills),
+            5 => $this->doSummonedToDeliverMessage($petWithSkills), // only possible if a correspondence member
             default => throw new UnreachableException(),
         };
 
@@ -307,12 +307,14 @@ class PetSummonedAwayService
 
         $member->increaseReputation();
 
-        $message = 'While ' . $pet->getName() . ' was thinking about what to do, they were magically summoned! The wizard that summoned them gave them a task as a Correspondence member to deliver a letter to ' . $recipient . '. Once the letter was delivered, ' . $pet->getName() . ' returned home!';
+        $message = 'While ' . $pet->getName() . ' was thinking about what to do, they were magically summoned! The wizard that summoned them gave them a task as a Correspondence member to deliver a letter to ' . $recipient . '. After a long trek, the letter was delivered and ' . $pet->getName() . ' returned home!';
 
         $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, $message)
             ->setIcon('icons/activity-logs/summoned')
             ->addTags(PetActivityLogTagHelpers::findByNames($this->em, ['Guild']))
         ;
+
+        $this->petExperienceService->gainExp($pet, $this->rng->rngNextInt(1, 2), [ PetSkillEnum::Brawl ], $activityLog);
 
         return $activityLog;
     }
