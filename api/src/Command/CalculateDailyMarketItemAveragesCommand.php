@@ -108,6 +108,9 @@ class CalculateDailyMarketItemAveragesCommand extends Command
         return self::SUCCESS;
     }
 
+    /**
+     * @param string[] $sqlRows
+     */
     private function insert(array $sqlRows): void
     {
         $this->output->writeln('Inserting ' . count($sqlRows) . ' records...');

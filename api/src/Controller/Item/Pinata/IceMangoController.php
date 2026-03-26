@@ -50,7 +50,7 @@ class IceMangoController
         $mangoesShattered = $userStatsRepository->incrementStat($user, UserStat::ShatteredIceMango);
         $lastShatterEffect = UserQuestRepository::findOrCreate($em, $user, 'Last Ice "Mango" Shattering', 0);
 
-        $possibleEffects = array_diff([ 1, 2, 3, 4 ], [ $lastShatterEffect->getValue() ]);
+        $possibleEffects = array_diff([ 1, 2, 3, 4 ], [ $lastShatterEffect->getIntValue() ]);
 
         $effect = $rng->rngNextFromArray($possibleEffects);
 

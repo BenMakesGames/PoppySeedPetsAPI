@@ -34,26 +34,6 @@ use App\Service\UserAccessor;
 #[Route("/pet")]
 class DaycareController
 {
-    #[Route("/daycare", methods: ["GET"])]
-    #[IsGranted("IS_AUTHENTICATED_FULLY")]
-    public function getMyDaycarePets(
-        ResponseService $responseService, PetFilterService $petFilterService, Request $request,
-        UserAccessor $userAccessor
-    ): JsonResponse
-    {
-        $user = $userAccessor->getUserOrThrow();
-
-        $petFilterService->addRequiredFilter('owner', $user->getId());
-        $petFilterService->addRequiredFilter('location', [ PetLocationEnum::DAYCARE, PetLocationEnum::HOME ]);
-
-        $petsInDaycare = $petFilterService->getResults($request->query);
-
-        return $responseService->success(
-            $petsInDaycare,
-            [ SerializationGroupEnum::FILTER_RESULTS, SerializationGroupEnum::MY_PET ]
-        );
-    }
-
     #[DoesNotRequireHouseHours]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     #[Route("/daycare/arrange", methods: ["POST"])]
@@ -62,7 +42,12 @@ class DaycareController
         UserAccessor $userAccessor
     ): JsonResponse
     {
-        $petIds = array_map(fn($petId) => (int)$petId, array_unique($request->request->all('pets')));
+        $petIds = array_unique(
+            array_map(
+                fn($petId) => (int)$petId,
+                $request->request->all('pets')
+            )
+        );
 
         if(ArrayFunctions::any($petIds, fn(int $id) => $id <= 0))
             throw new PSPFormValidationException('Invalid pet ID(s) provided.');
