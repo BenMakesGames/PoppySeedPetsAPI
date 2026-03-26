@@ -2293,12 +2293,6 @@ parameters:
 			path: src/Controller/Patreon/LiveUpdatesController.php
 
 		-
-			message: '#^Cannot cast mixed to int\.$#'
-			identifier: cast.int
-			count: 1
-			path: src/Controller/Pet/DaycareController.php
-
-		-
 			message: '#^Method App\\Controller\\Pet\\DaycareController\:\:takePetOutOfDaycare\(\) has no return type specified\.$#'
 			identifier: missingType.return
 			count: 1
