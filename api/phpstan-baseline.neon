@@ -157,6 +157,12 @@ parameters:
 			path: src/Command/ExportAuraCommand.php
 
 		-
+			message: '#^Method App\\Command\\ExportAuraCommand\:\:encodeValueToSql\(\) should return float\|int\|string but returns mixed\.$#'
+			identifier: return.type
+			count: 1
+			path: src/Command/ExportAuraCommand.php
+
+		-
 			message: '#^Parameter \#1 \$string of function addslashes expects string, mixed given\.$#'
 			identifier: argument.type
 			count: 1
@@ -177,6 +183,12 @@ parameters:
 		-
 			message: '#^Call to an undefined method object\:\:getId\(\)\.$#'
 			identifier: method.notFound
+			count: 1
+			path: src/Command/ExportItemCommand.php
+
+		-
+			message: '#^Method App\\Command\\ExportItemCommand\:\:encodeValueToSql\(\) should return float\|int\|string but returns mixed\.$#'
+			identifier: return.type
 			count: 1
 			path: src/Command/ExportItemCommand.php
 
@@ -357,6 +369,18 @@ parameters:
 		-
 			message: '#^Method App\\Command\\PoppySeedPetsCommand\:\:confirm\(\) should return bool but returns mixed\.$#'
 			identifier: return.type
+			count: 1
+			path: src/Command/PoppySeedPetsCommand.php
+
+		-
+			message: '#^Parameter \#1 \$validator of method Symfony\\Component\\Console\\Question\\Question\:\:setValidator\(\) expects \(callable\(mixed\)\: mixed\)\|null, Closure\(string\)\: float given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Command/PoppySeedPetsCommand.php
+
+		-
+			message: '#^Parameter \#1 \$validator of method Symfony\\Component\\Console\\Question\\Question\:\:setValidator\(\) expects \(callable\(mixed\)\: mixed\)\|null, Closure\(string\)\: string given\.$#'
+			identifier: argument.type
 			count: 1
 			path: src/Command/PoppySeedPetsCommand.php
 
@@ -794,6 +818,12 @@ parameters:
 
 		-
 			message: '#^Parameter \#1 \$string of function strtolower expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Command/UpsertRecipeCommand.php
+
+		-
+			message: '#^Parameter \#1 \$validator of method Symfony\\Component\\Console\\Question\\Question\:\:setValidator\(\) expects \(callable\(mixed\)\: mixed\)\|null, Closure\(string\)\: string given\.$#'
 			identifier: argument.type
 			count: 1
 			path: src/Command/UpsertRecipeCommand.php
@@ -1888,6 +1918,12 @@ parameters:
 			message: '#^Cannot call method getMonster\(\) on App\\Entity\\MonsterOfTheWeek\|null\.$#'
 			identifier: method.nonObject
 			count: 6
+			path: src/Controller/MonsterOfTheWeek/ClaimRewardsController.php
+
+		-
+			message: '#^Match arm comparison between 4 and 4 is always true\.$#'
+			identifier: match.alwaysTrue
+			count: 1
 			path: src/Controller/MonsterOfTheWeek/ClaimRewardsController.php
 
 		-
@@ -3609,6 +3645,12 @@ parameters:
 		-
 			message: '#^Cannot access offset 1 on callable\(\)\: mixed\.$#'
 			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: src/EventSubscriber/ControllerActionSubscriber.php
+
+		-
+			message: '#^Parameter \#1 \$inputs of method Symfony\\Component\\HttpFoundation\\InputBag\<bool\|float\|int\|string\|null\>\:\:replace\(\) expects array\<string, mixed\>, array\<mixed\> given\.$#'
+			identifier: argument.type
 			count: 1
 			path: src/EventSubscriber/ControllerActionSubscriber.php
 
@@ -5891,6 +5933,12 @@ parameters:
 			identifier: method.nonObject
 			count: 4
 			path: src/Service/PetActivity/Protocol7Service.php
+
+		-
+			message: '#^Method App\\Service\\PetActivity\\Relationship\\LoveService\:\:getAncestorIds\(\) should return array\<int\> but returns array\<int\|null\>\.$#'
+			identifier: return.type
+			count: 1
+			path: src/Service/PetActivity/Relationship/LoveService.php
 
 		-
 			message: '#^Method App\\Service\\PetActivity\\Relationship\\RelationshipChangeService\:\:determineWhoChangesTheirMind\(\) return type has no value type specified in iterable type array\.$#'
