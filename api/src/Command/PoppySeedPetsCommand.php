@@ -74,8 +74,8 @@ abstract class PoppySeedPetsCommand extends Command
     {
         $question = new Question($prompt . ' (' . $defaultValue . ') ', $defaultValue);
 
-        $question->setValidator(function(string $answer) use($constraint) {
-            if((int)$answer != $answer)
+        $question->setValidator(function(mixed $answer) use($constraint) {
+            if(!is_string($answer) || (int)$answer != $answer)
                 throw new \RuntimeException('Must be an integer.');
 
             if($constraint && !$constraint((int)$answer))

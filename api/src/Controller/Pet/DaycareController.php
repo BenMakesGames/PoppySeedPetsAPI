@@ -16,56 +16,33 @@ namespace App\Controller\Pet;
 use App\Attributes\DoesNotRequireHouseHours;
 use App\Entity\Pet;
 use App\Enum\PetLocationEnum;
-use App\Enum\SerializationGroupEnum;
-use App\Exceptions\PSPFormValidationException;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPPetNotFoundException;
 use App\Functions\ArrayFunctions;
-use App\Service\Filter\PetFilterService;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Component\Validator\Constraints as Assert;
 use App\Service\UserAccessor;
 
 #[Route("/pet")]
 class DaycareController
 {
-    #[Route("/daycare", methods: ["GET"])]
-    #[IsGranted("IS_AUTHENTICATED_FULLY")]
-    public function getMyDaycarePets(
-        ResponseService $responseService, PetFilterService $petFilterService, Request $request,
-        UserAccessor $userAccessor
-    ): JsonResponse
-    {
-        $user = $userAccessor->getUserOrThrow();
-
-        $petFilterService->addRequiredFilter('owner', $user->getId());
-        $petFilterService->addRequiredFilter('location', [ PetLocationEnum::DAYCARE, PetLocationEnum::HOME ]);
-
-        $petsInDaycare = $petFilterService->getResults($request->query);
-
-        return $responseService->success(
-            $petsInDaycare,
-            [ SerializationGroupEnum::FILTER_RESULTS, SerializationGroupEnum::MY_PET ]
-        );
-    }
-
     #[DoesNotRequireHouseHours]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     #[Route("/daycare/arrange", methods: ["POST"])]
     public function arrangePets(
-        ResponseService $responseService, Request $request, EntityManagerInterface $em,
+        ResponseService $responseService,
+        #[MapRequestPayload] ArrangePetsRequest $payload,
+        EntityManagerInterface $em,
         UserAccessor $userAccessor
     ): JsonResponse
     {
-        $petIds = array_map(fn($petId) => (int)$petId, array_unique($request->request->all('pets')));
-
-        if(ArrayFunctions::any($petIds, fn(int $id) => $id <= 0))
-            throw new PSPFormValidationException('Invalid pet ID(s) provided.');
+        $petIds = array_unique($payload->pets);
 
         $user = $userAccessor->getUserOrThrow();
 
@@ -128,4 +105,16 @@ class DaycareController
 
         $pet->setLocation(PetLocationEnum::HOME);
     }
+}
+
+class ArrangePetsRequest
+{
+    public function __construct(
+        /** @var int[] */
+        #[Assert\All([
+            new Assert\Type('int'),
+            new Assert\Positive()
+        ])]
+        public readonly array $pets,
+    ) {}
 }

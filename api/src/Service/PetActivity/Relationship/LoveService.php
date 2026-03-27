@@ -210,6 +210,7 @@ class LoveService
     private function getAncestorIds(Pet $pet): array
     {
         // we'll go back two generations; and include yourself:
+        /** @var int[] $ancestorIds */
         $ancestorIds = [
             $pet->getId(),
         ];
