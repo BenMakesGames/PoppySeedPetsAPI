@@ -31,12 +31,6 @@ parameters:
 			path: src/Command/CalculateDailyMarketItemAveragesCommand.php
 
 		-
-			message: '#^Method App\\Command\\CalculateDailyMarketItemAveragesCommand\:\:insert\(\) has parameter \$sqlRows with no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Command/CalculateDailyMarketItemAveragesCommand.php
-
-		-
 			message: '#^Cannot access offset ''qty'' on array\<string, mixed\>\|false\.$#'
 			identifier: offsetAccess.nonOffsetAccessible
 			count: 2
@@ -163,8 +157,8 @@ parameters:
 			path: src/Command/ExportAuraCommand.php
 
 		-
-			message: '#^Parameter \#1 \$columnName of method Doctrine\\ORM\\Mapping\\ClassMetadata\<object\>\:\:getFieldForColumn\(\) expects string, mixed given\.$#'
-			identifier: argument.type
+			message: '#^Method App\\Command\\ExportAuraCommand\:\:encodeValueToSql\(\) should return float\|int\|string but returns mixed\.$#'
+			identifier: return.type
 			count: 1
 			path: src/Command/ExportAuraCommand.php
 
@@ -193,8 +187,8 @@ parameters:
 			path: src/Command/ExportItemCommand.php
 
 		-
-			message: '#^Parameter \#1 \$columnName of method Doctrine\\ORM\\Mapping\\ClassMetadata\<object\>\:\:getFieldForColumn\(\) expects string, mixed given\.$#'
-			identifier: argument.type
+			message: '#^Method App\\Command\\ExportItemCommand\:\:encodeValueToSql\(\) should return float\|int\|string but returns mixed\.$#'
+			identifier: return.type
 			count: 1
 			path: src/Command/ExportItemCommand.php
 
@@ -379,6 +373,18 @@ parameters:
 			path: src/Command/PoppySeedPetsCommand.php
 
 		-
+			message: '#^Parameter \#1 \$validator of method Symfony\\Component\\Console\\Question\\Question\:\:setValidator\(\) expects \(callable\(mixed\)\: mixed\)\|null, Closure\(string\)\: float given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Command/PoppySeedPetsCommand.php
+
+		-
+			message: '#^Parameter \#1 \$validator of method Symfony\\Component\\Console\\Question\\Question\:\:setValidator\(\) expects \(callable\(mixed\)\: mixed\)\|null, Closure\(string\)\: string given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Command/PoppySeedPetsCommand.php
+
+		-
 			message: '#^Property App\\Command\\PoppySeedPetsCommand\:\:\$questionHelper \(Symfony\\Component\\Console\\Helper\\QuestionHelper\) does not accept Symfony\\Component\\Console\\Helper\\HelperInterface\.$#'
 			identifier: assign.propertyType
 			count: 1
@@ -496,12 +502,6 @@ parameters:
 			message: '#^Cannot access an offset on int\|list\<string\>\.$#'
 			identifier: offsetAccess.nonOffsetAccessible
 			count: 1
-			path: src/Command/UpdateHollowEarthTileEventCommand.php
-
-		-
-			message: '#^Cannot call method getNameWithArticle\(\) on App\\Entity\\Item\|null\.$#'
-			identifier: method.nonObject
-			count: 2
 			path: src/Command/UpdateHollowEarthTileEventCommand.php
 
 		-
@@ -818,6 +818,12 @@ parameters:
 
 		-
 			message: '#^Parameter \#1 \$string of function strtolower expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Command/UpsertRecipeCommand.php
+
+		-
+			message: '#^Parameter \#1 \$validator of method Symfony\\Component\\Console\\Question\\Question\:\:setValidator\(\) expects \(callable\(mixed\)\: mixed\)\|null, Closure\(string\)\: string given\.$#'
 			identifier: argument.type
 			count: 1
 			path: src/Command/UpsertRecipeCommand.php
@@ -1915,6 +1921,12 @@ parameters:
 			path: src/Controller/MonsterOfTheWeek/ClaimRewardsController.php
 
 		-
+			message: '#^Match arm comparison between 4 and 4 is always true\.$#'
+			identifier: match.alwaysTrue
+			count: 1
+			path: src/Controller/MonsterOfTheWeek/ClaimRewardsController.php
+
+		-
 			message: '#^Match arm comparison between App\\Enum\\MonsterOfTheWeekEnum\:\:VafAndNir and App\\Enum\\MonsterOfTheWeekEnum\:\:VafAndNir is always true\.$#'
 			identifier: match.alwaysTrue
 			count: 3
@@ -1925,36 +1937,6 @@ parameters:
 			identifier: match.unhandled
 			count: 1
 			path: src/Controller/MonsterOfTheWeek/ClaimRewardsController.php
-
-		-
-			message: '#^Cannot call method getCommunityTotal\(\) on App\\Entity\\MonsterOfTheWeek\|null\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: src/Controller/MonsterOfTheWeek/ContributeController.php
-
-		-
-			message: '#^Cannot call method getId\(\) on App\\Entity\\MonsterOfTheWeek\|null\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: src/Controller/MonsterOfTheWeek/ContributeController.php
-
-		-
-			message: '#^Cannot call method getMonster\(\) on App\\Entity\\MonsterOfTheWeek\|null\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: src/Controller/MonsterOfTheWeek/ContributeController.php
-
-		-
-			message: '#^Cannot call method isCurrent\(\) on App\\Entity\\MonsterOfTheWeek\|null\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: src/Controller/MonsterOfTheWeek/ContributeController.php
-
-		-
-			message: '#^Parameter \#1 \$monsterOfTheWeek of method App\\Entity\\MonsterOfTheWeekContribution\:\:setMonsterOfTheWeek\(\) expects App\\Entity\\MonsterOfTheWeek, App\\Entity\\MonsterOfTheWeek\|null given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Controller/MonsterOfTheWeek/ContributeController.php
 
 		-
 			message: '#^Binary operation "\*" between mixed and mixed results in an error\.$#'
@@ -2345,12 +2327,6 @@ parameters:
 			identifier: argument.type
 			count: 1
 			path: src/Controller/Patreon/LiveUpdatesController.php
-
-		-
-			message: '#^Cannot cast mixed to int\.$#'
-			identifier: cast.int
-			count: 1
-			path: src/Controller/Pet/DaycareController.php
 
 		-
 			message: '#^Method App\\Controller\\Pet\\DaycareController\:\:takePetOutOfDaycare\(\) has no return type specified\.$#'
@@ -3673,6 +3649,12 @@ parameters:
 			path: src/EventSubscriber/ControllerActionSubscriber.php
 
 		-
+			message: '#^Parameter \#1 \$inputs of method Symfony\\Component\\HttpFoundation\\InputBag\<bool\|float\|int\|string\|null\>\:\:replace\(\) expects array\<string, mixed\>, array\<mixed\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/EventSubscriber/ControllerActionSubscriber.php
+
+		-
 			message: '#^Parameter \#1 \$object of function get_class expects object, mixed given\.$#'
 			identifier: argument.type
 			count: 1
@@ -3812,12 +3794,6 @@ parameters:
 
 		-
 			message: '#^Parameter \#1 \$string of function strlen expects string, mixed given\.$#'
-			identifier: argument.type
-			count: 2
-			path: src/Functions/GroupNameGenerator.php
-
-		-
-			message: '#^Parameter \#2 \$getter of static method App\\Functions\\ArrayFunctions\:\:max\(\) expects callable\(mixed\)\: \(float\|int\|numeric\-string\), Closure\(string\)\: int\<0, max\> given\.$#'
 			identifier: argument.type
 			count: 1
 			path: src/Functions/GroupNameGenerator.php
@@ -4081,28 +4057,10 @@ parameters:
 			path: src/Security/CryptographicFunctions.php
 
 		-
-			message: '#^Method App\\Security\\SessionAuthenticator\:\:getSessionIdOrThrow\(\) should return string but returns float\|int\<min, \-1\>\|int\<1, max\>\|string\|true\.$#'
-			identifier: return.type
-			count: 1
-			path: src/Security/SessionAuthenticator.php
-
-		-
-			message: '#^Parameter \#1 \$string of function strlen expects string, bool\|float\|int\|string\|null given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Security/SessionAuthenticator.php
-
-		-
 			message: '#^Parameter \#1 \$string of function substr expects string, string\|null given\.$#'
 			identifier: argument.type
 			count: 2
 			path: src/Security/SessionAuthenticator.php
-
-		-
-			message: '#^Method App\\Serializer\\PetActivityLogNormalizer\:\:normalize\(\) has parameter \$context with no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Serializer/PetActivityLogNormalizer.php
 
 		-
 			message: '#^Method App\\Serializer\\PetActivityLogNormalizer\:\:normalize\(\) return type has no value type specified in iterable type array\.$#'
@@ -4113,12 +4071,6 @@ parameters:
 		-
 			message: '#^Method App\\Serializer\\PetActivityLogNormalizer\:\:normalize\(\) return type with generic class ArrayObject does not specify its types\: TKey, TValue$#'
 			identifier: missingType.generics
-			count: 1
-			path: src/Serializer/PetActivityLogNormalizer.php
-
-		-
-			message: '#^Method App\\Serializer\\PetActivityLogNormalizer\:\:supportsNormalization\(\) has parameter \$context with no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
 			count: 1
 			path: src/Serializer/PetActivityLogNormalizer.php
 
@@ -4141,12 +4093,6 @@ parameters:
 			path: src/Serializer/PetSpeciesNormalizer.php
 
 		-
-			message: '#^Method App\\Serializer\\PetSpeciesNormalizer\:\:normalize\(\) has parameter \$context with no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Serializer/PetSpeciesNormalizer.php
-
-		-
 			message: '#^Method App\\Serializer\\PetSpeciesNormalizer\:\:normalize\(\) return type has no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 1
@@ -4155,12 +4101,6 @@ parameters:
 		-
 			message: '#^Method App\\Serializer\\PetSpeciesNormalizer\:\:normalize\(\) return type with generic class ArrayObject does not specify its types\: TKey, TValue$#'
 			identifier: missingType.generics
-			count: 1
-			path: src/Serializer/PetSpeciesNormalizer.php
-
-		-
-			message: '#^Method App\\Serializer\\PetSpeciesNormalizer\:\:supportsNormalization\(\) has parameter \$context with no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
 			count: 1
 			path: src/Serializer/PetSpeciesNormalizer.php
 
@@ -4177,12 +4117,6 @@ parameters:
 			path: src/Serializer/UserFieldGuideEntryNormalizer.php
 
 		-
-			message: '#^Method App\\Serializer\\UserFieldGuideEntryNormalizer\:\:normalize\(\) has parameter \$context with no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Serializer/UserFieldGuideEntryNormalizer.php
-
-		-
 			message: '#^Method App\\Serializer\\UserFieldGuideEntryNormalizer\:\:normalize\(\) return type has no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 1
@@ -4195,22 +4129,10 @@ parameters:
 			path: src/Serializer/UserFieldGuideEntryNormalizer.php
 
 		-
-			message: '#^Method App\\Serializer\\UserFieldGuideEntryNormalizer\:\:supportsNormalization\(\) has parameter \$context with no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Serializer/UserFieldGuideEntryNormalizer.php
-
-		-
 			message: '#^Parameter \#1 \$text of method App\\Service\\CommentFormatter\:\:format\(\) expects string, mixed given\.$#'
 			identifier: argument.type
 			count: 1
 			path: src/Serializer/UserFieldGuideEntryNormalizer.php
-
-		-
-			message: '#^Method App\\Serializer\\UserLetterNormalizer\:\:normalize\(\) has parameter \$context with no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Serializer/UserLetterNormalizer.php
 
 		-
 			message: '#^Method App\\Serializer\\UserLetterNormalizer\:\:normalize\(\) return type has no value type specified in iterable type array\.$#'
@@ -4221,12 +4143,6 @@ parameters:
 		-
 			message: '#^Method App\\Serializer\\UserLetterNormalizer\:\:normalize\(\) return type with generic class ArrayObject does not specify its types\: TKey, TValue$#'
 			identifier: missingType.generics
-			count: 1
-			path: src/Serializer/UserLetterNormalizer.php
-
-		-
-			message: '#^Method App\\Serializer\\UserLetterNormalizer\:\:supportsNormalization\(\) has parameter \$context with no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
 			count: 1
 			path: src/Serializer/UserLetterNormalizer.php
 
@@ -4255,12 +4171,6 @@ parameters:
 			path: src/Serializer/UserNormalizer.php
 
 		-
-			message: '#^Method App\\Serializer\\UserNormalizer\:\:normalize\(\) has parameter \$context with no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Serializer/UserNormalizer.php
-
-		-
 			message: '#^Method App\\Serializer\\UserNormalizer\:\:normalize\(\) return type has no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 1
@@ -4269,12 +4179,6 @@ parameters:
 		-
 			message: '#^Method App\\Serializer\\UserNormalizer\:\:normalize\(\) return type with generic class ArrayObject does not specify its types\: TKey, TValue$#'
 			identifier: missingType.generics
-			count: 1
-			path: src/Serializer/UserNormalizer.php
-
-		-
-			message: '#^Method App\\Serializer\\UserNormalizer\:\:supportsNormalization\(\) has parameter \$context with no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
 			count: 1
 			path: src/Serializer/UserNormalizer.php
 
@@ -5587,12 +5491,6 @@ parameters:
 			path: src/Service/ParkEvent/KinBallService.php
 
 		-
-			message: '#^Parameter \#3 \$comment of method App\\Service\\InventoryService\:\:petCollectsItem\(\) expects string, string\|null given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Service/ParkEvent/KinBallService.php
-
-		-
 			message: '#^Possibly invalid array key type mixed\.$#'
 			identifier: offsetAccess.invalidOffset
 			count: 3
@@ -6037,7 +5935,7 @@ parameters:
 			path: src/Service/PetActivity/Protocol7Service.php
 
 		-
-			message: '#^Method App\\Service\\PetActivity\\Relationship\\LoveService\:\:getAncestorIds\(\) should return array\<int\> but returns array\<int, int\|null\>\.$#'
+			message: '#^Method App\\Service\\PetActivity\\Relationship\\LoveService\:\:getAncestorIds\(\) should return array\<int\> but returns array\<int\|null\>\.$#'
 			identifier: return.type
 			count: 1
 			path: src/Service/PetActivity/Relationship/LoveService.php

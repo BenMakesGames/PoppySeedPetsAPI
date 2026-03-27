@@ -334,6 +334,7 @@ class UpdateHollowEarthTileEventCommand extends PoppySeedPetsCommand
         {
             $itemName = $this->askString('Item to pay', null);
 
+            /** @var Item|null $item */
             $item = $this->em->getRepository(Item::class)->findOneBy([ 'name' => $itemName ]);
 
             if($item)
