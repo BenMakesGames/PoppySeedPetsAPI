@@ -115,17 +115,6 @@ nav {
   max-height: calc(100vh - 4rem);
   z-index: var(--z-index-nav);
 
-  @media (max-width: 480px)
-  {
-    left: 0;
-    right: 0;
-  }
-
-  @media (min-width:660px)
-  {
-    max-height: 100vh;
-  }
-
   background-color: rgb(var(--color-content-background));
   transition: top 0.25s ease;
 
@@ -136,6 +125,17 @@ nav {
 
   &.open {
     top: 0;
+  }
+
+  @media (max-width: 480px)
+  {
+    left: 0;
+    right: 0;
+  }
+
+  @media (min-width:660px)
+  {
+    max-height: 100vh;
   }
 }
 
