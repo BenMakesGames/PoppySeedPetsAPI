@@ -283,6 +283,23 @@ class PregnancyService
                 $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% gave birth to ' . $describeBabies . '!');
         }
 
+        $otherParent = $pregnancy->getOtherParent();
+
+        // log for the fathering pet
+        if($otherParent)
+        {
+            $otherActivityLog = $pet->getOwner()->getId() == $otherParent->getOwner()->getId()
+                ? PetActivityLogFactory::createReadLog($this->em, $otherParent, '%pet:' . $pet->getId() . '.name% gave birth to ' . $describeBabies . '! %pet:' . $otherParent->getId() . '.name% is a proud parent!' )
+                : PetActivityLogFactory::createUnreadLog($this->em, $otherParent, '%pet:' . $pet->getId() . '.name% gave birth to ' . $describeBabies . '! %pet:' . $otherParent->getId() . '.name% is a proud parent!' );
+
+            PetBadgeHelpers::awardBadge($this->em, $otherParent, PetBadgeEnum::HadABaby, $otherActivityLog);
+
+            $otherActivityLog
+                ->addInterestingness(PetActivityLogInterestingness::GaveBirth)
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Pregnancy' ]))
+            ;
+        }
+
         PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::HadABaby, $activityLog);
 
         $activityLog
@@ -296,10 +313,10 @@ class PregnancyService
         $pregnancy->getParent()->getMom()?->setIsGrandparent(true);
         $pregnancy->getParent()->getDad()?->setIsGrandparent(true);
 
-        if($pregnancy->getOtherParent())
+        if($otherParent)
         {
-            $pregnancy->getOtherParent()->getMom()?->setIsGrandparent(true);
-            $pregnancy->getOtherParent()->getDad()?->setIsGrandparent(true);
+            $otherParent->getMom()?->setIsGrandparent(true);
+            $otherParent->getDad()?->setIsGrandparent(true);
         }
 
         $this->em->remove($pregnancy);
