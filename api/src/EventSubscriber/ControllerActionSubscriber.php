@@ -105,7 +105,7 @@ class ControllerActionSubscriber implements EventSubscriberInterface
         if (json_last_error() !== JSON_ERROR_NONE)
             throw new BadRequestHttpException('Invalid JSON body: ' . json_last_error_msg());
 
-        $request->request->replace(is_array($data) ? $data : array());
+        $request->request->replace(is_array($data) ? $data : []);
     }
 
     public function finalizeResponse(ResponseEvent $event): void

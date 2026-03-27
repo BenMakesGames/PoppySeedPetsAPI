@@ -15,7 +15,7 @@ namespace App\Entity;
 
 use App\Enum\BirdBathBirdEnum;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ORM\Entity]
 #[ORM\Index(name: 'has_unoccupied_bird_bath_idx', columns: ['has_bird_bath', 'visiting_bird'])]

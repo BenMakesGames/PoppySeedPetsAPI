@@ -68,6 +68,7 @@ class GroupNameGenerator
     {
         while(true)
         {
+            /** @var string[] $newParts */
             $newParts = [];
             /** @var array<string, string> $chosenWords */
             $chosenWords = [];
@@ -77,6 +78,7 @@ class GroupNameGenerator
                 if($part[0] === '%' && $part[strlen($part) - 1] === '%')
                 {
                     $wordType = substr($part, 1, strlen($part) - 2);
+                    /** @var string[] $availableWords */
                     $availableWords = array_filter($dictionary[$wordType], fn($w) => !in_array($w, $newParts));
                     $chosenWord = $rng->rngNextFromArray($availableWords);
 
@@ -101,6 +103,9 @@ class GroupNameGenerator
                 return ucfirst($name);
 
             $longestWord = ArrayFunctions::max($chosenWords, fn(string $a) => strlen($a));
+
+            if($longestWord === null)
+                return ucfirst($name);
 
             $longestWordType = array_search($longestWord, $chosenWords);
 
