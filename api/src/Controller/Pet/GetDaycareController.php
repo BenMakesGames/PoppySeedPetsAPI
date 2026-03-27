@@ -11,48 +11,46 @@ declare(strict_types=1);
  * You should have received a copy of the GNU General Public License along with The Poppy Seed Pets API. If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace App\Controller\Achievement;
+namespace App\Controller\Pet;
 
-use App\Entity\UserBadge;
-use App\Enum\BadgeEnum;
+use App\Attributes\DoesNotRequireHouseHours;
+use App\Entity\Pet;
+use App\Enum\PetLocationEnum;
 use App\Enum\SerializationGroupEnum;
-use App\Functions\InMemoryCache;
+use App\Exceptions\PSPFormValidationException;
+use App\Exceptions\PSPInvalidOperationException;
+use App\Exceptions\PSPPetNotFoundException;
+use App\Functions\ArrayFunctions;
+use App\Service\Filter\PetFilterService;
+use App\Service\PetExperienceService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use App\Service\UserAccessor;
 
-#[Route("/achievement")]
-final class Available
+#[Route("/pet")]
+class GetDaycareController
 {
-    #[Route("/available", methods: ["GET"])]
+    #[Route("/daycare", methods: ["GET"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
-    public function getAvailable(
-        ResponseService $responseService, EntityManagerInterface $em,
+    public function getMyDaycarePets(
+        ResponseService $responseService, PetFilterService $petFilterService, Request $request,
         UserAccessor $userAccessor
     ): JsonResponse
     {
         $user = $userAccessor->getUserOrThrow();
 
-        /** @var string[] $claimed */
-        $claimed = $em->getRepository(UserBadge::class)->createQueryBuilder('b')
-            ->select('b.badge')
-            ->andWhere('b.user = :user')
-            ->setParameter('user', $user)
-            ->getQuery()
-            ->getSingleColumnResult()
-        ;
+        $petFilterService->addRequiredFilter('owner', $user->getId());
+        $petFilterService->addRequiredFilter('location', [ PetLocationEnum::DAYCARE, PetLocationEnum::HOME ]);
 
-        $unclaimed = array_diff(BadgeEnum::getValues(), $claimed);
+        $petsInDaycare = $petFilterService->getResults($request->query);
 
-        $info = [];
-        $cache = new InMemoryCache();
-
-        foreach($unclaimed as $badge)
-            $info[] = BadgeHelpers::getBadgeProgress($badge, $user, $em, $cache);
-
-        return $responseService->success($info, [ SerializationGroupEnum::TRADER_OFFER, SerializationGroupEnum::MARKET_ITEM ]);
+        return $responseService->success(
+            $petsInDaycare,
+            [ SerializationGroupEnum::FILTER_RESULTS, SerializationGroupEnum::MY_PET ]
+        );
     }
 }

@@ -15,7 +15,7 @@ namespace App\Entity;
 
 use App\Enum\PollinatorEnum;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ORM\Entity]
 class GreenhousePlant

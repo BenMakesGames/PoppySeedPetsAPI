@@ -43,7 +43,7 @@ class SessionAuthenticator extends AbstractAuthenticator
 
     public function supports(Request $request): bool
     {
-        if($request->cookies->has('sessionId') && strlen($request->cookies->get('sessionId')) === 40)
+        if($request->cookies->has('sessionId') && strlen($request->cookies->get('sessionId', '')) === 40)
             return true;
 
         return $request->headers->has('Authorization') && substr($request->headers->get('Authorization'), 0, 7) === 'Bearer ';

@@ -82,6 +82,7 @@ class ExportAuraCommand extends PoppySeedPetsCommand
         $entityMeta = $this->em->getClassMetadata($className);
         $tableName = $entityMeta->getTableName();
 
+        /** @var string[] $columns */
         $columns = array_map(
             fn($row) => $row['Field'],
             $this->em->getConnection()->executeQuery("DESCRIBE `$tableName`")->fetchAllAssociative()
@@ -89,13 +90,16 @@ class ExportAuraCommand extends PoppySeedPetsCommand
 
         $columnSql = '`' . implode('`, `', $columns) . '`';
 
-        $encodedValues = array_map(fn($c) => self::encodeValueToSql($entity->{'get' . $entityMeta->getFieldForColumn($c)}()), $columns);
+        $encodedValues = array_map(fn($c) => (string)self::encodeValueToSql($entity->{'get' . $entityMeta->getFieldForColumn($c)}()), $columns);
 
         $valueSql = implode(',', $encodedValues);
 
         return "-- $comment\nINSERT INTO $tableName ($columnSql) VALUES ($valueSql) ON DUPLICATE KEY UPDATE `id` = `id`;";
     }
 
+    /**
+     * @return string|numeric
+     */
     private static function encodeValueToSql(mixed $value): mixed
     {
         if($value === true)
