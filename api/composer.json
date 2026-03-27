@@ -26,25 +26,25 @@
         "symfony/amazon-mailer": "*",
         "symfony/apache-pack": "^1.0",
         "symfony/asset": "*",
+        "symfony/cache": "*",
         "symfony/console": "*",
         "symfony/dotenv": "*",
         "symfony/expression-language": "*",
-        "symfony/flex": "^1.1",
+        "symfony/flex": "^2.10",
         "symfony/framework-bundle": "*",
         "symfony/http-client": "*",
         "symfony/intl": "*",
         "symfony/mailer": "*",
-        "symfony/monolog-bundle": "^3.1",
+        "symfony/monolog-bundle": "^4.0",
         "symfony/process": "*",
         "symfony/property-access": "*",
         "symfony/property-info": "*",
-        "symfony/proxy-manager-bridge": "*",
         "symfony/rate-limiter": "*",
         "symfony/security-bundle": "*",
         "symfony/serializer": "*",
         "symfony/translation": "*",
         "symfony/twig-bundle": "*",
-        "symfony/uid": "7.3.*",
+        "symfony/uid": "*",
         "symfony/validator": "*",
         "symfony/web-link": "*",
         "symfony/yaml": "*",
@@ -109,7 +109,7 @@
     "extra": {
         "symfony": {
             "allow-contrib": false,
-            "require": "7.3.*"
+            "require": "8.0.*"
         }
     }
 }

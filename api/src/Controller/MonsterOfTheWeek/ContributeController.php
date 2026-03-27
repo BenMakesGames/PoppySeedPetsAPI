@@ -18,6 +18,7 @@ use App\Entity\MonsterOfTheWeek;
 use App\Entity\MonsterOfTheWeekContribution;
 use App\Enum\LocationEnum;
 use App\Exceptions\PSPInvalidOperationException;
+use App\Exceptions\PSPNotFoundException;
 use App\Service\Clock;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -40,16 +41,15 @@ class ContributeController
     {
         $user = $userAccessor->getUserOrThrow();
 
-        $monster = $em->getRepository(MonsterOfTheWeek::class)->findOneBy([
-            'id' => $monsterId
-        ]);
+        $monster = $em->getRepository(MonsterOfTheWeek::class)->findOneBy([ 'id' => $monsterId ])
+            ?? throw new PSPNotFoundException('There is no such monster.');
 
         if(!$monster->isCurrent($clock->now))
             throw new PSPInvalidOperationException("It is not the time for this spirit! (Reload and try again?)");
 
-        $itemIds = $request->get('items', []);
+        $itemIds = $request->request->all('items');
 
-        if(!is_array($itemIds) || count($itemIds) == 0)
+        if(count($itemIds) == 0)
             throw new PSPInvalidOperationException('You must select at least one item!');
 
         if(count($itemIds) > 100)
