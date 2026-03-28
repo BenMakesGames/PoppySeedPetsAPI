@@ -26,7 +26,7 @@ use App\Service\ResponseService;
 use App\Service\TransactionService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use App\Service\UserAccessor;
@@ -37,18 +37,18 @@ class ApplyAuraController
     #[Route("/buy", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function applyAura(
-        Request $request, TransactionService $transactionService, EntityManagerInterface $em,
+        TransactionService $transactionService, EntityManagerInterface $em,
         ResponseService $responseService,
-        UserAccessor $userAccessor
+        UserAccessor $userAccessor,
+
+        #[MapRequestPayload]
+        ApplyAuraRequest $request
     ): JsonResponse
     {
-        $payWith = strtolower($request->request->getAlpha('payWith', 'moneys'));
+        $payWith = strtolower($request->payWith);
+        $hue = $request->hue % 360;
 
-        $petId = $request->request->getInt('pet');
-        $auraId = $request->request->getInt('aura');
-        $hue = $request->request->getInt('hue', 0) % 360;
-
-        if($petId <= 0 || $auraId <= 0)
+        if($request->pet <= 0 || $request->aura <= 0)
             throw new PSPInvalidOperationException('A pet and style must be selected.');
 
         $user = $userAccessor->getUserOrThrow();
@@ -68,7 +68,7 @@ class ApplyAuraController
             throw new PSPFormValidationException('You must choose whether to pay with moneys or with recycling points.');
         }
 
-        $pet = $em->getRepository(Pet::class)->find($petId);
+        $pet = $em->getRepository(Pet::class)->find($request->pet);
 
         if(!$pet || $pet->getOwner()->getId() !== $user->getId())
             throw new PSPPetNotFoundException();
@@ -76,7 +76,7 @@ class ApplyAuraController
         if(!$pet->getHat())
             throw new PSPInvalidOperationException('That pet isn\'t wearing a hat!');
 
-        $unlockedAura = $em->getRepository(UserUnlockedAura::class)->find($auraId);
+        $unlockedAura = $em->getRepository(UserUnlockedAura::class)->find($request->aura);
 
         if(!$unlockedAura || $unlockedAura->getUser()->getId() !== $user->getId())
             throw new PSPNotFoundException('You haven\'t unlocked that Hattier style.');
@@ -93,5 +93,17 @@ class ApplyAuraController
         $em->flush();
 
         return $responseService->success();
+    }
+}
+
+class ApplyAuraRequest
+{
+    public function __construct(
+        public int $pet = 0,
+        public int $aura = 0,
+        public string $payWith = 'moneys',
+        public int $hue = 0,
+    )
+    {
     }
 }
