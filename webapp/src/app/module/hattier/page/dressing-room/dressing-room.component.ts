@@ -107,7 +107,7 @@ export class DressingRoomComponent implements OnInit, OnDestroy {
     this.initialStyleId = this.selectedStyleId;
     this.initialStyle = { ...this.selectedStyle };
 
-    this.newHue = this.selectedPet.hat.enchantmentHue;
+    this.newHue = this.selectedPet.hat.enchantmentHue ?? 0;
     this.oldHue = this.newHue;
 
     this.doUpdateStyle();
