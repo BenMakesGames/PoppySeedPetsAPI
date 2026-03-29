@@ -1,7 +1,8 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, ElementRef, Inject, OnInit, ViewChild } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from "@angular/material/dialog";
 import { CommonModule } from "@angular/common";
 import { FormsModule } from "@angular/forms";
+import { OverlayModule, ConnectedPosition, STANDARD_DROPDOWN_BELOW_POSITIONS } from "@angular/cdk/overlay";
 import { ItemSearchModel } from "../../../../model/search/item-search.model";
 import { HasUnlockedFeaturePipe } from "../../pipe/has-unlocked-feature.pipe";
 import { InArrayPipe } from "../../pipe/in-array.pipe";
@@ -20,6 +21,7 @@ import { ApiService } from "../../service/api.service";
   imports: [
     CommonModule,
     FormsModule,
+    OverlayModule,
     HasUnlockedFeaturePipe,
     InArrayPipe,
     PetActivityLogTagComponent,
@@ -30,9 +32,14 @@ import { ApiService } from "../../service/api.service";
 })
 export class ItemSearchDialog implements OnInit
 {
+  @ViewChild('tagSearch') tagSearchEl: ElementRef;
+
+  suggestions: string[] | null = null;
+  selectedSuggestion = -1;
+  dropdownPositions: ConnectedPosition[] = STANDARD_DROPDOWN_BELOW_POSITIONS;
+
   isOctober = false;
   itemGroups: string[] = [];
-  filteredItemGroups: string[] = [];
   itemTag: { title: string, color: string }|null;
 
   foodFlavors: string[] = [];
@@ -89,16 +96,66 @@ export class ItemSearchDialog implements OnInit
     this.api.get<string[]>('/encyclopedia/item-groups').subscribe({
       next: r => {
         this.itemGroups = r.data ?? [];
-        this.filterItemGroups();
       }
     });
   }
 
-  filterItemGroups() {
-    const val = (this.filter.itemGroup ?? '').toLowerCase();
-    this.filteredItemGroups = val
+  onTagInput(event: Event): void {
+    const query = (event.target as HTMLInputElement).value;
+    this.filterSuggestions(query);
+  }
+
+  onTagFocus(): void {
+    if (this.tagSearchEl)
+      this.filterSuggestions(this.tagSearchEl.nativeElement.value);
+  }
+
+  onTagKeydown(event: KeyboardEvent): void {
+    switch(event.key)
+    {
+      case 'ArrowDown':
+        event.preventDefault();
+        if (this.suggestions && this.suggestions.length > 0) {
+          this.selectedSuggestion = Math.min(this.selectedSuggestion + 1, this.suggestions.length - 1);
+          document.getElementById('tagItem' + this.selectedSuggestion)?.scrollIntoView({ block: 'nearest' });
+        }
+        break;
+
+      case 'ArrowUp':
+        event.preventDefault();
+        if (this.suggestions && this.suggestions.length > 0) {
+          this.selectedSuggestion = Math.max(this.selectedSuggestion - 1, 0);
+          document.getElementById('tagItem' + this.selectedSuggestion)?.scrollIntoView({ block: 'nearest' });
+        }
+        break;
+
+      case 'Enter':
+        if (this.suggestions && this.suggestions.length > 0 && this.selectedSuggestion >= 0)
+        {
+          event.preventDefault();
+          this.doSelectGroup(this.suggestions[this.selectedSuggestion]);
+        }
+        break;
+
+      case 'Escape':
+        this.suggestions = null;
+        break;
+    }
+  }
+
+  private filterSuggestions(query: string): void {
+    const val = (query ?? '').trim().toLowerCase();
+    this.suggestions = val
       ? this.itemGroups.filter(g => g.toLowerCase().includes(val))
-      : this.itemGroups;
+      : [...this.itemGroups];
+    this.selectedSuggestion = this.suggestions.length > 0 ? 0 : -1;
+  }
+
+  doSelectGroup(group: string): void {
+    this.filter.itemGroup = group;
+    const primaryColor = this.themeService.getStyleColor('color-link-and-button');
+    this.itemTag = { title: group, color: primaryColor.replace('#', '') };
+    this.suggestions = null;
   }
 
   doSearch()
@@ -154,8 +211,6 @@ export class ItemSearchDialog implements OnInit
     }
     else
       this.itemTag = null;
-
-    this.filterItemGroups();
   }
 
   public static open(matDialog: MatDialog, filter: ItemSearchModel): MatDialogRef<ItemSearchDialog>
