@@ -88,7 +88,7 @@ class MosquitoController
 
         $location = $request->request->getInt('location');
         $item = 'Blood "Jam"';
-        $inventoryService->receiveItem($item, $user, $user, $user->getName() . 'extracted this from a mosquito.', $location, false);
+        $inventoryService->receiveItem($item, $user, $user, $user->getName() . ' extracted this from a mosquito.', $location, false);
 
         $em->remove($inventory);
 
