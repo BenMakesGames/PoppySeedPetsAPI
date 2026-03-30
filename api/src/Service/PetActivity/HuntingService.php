@@ -1234,8 +1234,9 @@ class HuntingService implements IPetActivity
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, ['Fae-kind']))
             ;
 
-            if ($pet->isInGuild(GuildEnum::GizubisGarden))
+            if ($pet->isInGuild(GuildEnum::GizubisGarden)) {
                 $pet->getGuildMembership()->increaseReputation();
+            }
 
             $pet->increaseEsteem(1);
             $this->inventoryService->petCollectsItem('Blackberry Wine', $pet, 'Gifts for ' . $pet->getName() . ', from a Satyr.', $activityLog);
