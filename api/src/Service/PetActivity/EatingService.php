@@ -108,6 +108,10 @@ class EatingService
         if($pet->hasMerit(MeritEnum::LOLLIGOVORE))
             $favoriteFlavorStrength += $food->containsTentacles;
 
+        if($pet->hasStatusEffect(StatusEffectEnum::BittenByAVampire)
+            && ArrayFunctions::any($food->baseItem->getItemGroups(), fn(ItemGroup $group) => $group->getName() === 'Bloody'))
+            $favoriteFlavorStrength += abs($food->love);
+
         return $favoriteFlavorStrength;
     }
 
