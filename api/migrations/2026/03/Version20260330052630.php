@@ -33,7 +33,7 @@ final class Version20260330052630 extends AbstractMigration
         INSERT INTO item_grammar (`id`, `item_id`, `article`) VALUES (1601,1521,"a") ON DUPLICATE KEY UPDATE `id` = `id`;
         
         -- item groups
-        INSERT IGNORE INTO item_group_item (item_group_id, item_id) VALUES (23, 1521);
+        INSERT IGNORE INTO item_group_item (item_group_id, item_id) VALUES (23, 1521), (33, 1521);
         EOSQL);
 
         $this->addSql(<<<EOSQL
