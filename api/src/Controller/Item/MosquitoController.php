@@ -83,7 +83,7 @@ class MosquitoController
 
         $em->flush();
 
-        $responseService->addFlashMessage('You took ' . $item . ' from the mosquito, and released it back to the wild.');
+        $responseService->addFlashMessage('You took ' . $item . ' from the mosquito, and put it outside.');
 
         return $responseService->itemActionSuccess(null, [ 'itemDeleted' => true ]);
     }
