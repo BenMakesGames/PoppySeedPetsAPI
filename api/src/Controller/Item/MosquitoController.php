@@ -48,7 +48,7 @@ class MosquitoController
 
         $location = $request->request->getInt('location');
         $item = 'Blood "Jam"';
-        $inventoryService->receiveItem($item, $user, $user, $user->getName() . 'swatted a mosquito, leaving this behind.', $location, false);
+        $inventoryService->receiveItem($item, $user, $user, $user->getName() . ' swatted a mosquito, leaving this behind.', $location, false);
 
         $em->remove($inventory);
 
