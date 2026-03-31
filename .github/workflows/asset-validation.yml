@@ -46,4 +46,4 @@ jobs:
     - name: Validate assets
       if: steps.changed-assets.outputs.files != ''
       run: |
-        echo "${{ steps.changed-assets.outputs.files }}" | xargs python .github/scripts/validate-assets.py
+        echo "${{ steps.changed-assets.outputs.files }}" | python .github/scripts/validate-assets.py

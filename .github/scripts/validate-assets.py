@@ -115,11 +115,11 @@ def check_centering(path):
 
 
 def main():
-    if len(sys.argv) < 2:
+    files = [line.strip() for line in sys.stdin if line.strip()]
+
+    if not files:
         print("No files to validate.")
         sys.exit(0)
-
-    files = sys.argv[1:]
 
     for path in files:
         asset_type = get_asset_type(path)
