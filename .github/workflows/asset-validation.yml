@@ -3,10 +3,14 @@ name: Validate assets
 on:
   push:
     branches: ["main"]
-    paths: ["proprietary-assets/images/**"]
+    paths:
+      - "proprietary-assets/images/**"
+      - "webapp/src/assets/images/**"
   pull_request:
     branches: ["main"]
-    paths: ["proprietary-assets/images/**"]
+    paths:
+      - "proprietary-assets/images/**"
+      - "webapp/src/assets/images/**"
 
 permissions:
   contents: read
@@ -24,7 +28,7 @@ jobs:
     - name: Get changed asset files
       id: changed-assets
       run: |
-        CHANGED_FILES=$(git diff --name-only --diff-filter=ACMRT ${{ github.event.pull_request.base.sha }} ${{ github.sha }} | grep -E '^proprietary-assets/images/(items|pets)/' || true)
+        CHANGED_FILES=$(git diff --name-only --diff-filter=ACMRT ${{ github.event.pull_request.base.sha }} ${{ github.sha }} | grep -E '^(proprietary-assets/images|webapp/src/assets/images)/(items|pets)/' || true)
         echo "files<<EOF" >> $GITHUB_OUTPUT
         echo "$CHANGED_FILES" >> $GITHUB_OUTPUT
         echo "EOF" >> $GITHUB_OUTPUT
