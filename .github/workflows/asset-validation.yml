@@ -1,0 +1,49 @@
+name: Validate assets
+
+on:
+  push:
+    branches: ["main"]
+    paths:
+      - "proprietary-assets/images/**"
+      - "webapp/src/assets/images/**"
+  pull_request:
+    branches: ["main"]
+    paths:
+      - "proprietary-assets/images/**"
+      - "webapp/src/assets/images/**"
+
+permissions:
+  contents: read
+
+jobs:
+  validate-assets:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+
+    - name: Get changed asset files
+      id: changed-assets
+      run: |
+        CHANGED_FILES=$(git diff --name-only --diff-filter=ACMRT ${{ github.event.pull_request.base.sha }} ${{ github.sha }} | grep -E '^(proprietary-assets/images|webapp/src/assets/images)/(items|pets)/' || true)
+        echo "files<<EOF" >> $GITHUB_OUTPUT
+        echo "$CHANGED_FILES" >> $GITHUB_OUTPUT
+        echo "EOF" >> $GITHUB_OUTPUT
+
+    - name: Setup Python
+      if: steps.changed-assets.outputs.files != ''
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.12'
+
+    - name: Install dependencies
+      if: steps.changed-assets.outputs.files != ''
+      run: pip install cairosvg Pillow
+
+    - name: Validate assets
+      if: steps.changed-assets.outputs.files != ''
+      run: |
+        echo "${{ steps.changed-assets.outputs.files }}" | python .github/scripts/validate-assets.py
