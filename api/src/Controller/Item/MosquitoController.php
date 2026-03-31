@@ -29,7 +29,7 @@ use App\Service\UserAccessor;
 #[Route("/item/mosquito")]
 class MosquitoController
 {
-    #[Route("{inventory}/swatMosquito", methods: ["POST"])]
+    #[Route("mosquito/{inventory}/swatMosquito", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function squishBug(
         Inventory $inventory, ResponseService $responseService, UserStatsService $userStatsRepository,
@@ -39,7 +39,7 @@ class MosquitoController
     {
         $user = $userAccessor->getUserOrThrow();
 
-        ItemControllerHelpers::validateInventory($user, $inventory, '#/swatMosquito');
+        ItemControllerHelpers::validateInventory($user, $inventory, 'mosquito/#/swatMosquito');
 
         $promised = UserQuestRepository::findOrCreate($em, $user, 'Promised to Not Squish Bugs', 0);
 
@@ -61,7 +61,7 @@ class MosquitoController
         return $responseService->itemActionSuccess(null, [ 'itemDeleted' => true ]);
     }
 
-    #[Route("{inventory}/extractBlood", methods: ["POST"])]
+    #[Route("mosquito/{inventory}/extractBlood", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function putBugOutside(
         Inventory $inventory, ResponseService $responseService, UserStatsService $userStatsRepository,
@@ -70,7 +70,7 @@ class MosquitoController
     {
         $user = $userAccessor->getUserOrThrow();
 
-        ItemControllerHelpers::validateInventory($user, $inventory, '#/extractBlood');
+        ItemControllerHelpers::validateInventory($user, $inventory, 'mosquito/#/extractBlood');
 
         $location = $request->request->getInt('location');
         $item = 'Blood "Jam"';

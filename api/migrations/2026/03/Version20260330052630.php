@@ -27,7 +27,7 @@ final class Version20260330052630 extends AbstractMigration
     {
         $this->addSql(<<<EOSQL
         -- the item itself!
-        INSERT INTO item (`id`, `name`, `description`, `image`, `use_actions`, `tool_id`, `food_id`, `fertilizer`, `plant_id`, `hat_id`, `fuel`, `recycle_value`, `enchants_id`, `spice_id`, `treasure_id`, `is_bug`, `hollow_earth_tile_card_id`, `cannot_be_thrown_out`, `museum_points`) VALUES (1521,"Mosquito","Annoying little things.","bug/mosquito","[[\"Swat\",#\\/swatMosquito\"],[\"Extract\",#\\/extractBlood\"]]",NULL,NULL,0,NULL,NULL,0,0,NULL,NULL,NULL,1,NULL,0,1) ON DUPLICATE KEY UPDATE `id` = `id`;
+        INSERT INTO item (`id`, `name`, `description`, `image`, `use_actions`, `tool_id`, `food_id`, `fertilizer`, `plant_id`, `hat_id`, `fuel`, `recycle_value`, `enchants_id`, `spice_id`, `treasure_id`, `is_bug`, `hollow_earth_tile_card_id`, `cannot_be_thrown_out`, `museum_points`) VALUES (1521,"Mosquito","Annoying little things.","bug/mosquito","[[\"Swat\",mosquito\/#\\/swatMosquito\"],[\"Extract\",mosquito\/#\\/extractBlood\"]]",NULL,NULL,0,NULL,NULL,0,0,NULL,NULL,NULL,1,NULL,0,1) ON DUPLICATE KEY UPDATE `id` = `id`;
         
         -- grammar
         INSERT INTO item_grammar (`id`, `item_id`, `article`) VALUES (1601,1521,"a") ON DUPLICATE KEY UPDATE `id` = `id`;
