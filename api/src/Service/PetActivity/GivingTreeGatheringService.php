@@ -39,10 +39,8 @@ class GivingTreeGatheringService
 
     public function gatherFromGivingTree(Pet $pet): ?PetActivityLog
     {
-        $givingTree = $this->em->getRepository(User::class)->findOneBy([ 'email' => 'giving-tree@poppyseedpets.com' ]);
-
-        if(!$givingTree)
-            throw new \Exception('The "Giving Tree" NPC does not exist in the database!');
+        $givingTree = $this->em->getRepository(User::class)->findOneBy([ 'email' => 'giving-tree@poppyseedpets.com' ])
+            ?? throw new \Exception('The "Giving Tree" NPC does not exist in the database!');
 
         $items = InventoryService::countTotalInventory($this->em, $givingTree, LocationEnum::Home);
 
