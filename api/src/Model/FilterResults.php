@@ -33,8 +33,8 @@ class FilterResults
     public int $unfilteredTotal;
 
     /**
-     * @var array[]
+     * @var array
      */
     #[Groups(['filterResults'])]
-    public $results;
+    public array $results;
 }

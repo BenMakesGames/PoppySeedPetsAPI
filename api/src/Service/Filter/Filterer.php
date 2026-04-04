@@ -19,11 +19,11 @@ use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\Tools\Pagination\Paginator;
 use Symfony\Component\HttpFoundation\ParameterBag;
 
+/**
+ * @template T
+ */
 class Filterer
 {
-    private array $orderByMap;
-    private array $filterMap;
-    private array $filterWithoutCallbackMap;
     private int $pageSize;
 
     /** @var array<string, mixed> */
@@ -32,12 +32,19 @@ class Filterer
     /** @var array<string, mixed> */
     private array $requiredFilters = [];
 
-    public function __construct(int $defaultPageSize, array $orderByMap, array $filterCallbacks, array $filtersWithoutCallbacks = [])
+    /**
+     * @param array<string, array<string, ('asc'|'desc')>> $orderByMap
+     * @param array<string, callable> $filterMap
+     * @param string[] $filtersWithoutCallbacks
+     */
+    public function __construct(
+        int $defaultPageSize,
+        private readonly array $orderByMap,
+        private readonly array $filterMap,
+        private readonly array $filtersWithoutCallbacks = []
+    )
     {
         $this->pageSize = $defaultPageSize;
-        $this->orderByMap = $orderByMap;
-        $this->filterMap = $filterCallbacks;
-        $this->filterWithoutCallbackMap = $filtersWithoutCallbacks;
     }
 
     public function setPageSize(int $pageSize): void
@@ -55,7 +62,10 @@ class Filterer
         $this->requiredFilters[$key] = $value;
     }
 
-    public function filter(FilterServiceInterface $filterService, ParameterBag $params): FilterResults
+    /**
+     * @param (callable(T): mixed)|null $mapper
+     */
+    public function filter(FilterServiceInterface $filterService, ParameterBag $params, ?callable $mapper = null): FilterResults
     {
         // sanitize parameters:
 
@@ -88,7 +98,7 @@ class Filterer
                 else if($value == '')
                     return false;
                 else
-                    return array_key_exists($filter, $this->filterMap) || in_array($filter, $this->filterWithoutCallbackMap);
+                    return array_key_exists($filter, $this->filterMap) || in_array($filter, $this->filtersWithoutCallbacks);
             },
             ARRAY_FILTER_USE_BOTH
         );
@@ -139,7 +149,10 @@ class Filterer
 
         $resultQuery = $filterService->applyResultCache($resultQuery, Filterer::cacheKey('Results', $page, $orderBy, $orderDir, $filters));
 
-        $results->results = $resultQuery->execute();
+        if($mapper)
+            $results->results = array_map($mapper, $resultQuery->execute());
+        else
+            $results->results = $resultQuery->execute();
 
         $parameters = [];
 
