@@ -55,7 +55,7 @@ class Plant
     /**
      * @var Collection<int, PlantYield>
      */
-    #[ORM\OneToMany(targetEntity: 'App\Entity\PlantYield', mappedBy: 'plant', orphanRemoval: true)]
+    #[ORM\OneToMany(targetEntity: PlantYield::class, mappedBy: 'plant', orphanRemoval: true)]
     private Collection $plantYields;
 
     #[Groups(["greenhousePlant"])]

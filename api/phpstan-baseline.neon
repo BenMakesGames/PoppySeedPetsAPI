@@ -2839,20 +2839,8 @@ parameters:
 			path: src/Entity/ItemHat.php
 
 		-
-			message: '#^Method App\\Entity\\ItemTool\:\:getEnchantment\(\) should return App\\Entity\\Enchantment\|null but returns mixed\.$#'
-			identifier: return.type
-			count: 1
-			path: src/Entity/ItemTool.php
-
-		-
 			message: '#^Method App\\Entity\\ItemTool\:\:getModifiers\(\) return type has no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
-			count: 1
-			path: src/Entity/ItemTool.php
-
-		-
-			message: '#^Property App\\Entity\\ItemTool\:\:\$enchantment has no type specified\.$#'
-			identifier: missingType.property
 			count: 1
 			path: src/Entity/ItemTool.php
 
@@ -3097,8 +3085,8 @@ parameters:
 			path: src/Entity/Plant.php
 
 		-
-			message: '#^Property App\\Entity\\PlantYield\:\:\$items with generic interface Doctrine\\Common\\Collections\\Collection does not specify its types\: TKey, T$#'
-			identifier: missingType.generics
+			message: '#^Parameter \#1 \$plantYield of method App\\Entity\\PlantYieldItem\:\:setPlantYield\(\) expects App\\Entity\\PlantYield, null given\.$#'
+			identifier: argument.type
 			count: 1
 			path: src/Entity/PlantYield.php
 
@@ -3107,18 +3095,6 @@ parameters:
 			identifier: assign.propertyType
 			count: 1
 			path: src/Entity/PlantYield.php
-
-		-
-			message: '#^Method App\\Entity\\PlantYieldItem\:\:getPlantYield\(\) should return App\\Entity\\PlantYield\|null but returns mixed\.$#'
-			identifier: return.type
-			count: 1
-			path: src/Entity/PlantYieldItem.php
-
-		-
-			message: '#^Property App\\Entity\\PlantYieldItem\:\:\$plantYield has no type specified\.$#'
-			identifier: missingType.property
-			count: 1
-			path: src/Entity/PlantYieldItem.php
 
 		-
 			message: '#^Property App\\Entity\\SpiritCompanion\:\:\$fatheredPets with generic interface Doctrine\\Common\\Collections\\Collection does not specify its types\: TKey, T$#'

@@ -122,8 +122,8 @@ class ItemTool
     #[ORM\Column(type: 'boolean')]
     private bool $attractsBugs = false;
 
-    #[ORM\OneToOne(targetEntity: 'App\Entity\Enchantment', mappedBy: 'effects', cascade: ['persist', 'remove'])]
-    private $enchantment;
+    #[ORM\OneToOne(targetEntity: Enchantment::class, mappedBy: 'effects', cascade: ['persist', 'remove'])]
+    private ?Enchantment $enchantment = null;
 
     #[ORM\Column(type: 'boolean')]
     private bool $canBeNibbled = false;
