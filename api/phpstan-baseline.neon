@@ -1573,12 +1573,6 @@ parameters:
 			path: src/Controller/HollowEarth/TradesController.php
 
 		-
-			message: '#^Negated boolean expression is always false\.$#'
-			identifier: booleanNot.alwaysFalse
-			count: 1
-			path: src/Controller/HollowEarth/TradesController.php
-
-		-
 			message: '#^Parameter \#1 \$amber of method App\\Entity\\HollowEarthPlayer\:\:increaseAmber\(\) expects int, float\|int given\.$#'
 			identifier: argument.type
 			count: 1
@@ -1684,12 +1678,6 @@ parameters:
 			message: '#^Cannot call method setSocialEnergy\(\) on App\\Entity\\PetHouseTime\|null\.$#'
 			identifier: method.nonObject
 			count: 1
-			path: src/Controller/Item/EggController.php
-
-		-
-			message: '#^Negated boolean expression is always false\.$#'
-			identifier: booleanNot.alwaysFalse
-			count: 3
 			path: src/Controller/Item/EggController.php
 
 		-
@@ -2944,12 +2932,6 @@ parameters:
 			message: '#^Cannot call method setTool\(\) on App\\Entity\\Pet\|null\.$#'
 			identifier: method.nonObject
 			count: 2
-			path: src/Entity/Inventory.php
-
-		-
-			message: '#^Negated boolean expression is always false\.$#'
-			identifier: booleanNot.alwaysFalse
-			count: 1
 			path: src/Entity/Inventory.php
 
 		-
