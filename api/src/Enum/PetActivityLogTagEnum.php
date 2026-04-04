@@ -120,4 +120,8 @@ final class PetActivityLogTagEnum
     public const string Location_Hedge_Maze = 'Location: Hedge Maze';
     public const string Location_Hedge_Maze_Sphinx = 'Location: Hedge Maze Sphinx';
     public const string Location_Hedge_Maze_Light_Puzzle = 'Location: Hedge Maze Light Puzzle';
+
+    public const string Isekai_Location_Bug_Army = 'Isekai Location: Bug Army';
+    public const string Isekai_Location_Mad_Inventor = 'Isekai Location: Mad Inventor';
+    public const string Isekai_Location_Celestial_Temple = 'Isekai Location: Celestial Temple';
 }
