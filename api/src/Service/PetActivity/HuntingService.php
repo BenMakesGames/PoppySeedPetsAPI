@@ -1227,6 +1227,13 @@ class HuntingService implements IPetActivity
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::Music ], $activityLog);
             $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::HUNT, true);
         }
+        else if ($pet->isInGuild(GuildEnum::GizubisGarden))
+        {
+            $pet->getGuildMembership()->increaseReputation();
+            $activityLog = $this->saytrDrunkParty($pet);
+        }
+        else if ($pet->getAlcohol() > 8) // drunk enough pets can also party!
+            $activityLog = $this->saytrDrunkParty($pet);
         else if($musicSkill > $brawlRoll)
         {
             if($pet->hasMerit(MeritEnum::SOOTHING_VOICE))
@@ -1311,6 +1318,25 @@ class HuntingService implements IPetActivity
             }
         }
 
+        return $activityLog;
+    }
+
+    private function saytrDrunkParty(Pet $pet): PetActivityLog
+    {
+        $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% encountered a Satyr, who invited them to party! The Satyr danced with ' . $pet->getName() . ' and shared some gifts before leaving in peace.')
+            ->setIcon('icons/activity-logs/drunk-satyr')
+            ->addTags(PetActivityLogTagHelpers::findByNames($this->em, ['Fae-kind']))
+        ;
+
+        $pet->increaseEsteem(1);
+        $this->inventoryService->petCollectsItem('Blackberry Wine', $pet, 'Gifts for ' . $pet->getName() . ', from a Satyr.', $activityLog);
+
+        if ($this->rng->rngNextInt(1, 5) === 1)
+            $this->inventoryService->petCollectsItem('Blackberry Wine', $pet, 'Gifts for ' . $pet->getName() . ', from a Satyr.', $activityLog);
+        else
+            $this->inventoryService->petCollectsItem('Plain Yogurt', $pet, 'Gifts for ' . $pet->getName() . ', from a Satyr.', $activityLog);
+
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::HUNT, true);
         return $activityLog;
     }
 
