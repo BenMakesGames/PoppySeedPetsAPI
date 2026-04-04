@@ -1789,42 +1789,6 @@ parameters:
 			path: src/Controller/Item/TwilightFertilizerController.php
 
 		-
-			message: '#^Cannot call method getItem\(\) on App\\Entity\\Inventory\|null\.$#'
-			identifier: method.nonObject
-			count: 5
-			path: src/Controller/Market/BuyController.php
-
-		-
-			message: '#^Cannot call method getLocation\(\) on App\\Entity\\Inventory\|null\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: src/Controller/Market/BuyController.php
-
-		-
-			message: '#^Cannot call method getOwner\(\) on App\\Entity\\Inventory\|null\.$#'
-			identifier: method.nonObject
-			count: 3
-			path: src/Controller/Market/BuyController.php
-
-		-
-			message: '#^Parameter \#1 \$item of method App\\Service\\MarketService\:\:transferItemToPlayer\(\) expects App\\Entity\\Inventory, App\\Entity\\Inventory\|null given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Controller/Market/BuyController.php
-
-		-
-			message: '#^Parameter \#1 \$item of static method App\\Functions\\InventoryModifierFunctions\:\:getNameWithModifiers\(\) expects App\\Entity\\Inventory, App\\Entity\\Inventory\|null given\.$#'
-			identifier: argument.type
-			count: 2
-			path: src/Controller/Market/BuyController.php
-
-		-
-			message: '#^Parameter \#1 \$itemForSale of method App\\Service\\MarketService\:\:logExchange\(\) expects App\\Entity\\Inventory, App\\Entity\\Inventory\|null given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Controller/Market/BuyController.php
-
-		-
 			message: '#^Parameter \#2 \$amount of method App\\Service\\TransactionService\:\:getMoney\(\) expects int, int\|null given\.$#'
 			identifier: argument.type
 			count: 1
