@@ -110,7 +110,12 @@ class EatingService
 
         if($pet->hasStatusEffect(StatusEffectEnum::BittenByAVampire)
             && ArrayFunctions::any($food->baseItem->getItemGroups(), fn(ItemGroup $group) => $group->getName() === 'Bloody'))
-            $favoriteFlavorStrength += abs($food->love);
+        {
+            if ($food->love < 0)
+                $favoriteFlavorStrength += abs($food->love);
+
+            $favoriteFlavorStrength += 2;
+        }
 
         return $favoriteFlavorStrength;
     }

@@ -29,7 +29,7 @@ use App\Service\UserAccessor;
 #[Route("/item/mosquito")]
 class MosquitoController
 {
-    #[Route("mosquito/{inventory}/swatMosquito", methods: ["POST"])]
+    #[Route("/{inventory}/swatMosquito", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function squishBug(
         Inventory $inventory, ResponseService $responseService, UserStatsService $userStatsRepository,
@@ -46,7 +46,7 @@ class MosquitoController
         if($promised->getValue())
             return $responseService->itemActionSuccess('You\'ve promised not to squish any more bugs... (even these guys!)');
 
-        $location = $request->request->getInt('location');
+        $location = $inventory->getLocation();
         $item = 'Blood "Jam"';
         $inventoryService->receiveItem($item, $user, $user, $user->getName() . ' swatted a mosquito, leaving this behind.', $location, false);
 
@@ -61,7 +61,7 @@ class MosquitoController
         return $responseService->itemActionSuccess(null, [ 'itemDeleted' => true ]);
     }
 
-    #[Route("mosquito/{inventory}/extractBlood", methods: ["POST"])]
+    #[Route("/{inventory}/extractBlood", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function putBugOutside(
         Inventory $inventory, ResponseService $responseService, UserStatsService $userStatsRepository,
@@ -72,7 +72,7 @@ class MosquitoController
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'mosquito/#/extractBlood');
 
-        $location = $request->request->getInt('location');
+        $location = $inventory->getLocation();
         $item = 'Blood "Jam"';
         $inventoryService->receiveItem($item, $user, $user, $user->getName() . ' extracted this from a mosquito.', $location, false);
 
