@@ -2179,6 +2179,12 @@ parameters:
 			path: src/Controller/MonsterOfTheWeek/MonsterOfTheWeekHelpers.php
 
 		-
+			message: '#^Property App\\Model\\FilterResults\:\:\$results \(array\) does not accept mixed\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: src/Controller/Museum/GetDonatableItemsController.php
+
+		-
 			message: '#^Binary operation "\." between mixed and '' Favor'' results in an error\.$#'
 			identifier: binaryOp.invalid
 			count: 1
@@ -2231,6 +2237,12 @@ parameters:
 			identifier: argument.type
 			count: 1
 			path: src/Controller/Museum/GiftShopController.php
+
+		-
+			message: '#^Property App\\Model\\FilterResults\:\:\$results \(array\) does not accept mixed\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: src/Controller/Museum/TopDonorsController.php
 
 		-
 			message: '#^Binary operation "\." between ''Patreon user id is…'' and mixed results in an error\.$#'
@@ -2663,6 +2675,18 @@ parameters:
 			identifier: argument.type
 			count: 1
 			path: src/Controller/Style/ShareController.php
+
+		-
+			message: '#^Method App\\Controller\\Style\\StyleMapper\:\:mapMyStyle\(\) should return array\<string, mixed\>\|null but returns array\<mixed\>\.$#'
+			identifier: return.type
+			count: 1
+			path: src/Controller/Style/StyleMapper.php
+
+		-
+			message: '#^Only iterables can be unpacked, array\<string, mixed\>\|null given\.$#'
+			identifier: arrayUnpacking.nonIterable
+			count: 1
+			path: src/Controller/Style/StyleMapper.php
 
 		-
 			message: '#^Binary operation "/" between mixed and 20 results in an error\.$#'
@@ -4425,6 +4449,24 @@ parameters:
 		-
 			message: '#^Method App\\Service\\Filter\\Filterer\:\:cacheKey\(\) has parameter \$filters with no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
+			count: 1
+			path: src/Service/Filter/Filterer.php
+
+		-
+			message: '#^Parameter \#2 \$array of function array_map expects array, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Service/Filter/Filterer.php
+
+		-
+			message: '#^Parameter \#3 \$orderBy of static method App\\Service\\Filter\\Filterer\<T\>\:\:cacheKey\(\) expects string, string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Service/Filter/Filterer.php
+
+		-
+			message: '#^Property App\\Model\\FilterResults\:\:\$results \(array\) does not accept mixed\.$#'
+			identifier: assign.propertyType
 			count: 1
 			path: src/Service/Filter/Filterer.php
 
