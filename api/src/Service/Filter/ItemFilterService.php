@@ -17,7 +17,6 @@ use App\Entity\Item;
 use App\Entity\ItemTool;
 use App\Entity\User;
 use App\Enum\FlavorEnum;
-use App\Exceptions\PSPFormValidationException;
 use App\Functions\CacheHelpers;
 use App\Functions\StringFunctions;
 use Doctrine\ORM\AbstractQuery;
@@ -29,6 +28,7 @@ use Doctrine\Persistence\ObjectRepository;
 
 class ItemFilterService implements FilterServiceInterface
 {
+    /** @use FilterService<Item> */
     use FilterService;
 
     public const int PageSize = 20;

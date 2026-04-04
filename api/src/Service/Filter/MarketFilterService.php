@@ -26,6 +26,7 @@ use Doctrine\Persistence\ObjectRepository;
 
 class MarketFilterService implements FilterServiceInterface
 {
+    /** @use FilterService<MarketListing> */
     use FilterService;
 
     public const int PageSize = 20;

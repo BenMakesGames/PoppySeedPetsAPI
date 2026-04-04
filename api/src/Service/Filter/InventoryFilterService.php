@@ -25,6 +25,7 @@ use Doctrine\Persistence\ObjectRepository;
 
 class InventoryFilterService implements FilterServiceInterface
 {
+    /** @use FilterService<Inventory> */
     use FilterService;
 
     public const int PageSize = 100;

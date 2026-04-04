@@ -22,6 +22,7 @@ use Doctrine\Persistence\ObjectRepository;
 
 class PetFilterService implements FilterServiceInterface
 {
+    /** @use FilterService<Pet> */
     use FilterService;
 
     public const int PageSize = 12;
