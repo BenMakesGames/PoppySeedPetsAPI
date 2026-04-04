@@ -111,9 +111,11 @@ class EatingService
         if($pet->hasStatusEffect(StatusEffectEnum::BittenByAVampire)
             && ArrayFunctions::any($food->baseItem->getItemGroups(), fn(ItemGroup $group) => $group->getName() === 'Bloody'))
         {
+            // Cancel out any acquired taste from bloody foods
             if ($food->love < 0)
                 $favoriteFlavorStrength += abs($food->love);
 
+            // And add a bonus
             $favoriteFlavorStrength += 2;
         }
 
