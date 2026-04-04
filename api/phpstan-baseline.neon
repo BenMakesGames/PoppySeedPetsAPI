@@ -853,24 +853,6 @@ parameters:
 			path: src/Command/ViewMonsterFoodsCommand.php
 
 		-
-			message: '#^Part \$thresholds\[0\] \(mixed\) of encapsed string cannot be cast to string\.$#'
-			identifier: encapsedStringPart.nonString
-			count: 1
-			path: src/Command/ViewMonsterFoodsCommand.php
-
-		-
-			message: '#^Part \$thresholds\[1\] \(mixed\) of encapsed string cannot be cast to string\.$#'
-			identifier: encapsedStringPart.nonString
-			count: 1
-			path: src/Command/ViewMonsterFoodsCommand.php
-
-		-
-			message: '#^Part \$thresholds\[2\] \(mixed\) of encapsed string cannot be cast to string\.$#'
-			identifier: encapsedStringPart.nonString
-			count: 1
-			path: src/Command/ViewMonsterFoodsCommand.php
-
-		-
 			message: '#^Parameter \#2 \$userId of static method App\\Functions\\UserStyleFunctions\:\:findCurrent\(\) expects int, int\|null given\.$#'
 			identifier: argument.type
 			count: 1
@@ -1789,12 +1771,6 @@ parameters:
 			path: src/Controller/MarketBid/CreateBidController.php
 
 		-
-			message: '#^Binary operation "\*" between mixed and int\|null results in an error\.$#'
-			identifier: binaryOp.invalid
-			count: 3
-			path: src/Controller/MonsterOfTheWeek/ClaimRewardsController.php
-
-		-
 			message: '#^Binary operation "\." between ''Invalid monster\: '' and mixed results in an error\.$#'
 			identifier: binaryOp.invalid
 			count: 3
@@ -1861,7 +1837,7 @@ parameters:
 			path: src/Controller/MonsterOfTheWeek/ClaimRewardsController.php
 
 		-
-			message: '#^Binary operation "\*" between mixed and mixed results in an error\.$#'
+			message: '#^Binary operation "\*" between int and mixed results in an error\.$#'
 			identifier: binaryOp.invalid
 			count: 3
 			path: src/Controller/MonsterOfTheWeek/GetAvailableRewards.php
@@ -1957,7 +1933,7 @@ parameters:
 			path: src/Controller/MonsterOfTheWeek/GetAvailableRewards.php
 
 		-
-			message: '#^Binary operation "\*" between mixed and mixed results in an error\.$#'
+			message: '#^Binary operation "\*" between int and mixed results in an error\.$#'
 			identifier: binaryOp.invalid
 			count: 3
 			path: src/Controller/MonsterOfTheWeek/GetController.php
@@ -2053,21 +2029,9 @@ parameters:
 			path: src/Controller/MonsterOfTheWeek/GetFoodController.php
 
 		-
-			message: '#^Binary operation "/" between int and mixed results in an error\.$#'
-			identifier: binaryOp.invalid
-			count: 1
-			path: src/Controller/MonsterOfTheWeek/MonsterOfTheWeekHelpers.php
-
-		-
 			message: '#^Match arm comparison between App\\Enum\\MonsterOfTheWeekEnum\:\:VafAndNir and App\\Enum\\MonsterOfTheWeekEnum\:\:VafAndNir is always true\.$#'
 			identifier: match.alwaysTrue
 			count: 7
-			path: src/Controller/MonsterOfTheWeek/MonsterOfTheWeekHelpers.php
-
-		-
-			message: '#^Method App\\Controller\\MonsterOfTheWeek\\MonsterOfTheWeekHelpers\:\:getBasePrizeValues\(\) return type has no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
 			path: src/Controller/MonsterOfTheWeek/MonsterOfTheWeekHelpers.php
 
 		-
