@@ -3103,30 +3103,6 @@ parameters:
 			path: src/Entity/SpiritCompanion.php
 
 		-
-			message: '#^Method App\\Entity\\Story\:\:getFirstSection\(\) should return App\\Entity\\StorySection but returns mixed\.$#'
-			identifier: return.type
-			count: 1
-			path: src/Entity/Story.php
-
-		-
-			message: '#^Method App\\Entity\\Story\:\:getTitle\(\) should return string but returns mixed\.$#'
-			identifier: return.type
-			count: 1
-			path: src/Entity/Story.php
-
-		-
-			message: '#^Property App\\Entity\\Story\:\:\$firstSection has no type specified\.$#'
-			identifier: missingType.property
-			count: 1
-			path: src/Entity/Story.php
-
-		-
-			message: '#^Property App\\Entity\\Story\:\:\$title has no type specified\.$#'
-			identifier: missingType.property
-			count: 1
-			path: src/Entity/Story.php
-
-		-
 			message: '#^Method App\\Entity\\StorySection\:\:getChoices\(\) return type has no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 1
