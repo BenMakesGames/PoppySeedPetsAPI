@@ -154,11 +154,6 @@ class Filterer
         else
             $results->results = $resultQuery->execute();
 
-        $parameters = [];
-
-        foreach($paginator->getQuery()->getParameters() as $parameter)
-            $parameters[$parameter->getName()] = $parameter->getValue();
-
         return $results;
     }
 
