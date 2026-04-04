@@ -1789,18 +1789,6 @@ parameters:
 			path: src/Controller/MarketBid/CreateBidController.php
 
 		-
-			message: '#^Cannot call method getId\(\) on App\\Entity\\User\|null\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: src/Controller/MarketBid/DeleteBidController.php
-
-		-
-			message: '#^Cannot call method getName\(\) on App\\Entity\\Item\|null\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: src/Controller/MarketBid/DeleteBidController.php
-
-		-
 			message: '#^Binary operation "\*" between mixed and int\|null results in an error\.$#'
 			identifier: binaryOp.invalid
 			count: 3
@@ -3083,18 +3071,6 @@ parameters:
 			identifier: missingType.property
 			count: 1
 			path: src/Entity/Letter.php
-
-		-
-			message: '#^Property App\\Entity\\MarketBid\:\:\$item \(App\\Entity\\Item\) does not accept App\\Entity\\Item\|null\.$#'
-			identifier: assign.propertyType
-			count: 1
-			path: src/Entity/MarketBid.php
-
-		-
-			message: '#^Property App\\Entity\\MarketBid\:\:\$user \(App\\Entity\\User\) does not accept App\\Entity\\User\|null\.$#'
-			identifier: assign.propertyType
-			count: 1
-			path: src/Entity/MarketBid.php
 
 		-
 			message: '#^Method App\\Entity\\MonthlyStoryAdventure\:\:isREMIX\(\) has no return type specified\.$#'
@@ -5233,27 +5209,9 @@ parameters:
 			path: src/Service/JsonLogicParserService.php
 
 		-
-			message: '#^Cannot call method getName\(\) on App\\Entity\\User\|null\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: src/Service/MarketService.php
-
-		-
 			message: '#^Method App\\Service\\MarketService\:\:findHighestBidForItem\(\) should return App\\Entity\\MarketBid\|null but returns mixed\.$#'
 			identifier: return.type
 			count: 1
-			path: src/Service/MarketService.php
-
-		-
-			message: '#^Parameter \#2 \$newOwner of method App\\Service\\MarketService\:\:transferItemToPlayer\(\) expects App\\Entity\\User, App\\Entity\\User\|null given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Service/MarketService.php
-
-		-
-			message: '#^Parameter \#2 \$user of static method App\\Service\\InventoryService\:\:countTotalInventory\(\) expects App\\Entity\\User, App\\Entity\\User\|null given\.$#'
-			identifier: argument.type
-			count: 3
 			path: src/Service/MarketService.php
 
 		-
