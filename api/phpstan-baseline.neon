@@ -2833,26 +2833,8 @@ parameters:
 			path: src/Entity/ItemFood.php
 
 		-
-			message: '#^Cannot call method getHat\(\) on App\\Entity\\Item\|null\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: src/Entity/ItemHat.php
-
-		-
-			message: '#^Cannot call method setHat\(\) on App\\Entity\\Item\|null\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: src/Entity/ItemHat.php
-
-		-
-			message: '#^Method App\\Entity\\ItemHat\:\:getItem\(\) should return App\\Entity\\Item\|null but returns mixed\.$#'
-			identifier: return.type
-			count: 1
-			path: src/Entity/ItemHat.php
-
-		-
-			message: '#^Property App\\Entity\\ItemHat\:\:\$item has no type specified\.$#'
-			identifier: missingType.property
+			message: '#^Property App\\Entity\\ItemHat\:\:\$item is never written, only read\.$#'
+			identifier: property.onlyRead
 			count: 1
 			path: src/Entity/ItemHat.php
 
@@ -2873,66 +2855,6 @@ parameters:
 			identifier: missingType.property
 			count: 1
 			path: src/Entity/ItemTool.php
-
-		-
-			message: '#^Method App\\Entity\\Letter\:\:getAttachment\(\) should return App\\Entity\\Item\|null but returns mixed\.$#'
-			identifier: return.type
-			count: 1
-			path: src/Entity/Letter.php
-
-		-
-			message: '#^Method App\\Entity\\Letter\:\:getBonus\(\) should return App\\Entity\\Enchantment\|null but returns mixed\.$#'
-			identifier: return.type
-			count: 1
-			path: src/Entity/Letter.php
-
-		-
-			message: '#^Method App\\Entity\\Letter\:\:getFieldGuideEntry\(\) should return App\\Entity\\FieldGuideEntry\|null but returns mixed\.$#'
-			identifier: return.type
-			count: 1
-			path: src/Entity/Letter.php
-
-		-
-			message: '#^Method App\\Entity\\Letter\:\:getSender\(\) should return string but returns mixed\.$#'
-			identifier: return.type
-			count: 1
-			path: src/Entity/Letter.php
-
-		-
-			message: '#^Method App\\Entity\\Letter\:\:getSpice\(\) should return App\\Entity\\Spice\|null but returns mixed\.$#'
-			identifier: return.type
-			count: 1
-			path: src/Entity/Letter.php
-
-		-
-			message: '#^Property App\\Entity\\Letter\:\:\$attachment has no type specified\.$#'
-			identifier: missingType.property
-			count: 1
-			path: src/Entity/Letter.php
-
-		-
-			message: '#^Property App\\Entity\\Letter\:\:\$bonus has no type specified\.$#'
-			identifier: missingType.property
-			count: 1
-			path: src/Entity/Letter.php
-
-		-
-			message: '#^Property App\\Entity\\Letter\:\:\$fieldGuideEntry has no type specified\.$#'
-			identifier: missingType.property
-			count: 1
-			path: src/Entity/Letter.php
-
-		-
-			message: '#^Property App\\Entity\\Letter\:\:\$sender has no type specified\.$#'
-			identifier: missingType.property
-			count: 1
-			path: src/Entity/Letter.php
-
-		-
-			message: '#^Property App\\Entity\\Letter\:\:\$spice has no type specified\.$#'
-			identifier: missingType.property
-			count: 1
-			path: src/Entity/Letter.php
 
 		-
 			message: '#^Method App\\Entity\\MonthlyStoryAdventure\:\:isREMIX\(\) has no return type specified\.$#'
