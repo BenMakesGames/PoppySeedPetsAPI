@@ -2725,38 +2725,8 @@ parameters:
 			path: src/Entity/HollowEarthPlayerTile.php
 
 		-
-			message: '#^Cannot access an offset on mixed\.$#'
-			identifier: offsetAccess.nonOffsetAccessible
-			count: 1
-			path: src/Entity/HollowEarthTile.php
-
-		-
-			message: '#^Cannot call method contains\(\) on mixed\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: src/Entity/HollowEarthTile.php
-
-		-
-			message: '#^Cannot call method removeElement\(\) on mixed\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: src/Entity/HollowEarthTile.php
-
-		-
-			message: '#^Method App\\Entity\\HollowEarthTile\:\:getCard\(\) should return App\\Entity\\HollowEarthTileCard\|null but returns mixed\.$#'
-			identifier: return.type
-			count: 1
-			path: src/Entity/HollowEarthTile.php
-
-		-
 			message: '#^Method App\\Entity\\HollowEarthTile\:\:getGoods\(\) return type has no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
-			count: 1
-			path: src/Entity/HollowEarthTile.php
-
-		-
-			message: '#^Method App\\Entity\\HollowEarthTile\:\:getTypes\(\) should return Doctrine\\Common\\Collections\\Collection\<int, App\\Entity\\HollowEarthTileType\> but returns mixed\.$#'
-			identifier: return.type
 			count: 1
 			path: src/Entity/HollowEarthTile.php
 
@@ -2767,20 +2737,8 @@ parameters:
 			path: src/Entity/HollowEarthTile.php
 
 		-
-			message: '#^Property App\\Entity\\HollowEarthTile\:\:\$card has no type specified\.$#'
-			identifier: missingType.property
-			count: 1
-			path: src/Entity/HollowEarthTile.php
-
-		-
 			message: '#^Property App\\Entity\\HollowEarthTile\:\:\$goods type has no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
-			count: 1
-			path: src/Entity/HollowEarthTile.php
-
-		-
-			message: '#^Property App\\Entity\\HollowEarthTile\:\:\$types has no type specified\.$#'
-			identifier: missingType.property
 			count: 1
 			path: src/Entity/HollowEarthTile.php
 
