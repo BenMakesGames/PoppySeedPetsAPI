@@ -2185,18 +2185,6 @@ parameters:
 			path: src/Controller/Pet/LogsController.php
 
 		-
-			message: '#^Parameter \#3 \$year of static method App\\Controller\\Pet\\LogsController\:\:findLogsForPetByDate\(\) expects int, int\|null given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Controller/Pet/LogsController.php
-
-		-
-			message: '#^Method App\\Controller\\Pet\\RelationshipsController\:\:findParents\(\) should return array\<App\\Entity\\Pet\> but returns mixed\.$#'
-			identifier: return.type
-			count: 1
-			path: src/Controller/Pet/RelationshipsController.php
-
-		-
 			message: '#^Method App\\Controller\\Pet\\RelationshipsController\:\:findSiblings\(\) should return array\<App\\Entity\\Pet\> but returns mixed\.$#'
 			identifier: return.type
 			count: 1
