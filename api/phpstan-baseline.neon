@@ -1789,12 +1789,6 @@ parameters:
 			path: src/Controller/MonsterOfTheWeek/ClaimRewardsController.php
 
 		-
-			message: '#^Match expression does not handle remaining value\: string$#'
-			identifier: match.unhandled
-			count: 1
-			path: src/Controller/MonsterOfTheWeek/ClaimRewardsController.php
-
-		-
 			message: '#^Binary operation "\*" between int and mixed results in an error\.$#'
 			identifier: binaryOp.invalid
 			count: 3

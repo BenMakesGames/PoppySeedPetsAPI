@@ -140,7 +140,8 @@ class ClaimRewardsController
                 MonsterOfTheWeekEnum::EiriPersona => UserStat::RECEIVED_A_MAJOR_PRIZE_FROM_AN_EIRI_PERSONA,
                 MonsterOfTheWeekEnum::VafAndNir => UserStat::RECEIVED_A_MAJOR_PRIZE_FROM_VAF_AND_NIR,
                 default => throw new \Exception('Invalid monster: ' . $monster->value)
-            }
+            },
+            default => throw new \Exception('Unrecognized prize type.')
         };
     }
 }
