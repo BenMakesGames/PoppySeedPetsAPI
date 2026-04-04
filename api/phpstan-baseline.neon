@@ -1777,48 +1777,6 @@ parameters:
 			path: src/Controller/MonsterOfTheWeek/ClaimRewardsController.php
 
 		-
-			message: '#^Cannot call method getCommunityTotal\(\) on App\\Entity\\MonsterOfTheWeek\|null\.$#'
-			identifier: method.nonObject
-			count: 3
-			path: src/Controller/MonsterOfTheWeek/ClaimRewardsController.php
-
-		-
-			message: '#^Cannot call method getEasyPrize\(\) on App\\Entity\\MonsterOfTheWeek\|null\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: src/Controller/MonsterOfTheWeek/ClaimRewardsController.php
-
-		-
-			message: '#^Cannot call method getEndDate\(\) on App\\Entity\\MonsterOfTheWeek\|null\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: src/Controller/MonsterOfTheWeek/ClaimRewardsController.php
-
-		-
-			message: '#^Cannot call method getHardPrize\(\) on App\\Entity\\MonsterOfTheWeek\|null\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: src/Controller/MonsterOfTheWeek/ClaimRewardsController.php
-
-		-
-			message: '#^Cannot call method getLevel\(\) on App\\Entity\\MonsterOfTheWeek\|null\.$#'
-			identifier: method.nonObject
-			count: 3
-			path: src/Controller/MonsterOfTheWeek/ClaimRewardsController.php
-
-		-
-			message: '#^Cannot call method getMediumPrize\(\) on App\\Entity\\MonsterOfTheWeek\|null\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: src/Controller/MonsterOfTheWeek/ClaimRewardsController.php
-
-		-
-			message: '#^Cannot call method getMonster\(\) on App\\Entity\\MonsterOfTheWeek\|null\.$#'
-			identifier: method.nonObject
-			count: 6
-			path: src/Controller/MonsterOfTheWeek/ClaimRewardsController.php
-
-		-
 			message: '#^Match arm comparison between 4 and 4 is always true\.$#'
 			identifier: match.alwaysTrue
 			count: 1
