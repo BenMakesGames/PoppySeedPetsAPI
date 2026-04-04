@@ -1753,24 +1753,6 @@ parameters:
 			path: src/Controller/Item/PetAlteration/WerebaneController.php
 
 		-
-			message: '#^Parameter \#1 \$array of method App\\Service\\IRandom\:\:rngNextFromArray\(\) expects array\<mixed\>, mixed given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Controller/Item/Pinata/PizzaBoxController.php
-
-		-
-			message: '#^Parameter \#1 \$item of method App\\Service\\InventoryService\:\:receiveItem\(\) expects App\\Entity\\Item\|string, mixed given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Controller/Item/Pinata/PizzaBoxController.php
-
-		-
-			message: '#^Unable to resolve the template type T in call to method App\\Service\\IRandom\:\:rngNextFromArray\(\)$#'
-			identifier: argument.templateType
-			count: 1
-			path: src/Controller/Item/Pinata/PizzaBoxController.php
-
-		-
 			message: '#^Parameter \#2 \$userId of static method App\\Service\\InventoryService\:\:countInventory\(\) expects int, int\|null given\.$#'
 			identifier: argument.type
 			count: 1
