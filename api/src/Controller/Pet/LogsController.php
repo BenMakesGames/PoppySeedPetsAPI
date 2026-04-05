@@ -41,11 +41,11 @@ class LogsController
         Pet $pet, ?int $year = null, ?int $month = null
     ): JsonResponse
     {
-        if($year === null && $month === null)
-        {
+        if($year === null)
             $year = (int)date('Y');
+
+        if($month === null)
             $month = (int)date('n');
-        }
 
         if($month < 1 || $month > 12)
             throw new PSPFormValidationException('"month" must be between 1 and 12!');

@@ -17,7 +17,6 @@ use App\Entity\Item;
 use App\Entity\ItemTool;
 use App\Entity\User;
 use App\Enum\FlavorEnum;
-use App\Exceptions\PSPFormValidationException;
 use App\Functions\CacheHelpers;
 use App\Functions\StringFunctions;
 use Doctrine\ORM\AbstractQuery;
@@ -29,6 +28,7 @@ use Doctrine\Persistence\ObjectRepository;
 
 class ItemFilterService implements FilterServiceInterface
 {
+    /** @use FilterService<Item> */
     use FilterService;
 
     public const int PageSize = 20;
@@ -153,9 +153,7 @@ class ItemFilterService implements FilterServiceInterface
             ->andWhere('i.food IS NOT NULL')
         ;
 
-        $statsMatch = array_map(function($s) {
-            return 'food.' . $s . ' > 0';
-        }, $value);
+        $statsMatch = array_map(fn($s) => "food.$s > 0", $value);
 
         $qb->andWhere(
             $qb->expr()->orX(
@@ -201,7 +199,7 @@ class ItemFilterService implements FilterServiceInterface
     {
         if(!is_array($value)) $value = [ $value ];
 
-        $value = array_map('strtolower', $value);
+        $value = array_map(strtolower(...), $value);
         $value = array_filter(ItemTool::ModifierFields, fn(string $modifier) => in_array(strtolower($modifier), $value));
 
         if(count($value) === 0) return;

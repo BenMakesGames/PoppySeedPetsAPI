@@ -162,9 +162,6 @@ class Inventory
 
     public function changeOwner(User $owner, string $comment, EntityManagerInterface $em): self
     {
-        if(!$owner)
-            throw new \Exception("Cannot change item owner; item has no owner.");
-
         $this->addComment($comment);
 
         $this->owner = $owner;

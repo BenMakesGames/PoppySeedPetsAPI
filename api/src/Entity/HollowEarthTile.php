@@ -40,11 +40,12 @@ class HollowEarthTile
     #[ORM\Column(type: 'string', length: 1, enumType: HollowEarthMoveDirectionEnum::class)]
     private HollowEarthMoveDirectionEnum $moveDirection;
 
+    /** @var Collection<int, HollowEarthTileType> */
     #[ORM\ManyToMany(targetEntity: HollowEarthTileType::class)]
-    private $types;
+    private Collection $types;
 
     #[ORM\ManyToOne(targetEntity: HollowEarthTileCard::class)]
-    private $card;
+    private ?HollowEarthTileCard $card = null;
 
     #[Groups(["hollowEarth"])]
     #[ORM\Column(type: 'string', length: 20, nullable: true)]

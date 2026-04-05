@@ -24,6 +24,7 @@ use Doctrine\ORM\QueryBuilder;
 
 class MonthlyStoryAdventureFilterService implements FilterServiceInterface
 {
+    /** @use FilterService<MonthlyStoryAdventure> */
     use FilterService;
 
     public const int PageSize = 12;

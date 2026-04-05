@@ -24,6 +24,7 @@ use Doctrine\ORM\QueryBuilder;
 
 class PetSpeciesFilterService implements FilterServiceInterface
 {
+    /** @use FilterService<PetSpecies> */
     use FilterService;
 
     public const int PageSize = 20;

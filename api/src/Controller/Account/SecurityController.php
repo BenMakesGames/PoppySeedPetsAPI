@@ -130,10 +130,8 @@ class SecurityController
         if(!filter_var($email, FILTER_VALIDATE_EMAIL))
             throw new PSPFormValidationException('E-mail address is invalid.');
 
-        $user = $em->getRepository(User::class)->findOneBy([ 'email' => $email ]);
-
-        if(!$user)
-            throw new PSPNotFoundException('There is no user with that e-mail address.');
+        $user = $em->getRepository(User::class)->findOneBy([ 'email' => $email ])
+            ?? throw new PSPNotFoundException('There is no user with that e-mail address.');
 
         $passphraseResetService->requestReset($user);
 

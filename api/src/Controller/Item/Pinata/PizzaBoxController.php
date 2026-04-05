@@ -48,15 +48,6 @@ class PizzaBoxController
         $location = $inventory->getLocation();
         $locked = $inventory->getLockedToOwner();
 
-        $possibleSlices = $em->getRepository(Item::class)->createQueryBuilder('i')
-            ->leftJoin('i.food', 'f')
-            ->join('i.itemGroups', 'g')
-            ->andWhere('f IS NOT NULL')
-            ->andWhere('g.name = :za')
-            ->setParameter('za', 'Za')
-            ->getQuery()
-            ->execute();
-
         $numSlices = $rng->rngNextFromArray([
             1, 3, 3, 3, 3, 4, 4, 4, 5, 6, // averages less than 4, to avoid an infinite pizza box engine
         ]);
@@ -65,6 +56,16 @@ class PizzaBoxController
             $newInventory[] = $inventoryService->receiveItem('Pizzaface', $user, $user, $description, $location, $locked);
         else
         {
+            /** @var Item[] $possibleSlices */
+            $possibleSlices = $em->getRepository(Item::class)->createQueryBuilder('i')
+                ->leftJoin('i.food', 'f')
+                ->join('i.itemGroups', 'g')
+                ->andWhere('f IS NOT NULL')
+                ->andWhere('g.name = :za')
+                ->setParameter('za', 'Za')
+                ->getQuery()
+                ->execute();
+
             for($i = 0; $i < $numSlices; $i++)
             {
                 $newInventory[] = $inventoryService->receiveItem($rng->rngNextFromArray($possibleSlices), $user, $user, $description, $location, $locked)

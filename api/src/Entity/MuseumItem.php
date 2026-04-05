@@ -42,7 +42,7 @@ class MuseumItem
 
     #[Groups(["museum"])]
     #[ORM\Column(type: 'json')]
-    private $comments = [];
+    private array $comments = [];
 
     #[Groups(["museum"])]
     #[ORM\ManyToOne(targetEntity: User::class)]
@@ -75,11 +75,14 @@ class MuseumItem
         return $this->donatedOn;
     }
 
-    public function getComments(): ?array
+    public function getComments(): array
     {
         return $this->comments;
     }
 
+    /**
+     * @param string[] $comments
+     */
     public function setComments(array $comments): self
     {
         $this->comments = $comments;

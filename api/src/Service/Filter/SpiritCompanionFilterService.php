@@ -21,6 +21,7 @@ use Doctrine\ORM\QueryBuilder;
 
 class SpiritCompanionFilterService implements FilterServiceInterface
 {
+    /** @use FilterService<SpiritCompanion> */
     use FilterService;
 
     public const int PageSize = 20;
