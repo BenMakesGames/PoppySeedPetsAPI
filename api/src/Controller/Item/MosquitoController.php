@@ -21,7 +21,6 @@ use App\Service\ResponseService;
 use App\Service\UserStatsService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use App\Service\UserAccessor;
@@ -33,7 +32,7 @@ class MosquitoController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function squishBug(
         Inventory $inventory, ResponseService $responseService, UserStatsService $userStatsRepository,
-        EntityManagerInterface $em, Request $request, InventoryService $inventoryService,
+        EntityManagerInterface $em, InventoryService $inventoryService,
         UserAccessor $userAccessor
     ): JsonResponse
     {
@@ -65,7 +64,7 @@ class MosquitoController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function putBugOutside(
         Inventory $inventory, ResponseService $responseService, UserStatsService $userStatsRepository,
-        EntityManagerInterface $em, Request $request, InventoryService $inventoryService, UserAccessor $userAccessor
+        EntityManagerInterface $em, InventoryService $inventoryService, UserAccessor $userAccessor
     ): JsonResponse
     {
         $user = $userAccessor->getUserOrThrow();
