@@ -5791,18 +5791,6 @@ parameters:
 			path: src/Service/RecyclingService.php
 
 		-
-			message: '#^Cannot access offset ''access_token'' on array\|bool\|float\|int\|object\|string\|null\.$#'
-			identifier: offsetAccess.nonOffsetAccessible
-			count: 1
-			path: src/Service/RedditService.php
-
-		-
-			message: '#^Method App\\Service\\RedditService\:\:getAccessToken\(\) should return string but returns mixed\.$#'
-			identifier: return.type
-			count: 1
-			path: src/Service/RedditService.php
-
-		-
 			message: '#^Cannot access offset ''menu'' on array\|ArrayObject\|bool\|float\|int\|string\|null\.$#'
 			identifier: offsetAccess.nonOffsetAccessible
 			count: 1
