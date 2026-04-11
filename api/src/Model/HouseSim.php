@@ -123,10 +123,8 @@ class HouseSim implements IHouseSim
         $itemToRemove = array_find(
             $this->inventory,
             fn(Inventory $i) => in_array($i->getItem()->getName(), $items)
-        );
-
-        if(!$itemToRemove)
-            throw new \Exception('Cannot use ' . ArrayFunctions::list_nice($items, ', ', ', or ') . '; none exist in your house!');
+        )
+            ?? throw new \Exception('Cannot use ' . ArrayFunctions::list_nice($items, ', ', ', or ') . '; none exist in your house!');
 
         $itemId = $itemToRemove->getItem()->getId();
 

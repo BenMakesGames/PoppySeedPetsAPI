@@ -16,10 +16,7 @@ namespace App\Command;
 use App\Entity\HollowEarthTileCard;
 use App\Entity\HollowEarthTileType;
 use App\Entity\Item;
-use App\Entity\ItemGroup;
-use App\Functions\ArrayFunctions;
 use App\Functions\ItemGroupRepository;
-use App\Functions\ItemRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Input\InputArgument;
 
@@ -73,7 +70,8 @@ class CreateHollowEarthTileCommand extends PoppySeedPetsCommand
 
         $type = $this->askChoice('Type', $tileTypeNames, null);
 
-        $tileType = array_find($tileTypes, fn(HollowEarthTileType $t) => $t->getName() === $type);
+        $tileType = array_find($tileTypes, fn(HollowEarthTileType $t) => $t->getName() === $type)
+            ?? throw new \Exception('Could not find tile type.');
 
         $tile->setType($tileType);
 

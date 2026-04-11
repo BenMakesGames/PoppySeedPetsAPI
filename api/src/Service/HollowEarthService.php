@@ -548,10 +548,8 @@ class HollowEarthService
      */
     private static function serializeItem(array $items, string $itemName): array
     {
-        $item = array_find($items, fn(Item $i) => $i->getName() === $itemName);
-
-        if(!$item)
-            throw new \Exception('Invalid item name.');
+        $item = array_find($items, fn(Item $i) => $i->getName() === $itemName)
+            ?? throw new \Exception('Invalid item name.');
 
         return [
             'name' => $item->getName(),

@@ -106,10 +106,8 @@ class DragonService
      */
     public function giveTreasures(User $user, array $itemIds): string
     {
-        $dragon = DragonHelpers::getAdultDragon($this->em, $user);
-
-        if(!$dragon)
-            throw new PSPNotFoundException('You don\'t have an adult dragon!');
+        $dragon = DragonHelpers::getAdultDragon($this->em, $user)
+            ?? throw new PSPNotFoundException('You don\'t have an adult dragon!');
 
         if($dragon->getHostage())
             throw new PSPInvalidOperationException('"This \'hostage\' is giving me a headache - I can\'t even count my gold! Can you please do something?"');

@@ -339,10 +339,8 @@ class LetterService
     {
         $existingLetters = self::getNumberOfLettersToUserFromSender($this->em, $user, $sender);
 
-        $nextLetter = $this->findBySenderIndex($sender, $existingLetters);
-
-        if(!$nextLetter)
-            throw new \InvalidArgumentException('The user already has every letter from that sender!');
+        $nextLetter = $this->findBySenderIndex($sender, $existingLetters)
+            ?? throw new \InvalidArgumentException('The user already has every letter from that sender!');
 
         $newLetter = new UserLetter(
             user: $user,
