@@ -54,10 +54,8 @@ class ResetPassphraseCommand extends Command
         if($email === '')
             throw new PSPFormValidationException('E-mail address may not be blank.');
 
-        $user = $this->em->getRepository(User::class)->findOneBy([ 'email' => $email ]);
-
-        if(!$user)
-            throw new PSPNotFoundException('There is no user with that e-mail address.');
+        $user = $this->em->getRepository(User::class)->findOneBy([ 'email' => $email ])
+            ?? throw new PSPNotFoundException('There is no user with that e-mail address.');
 
         $password = CryptographicFunctions::generateSecureRandomString(16);
 

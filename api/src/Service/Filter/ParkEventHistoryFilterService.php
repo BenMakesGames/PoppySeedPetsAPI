@@ -22,6 +22,7 @@ use Doctrine\ORM\QueryBuilder;
 
 class ParkEventHistoryFilterService implements FilterServiceInterface
 {
+    /** @use FilterService<ParkEvent> */
     use FilterService;
 
     public const int PageSize = 20;

@@ -148,14 +148,8 @@ class RelationshipsController
         if(count($parents) === 0)
             return [];
 
-        return $em->createQueryBuilder()
-            ->select('p')
-            ->from(Pet::class, 'p')
-            ->andWhere('p.id IN (:petParents)')
-            ->setParameter('petParents', array_map(fn(Pet $p) => $p->getId(), $parents))
-            ->getQuery()
-            ->getResult()
-        ;
+        return $em->getRepository(Pet::class)->findBy([
+            'id' => array_map(fn(Pet $p) => $p->getId(), $parents),
+        ]);
     }
-
 }

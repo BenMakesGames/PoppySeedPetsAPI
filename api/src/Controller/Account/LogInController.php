@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace App\Controller\Account;
 
 use App\Attributes\DoesNotRequireHouseHours;
+use App\Controller\Style\StyleMapper;
 use App\Entity\User;
 use App\Enum\SerializationGroupEnum;
 use App\Exceptions\PSPFormValidationException;
@@ -80,10 +81,9 @@ final class LogInController
 
         $currentTheme = UserStyleFunctions::findCurrent($em, $user->getId());
 
-        return $responseService->success(
-            [ 'currentTheme' => $currentTheme ],
-            [ SerializationGroupEnum::MY_STYLE ]
-        );
+        return $responseService->success([
+            'currentTheme' => StyleMapper::mapMyStyle($currentTheme)
+        ]);
     }
 }
 

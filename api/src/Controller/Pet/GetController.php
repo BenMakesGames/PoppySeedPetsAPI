@@ -69,13 +69,8 @@ class GetController
     {
         $user = $userAccessor->getUserOrThrow();
 
-        $pet = $em->getRepository(Pet::class)->findOneBy([
-            'id' => $id,
-            'owner' => $user->getId(),
-        ]);
-
-        if(!$pet)
-            throw new PSPPetNotFoundException();
+        $pet = $em->getRepository(Pet::class)->findOneBy([ 'id' => $id, 'owner' => $user->getId() ])
+            ?? throw new PSPPetNotFoundException();
 
         return $responseService->success($pet, [ SerializationGroupEnum::MY_PET ]);
     }

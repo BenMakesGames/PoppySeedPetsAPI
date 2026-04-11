@@ -49,14 +49,8 @@ class SmilingWandController
 
         $petId = $request->request->getInt('pet', 0);
 
-        /** @var Pet|null $pet */
-        $pet = $em->getRepository(Pet::class)->findOneBy([
-            'id' => $petId,
-            'owner' => $user,
-        ]);
-
-        if(!$pet)
-            throw new PSPPetNotFoundException();
+        $pet = $em->getRepository(Pet::class)->findOneBy([ 'id' => $petId, 'owner' => $user ])
+            ?? throw new PSPPetNotFoundException();
 
         $pet->setAffectionExpressions($expressions);
 

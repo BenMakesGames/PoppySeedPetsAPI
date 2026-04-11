@@ -10,6 +10,8 @@ ul {
   margin: 0;
   border-top: 2px solid rgba(var(--color-text-on-content-background), 0.1);
 
+  > li > a { height: 100%; }
+
   @media (min-width: 480px)
   {
     grid-template-columns: repeat(4, 1fr);

@@ -102,7 +102,7 @@ class MonsterOfTheWeek
         return $this->hardPrize;
     }
 
-    public function getLevel(): ?int
+    public function getLevel(): int
     {
         return $this->level;
     }

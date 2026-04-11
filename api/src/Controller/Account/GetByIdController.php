@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace App\Controller\Account;
 
 use App\Attributes\DoesNotRequireHouseHours;
+use App\Controller\Style\StyleMapper;
 use App\Entity\Inventory;
 use App\Entity\Pet;
 use App\Entity\User;
@@ -48,7 +49,7 @@ class GetByIdController
         $data = [
             'user' => $normalizer->normalize($user, null, [ 'groups' => [ SerializationGroupEnum::USER_PUBLIC_PROFILE ] ]),
             'pets' => $normalizer->normalize($pets, null, [ 'groups' => [ SerializationGroupEnum::USER_PUBLIC_PROFILE ] ]),
-            'theme' => $normalizer->normalize($theme, null, [ 'groups' => [ SerializationGroupEnum::PUBLIC_STYLE ]]),
+            'theme' => StyleMapper::mapPublicStyle($theme),
         ];
 
         if((new \DateTimeImmutable())->format('m') == 12 && $user->getFireplace())

@@ -21,6 +21,7 @@ use Doctrine\ORM\QueryBuilder;
 
 class ArticleFilterService implements FilterServiceInterface
 {
+    /** @use FilterService<Article> */
     use FilterService;
 
     public const int PageSize = 10;

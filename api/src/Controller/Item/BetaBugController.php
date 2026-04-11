@@ -89,14 +89,13 @@ class BetaBugController
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'betaBug');
 
-        $item = $em->getRepository(Inventory::class)->findOneBy([
-            'id' => $request->request->getInt('item'),
-            'owner' => $user,
-            'location' => LocationEnum::Home
-        ]);
-
-        if(!$item)
-            throw new PSPNotFoundException("Couldn't find that item!");
+        $item = $em->getRepository(Inventory::class)
+            ->findOneBy([
+                'id' => $request->request->getInt('item'),
+                'owner' => $user,
+                'location' => LocationEnum::Home
+            ])
+            ?? throw new PSPNotFoundException("Couldn't find that item!");
 
         switch($item->getItem()->getName())
         {

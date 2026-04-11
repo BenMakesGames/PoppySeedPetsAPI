@@ -35,6 +35,9 @@ final class MonsterOfTheWeekHelpers
         };
     }
 
+    /**
+     * @return int[]
+     */
     public static function getBasePrizeValues(MonsterOfTheWeekEnum $monster): array
     {
         return match($monster)

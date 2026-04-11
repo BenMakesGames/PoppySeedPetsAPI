@@ -51,10 +51,25 @@ class MarketBid
 
     #[Groups(["myBids"])]
     #[ORM\Column(type: 'smallint')]
-    private int $targetLocation = 0;
+    private int $targetLocation;
 
-    public function __construct()
+    public function __construct(
+        User $user,
+        Item $item,
+        int $bid,
+        int $quantity,
+        int $targetLocation
+    )
     {
+        if(!LocationEnum::isAValue($targetLocation))
+            throw new EnumInvalidValueException(LocationEnum::class, $targetLocation);
+
+        $this->user = $user;
+        $this->item = $item;
+        $this->bid = $bid;
+        $this->quantity = $quantity;
+        $this->targetLocation = $targetLocation;
+
         $this->createdOn = new \DateTimeImmutable();
     }
 
@@ -63,31 +78,17 @@ class MarketBid
         return $this->id;
     }
 
-    public function getUser(): ?User
+    public function getUser(): User
     {
         return $this->user;
     }
 
-    public function setUser(?User $user): self
-    {
-        $this->user = $user;
-
-        return $this;
-    }
-
-    public function getItem(): ?Item
+    public function getItem(): Item
     {
         return $this->item;
     }
 
-    public function setItem(?Item $item): self
-    {
-        $this->item = $item;
-
-        return $this;
-    }
-
-    public function getBid(): ?int
+    public function getBid(): int
     {
         return $this->bid;
     }
@@ -99,7 +100,7 @@ class MarketBid
         return $this;
     }
 
-    public function getQuantity(): ?int
+    public function getQuantity(): int
     {
         return $this->quantity;
     }

@@ -853,24 +853,6 @@ parameters:
 			path: src/Command/ViewMonsterFoodsCommand.php
 
 		-
-			message: '#^Part \$thresholds\[0\] \(mixed\) of encapsed string cannot be cast to string\.$#'
-			identifier: encapsedStringPart.nonString
-			count: 1
-			path: src/Command/ViewMonsterFoodsCommand.php
-
-		-
-			message: '#^Part \$thresholds\[1\] \(mixed\) of encapsed string cannot be cast to string\.$#'
-			identifier: encapsedStringPart.nonString
-			count: 1
-			path: src/Command/ViewMonsterFoodsCommand.php
-
-		-
-			message: '#^Part \$thresholds\[2\] \(mixed\) of encapsed string cannot be cast to string\.$#'
-			identifier: encapsedStringPart.nonString
-			count: 1
-			path: src/Command/ViewMonsterFoodsCommand.php
-
-		-
 			message: '#^Parameter \#2 \$userId of static method App\\Functions\\UserStyleFunctions\:\:findCurrent\(\) expects int, int\|null given\.$#'
 			identifier: argument.type
 			count: 1
@@ -1573,12 +1555,6 @@ parameters:
 			path: src/Controller/HollowEarth/TradesController.php
 
 		-
-			message: '#^Negated boolean expression is always false\.$#'
-			identifier: booleanNot.alwaysFalse
-			count: 1
-			path: src/Controller/HollowEarth/TradesController.php
-
-		-
 			message: '#^Parameter \#1 \$amber of method App\\Entity\\HollowEarthPlayer\:\:increaseAmber\(\) expects int, float\|int given\.$#'
 			identifier: argument.type
 			count: 1
@@ -1687,12 +1663,6 @@ parameters:
 			path: src/Controller/Item/EggController.php
 
 		-
-			message: '#^Negated boolean expression is always false\.$#'
-			identifier: booleanNot.alwaysFalse
-			count: 3
-			path: src/Controller/Item/EggController.php
-
-		-
 			message: '#^Cannot call method getName\(\) on App\\Entity\\Aura\|null\.$#'
 			identifier: method.nonObject
 			count: 1
@@ -1753,24 +1723,6 @@ parameters:
 			path: src/Controller/Item/PetAlteration/WerebaneController.php
 
 		-
-			message: '#^Parameter \#1 \$array of method App\\Service\\IRandom\:\:rngNextFromArray\(\) expects array\<mixed\>, mixed given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Controller/Item/Pinata/PizzaBoxController.php
-
-		-
-			message: '#^Parameter \#1 \$item of method App\\Service\\InventoryService\:\:receiveItem\(\) expects App\\Entity\\Item\|string, mixed given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Controller/Item/Pinata/PizzaBoxController.php
-
-		-
-			message: '#^Unable to resolve the template type T in call to method App\\Service\\IRandom\:\:rngNextFromArray\(\)$#'
-			identifier: argument.templateType
-			count: 1
-			path: src/Controller/Item/Pinata/PizzaBoxController.php
-
-		-
 			message: '#^Parameter \#2 \$userId of static method App\\Service\\InventoryService\:\:countInventory\(\) expects int, int\|null given\.$#'
 			identifier: argument.type
 			count: 1
@@ -1787,42 +1739,6 @@ parameters:
 			identifier: method.nonObject
 			count: 1
 			path: src/Controller/Item/TwilightFertilizerController.php
-
-		-
-			message: '#^Cannot call method getItem\(\) on App\\Entity\\Inventory\|null\.$#'
-			identifier: method.nonObject
-			count: 5
-			path: src/Controller/Market/BuyController.php
-
-		-
-			message: '#^Cannot call method getLocation\(\) on App\\Entity\\Inventory\|null\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: src/Controller/Market/BuyController.php
-
-		-
-			message: '#^Cannot call method getOwner\(\) on App\\Entity\\Inventory\|null\.$#'
-			identifier: method.nonObject
-			count: 3
-			path: src/Controller/Market/BuyController.php
-
-		-
-			message: '#^Parameter \#1 \$item of method App\\Service\\MarketService\:\:transferItemToPlayer\(\) expects App\\Entity\\Inventory, App\\Entity\\Inventory\|null given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Controller/Market/BuyController.php
-
-		-
-			message: '#^Parameter \#1 \$item of static method App\\Functions\\InventoryModifierFunctions\:\:getNameWithModifiers\(\) expects App\\Entity\\Inventory, App\\Entity\\Inventory\|null given\.$#'
-			identifier: argument.type
-			count: 2
-			path: src/Controller/Market/BuyController.php
-
-		-
-			message: '#^Parameter \#1 \$itemForSale of method App\\Service\\MarketService\:\:logExchange\(\) expects App\\Entity\\Inventory, App\\Entity\\Inventory\|null given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Controller/Market/BuyController.php
 
 		-
 			message: '#^Parameter \#2 \$amount of method App\\Service\\TransactionService\:\:getMoney\(\) expects int, int\|null given\.$#'
@@ -1855,69 +1771,9 @@ parameters:
 			path: src/Controller/MarketBid/CreateBidController.php
 
 		-
-			message: '#^Cannot call method getId\(\) on App\\Entity\\User\|null\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: src/Controller/MarketBid/DeleteBidController.php
-
-		-
-			message: '#^Cannot call method getName\(\) on App\\Entity\\Item\|null\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: src/Controller/MarketBid/DeleteBidController.php
-
-		-
-			message: '#^Binary operation "\*" between mixed and int\|null results in an error\.$#'
-			identifier: binaryOp.invalid
-			count: 3
-			path: src/Controller/MonsterOfTheWeek/ClaimRewardsController.php
-
-		-
 			message: '#^Binary operation "\." between ''Invalid monster\: '' and mixed results in an error\.$#'
 			identifier: binaryOp.invalid
 			count: 3
-			path: src/Controller/MonsterOfTheWeek/ClaimRewardsController.php
-
-		-
-			message: '#^Cannot call method getCommunityTotal\(\) on App\\Entity\\MonsterOfTheWeek\|null\.$#'
-			identifier: method.nonObject
-			count: 3
-			path: src/Controller/MonsterOfTheWeek/ClaimRewardsController.php
-
-		-
-			message: '#^Cannot call method getEasyPrize\(\) on App\\Entity\\MonsterOfTheWeek\|null\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: src/Controller/MonsterOfTheWeek/ClaimRewardsController.php
-
-		-
-			message: '#^Cannot call method getEndDate\(\) on App\\Entity\\MonsterOfTheWeek\|null\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: src/Controller/MonsterOfTheWeek/ClaimRewardsController.php
-
-		-
-			message: '#^Cannot call method getHardPrize\(\) on App\\Entity\\MonsterOfTheWeek\|null\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: src/Controller/MonsterOfTheWeek/ClaimRewardsController.php
-
-		-
-			message: '#^Cannot call method getLevel\(\) on App\\Entity\\MonsterOfTheWeek\|null\.$#'
-			identifier: method.nonObject
-			count: 3
-			path: src/Controller/MonsterOfTheWeek/ClaimRewardsController.php
-
-		-
-			message: '#^Cannot call method getMediumPrize\(\) on App\\Entity\\MonsterOfTheWeek\|null\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: src/Controller/MonsterOfTheWeek/ClaimRewardsController.php
-
-		-
-			message: '#^Cannot call method getMonster\(\) on App\\Entity\\MonsterOfTheWeek\|null\.$#'
-			identifier: method.nonObject
-			count: 6
 			path: src/Controller/MonsterOfTheWeek/ClaimRewardsController.php
 
 		-
@@ -1933,13 +1789,7 @@ parameters:
 			path: src/Controller/MonsterOfTheWeek/ClaimRewardsController.php
 
 		-
-			message: '#^Match expression does not handle remaining value\: string$#'
-			identifier: match.unhandled
-			count: 1
-			path: src/Controller/MonsterOfTheWeek/ClaimRewardsController.php
-
-		-
-			message: '#^Binary operation "\*" between mixed and mixed results in an error\.$#'
+			message: '#^Binary operation "\*" between int and mixed results in an error\.$#'
 			identifier: binaryOp.invalid
 			count: 3
 			path: src/Controller/MonsterOfTheWeek/GetAvailableRewards.php
@@ -2035,7 +1885,7 @@ parameters:
 			path: src/Controller/MonsterOfTheWeek/GetAvailableRewards.php
 
 		-
-			message: '#^Binary operation "\*" between mixed and mixed results in an error\.$#'
+			message: '#^Binary operation "\*" between int and mixed results in an error\.$#'
 			identifier: binaryOp.invalid
 			count: 3
 			path: src/Controller/MonsterOfTheWeek/GetController.php
@@ -2131,21 +1981,9 @@ parameters:
 			path: src/Controller/MonsterOfTheWeek/GetFoodController.php
 
 		-
-			message: '#^Binary operation "/" between int and mixed results in an error\.$#'
-			identifier: binaryOp.invalid
-			count: 1
-			path: src/Controller/MonsterOfTheWeek/MonsterOfTheWeekHelpers.php
-
-		-
 			message: '#^Match arm comparison between App\\Enum\\MonsterOfTheWeekEnum\:\:VafAndNir and App\\Enum\\MonsterOfTheWeekEnum\:\:VafAndNir is always true\.$#'
 			identifier: match.alwaysTrue
 			count: 7
-			path: src/Controller/MonsterOfTheWeek/MonsterOfTheWeekHelpers.php
-
-		-
-			message: '#^Method App\\Controller\\MonsterOfTheWeek\\MonsterOfTheWeekHelpers\:\:getBasePrizeValues\(\) return type has no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
 			path: src/Controller/MonsterOfTheWeek/MonsterOfTheWeekHelpers.php
 
 		-
@@ -2179,57 +2017,15 @@ parameters:
 			path: src/Controller/MonsterOfTheWeek/MonsterOfTheWeekHelpers.php
 
 		-
-			message: '#^Property App\\Model\\FilterResults\:\:\$results \(array\<array\>\) does not accept mixed\.$#'
+			message: '#^Property App\\Model\\FilterResults\:\:\$results \(array\) does not accept mixed\.$#'
 			identifier: assign.propertyType
 			count: 1
 			path: src/Controller/Museum/GetDonatableItemsController.php
 
 		-
-			message: '#^Binary operation "\." between mixed and '' Favor'' results in an error\.$#'
-			identifier: binaryOp.invalid
-			count: 1
-			path: src/Controller/Museum/GiftShopController.php
-
-		-
-			message: '#^Cannot access offset ''category'' on mixed\.$#'
-			identifier: offsetAccess.nonOffsetAccessible
-			count: 1
-			path: src/Controller/Museum/GiftShopController.php
-
-		-
-			message: '#^Cannot access offset ''cost'' on mixed\.$#'
-			identifier: offsetAccess.nonOffsetAccessible
-			count: 1
-			path: src/Controller/Museum/GiftShopController.php
-
-		-
-			message: '#^Cannot access offset ''inventory'' on mixed\.$#'
-			identifier: offsetAccess.nonOffsetAccessible
-			count: 1
-			path: src/Controller/Museum/GiftShopController.php
-
-		-
-			message: '#^Cannot access offset ''item'' on mixed\.$#'
-			identifier: offsetAccess.nonOffsetAccessible
-			count: 2
-			path: src/Controller/Museum/GiftShopController.php
-
-		-
 			message: '#^Cannot access offset ''name'' on mixed\.$#'
 			identifier: offsetAccess.nonOffsetAccessible
 			count: 2
-			path: src/Controller/Museum/GiftShopController.php
-
-		-
-			message: '#^Parameter \#1 \$array of static method App\\Functions\\ArrayFunctions\:\:find_one\(\) expects iterable, mixed given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Controller/Museum/GiftShopController.php
-
-		-
-			message: '#^Parameter \#2 \$amount of method App\\Service\\TransactionService\:\:spendMuseumFavor\(\) expects int, mixed given\.$#'
-			identifier: argument.type
-			count: 1
 			path: src/Controller/Museum/GiftShopController.php
 
 		-
@@ -2239,7 +2035,7 @@ parameters:
 			path: src/Controller/Museum/GiftShopController.php
 
 		-
-			message: '#^Property App\\Model\\FilterResults\:\:\$results \(array\<array\>\) does not accept mixed\.$#'
+			message: '#^Property App\\Model\\FilterResults\:\:\$results \(array\) does not accept mixed\.$#'
 			identifier: assign.propertyType
 			count: 1
 			path: src/Controller/Museum/TopDonorsController.php
@@ -2387,18 +2183,6 @@ parameters:
 			identifier: return.type
 			count: 1
 			path: src/Controller/Pet/LogsController.php
-
-		-
-			message: '#^Parameter \#3 \$year of static method App\\Controller\\Pet\\LogsController\:\:findLogsForPetByDate\(\) expects int, int\|null given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Controller/Pet/LogsController.php
-
-		-
-			message: '#^Method App\\Controller\\Pet\\RelationshipsController\:\:findParents\(\) should return array\<App\\Entity\\Pet\> but returns mixed\.$#'
-			identifier: return.type
-			count: 1
-			path: src/Controller/Pet/RelationshipsController.php
 
 		-
 			message: '#^Method App\\Controller\\Pet\\RelationshipsController\:\:findSiblings\(\) should return array\<App\\Entity\\Pet\> but returns mixed\.$#'
@@ -2677,6 +2461,18 @@ parameters:
 			path: src/Controller/Style/ShareController.php
 
 		-
+			message: '#^Method App\\Controller\\Style\\StyleMapper\:\:mapMyStyle\(\) should return array\<string, mixed\>\|null but returns array\<mixed\>\.$#'
+			identifier: return.type
+			count: 1
+			path: src/Controller/Style/StyleMapper.php
+
+		-
+			message: '#^Only iterables can be unpacked, array\<string, mixed\>\|null given\.$#'
+			identifier: arrayUnpacking.nonIterable
+			count: 1
+			path: src/Controller/Style/StyleMapper.php
+
+		-
 			message: '#^Binary operation "/" between mixed and 20 results in an error\.$#'
 			identifier: binaryOp.invalid
 			count: 1
@@ -2684,12 +2480,6 @@ parameters:
 
 		-
 			message: '#^Property App\\Model\\FilterResults\:\:\$resultCount \(int\) does not accept mixed\.$#'
-			identifier: assign.propertyType
-			count: 1
-			path: src/Controller/Zoologist/GetPetsOfUndiscoveredSpeciesController.php
-
-		-
-			message: '#^Property App\\Model\\FilterResults\:\:\$results \(array\<array\>\) does not accept array\.$#'
 			identifier: assign.propertyType
 			count: 1
 			path: src/Controller/Zoologist/GetPetsOfUndiscoveredSpeciesController.php
@@ -2935,38 +2725,8 @@ parameters:
 			path: src/Entity/HollowEarthPlayerTile.php
 
 		-
-			message: '#^Cannot access an offset on mixed\.$#'
-			identifier: offsetAccess.nonOffsetAccessible
-			count: 1
-			path: src/Entity/HollowEarthTile.php
-
-		-
-			message: '#^Cannot call method contains\(\) on mixed\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: src/Entity/HollowEarthTile.php
-
-		-
-			message: '#^Cannot call method removeElement\(\) on mixed\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: src/Entity/HollowEarthTile.php
-
-		-
-			message: '#^Method App\\Entity\\HollowEarthTile\:\:getCard\(\) should return App\\Entity\\HollowEarthTileCard\|null but returns mixed\.$#'
-			identifier: return.type
-			count: 1
-			path: src/Entity/HollowEarthTile.php
-
-		-
 			message: '#^Method App\\Entity\\HollowEarthTile\:\:getGoods\(\) return type has no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
-			count: 1
-			path: src/Entity/HollowEarthTile.php
-
-		-
-			message: '#^Method App\\Entity\\HollowEarthTile\:\:getTypes\(\) should return Doctrine\\Common\\Collections\\Collection\<int, App\\Entity\\HollowEarthTileType\> but returns mixed\.$#'
-			identifier: return.type
 			count: 1
 			path: src/Entity/HollowEarthTile.php
 
@@ -2977,20 +2737,8 @@ parameters:
 			path: src/Entity/HollowEarthTile.php
 
 		-
-			message: '#^Property App\\Entity\\HollowEarthTile\:\:\$card has no type specified\.$#'
-			identifier: missingType.property
-			count: 1
-			path: src/Entity/HollowEarthTile.php
-
-		-
 			message: '#^Property App\\Entity\\HollowEarthTile\:\:\$goods type has no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
-			count: 1
-			path: src/Entity/HollowEarthTile.php
-
-		-
-			message: '#^Property App\\Entity\\HollowEarthTile\:\:\$types has no type specified\.$#'
-			identifier: missingType.property
 			count: 1
 			path: src/Entity/HollowEarthTile.php
 
@@ -3034,12 +2782,6 @@ parameters:
 			message: '#^Cannot call method setTool\(\) on App\\Entity\\Pet\|null\.$#'
 			identifier: method.nonObject
 			count: 2
-			path: src/Entity/Inventory.php
-
-		-
-			message: '#^Negated boolean expression is always false\.$#'
-			identifier: booleanNot.alwaysFalse
-			count: 1
 			path: src/Entity/Inventory.php
 
 		-
@@ -3091,118 +2833,16 @@ parameters:
 			path: src/Entity/ItemFood.php
 
 		-
-			message: '#^Cannot call method getHat\(\) on App\\Entity\\Item\|null\.$#'
-			identifier: method.nonObject
+			message: '#^Property App\\Entity\\ItemHat\:\:\$item is never written, only read\.$#'
+			identifier: property.onlyRead
 			count: 1
 			path: src/Entity/ItemHat.php
-
-		-
-			message: '#^Cannot call method setHat\(\) on App\\Entity\\Item\|null\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: src/Entity/ItemHat.php
-
-		-
-			message: '#^Method App\\Entity\\ItemHat\:\:getItem\(\) should return App\\Entity\\Item\|null but returns mixed\.$#'
-			identifier: return.type
-			count: 1
-			path: src/Entity/ItemHat.php
-
-		-
-			message: '#^Property App\\Entity\\ItemHat\:\:\$item has no type specified\.$#'
-			identifier: missingType.property
-			count: 1
-			path: src/Entity/ItemHat.php
-
-		-
-			message: '#^Method App\\Entity\\ItemTool\:\:getEnchantment\(\) should return App\\Entity\\Enchantment\|null but returns mixed\.$#'
-			identifier: return.type
-			count: 1
-			path: src/Entity/ItemTool.php
 
 		-
 			message: '#^Method App\\Entity\\ItemTool\:\:getModifiers\(\) return type has no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 1
 			path: src/Entity/ItemTool.php
-
-		-
-			message: '#^Property App\\Entity\\ItemTool\:\:\$enchantment has no type specified\.$#'
-			identifier: missingType.property
-			count: 1
-			path: src/Entity/ItemTool.php
-
-		-
-			message: '#^Method App\\Entity\\Letter\:\:getAttachment\(\) should return App\\Entity\\Item\|null but returns mixed\.$#'
-			identifier: return.type
-			count: 1
-			path: src/Entity/Letter.php
-
-		-
-			message: '#^Method App\\Entity\\Letter\:\:getBonus\(\) should return App\\Entity\\Enchantment\|null but returns mixed\.$#'
-			identifier: return.type
-			count: 1
-			path: src/Entity/Letter.php
-
-		-
-			message: '#^Method App\\Entity\\Letter\:\:getFieldGuideEntry\(\) should return App\\Entity\\FieldGuideEntry\|null but returns mixed\.$#'
-			identifier: return.type
-			count: 1
-			path: src/Entity/Letter.php
-
-		-
-			message: '#^Method App\\Entity\\Letter\:\:getSender\(\) should return string but returns mixed\.$#'
-			identifier: return.type
-			count: 1
-			path: src/Entity/Letter.php
-
-		-
-			message: '#^Method App\\Entity\\Letter\:\:getSpice\(\) should return App\\Entity\\Spice\|null but returns mixed\.$#'
-			identifier: return.type
-			count: 1
-			path: src/Entity/Letter.php
-
-		-
-			message: '#^Property App\\Entity\\Letter\:\:\$attachment has no type specified\.$#'
-			identifier: missingType.property
-			count: 1
-			path: src/Entity/Letter.php
-
-		-
-			message: '#^Property App\\Entity\\Letter\:\:\$bonus has no type specified\.$#'
-			identifier: missingType.property
-			count: 1
-			path: src/Entity/Letter.php
-
-		-
-			message: '#^Property App\\Entity\\Letter\:\:\$fieldGuideEntry has no type specified\.$#'
-			identifier: missingType.property
-			count: 1
-			path: src/Entity/Letter.php
-
-		-
-			message: '#^Property App\\Entity\\Letter\:\:\$sender has no type specified\.$#'
-			identifier: missingType.property
-			count: 1
-			path: src/Entity/Letter.php
-
-		-
-			message: '#^Property App\\Entity\\Letter\:\:\$spice has no type specified\.$#'
-			identifier: missingType.property
-			count: 1
-			path: src/Entity/Letter.php
-
-		-
-			message: '#^Property App\\Entity\\MarketBid\:\:\$item \(App\\Entity\\Item\) does not accept App\\Entity\\Item\|null\.$#'
-			identifier: assign.propertyType
-			count: 1
-			path: src/Entity/MarketBid.php
-
-		-
-			message: '#^Property App\\Entity\\MarketBid\:\:\$user \(App\\Entity\\User\) does not accept App\\Entity\\User\|null\.$#'
-			identifier: assign.propertyType
-			count: 1
-			path: src/Entity/MarketBid.php
 
 		-
 			message: '#^Method App\\Entity\\MonthlyStoryAdventure\:\:isREMIX\(\) has no return type specified\.$#'
@@ -3223,20 +2863,8 @@ parameters:
 			path: src/Entity/MuseumItem.php
 
 		-
-			message: '#^Method App\\Entity\\MuseumItem\:\:getComments\(\) should return array\|null but returns mixed\.$#'
-			identifier: return.type
-			count: 1
-			path: src/Entity/MuseumItem.php
-
-		-
-			message: '#^Method App\\Entity\\MuseumItem\:\:setComments\(\) has parameter \$comments with no value type specified in iterable type array\.$#'
+			message: '#^Property App\\Entity\\MuseumItem\:\:\$comments type has no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
-			count: 1
-			path: src/Entity/MuseumItem.php
-
-		-
-			message: '#^Property App\\Entity\\MuseumItem\:\:\$comments has no type specified\.$#'
-			identifier: missingType.property
 			count: 1
 			path: src/Entity/MuseumItem.php
 
@@ -3289,20 +2917,8 @@ parameters:
 			path: src/Entity/Pet.php
 
 		-
-			message: '#^Method App\\Entity\\Pet\:\:getStatusEffect\(\) should return App\\Entity\\StatusEffect\|null but returns mixed\.$#'
-			identifier: return.type
-			count: 1
-			path: src/Entity/Pet.php
-
-		-
 			message: '#^Method App\\Entity\\Pet\:\:getStatuses\(\) return type has no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
-			count: 1
-			path: src/Entity/Pet.php
-
-		-
-			message: '#^Parameter \#1 \$callback of function array_map expects \(callable\(mixed\)\: mixed\)\|null, Closure\(App\\Entity\\StatusEffect\)\: App\\Enum\\StatusEffectEnum given\.$#'
-			identifier: argument.type
 			count: 1
 			path: src/Entity/Pet.php
 
@@ -3314,12 +2930,6 @@ parameters:
 
 		-
 			message: '#^Parameter \#1 \$p of method Doctrine\\Common\\Collections\\Collection\<\(int\|string\),mixed\>\:\:filter\(\) expects Closure\(mixed, int\|string\)\: bool, Closure\(App\\Entity\\Merit\)\: bool given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Entity/Pet.php
-
-		-
-			message: '#^Parameter \#2 \$delegate of static method App\\Functions\\ArrayFunctions\:\:find_one\(\) expects callable\(mixed\)\: bool, Closure\(App\\Entity\\StatusEffect\)\: bool given\.$#'
 			identifier: argument.type
 			count: 1
 			path: src/Entity/Pet.php
@@ -3362,12 +2972,6 @@ parameters:
 
 		-
 			message: '#^Property App\\Entity\\Pet\:\:\$petRelationships with generic interface Doctrine\\Common\\Collections\\Collection does not specify its types\: TKey, T$#'
-			identifier: missingType.generics
-			count: 1
-			path: src/Entity/Pet.php
-
-		-
-			message: '#^Property App\\Entity\\Pet\:\:\$statusEffects with generic interface Doctrine\\Common\\Collections\\Collection does not specify its types\: TKey, T$#'
 			identifier: missingType.generics
 			count: 1
 			path: src/Entity/Pet.php
@@ -3481,8 +3085,8 @@ parameters:
 			path: src/Entity/Plant.php
 
 		-
-			message: '#^Property App\\Entity\\PlantYield\:\:\$items with generic interface Doctrine\\Common\\Collections\\Collection does not specify its types\: TKey, T$#'
-			identifier: missingType.generics
+			message: '#^Parameter \#1 \$plantYield of method App\\Entity\\PlantYieldItem\:\:setPlantYield\(\) expects App\\Entity\\PlantYield, null given\.$#'
+			identifier: argument.type
 			count: 1
 			path: src/Entity/PlantYield.php
 
@@ -3493,46 +3097,10 @@ parameters:
 			path: src/Entity/PlantYield.php
 
 		-
-			message: '#^Method App\\Entity\\PlantYieldItem\:\:getPlantYield\(\) should return App\\Entity\\PlantYield\|null but returns mixed\.$#'
-			identifier: return.type
-			count: 1
-			path: src/Entity/PlantYieldItem.php
-
-		-
-			message: '#^Property App\\Entity\\PlantYieldItem\:\:\$plantYield has no type specified\.$#'
-			identifier: missingType.property
-			count: 1
-			path: src/Entity/PlantYieldItem.php
-
-		-
 			message: '#^Property App\\Entity\\SpiritCompanion\:\:\$fatheredPets with generic interface Doctrine\\Common\\Collections\\Collection does not specify its types\: TKey, T$#'
 			identifier: missingType.generics
 			count: 1
 			path: src/Entity/SpiritCompanion.php
-
-		-
-			message: '#^Method App\\Entity\\Story\:\:getFirstSection\(\) should return App\\Entity\\StorySection but returns mixed\.$#'
-			identifier: return.type
-			count: 1
-			path: src/Entity/Story.php
-
-		-
-			message: '#^Method App\\Entity\\Story\:\:getTitle\(\) should return string but returns mixed\.$#'
-			identifier: return.type
-			count: 1
-			path: src/Entity/Story.php
-
-		-
-			message: '#^Property App\\Entity\\Story\:\:\$firstSection has no type specified\.$#'
-			identifier: missingType.property
-			count: 1
-			path: src/Entity/Story.php
-
-		-
-			message: '#^Property App\\Entity\\Story\:\:\$title has no type specified\.$#'
-			identifier: missingType.property
-			count: 1
-			path: src/Entity/Story.php
 
 		-
 			message: '#^Method App\\Entity\\StorySection\:\:getChoices\(\) return type has no value type specified in iterable type array\.$#'
@@ -4441,81 +4009,27 @@ parameters:
 			path: src/Service/Filter/ArticleFilterService.php
 
 		-
-			message: '#^Argument of an invalid type mixed supplied for foreach, only iterables are supported\.$#'
-			identifier: foreach.nonIterable
-			count: 1
-			path: src/Service/Filter/Filterer.php
-
-		-
-			message: '#^Method App\\Service\\Filter\\Filterer\:\:__construct\(\) has parameter \$filterCallbacks with no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Service/Filter/Filterer.php
-
-		-
-			message: '#^Method App\\Service\\Filter\\Filterer\:\:__construct\(\) has parameter \$filtersWithoutCallbacks with no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Service/Filter/Filterer.php
-
-		-
-			message: '#^Method App\\Service\\Filter\\Filterer\:\:__construct\(\) has parameter \$orderByMap with no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Service/Filter/Filterer.php
-
-		-
 			message: '#^Method App\\Service\\Filter\\Filterer\:\:cacheKey\(\) has parameter \$filters with no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 1
 			path: src/Service/Filter/Filterer.php
 
 		-
-			message: '#^Parameter \#1 \$sort of method Doctrine\\ORM\\QueryBuilder\:\:addOrderBy\(\) expects Doctrine\\ORM\\Query\\Expr\\OrderBy\|string, mixed given\.$#'
+			message: '#^Parameter \#2 \$array of function array_map expects array, mixed given\.$#'
 			identifier: argument.type
 			count: 1
 			path: src/Service/Filter/Filterer.php
 
 		-
-			message: '#^Parameter \#2 \$order of method Doctrine\\ORM\\QueryBuilder\:\:addOrderBy\(\) expects string\|null, mixed given\.$#'
+			message: '#^Parameter \#3 \$orderBy of static method App\\Service\\Filter\\Filterer\<T\>\:\:cacheKey\(\) expects string, string\|null given\.$#'
 			identifier: argument.type
 			count: 1
 			path: src/Service/Filter/Filterer.php
 
 		-
-			message: '#^Parameter \#3 \$orderBy of static method App\\Service\\Filter\\Filterer\:\:cacheKey\(\) expects string, int\|string\|null given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Service/Filter/Filterer.php
-
-		-
-			message: '#^Property App\\Model\\FilterResults\:\:\$results \(array\<array\>\) does not accept mixed\.$#'
+			message: '#^Property App\\Model\\FilterResults\:\:\$results \(array\) does not accept mixed\.$#'
 			identifier: assign.propertyType
 			count: 1
-			path: src/Service/Filter/Filterer.php
-
-		-
-			message: '#^Property App\\Service\\Filter\\Filterer\:\:\$filterMap type has no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Service/Filter/Filterer.php
-
-		-
-			message: '#^Property App\\Service\\Filter\\Filterer\:\:\$filterWithoutCallbackMap type has no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Service/Filter/Filterer.php
-
-		-
-			message: '#^Property App\\Service\\Filter\\Filterer\:\:\$orderByMap type has no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Service/Filter/Filterer.php
-
-		-
-			message: '#^Trying to invoke mixed but it''s not a callable\.$#'
-			identifier: callable.nonCallable
-			count: 2
 			path: src/Service/Filter/Filterer.php
 
 		-
@@ -4549,15 +4063,9 @@ parameters:
 			path: src/Service/Filter/InventoryFilterService.php
 
 		-
-			message: '#^Parameter \#1 \$callback of function array_map expects \(callable\(mixed\)\: mixed\)\|null, ''strtolower'' given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Service/Filter/InventoryFilterService.php
-
-		-
 			message: '#^Parameter \#1 \$callback of function array_map expects \(callable\(mixed\)\: mixed\)\|null, Closure\(string\)\: lowercase\-string given\.$#'
 			identifier: argument.type
-			count: 1
+			count: 2
 			path: src/Service/Filter/InventoryFilterService.php
 
 		-
@@ -4603,15 +4111,9 @@ parameters:
 			path: src/Service/Filter/ItemFilterService.php
 
 		-
-			message: '#^Parameter \#1 \$callback of function array_map expects \(callable\(mixed\)\: mixed\)\|null, ''strtolower'' given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Service/Filter/ItemFilterService.php
-
-		-
 			message: '#^Parameter \#1 \$callback of function array_map expects \(callable\(mixed\)\: mixed\)\|null, Closure\(string\)\: lowercase\-string given\.$#'
 			identifier: argument.type
-			count: 1
+			count: 2
 			path: src/Service/Filter/ItemFilterService.php
 
 		-
@@ -4663,15 +4165,9 @@ parameters:
 			path: src/Service/Filter/MarketFilterService.php
 
 		-
-			message: '#^Parameter \#1 \$callback of function array_map expects \(callable\(mixed\)\: mixed\)\|null, ''strtolower'' given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Service/Filter/MarketFilterService.php
-
-		-
 			message: '#^Parameter \#1 \$callback of function array_map expects \(callable\(mixed\)\: mixed\)\|null, Closure\(string\)\: lowercase\-string given\.$#'
 			identifier: argument.type
-			count: 1
+			count: 2
 			path: src/Service/Filter/MarketFilterService.php
 
 		-
@@ -5413,27 +4909,9 @@ parameters:
 			path: src/Service/JsonLogicParserService.php
 
 		-
-			message: '#^Cannot call method getName\(\) on App\\Entity\\User\|null\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: src/Service/MarketService.php
-
-		-
 			message: '#^Method App\\Service\\MarketService\:\:findHighestBidForItem\(\) should return App\\Entity\\MarketBid\|null but returns mixed\.$#'
 			identifier: return.type
 			count: 1
-			path: src/Service/MarketService.php
-
-		-
-			message: '#^Parameter \#2 \$newOwner of method App\\Service\\MarketService\:\:transferItemToPlayer\(\) expects App\\Entity\\User, App\\Entity\\User\|null given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Service/MarketService.php
-
-		-
-			message: '#^Parameter \#2 \$user of static method App\\Service\\InventoryService\:\:countTotalInventory\(\) expects App\\Entity\\User, App\\Entity\\User\|null given\.$#'
-			identifier: argument.type
-			count: 3
 			path: src/Service/MarketService.php
 
 		-
@@ -5441,12 +4919,6 @@ parameters:
 			identifier: argument.type
 			count: 1
 			path: src/Service/MarketService.php
-
-		-
-			message: '#^Method App\\Service\\MuseumService\:\:getGiftShopInventory\(\) return type has no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Service/MuseumService.php
 
 		-
 			message: '#^Property App\\Service\\MuseumService\:\:\$donatedItemsThisRequest type has no value type specified in iterable type array\.$#'
@@ -6317,18 +5789,6 @@ parameters:
 			identifier: return.type
 			count: 1
 			path: src/Service/RecyclingService.php
-
-		-
-			message: '#^Cannot access offset ''access_token'' on array\|bool\|float\|int\|object\|string\|null\.$#'
-			identifier: offsetAccess.nonOffsetAccessible
-			count: 1
-			path: src/Service/RedditService.php
-
-		-
-			message: '#^Method App\\Service\\RedditService\:\:getAccessToken\(\) should return string but returns mixed\.$#'
-			identifier: return.type
-			count: 1
-			path: src/Service/RedditService.php
 
 		-
 			message: '#^Cannot access offset ''menu'' on array\|ArrayObject\|bool\|float\|int\|string\|null\.$#'
