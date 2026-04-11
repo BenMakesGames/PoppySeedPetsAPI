@@ -666,7 +666,7 @@ class InventoryService
 
         $locationOfFirstItem = $inventory[0]->getLocation();
 
-        return ArrayFunctions::all($inventory, fn(Inventory $i) => $i->getLocation() === $locationOfFirstItem);
+        return array_all($inventory, fn(Inventory $i) => $i->getLocation() === $locationOfFirstItem);
     }
 
     public static function getRandomItemFromItemGroup(IRandom $rng, ItemGroup $itemGroup): Item

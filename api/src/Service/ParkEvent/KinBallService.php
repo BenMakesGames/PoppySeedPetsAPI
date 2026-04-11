@@ -52,6 +52,8 @@ class KinBallService implements ParkEventInterface
 
     private array $teamWins = [ 0, 0, 0 ];
     private array $activeTeams = [];
+
+    /** @var array<int, int> */
     private array $teamPoints = [];
 
     public function __construct(
@@ -340,7 +342,7 @@ class KinBallService implements ParkEventInterface
             return;
 
         // if none of the teams have reached a critical score, then there's nothing to do
-        if(!ArrayFunctions::any($this->teamPoints, fn(int $score) => $score >= self::CRITICAL_SCORE))
+        if(!array_any($this->teamPoints, fn(int $score) => $score >= self::CRITICAL_SCORE))
             return;
 
         $lowestScore = $this->getLowestScore();

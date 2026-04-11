@@ -475,7 +475,7 @@ class HollowEarthService
 
     public function getTrade(HollowEarthPlayer $player, string $tradeId)
     {
-        return ArrayFunctions::find_one($this->getTrades($player), fn($t) => $t['id'] === $tradeId);
+        return array_find($this->getTrades($player), fn($t) => $t['id'] === $tradeId);
     }
 
     public function getTrades(HollowEarthPlayer $player): array
@@ -548,8 +548,7 @@ class HollowEarthService
      */
     private static function serializeItem(array $items, string $itemName): array
     {
-        /** @var Item $item */
-        $item = ArrayFunctions::find_one($items, fn(Item $i) => $i->getName() === $itemName);
+        $item = array_find($items, fn(Item $i) => $i->getName() === $itemName);
 
         return [
             'name' => $item->getName(),

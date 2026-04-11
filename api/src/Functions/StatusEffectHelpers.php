@@ -34,11 +34,11 @@ final class StatusEffectHelpers
         if($status == StatusEffectEnum::Wereform && ($hasSilverblood || $hasVampireBite))
             return true;
 
-        $statusIsABite = ArrayFunctions::any(self::Bites, fn($bite) => $bite == $status);
+        $statusIsABite = array_any(self::Bites, fn($bite) => $bite == $status);
 
         if($statusIsABite)
         {
-            $alreadyHasABite = ArrayFunctions::any(self::Bites, fn($bite) => $pet->hasStatusEffect($bite));
+            $alreadyHasABite = array_any(self::Bites, fn($bite) => $pet->hasStatusEffect($bite));
             $immuneToBites = $alreadyHasABite || $hasSilverblood;
 
             if($immuneToBites)

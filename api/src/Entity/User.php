@@ -762,9 +762,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function getUnlockedFeatureDate(UnlockableFeatureEnum $feature): ?\DateTimeImmutable
     {
-        $unlockedFeature = ArrayFunctions::find_one(
-            $this->unlockedFeatures,
-            fn(UserUnlockedFeature $unlockedFeature) => $unlockedFeature->getFeature() === $feature
+        $unlockedFeature = $this->unlockedFeatures->findFirst(
+            fn($key, UserUnlockedFeature $unlockedFeature) => $unlockedFeature->getFeature() === $feature
         );
 
         if(!$unlockedFeature)

@@ -330,7 +330,7 @@ class UpsertItemCommand extends PoppySeedPetsCommand
             $item->addItemGroup($itemGroup);
         }
 
-        if(ArrayFunctions::any($item->getItemGroups(), fn(ItemGroup $group) => $group->getName() === 'Chocolate'))
+        if($item->getItemGroups()->exists(fn($key, ItemGroup $group) => $group->getName() === 'Chocolate'))
             $this->output->writeln('HEY, LISTEN: should an Etalocŏhc recipe be added for this item?');
     }
 }

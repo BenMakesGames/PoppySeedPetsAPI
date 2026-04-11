@@ -1063,7 +1063,7 @@ class Pet
 
     public function getRelationshipWith(Pet $otherPet): ?PetRelationship
     {
-        return ArrayFunctions::find_one($this->getPetRelationships(), fn(PetRelationship $r) =>
+        return $this->getPetRelationships()->findFirst(fn($key, PetRelationship $r) =>
             $r->getRelationship()->getId() === $otherPet->getId()
         );
     }
@@ -1156,7 +1156,7 @@ class Pet
 
     public function getStatusEffect(StatusEffectEnum $statusEffect): ?StatusEffect
     {
-        return ArrayFunctions::find_one($this->statusEffects, fn(StatusEffect $se) =>
+        return $this->statusEffects->findFirst(fn($key, StatusEffect $se) =>
             $se->getStatus() === $statusEffect
         );
     }

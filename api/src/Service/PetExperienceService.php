@@ -63,7 +63,7 @@ class PetExperienceService
 
         if($exp < 0) return false;
 
-        if($pet->getTool() && ArrayFunctions::any($stats, fn(string $stat) => $pet->getTool()->focusesSkill($stat)))
+        if($pet->getTool() && array_any($stats, fn(string $stat) => $pet->getTool()->focusesSkill($stat)))
         {
             $exp++;
         }

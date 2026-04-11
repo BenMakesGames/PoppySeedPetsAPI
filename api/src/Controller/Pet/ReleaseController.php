@@ -71,7 +71,7 @@ class ReleaseController
         // of the game's default names:
         $sanitizedOriginalPetName = ucwords(strtolower(trim($pet->getName())));
 
-        $newName = ArrayFunctions::any(PetShelterPet::PetNames, fn($n) => $n == $sanitizedOriginalPetName)
+        $newName = array_any(PetShelterPet::PetNames, fn($n) => $n == $sanitizedOriginalPetName)
             ? $sanitizedOriginalPetName // do NOT preserve the original capitalization, in case the player hid a bad word in just the capital letters, for example
             : $rng->rngNextFromArray(PetShelterPet::PetNames);
 

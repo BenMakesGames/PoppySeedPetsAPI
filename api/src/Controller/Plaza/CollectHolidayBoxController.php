@@ -49,7 +49,7 @@ class CollectHolidayBoxController
         $requestedBox = $request->request->getString('box');
 
         /** @var AvailableHolidayBox|null $box */
-        $box = ArrayFunctions::find_one($availableBoxes, fn(AvailableHolidayBox $box) => $box->nameWithQuantity === $requestedBox);
+        $box = array_find($availableBoxes, fn(AvailableHolidayBox $box) => $box->nameWithQuantity === $requestedBox);
 
         if(!$box)
             throw new PSPInvalidOperationException('No holiday box is available right now...');

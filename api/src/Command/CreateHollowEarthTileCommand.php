@@ -70,7 +70,7 @@ class CreateHollowEarthTileCommand extends PoppySeedPetsCommand
 
         $type = $this->askChoice('Type', $tileTypeNames, null);
 
-        $tileType = ArrayFunctions::find_one($tileTypes, fn(HollowEarthTileType $t) => $t->getName() === $type);
+        $tileType = array_find($tileTypes, fn(HollowEarthTileType $t) => $t->getName() === $type);
 
         $tile->setType($tileType);
 

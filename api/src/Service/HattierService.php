@@ -72,7 +72,7 @@ class HattierService
 
         return array_map(
             function(Enchantment $e) use($unlocked) {
-                $unlockedAura = ArrayFunctions::find_one($unlocked, fn(UserUnlockedAura $a) => $a->getAura()->getId() === $e->getId());
+                $unlockedAura = array_find($unlocked, fn(UserUnlockedAura $a) => $a->getAura()->getId() === $e->getId());
 
                 if($unlockedAura)
                 {
