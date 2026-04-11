@@ -97,8 +97,10 @@ class RegisterController
         if(\mb_strlen($passPhrase) > User::MaxPassphraseLength)
             throw new PSPFormValidationException('Pass phrase must not exceed ' . User::MaxPassphraseLength . ' characters.');
 
-        $existingUser = $em->getRepository(User::class)->findOneBy([ 'email' => $email ])
-            ?? throw new PSPFormValidationException('Email address is already in use.');
+        $existingUser = $em->getRepository(User::class)->findOneBy([ 'email' => $email ]);
+
+        if($existingUser)
+            throw new PSPFormValidationException('Email address is already in use.');
 
         $user = new User(name: $name, email: $email);
 
