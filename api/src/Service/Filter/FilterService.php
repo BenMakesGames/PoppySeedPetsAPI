@@ -33,13 +33,25 @@ interface FilterServiceInterface
     public function allowedPageSizes(): array;
 }
 
+/**
+ * @template T
+ */
 trait FilterService
 {
+    /** @var Filterer<T> */
     private Filterer $filterer;
 
     public function getResults(ParameterBag $parameters): FilterResults
     {
         return $this->filterer->filter($this, $parameters);
+    }
+
+    /**
+     * @param callable(T): mixed $mapper
+     */
+    public function getMappedResults(ParameterBag $parameters, callable $mapper): FilterResults
+    {
+        return $this->filterer->filter($this, $parameters, $mapper);
     }
 
     public function addDefaultFilter(string $key, mixed $value): void

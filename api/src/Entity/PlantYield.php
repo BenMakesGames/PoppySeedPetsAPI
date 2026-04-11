@@ -36,7 +36,8 @@ class PlantYield
     #[ORM\Column(type: 'integer')]
     private int $max;
 
-    #[ORM\OneToMany(targetEntity: 'App\Entity\PlantYieldItem', mappedBy: 'plantYield', orphanRemoval: true)]
+    /** @var Collection<int, PlantYieldItem> */
+    #[ORM\OneToMany(targetEntity: PlantYieldItem::class, mappedBy: 'plantYield', orphanRemoval: true)]
     private Collection $items;
 
     public function __construct()

@@ -46,7 +46,7 @@ class ItemHat
     private bool $headAngleFixed = false;
 
     #[ORM\OneToOne(targetEntity: Item::class, mappedBy: 'hat')]
-    private $item;
+    private Item $item;
 
     public function getId(): ?int
     {
@@ -113,21 +113,8 @@ class ItemHat
         return $this;
     }
 
-    public function getItem(): ?Item
+    public function getItem(): Item
     {
         return $this->item;
-    }
-
-    public function setItem(?Item $item): self
-    {
-        $this->item = $item;
-
-        // set (or unset) the owning side of the relation if necessary
-        $newHat = $item === null ? null : $this;
-        if ($newHat !== $item->getHat()) {
-            $item->setHat($newHat);
-        }
-
-        return $this;
     }
 }

@@ -34,6 +34,11 @@ class GetMineController
         $user = $userAccessor->getUserOrThrow();
         $themes = $em->getRepository(UserStyle::class)->findBy([ 'user' => $user ]);
 
-        return $responseService->success($themes, [ SerializationGroupEnum::MY_STYLE ]);
+        return $responseService->success(
+            array_map(
+                StyleMapper::mapMyStyle(...),
+                $themes
+            )
+        );
     }
 }

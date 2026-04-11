@@ -82,7 +82,7 @@ class ResponseService
 
         if($this->sessionId !== null)
         {
-            if($_ENV['APP_ENV'] === 'dev')
+            if($_SERVER['APP_ENV'] === 'dev')
                 setcookie('sessionId', $this->sessionId, time() + 60 * 60 * 24 * 7, '/', 'localhost', false, true);
             else
                 setcookie('sessionId', $this->sessionId, time() + 60 * 60 * 24 * 7, '/', 'poppyseedpets.com', true, true);

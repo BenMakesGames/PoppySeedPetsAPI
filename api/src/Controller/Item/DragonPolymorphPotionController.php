@@ -38,10 +38,8 @@ class DragonPolymorphPotionController
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'dragonPolymorphPotion/#/give');
 
-        $dragon = $em->getRepository(Dragon::class)->findOneBy([ 'owner' => $user ]);
-
-        if(!$dragon)
-            throw new PSPNotFoundException('You don\'t know any dragons to give the potion to...');
+        $dragon = $em->getRepository(Dragon::class)->findOneBy([ 'owner' => $user ])
+            ?? throw new PSPNotFoundException('You don\'t know any dragons to give the potion to...');
 
         if(!$dragon->getIsAdult())
             throw new PSPNotFoundException('Your fireplace dragon, ' . $dragon->getName() . ', is too young to drink. Potions.');

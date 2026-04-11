@@ -94,7 +94,7 @@ class SessionService
 
     public static function clearCookie(): void
     {
-        if($_ENV['APP_ENV'] === 'dev')
+        if($_SERVER['APP_ENV'] === 'dev')
             setcookie('sessionId', '', time() - 60 * 60, '/', 'localhost', false, true);
         else
             setcookie('sessionId', '', time() - 60 * 60, '/', 'poppyseedpets.com', true, true);

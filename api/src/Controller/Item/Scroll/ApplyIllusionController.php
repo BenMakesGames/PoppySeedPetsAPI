@@ -46,25 +46,15 @@ class ApplyIllusionController
         $petId = $request->request->getInt('petId');
         $illusionId = $request->request->getInt('illusionId');
 
-        $pet = $em->getRepository(Pet::class)->findOneBy([
-            'id' => $petId,
-            'owner' => $user,
-        ]);
-
-        if(!$pet)
-            throw new PSPPetNotFoundException();
+        $pet = $em->getRepository(Pet::class)->findOneBy([ 'id' => $petId, 'owner' => $user ])
+            ?? throw new PSPPetNotFoundException();
 
         if(!$pet->getTool())
             throw new PSPInvalidOperationException('This pet does not have a tool equipped.');
 
         // verify that the user has donated the illusionId in question
-        $donation = $em->getRepository(MuseumItem::class)->findOneBy([
-            'user' => $user,
-            'item' => $illusionId,
-        ]);
-
-        if(!$donation)
-            throw new PSPNotFoundException('You have not donated one of those to the Museum...');
+        $donation = $em->getRepository(MuseumItem::class)->findOneBy([ 'user' => $user, 'item' => $illusionId ])
+            ?? throw new PSPNotFoundException('You have not donated one of those to the Museum...');
 
         $pet->getTool()->setIllusion($donation->getItem());
 

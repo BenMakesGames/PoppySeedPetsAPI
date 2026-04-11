@@ -34,19 +34,15 @@ use App\Service\UserAccessor;
 #[Route("/monsterOfTheWeek")]
 class ClaimRewardsController
 {
-    #[Route("/{monsterId}/claimRewards", methods: ["POST"])]
+    #[Route("/{monster}/claimRewards", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function claimRewards(
-        int $monsterId, InventoryService $inventoryService, ResponseService $responseService, EntityManagerInterface $em,
-        UserStatsService $userStatsService, Clock $clock,
+        MonsterOfTheWeek $monster, InventoryService $inventoryService, ResponseService $responseService,
+        EntityManagerInterface $em, UserStatsService $userStatsService, Clock $clock,
         UserAccessor $userAccessor
     ): JsonResponse
     {
         $user = $userAccessor->getUserOrThrow();
-
-        $monster = $em->getRepository(MonsterOfTheWeek::class)->findOneBy([
-            'id' => $monsterId
-        ]);
 
         if($clock->now->setTime(0, 0, 0) <= $monster->getEndDate())
             throw new PSPInvalidOperationException("This spirit hasn't left, yet.");
@@ -144,7 +140,8 @@ class ClaimRewardsController
                 MonsterOfTheWeekEnum::EiriPersona => UserStat::RECEIVED_A_MAJOR_PRIZE_FROM_AN_EIRI_PERSONA,
                 MonsterOfTheWeekEnum::VafAndNir => UserStat::RECEIVED_A_MAJOR_PRIZE_FROM_VAF_AND_NIR,
                 default => throw new \Exception('Invalid monster: ' . $monster->value)
-            }
+            },
+            default => throw new \Exception('Unrecognized prize type.')
         };
     }
 }

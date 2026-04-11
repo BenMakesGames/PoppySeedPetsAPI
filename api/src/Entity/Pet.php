@@ -163,6 +163,7 @@ class Pet
     #[ORM\Column(type: 'integer')]
     private int $poison = 0;
 
+    /** @var Collection<int, StatusEffect> */
     #[ORM\OneToMany(targetEntity: StatusEffect::class, mappedBy: 'pet', orphanRemoval: true)]
     private Collection $statusEffects;
 
