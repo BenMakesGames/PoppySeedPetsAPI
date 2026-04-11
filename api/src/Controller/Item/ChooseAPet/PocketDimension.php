@@ -49,10 +49,8 @@ class PocketDimension
         $pet = ChooseAPetHelpers::getPet($request, $user, $em);
         $petChanges = new PetChanges($pet);
 
-        $merit = $em->getRepository(Merit::class)->findOneBy([ 'name' => MeritEnum::BIGGER_LUNCHBOX ]);
-
-        if(!$merit)
-            throw new \Exception("Ben forgot to put the Bigger Lunchbox merit in the database! Agk!");
+        $merit = $em->getRepository(Merit::class)->findOneBy([ 'name' => MeritEnum::BIGGER_LUNCHBOX ])
+            ?? throw new \Exception("Ben forgot to put the Bigger Lunchbox merit in the database! Agk!");
 
         if($pet->hasMerit($merit->getName()))
             throw new PSPFormValidationException($pet->getName() . '\'s lunchbox is already bigger on the inside!');

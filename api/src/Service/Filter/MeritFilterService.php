@@ -21,6 +21,7 @@ use Doctrine\ORM\QueryBuilder;
 
 class MeritFilterService implements FilterServiceInterface
 {
+    /** @use FilterService<Merit> */
     use FilterService;
 
     private const int DefaultPageSize = 100;

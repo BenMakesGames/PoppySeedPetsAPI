@@ -21,6 +21,7 @@ use Doctrine\ORM\QueryBuilder;
 
 class GuildMemberFilterService implements FilterServiceInterface
 {
+    /** @use FilterService<Pet> */
     use FilterService;
 
     public const int PageSize = 12;

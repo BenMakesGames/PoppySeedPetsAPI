@@ -25,11 +25,11 @@ class Story
     private ?int $id = null;
 
     #[ORM\Column(type: 'string', length: 40)]
-    private $title;
+    private string $title;
 
     #[ORM\OneToOne(targetEntity: 'App\Entity\StorySection', cascade: ['persist', 'remove'])]
     #[ORM\JoinColumn(nullable: false)]
-    private $firstSection;
+    private StorySection $firstSection;
 
     public function getId(): ?int
     {

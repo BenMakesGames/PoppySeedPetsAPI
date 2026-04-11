@@ -21,6 +21,7 @@ use Doctrine\ORM\QueryBuilder;
 
 class UserActivityLogsFilterService implements FilterServiceInterface
 {
+    /** @use FilterService<UserActivityLog> */
     use FilterService;
 
     public const int PageSize = 20;

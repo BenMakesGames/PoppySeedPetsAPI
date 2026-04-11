@@ -57,10 +57,8 @@ class RecyclingService
      */
     public function recycleInventory(User $user, array $inventory): array
     {
-        $givingTree = $this->em->getRepository(User::class)->findOneBy([ 'email' => 'giving-tree@poppyseedpets.com' ]);
-
-        if(!$givingTree)
-            throw new \Exception('The "Giving Tree" NPC does not exist in the database!');
+        $givingTree = $this->em->getRepository(User::class)->findOneBy([ 'email' => 'giving-tree@poppyseedpets.com' ])
+            ?? throw new \Exception('The "Giving Tree" NPC does not exist in the database!');
 
         $givingTreeHoliday = CalendarFunctions::isValentinesOrAdjacent($this->clock->now) || CalendarFunctions::isWhiteDay($this->clock->now);
 

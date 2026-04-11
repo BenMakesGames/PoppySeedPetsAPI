@@ -135,14 +135,13 @@ class DragonVaseController
         if($itemId <= 0)
             throw new PSPFormValidationException('You forgot to select a tool!');
 
-        $dippedItem = $em->getRepository(Inventory::class)->findOneBy([
-            'id' => $itemId,
-            'owner' => $user,
-            'location' => LocationEnum::Home
-        ]);
-
-        if(!$dippedItem)
-            throw new PSPNotFoundException('Could not find that item!? Reload, and try again...');
+        $dippedItem = $em->getRepository(Inventory::class)
+            ->findOneBy([
+                'id' => $itemId,
+                'owner' => $user,
+                'location' => LocationEnum::Home
+            ])
+            ?? throw new PSPNotFoundException('Could not find that item!? Reload, and try again...');
 
         if(!$dippedItem->getItem()->getTool())
             throw new PSPInvalidOperationException('That item is not a tool! Dipping it into the vase would accomplish NOTHING.');

@@ -20,15 +20,15 @@ echo Installing PoppySeedPets dependencies...
 
 echo.
 echo === API (composer install) ===
-cd /d %~dp0api && composer install
+cd /d %~dp0api && call composer install
 
 echo.
 echo === SPA (npm install) ===
-cd /d %~dp0webapp && npm install
+cd /d %~dp0webapp && call npm install
 
 echo.
 echo === Tests (npm install) ===
-cd /d %~dp0tests && npm install
+cd /d %~dp0tests && call npm install
 
 echo.
 echo Done!
