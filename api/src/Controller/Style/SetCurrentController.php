@@ -53,6 +53,6 @@ class SetCurrentController
 
         $em->flush();
 
-        return $responseService->success($current, [ SerializationGroupEnum::MY_STYLE ]);
+        return $responseService->success(StyleMapper::mapMyStyle($current));
     }
 }

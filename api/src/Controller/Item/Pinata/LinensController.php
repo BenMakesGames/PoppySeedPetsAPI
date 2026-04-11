@@ -81,10 +81,8 @@ class LinensController
         if(!$user->hasUnlockedFeature(UnlockableFeatureEnum::Trader))
             throw new PSPNotUnlockedException('Trader');
 
-        $trader = $em->getRepository(Trader::class)->findOneBy([ 'user' => $user->getId() ]);
-
-        if(!$trader)
-            throw new PSPInvalidOperationException('You should probably go visit the Trader first... at least once...');
+        $trader = $em->getRepository(Trader::class)->findOneBy([ 'user' => $user->getId() ])
+            ?? throw new PSPInvalidOperationException('You should probably go visit the Trader first... at least once...');
 
         TraderService::recolorTrader($rng, $trader);
 

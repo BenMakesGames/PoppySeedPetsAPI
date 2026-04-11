@@ -29,7 +29,6 @@
           </h3>
           @if(user|hasRole:'admin')
           {
-            <button [class.disabled]="postingToSocialMedia" class="admin-button" type="button" (click)="doReddit(article)">Reddit</button>
             <button [class.disabled]="postingToSocialMedia" class="admin-button" type="button" (click)="doEdit(article)">Edit</button>
           }
         </header>

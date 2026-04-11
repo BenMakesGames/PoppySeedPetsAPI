@@ -25,6 +25,7 @@ use Doctrine\Persistence\ObjectRepository;
 
 class InventoryFilterService implements FilterServiceInterface
 {
+    /** @use FilterService<Inventory> */
     use FilterService;
 
     public const int PageSize = 100;
@@ -201,7 +202,7 @@ class InventoryFilterService implements FilterServiceInterface
     {
         if(!is_array($value)) $value = [ $value ];
 
-        $value = array_map('strtolower', $value);
+        $value = array_map(strtolower(...), $value);
         $value = array_filter(ItemTool::ModifierFields, fn(string $modifier) => in_array(strtolower($modifier), $value));
 
         if(count($value) === 0) return;

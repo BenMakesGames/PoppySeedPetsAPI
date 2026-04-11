@@ -14,7 +14,7 @@ declare(strict_types=1);
 namespace App\Controller\Account;
 
 use App\Attributes\DoesNotRequireHouseHours;
-use App\Enum\SerializationGroupEnum;
+use App\Controller\Style\StyleMapper;
 use App\Functions\UserStyleFunctions;
 use App\Service\PerformanceProfiler;
 use App\Service\ResponseService;
@@ -41,10 +41,9 @@ class GetAccountController
 
         $currentTheme = UserStyleFunctions::findCurrent($em, $user->getId());
 
-        $response = $responseService->success(
-            [ 'currentTheme' => $currentTheme ],
-            [ SerializationGroupEnum::MY_STYLE ]
-        );
+        $response = $responseService->success([
+            'currentTheme' => StyleMapper::mapMyStyle($currentTheme)
+        ]);
 
         $performanceProfiler->logExecutionTime(__METHOD__, microtime(true) - $time);
 

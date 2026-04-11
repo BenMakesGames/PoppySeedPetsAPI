@@ -112,13 +112,7 @@ class CreateBidController
 
         $transactionService->spendMoney($user, $bid * $quantity, 'Money put in for a bid on ' . $quantity . 'x ' . $item->getName() . '.', false);
 
-        $myBid = (new MarketBid())
-            ->setUser($user)
-            ->setBid($bid)
-            ->setQuantity($quantity)
-            ->setItem($item)
-            ->setTargetLocation($location)
-        ;
+        $myBid = new MarketBid($user, $item, $bid, $quantity, $location);
 
         $em->persist($myBid);
 

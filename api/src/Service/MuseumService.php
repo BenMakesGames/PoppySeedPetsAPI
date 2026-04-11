@@ -69,6 +69,10 @@ class MuseumService
         return true;
     }
 
+    /**
+     * @param User $user
+     * @return array{category: string, itemsDonated: int, requiredToUnlock: int, inventory: array{item: mixed, cost: int}[]}[]
+     */
     public function getGiftShopInventory(User $user): array
     {
         $inventory = [];

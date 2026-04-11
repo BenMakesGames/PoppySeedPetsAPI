@@ -52,14 +52,13 @@ class HotPotController
         if($itemId <= 0)
             throw new PSPFormValidationException('You forgot to select a food!');
 
-        $dippedItem = $em->getRepository(Inventory::class)->findOneBy([
-            'id' => $itemId,
-            'owner' => $user,
-            'location' => LocationEnum::Home
-        ]);
-
-        if(!$dippedItem)
-            throw new PSPNotFoundException('Could not find that item!? Reload, and try again...');
+        $dippedItem = $em->getRepository(Inventory::class)
+            ->findOneBy([
+                'id' => $itemId,
+                'owner' => $user,
+                'location' => LocationEnum::Home
+            ])
+            ?? throw new PSPNotFoundException('Could not find that item!? Reload, and try again...');
 
         if(!$dippedItem->getItem()->getFood())
             throw new PSPInvalidOperationException('That item is not a food! Dipping it into the Hot Pot would accomplish NOTHING.');
