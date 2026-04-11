@@ -22,7 +22,7 @@ Symfony really likes to encourage you to scattered related code in unrelated pla
 
 Symfony has a feature called "serialization groups" which feel cool and convenient at first, but get worse the bigger your app gets.  Using them scatters and mixes entity response mapping all over the entity classes.
 
-All serialization groups should be removed and replaced with explicit response mapping to endpoint-specific response DTOs.
+All serialization groups should be removed and replaced with explicit mapping to endpoint-specific response DTOs.
 
 #### Doctrine Repository classes
 
