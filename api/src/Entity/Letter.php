@@ -29,7 +29,7 @@ class Letter
 
     #[Groups(["myLetters"])]
     #[ORM\Column(type: 'string', length: 40)]
-    private $sender;
+    private string $sender;
 
     #[Groups(["myLetters"])]
     #[ORM\Column(type: 'text')]
@@ -41,16 +41,16 @@ class Letter
 
     #[Groups(["myLetters"])]
     #[ORM\ManyToOne(targetEntity: Item::class)]
-    private $attachment;
+    private ?Item $attachment = null;
 
     #[ORM\ManyToOne(targetEntity: Enchantment::class)]
-    private $bonus;
+    private ?Enchantment $bonus = null;
 
     #[ORM\ManyToOne(targetEntity: Spice::class)]
-    private $spice;
+    private ?Spice $spice = null;
 
     #[ORM\ManyToOne(targetEntity: FieldGuideEntry::class)]
-    private $fieldGuideEntry;
+    private ?FieldGuideEntry $fieldGuideEntry = null;
 
     public function getId(): ?int
     {

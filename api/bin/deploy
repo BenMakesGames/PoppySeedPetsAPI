@@ -5,6 +5,9 @@ git checkout bin/*
 # enable maintenance mode
 #export APP_MAINTENANCE=1 #except it doesn't work
 
+# this is set in apache, but CLI is not apache :P
+export APP_ENV=prod
+
 git pull
 
 php -r 'opcache_reset();'

@@ -52,9 +52,6 @@ class EggController
 
         $jelling = PetSpeciesRepository::findOneByName($em,PetSpeciesName::SagaJelling);
 
-        if(!$jelling)
-            throw new \Exception('The species "Sága Jelling" does not exist! :| Make Ben fix this!');
-
         $location = $inventory->getLocation();
 
         if($location !== LocationEnum::Home)
@@ -138,9 +135,6 @@ class EggController
         ItemControllerHelpers::validateInventory($user, $inventory, 'egg/weird-blue/#/hatch');
 
         $starMonkey = PetSpeciesRepository::findOneByName($em, PetSpeciesName::StarMonkey);
-
-        if(!$starMonkey)
-            throw new \Exception('The species "Star Monkey" does not exist! :| Make Ben fix this!');
 
         $location = $inventory->getLocation();
 
@@ -236,9 +230,6 @@ class EggController
         ItemControllerHelpers::validateInventory($user, $inventory, 'egg/metalBox/#/open');
 
         $grabber = PetSpeciesRepository::findOneByName($em, PetSpeciesName::Grabber);
-
-        if(!$grabber)
-            throw new \Exception('The species "Grabber" does not exist! :| Make Ben fix this!');
 
         $location = $inventory->getLocation();
 

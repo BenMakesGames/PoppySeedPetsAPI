@@ -26,7 +26,7 @@ class PlantYieldItem
 
     #[ORM\ManyToOne(targetEntity: 'App\Entity\PlantYield', inversedBy: 'items')]
     #[ORM\JoinColumn(nullable: false)]
-    private $plantYield;
+    private PlantYield $plantYield;
 
     #[ORM\Column(type: 'integer')]
     private int $percentChance;
@@ -46,12 +46,12 @@ class PlantYieldItem
         return $this->id;
     }
 
-    public function getPlantYield(): ?PlantYield
+    public function getPlantYield(): PlantYield
     {
         return $this->plantYield;
     }
 
-    public function setPlantYield(?PlantYield $plantYield): self
+    public function setPlantYield(PlantYield $plantYield): self
     {
         $this->plantYield = $plantYield;
 

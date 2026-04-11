@@ -58,10 +58,8 @@ class YggdrasilBranch
             MeritEnum::WONDROUS_INTELLIGENCE,
         ]);
 
-        $merit = $em->getRepository(Merit::class)->findOneBy([ 'name' => $randomMerit ]);
-
-        if(!$merit)
-            throw new \Exception("Merit not found: {$randomMerit}");
+        $merit = $em->getRepository(Merit::class)->findOneBy([ 'name' => $randomMerit ])
+            ?? throw new \Exception("Merit not found: {$randomMerit}");
 
         if($pet->hasMerit($randomMerit))
         {

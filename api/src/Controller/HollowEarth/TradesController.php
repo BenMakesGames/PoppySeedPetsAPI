@@ -46,7 +46,7 @@ class TradesController
 
         $tile = $player->getCurrentTile();
 
-        if(!$tile || !$tile->getIsTradingDepot())
+        if(!$tile->getIsTradingDepot())
             throw new PSPInvalidOperationException('You are not on a trade depot!');
 
         if($player->getCurrentAction() || $player->getMovesRemaining() > 0)

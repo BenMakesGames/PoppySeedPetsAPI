@@ -33,10 +33,10 @@ class FieldGuideService
     public function maybeUnlock(User $user, string|FieldGuideEntry $entry, string $unlockComment): void
     {
         if(is_string($entry))
-            $entry = $this->em->getRepository(FieldGuideEntry::class)->findOneBy([ 'name' => $entry ]);
-
-        if(!$entry)
-            throw new PSPNotFoundException('There is no such Field Guide Entry.');
+        {
+            $entry = $this->em->getRepository(FieldGuideEntry::class)->findOneBy([ 'name' => $entry ])
+                ?? throw new PSPNotFoundException('There is no such Field Guide Entry.');
+        }
 
         $message = null;
 
