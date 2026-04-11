@@ -47,6 +47,7 @@ use App\Service\PetActivity\IPetActivity;
 use App\Service\PetExperienceService;
 use App\Service\PetFactory;
 use Doctrine\ORM\EntityManagerInterface;
+use App\Enum\GuildEnum;
 
 class ProgrammingService implements IPetActivity
 {
@@ -81,6 +82,9 @@ class ProgrammingService implements IPetActivity
             $desire += 4;
         else
             $desire += $this->rng->rngNextInt(1, 4);
+
+        if ($pet->isInGuild(GuildEnum::Dwarfcraft))
+            $desire += 2;
 
         return max(1, (int)round($desire * (1 + $this->rng->rngNextInt(-10, 10) / 100)));
     }
