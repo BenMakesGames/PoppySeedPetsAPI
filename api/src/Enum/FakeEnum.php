@@ -17,8 +17,8 @@ use App\Service\IRandom;
 
 /**
  * @template T
+ * @deprecated This trait is deprecated and should not be used. Use native PHP enums instead.
  */
-#[\Deprecated('This trait is deprecated and should not be used. Use native PHP enums instead.')]
 trait FakeEnum
 {
     /**

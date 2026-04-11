@@ -333,7 +333,7 @@ class HollowEarthService
             default: throw new \InvalidArgumentException('Unknown good type.');
         }
 
-        $this->responseService->addFlashMessage('Collected ' . $quantity . ' ' . ucfirst($goods) . '.');
+        $this->responseService->addFlashMessage('Collected ' . $quantity . ' ' . mb_ucfirst($goods) . '.');
 
         $player->setShowGoods();
     }

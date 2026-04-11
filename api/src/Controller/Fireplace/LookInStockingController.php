@@ -144,7 +144,7 @@ class LookInStockingController
         ];
 
         $responseService->addFlashMessage(
-            $rng->rngNextFromArray($messages) . "\n\n" . ucfirst($itemObject->getNameWithArticle()) . '!'
+            $rng->rngNextFromArray($messages) . "\n\n" . mb_ucfirst($itemObject->getNameWithArticle()) . '!'
         );
 
         $gotStockingPresent->setValue($now->format('Y-m-d'));
