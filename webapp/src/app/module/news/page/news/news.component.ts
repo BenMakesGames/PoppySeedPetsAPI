@@ -102,34 +102,6 @@ export class NewsComponent implements OnInit, OnDestroy {
     ;
   }
 
-  doReddit(article)
-  {
-    if(NewsComponent.isLocalHost())
-      this.confirmLocalhost(() => { this.reallyReddit(article); });
-    else
-      this.reallyReddit(article);
-  }
-
-  private reallyReddit(article)
-  {
-    if(this.postingToSocialMedia) return;
-
-    if(confirm('the following will be posted to reddit:\n\n"' + article.title + '"'))
-    {
-      this.postingToSocialMedia = true;
-
-      // don't unsubscribe/cancel this AJAX request
-      this.api.post('/article/' + article.id + '/reddit').subscribe({
-        next: () => {
-          this.postingToSocialMedia = false;
-        },
-        error: () => {
-          this.postingToSocialMedia = false;
-        }
-      });
-    }
-  }
-
   doSearch()
   {
     this.results = null;
