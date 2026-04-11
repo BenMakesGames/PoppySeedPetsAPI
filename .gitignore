@@ -1,2 +1,7 @@
+.idea/
+.vscode/
+.vs/
+
 proprietary-assets/
 .claude/settings.local.json
+CLAUDE.local.md
