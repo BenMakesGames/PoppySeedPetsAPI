@@ -546,7 +546,7 @@ class InventoryService
             return null;
 
         if($bugName === null)
-            $bugName = $this->rng->rngNextFromArray([ 'Spider', 'Centipede', 'Cockroach', 'Line of Ants', 'Fruit Fly', 'Stink Bug', 'Moth' ]);
+            $bugName = $this->rng->rngNextFromArray([ 'Spider', 'Centipede', 'Cockroach', 'Line of Ants', 'Fruit Fly', 'Stink Bug', 'Moth', 'Mosquito' ]);
 
         $bug = ItemRepository::findOneByName($this->em, $bugName);
 
