@@ -48,11 +48,9 @@ class CollectHolidayBoxController
         $availableBoxes = $plazaService->getAvailableHolidayBoxes($user);
         $requestedBox = $request->request->getString('box');
 
-        /** @var AvailableHolidayBox|null $box */
-        $box = array_find($availableBoxes, fn(AvailableHolidayBox $box) => $box->nameWithQuantity === $requestedBox);
-
-        if(!$box)
-            throw new PSPInvalidOperationException('No holiday box is available right now...');
+        /** @var AvailableHolidayBox $box */
+        $box = array_find($availableBoxes, fn(AvailableHolidayBox $box) => $box->nameWithQuantity === $requestedBox)
+            ?? throw new PSPInvalidOperationException('No holiday box is available right now...');
 
         if($box->userQuestEntity)
             $box->userQuestEntity->setValue(true);

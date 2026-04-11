@@ -78,11 +78,9 @@ class AdoptController
 
         [$pets, $dialog] = $adoptionService->getDailyPets($user);
 
-        /** @var PetShelterPet|null $petToAdopt */
-        $petToAdopt = array_find($pets, fn(PetShelterPet $p) => $p->id === $id);
-
-        if($petToAdopt === null)
-            throw new PSPFormValidationException('There is no such pet available for adoption... maybe reload and try again??');
+        /** @var PetShelterPet $petToAdopt */
+        $petToAdopt = array_find($pets, fn(PetShelterPet $p) => $p->id === $id)
+            ?? throw new PSPFormValidationException('There is no such pet available for adoption... maybe reload and try again??');
 
         // let's not worry about this for now... it's a suboptimal solution
         /*

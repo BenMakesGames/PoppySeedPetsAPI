@@ -77,13 +77,12 @@ class AffectionRewardController
 
         $meritName = $request->request->getString('merit');
 
+        /** @var Merit[] $availableMerits */
         $availableMerits = $em->getRepository(Merit::class)->findBy([ 'name' => MeritFunctions::getAvailableMerits($pet) ]);
 
-        /** @var Merit|null $merit */
-        $merit = array_find($availableMerits, fn(Merit $m) => $m->getName() === $meritName);
-
-        if(!$merit)
-            throw new PSPNotFoundException('That merit is not available.');
+        /** @var Merit $merit */
+        $merit = array_find($availableMerits, fn(Merit $m) => $m->getName() === $meritName)
+            ?? throw new PSPNotFoundException('That merit is not available.');
 
         $pet
             ->addMerit($merit)
