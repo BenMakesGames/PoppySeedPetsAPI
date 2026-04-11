@@ -47,10 +47,8 @@ class UpdateHollowEarthTileEventCommand extends PoppySeedPetsCommand
     {
         $tileName = $this->input->getArgument('name');
 
-        $tile = $this->em->getRepository(HollowEarthTileCard::class)->findOneBy([ 'name' => $tileName ]);
-
-        if(!$tile)
-            throw new \Exception('There is no tile named "' . $tileName . '".');
+        $tile = $this->em->getRepository(HollowEarthTileCard::class)->findOneBy([ 'name' => $tileName ])
+            ?? throw new \Exception('There is no tile named "' . $tileName . '".');
 
         $existingEvent = $tile->getEvent();
 

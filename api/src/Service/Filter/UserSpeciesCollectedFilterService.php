@@ -21,6 +21,7 @@ use Doctrine\ORM\QueryBuilder;
 
 class UserSpeciesCollectedFilterService implements FilterServiceInterface
 {
+    /** @use FilterService<UserSpeciesCollected> */
     use FilterService;
 
     public const int PageSize = 20;

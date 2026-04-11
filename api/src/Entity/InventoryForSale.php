@@ -49,7 +49,7 @@ class InventoryForSale
         return $this->id;
     }
 
-    public function getInventory(): ?Inventory
+    public function getInventory(): Inventory
     {
         return $this->inventory;
     }

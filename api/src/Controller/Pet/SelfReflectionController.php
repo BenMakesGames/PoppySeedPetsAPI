@@ -173,26 +173,16 @@ class SelfReflectionController
         if(!$friendId)
             throw new PSPFormValidationException('You gotta\' choose a pet to reconcile with!');
 
-        $relationship = $em->getRepository(PetRelationship::class)->findOneBy([
-            'pet' => $pet->getId(),
-            'relationship' => $friendId
-        ]);
-
-        if(!$relationship)
-            throw new PSPNotFoundException('Those pets don\'t seem to have a relationship of any kind...');
+        $relationship = $em->getRepository(PetRelationship::class)->findOneBy([ 'pet' => $pet->getId(), 'relationship' => $friendId ])
+            ?? throw new PSPNotFoundException('Those pets don\'t seem to have a relationship of any kind...');
 
         if($relationship->getCurrentRelationship() !== RelationshipEnum::BrokeUp && $relationship->getCurrentRelationship() !== RelationshipEnum::Dislike)
             throw new PSPInvalidOperationException('Those pets are totally okay with each other already!');
 
         $friend = $relationship->getRelationship();
 
-        $otherSide = $em->getRepository(PetRelationship::class)->findOneBy([
-            'pet' => $friend,
-            'relationship' => $pet
-        ]);
-
-        if(!$otherSide)
-            throw new \Exception($pet->getName() . ' knows ' . $friend->getName() . ', but not the other way around! This is a terrible bug! Make Ben fix it!');
+        $otherSide = $em->getRepository(PetRelationship::class)->findOneBy([ 'pet' => $friend, 'relationship' => $pet ])
+            ?? throw new \Exception($pet->getName() . ' knows ' . $friend->getName() . ', but not the other way around! This is a terrible bug! Make Ben fix it!');
 
         $possibleRelationships = PetRelationshipService::getRelationshipsBetween(
             PetRelationshipService::max($relationship->getRelationshipGoal(), RelationshipEnum::Friend),

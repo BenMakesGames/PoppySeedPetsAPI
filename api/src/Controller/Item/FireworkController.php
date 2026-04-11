@@ -44,12 +44,13 @@ class FireworkController
         if(!$user->hasUnlockedFeature(UnlockableFeatureEnum::Hattier))
             return $responseService->itemActionSuccess('It makes a lot of lovely sparkles, and it\'s very nice and all, but something tells you there\'s a secret to this firework you haven\'t quite unlocked yet...' . "\n\n" . '_(Try again when you\'ve discovered the Hattier... whatever _that_ is!)_');
 
-        $aura = EnchantmentRepository::findOneByName($em, [
+        $aura = EnchantmentRepository::findOneByName($em, match($itemName) {
             'Blue Firework' => '& Blue Fireworks',
             'Red Firework' => '& Red Fireworks',
             'White Firework' => '& White Fireworks',
             'Yellow Firework' => '& Yellow Fireworks',
-        ][$itemName]);
+            default => throw new \RuntimeException('Unexpected firework name')
+        });
 
         if($hattierService->userHasUnlocked($user, $aura))
             return $responseService->itemActionSuccess('You\'ve already unlocked the "' . $aura->getAura()->getName() . '" hat styling.');

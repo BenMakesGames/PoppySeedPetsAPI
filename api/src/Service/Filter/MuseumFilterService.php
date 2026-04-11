@@ -21,6 +21,7 @@ use Doctrine\ORM\QueryBuilder;
 
 class MuseumFilterService implements FilterServiceInterface
 {
+    /** @use FilterService<MuseumItem> */
     use FilterService;
 
     public const int PageSize = 20;

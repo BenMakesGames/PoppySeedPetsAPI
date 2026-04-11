@@ -50,14 +50,8 @@ class MagicCrystalBallController
         if($petId < 1)
             throw new PSPFormValidationException('You must select a pet.');
 
-        /** @var Pet|null $pet */
-        $pet = $em->getRepository(Pet::class)->findOneBy([
-            'id' => $petId,
-            'owner' => $user->getId(),
-        ]);
-
-        if(!$pet)
-            throw new PSPPetNotFoundException();
+        $pet = $em->getRepository(Pet::class)->findOneBy([ 'id' => $petId, 'owner' => $user->getId() ])
+            ?? throw new PSPPetNotFoundException();
 
         $fate = $rng->rngNextFromArray([
             [
@@ -115,14 +109,8 @@ class MagicCrystalBallController
         if($petId < 1)
             throw new PSPFormValidationException('You must select a pet.');
 
-        /** @var Pet|null $pet */
-        $pet = $em->getRepository(Pet::class)->findOneBy([
-            'id' => $petId,
-            'owner' => $user->getId(),
-        ]);
-
-        if(!$pet)
-            throw new PSPPetNotFoundException();
+        $pet = $em->getRepository(Pet::class)->findOneBy([ 'id' => $petId, 'owner' => $user->getId() ])
+            ?? throw new PSPPetNotFoundException();
 
         if(!$pet->getPregnancy())
             throw new PSPFormValidationException($pet->getName() . ' is not pregnant!');
