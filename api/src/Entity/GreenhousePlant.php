@@ -68,7 +68,7 @@ class GreenhousePlant
         $this->owner = $owner;
         $this->plant = $plant;
         $this->ordinal = $ordinal;
-        $this->lastInteraction = (new \DateTimeImmutable())->modify('-1 day');
+        $this->lastInteraction = new \DateTimeImmutable()->modify('-1 day');
     }
 
     public function getId(): ?int

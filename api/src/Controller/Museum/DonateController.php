@@ -112,7 +112,7 @@ class DonateController
             else
             {
                 // New donation
-                $museumItem = (new MuseumItem(user: $user, item: $i->getItem()))
+                $museumItem = new MuseumItem(user: $user, item: $i->getItem())
                     ->setCreatedBy($i->getCreatedBy())
                     ->setComments($i->getComments())
                 ;

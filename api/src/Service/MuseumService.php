@@ -53,7 +53,7 @@ class MuseumService
         if($museumItem)
             return false;
 
-        $museumItem = (new MuseumItem(user: $user, item: $item))
+        $museumItem = new MuseumItem(user: $user, item: $item)
             ->setCreatedBy($createdBy)
         ;
 

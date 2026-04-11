@@ -51,6 +51,8 @@ class KinBallService implements ParkEventInterface
     private int $designatedTeam;
 
     private array $teamWins = [ 0, 0, 0 ];
+
+    /** @var int[] */
     private array $activeTeams = [];
 
     /** @var array<int, int> */
@@ -82,7 +84,7 @@ class KinBallService implements ParkEventInterface
         if(!$this->isGoodNumberOfPets(count($pets)))
             throw new \InvalidArgumentException('Exactly 12 pets are required to play Kin-Ball.');
 
-        $parkEvent = (new ParkEvent(ParkEventTypeEnum::KinBall))
+        $parkEvent = new ParkEvent(ParkEventTypeEnum::KinBall)
             ->addParticipants($pets)
         ;
 

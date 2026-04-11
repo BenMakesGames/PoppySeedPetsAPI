@@ -45,6 +45,9 @@ class CreateHollowEarthTileCommand extends PoppySeedPetsCommand
 
     protected function doCommand(): int
     {
+        /**
+         * @var HollowEarthTileType[] $tileTypes
+         */
         $tileTypes = $this->em->getRepository(HollowEarthTileType::class)->createQueryBuilder('t')
             ->select('t')
             ->andWhere('t.name != :fixed')
@@ -57,7 +60,7 @@ class CreateHollowEarthTileCommand extends PoppySeedPetsCommand
 
         $tile = new HollowEarthTileCard();
 
-        $item = (new Item())
+        $item = new Item()
             ->setHollowEarthTileCard($tile)
             ->setFuel(30)
             ->setRecycleValue(1)

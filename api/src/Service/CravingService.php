@@ -74,7 +74,7 @@ class CravingService
         )
         {
             $craving = $pet->getCraving();
-            $fiveDaysAgo = (new \DateTimeImmutable())->modify('-5 days');
+            $fiveDaysAgo = new \DateTimeImmutable()->modify('-5 days');
 
             if($craving === null)
             {

@@ -76,7 +76,7 @@ class HollowEarthService
         if($user->getHollowEarthPlayer() !== null)
             return;
 
-        $hollowEarthPlayer = (new HollowEarthPlayer(user: $user))
+        $hollowEarthPlayer = new HollowEarthPlayer(user: $user)
             ->setCurrentTile(HollowEarthTileRepository::findOneById($this->em, 1))
         ;
 
@@ -549,6 +549,9 @@ class HollowEarthService
     private static function serializeItem(array $items, string $itemName): array
     {
         $item = array_find($items, fn(Item $i) => $i->getName() === $itemName);
+
+        if(!$item)
+            throw new \Exception('Invalid item name.');
 
         return [
             'name' => $item->getName(),

@@ -112,7 +112,7 @@ class PetCleaningSelfService
     {
         $qb = $this->em->getRepository(Greenhouse::class)->createQueryBuilder('g');
 
-        $threeDaysAgo = (new \DateTimeImmutable())->modify('-3 days');
+        $threeDaysAgo = new \DateTimeImmutable()->modify('-3 days');
 
         $qb
             ->join('g.owner', 'o')

@@ -59,7 +59,7 @@ class AdoptController
     ): JsonResponse
     {
         $user = $userAccessor->getUserOrThrow();
-        $now = (new \DateTimeImmutable())->format('Y-m-d');
+        $now = new \DateTimeImmutable()->format('Y-m-d');
         $costToAdopt = $adoptionService->getAdoptionFee($user);
         $lastAdopted = UserQuestRepository::find($em, $user, 'Last Adopted a Pet');
 
@@ -112,7 +112,7 @@ class AdoptController
         {
             $newPet->addMerit(MeritRepository::findOneByName($em, 'Behatted'));
 
-            $hat = (new Inventory(owner: $user, item: ItemRepository::findOneByName($em, 'Mermaid Egg')))
+            $hat = new Inventory(owner: $user, item: ItemRepository::findOneByName($em, 'Mermaid Egg'))
                 ->setLocation(LocationEnum::Wardrobe)
                 ->addComment($newPet->getName() . ' came from the Hollow Earth wearing this...')
             ;
@@ -134,7 +134,7 @@ class AdoptController
 
         $userStatsRepository->incrementStat($user, UserStat::PetsAdopted, 1);
 
-        $now = (new \DateTimeImmutable())->format('Y-m-d');
+        $now = new \DateTimeImmutable()->format('Y-m-d');
 
         UserQuestRepository::findOrCreate($em, $user, 'Last Adopted a Pet', $now)
             ->setValue($now)

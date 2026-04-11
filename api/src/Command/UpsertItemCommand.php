@@ -66,7 +66,7 @@ class UpsertItemCommand extends PoppySeedPetsCommand
 
             $this->output->writeln('Creating Item: "' . $name . '"');
 
-            $item = (new Item())
+            $item = new Item()
                 ->setName($name)
             ;
 

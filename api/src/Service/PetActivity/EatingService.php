@@ -231,7 +231,7 @@ class EatingService
 
         if($pet->hasMerit(MeritEnum::BURPS_MOTHS) && $this->rng->rngNextInt(1, 200) < $food->food + $food->junk)
         {
-            $inventory = (new Inventory(owner: $pet->getOwner(), item: ItemRepository::findOneByName($this->em, 'Moth')))
+            $inventory = new Inventory(owner: $pet->getOwner(), item: ItemRepository::findOneByName($this->em, 'Moth'))
                 ->setLocation(LocationEnum::Home)
                 ->setCreatedBy($pet->getOwner())
                 ->addComment('After eating ' . $food->name . ', ' . $pet->getName() . ' burped this up!')

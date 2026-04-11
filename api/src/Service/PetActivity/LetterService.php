@@ -69,7 +69,7 @@ class LetterService
     {
         $owner = $petWithSkills->getPet()->getOwner();
 
-        $accountAgeInYears = (new \DateTimeImmutable())->diff($owner->getRegisteredOn())->y;
+        $accountAgeInYears = new \DateTimeImmutable()->diff($owner->getRegisteredOn())->y;
 
         if($accountAgeInYears === 0)
             return null;
@@ -149,7 +149,7 @@ class LetterService
 
         if($sharuminyinkaQuestStep && $sharuminyinkaQuestStep->getValue() === 40)
         {
-            $thirtyDaysAgo = (new \DateTimeImmutable())->modify('-30 days');
+            $thirtyDaysAgo = new \DateTimeImmutable()->modify('-30 days');
 
             if($sharuminyinkaQuestStep->getLastUpdated() < $thirtyDaysAgo)
             {
@@ -166,7 +166,7 @@ class LetterService
     {
         $pet = $petWithSkills->getPet();
         $owner = $pet->getOwner();
-        $deliveryIntervalAgo = (new \DateTimeImmutable())->modify('-' . $minDaysBetweenDelivery . ' days');
+        $deliveryIntervalAgo = new \DateTimeImmutable()->modify('-' . $minDaysBetweenDelivery . ' days');
 
         $lettersDelivered = UserQuestRepository::findOrCreate($this->em, $owner, $sender->value . ' Letters Delivered', 0);
 
@@ -280,7 +280,7 @@ class LetterService
 
     private function findRandomCourier(Pet $except): ?Pet
     {
-        $oneMonthAgo = (new \DateTimeImmutable())->modify('-1 month');
+        $oneMonthAgo = new \DateTimeImmutable()->modify('-1 month');
 
         $numberEligible = (int)$this->em->getRepository(Pet::class)->createQueryBuilder('p')
             ->select('COUNT(p.id)')

@@ -52,7 +52,7 @@ class GetByIdController
             'theme' => StyleMapper::mapPublicStyle($theme),
         ];
 
-        if((new \DateTimeImmutable())->format('m') == 12 && $user->getFireplace())
+        if(new \DateTimeImmutable()->format('m') == 12 && $user->getFireplace())
         {
             $data['stocking'] = $user->getFireplace()->getStocking();
         }

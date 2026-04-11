@@ -45,7 +45,7 @@ class DoQualityTimeController
     {
         $user = $userAccessor->getUserOrThrow();
 
-        if($user->getLastPerformedQualityTime() >= (new \DateTimeImmutable())->modify('-4 hours'))
+        if($user->getLastPerformedQualityTime() >= new \DateTimeImmutable()->modify('-4 hours'))
             throw new PSPInvalidOperationException('You cannot do quality time more than once every 4 hours. (Just like in real life???)');
 
         $message = $qualityTimeService->doQualityTime($user);

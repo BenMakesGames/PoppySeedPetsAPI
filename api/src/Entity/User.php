@@ -205,7 +205,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         $this->pets = new ArrayCollection();
         $this->registeredOn = new \DateTimeImmutable();
-        $this->lastAllowanceCollected = (new \DateTimeImmutable())->modify('-7 days');
+        $this->lastAllowanceCollected = new \DateTimeImmutable()->modify('-7 days');
         $this->following = new ArrayCollection();
         $this->stats = new ArrayCollection();
         $this->greenhousePlants = new ArrayCollection();
@@ -218,7 +218,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         // 3 hours & 58 minutes - players can do this action every 4 hours; this makes it appear
         // for brand new players after 2 minutes of poking around the site
-        $this->lastPerformedQualityTime = (new \DateTimeImmutable())->modify('-238 minutes');
+        $this->lastPerformedQualityTime = new \DateTimeImmutable()->modify('-238 minutes');
     }
 
     public function getId(): ?int

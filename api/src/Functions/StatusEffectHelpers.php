@@ -59,7 +59,7 @@ final class StatusEffectHelpers
 
         if(!$statusEffect)
         {
-            $statusEffect = (new StatusEffect())
+            $statusEffect = new StatusEffect()
                 ->setStatus($status);
 
             $pet->addStatusEffect($statusEffect);
