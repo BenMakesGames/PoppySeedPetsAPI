@@ -769,12 +769,6 @@ parameters:
 			path: src/Command/UpsertPlantCommand.php
 
 		-
-			message: '#^Parameter \#2 \$defaultValue of method App\\Command\\PoppySeedPetsCommand\:\:askInt\(\) expects int, int\|null given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Command/UpsertPlantCommand.php
-
-		-
 			message: '#^Method App\\Command\\UpsertRecipeCommand\:\:askItem\(\) should return App\\Entity\\Item but returns mixed\.$#'
 			identifier: return.type
 			count: 1
@@ -1183,18 +1177,6 @@ parameters:
 			path: src/Controller/Greenhouse/HarvestPlantController.php
 
 		-
-			message: '#^Parameter \#1 \$min of method App\\Service\\IRandom\:\:rngNextInt\(\) expects int, int\|null given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Controller/Greenhouse/HarvestPlantController.php
-
-		-
-			message: '#^Parameter \#2 \$inclusiveMax of method App\\Service\\IRandom\:\:rngNextInt\(\) expects int, int\|null given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Controller/Greenhouse/HarvestPlantController.php
-
-		-
 			message: '#^Binary operation "\+" between int\|string\|false and 1 results in an error\.$#'
 			identifier: binaryOp.invalid
 			count: 1
@@ -1585,12 +1567,6 @@ parameters:
 			path: src/Controller/Item/DragonTongueController.php
 
 		-
-			message: '#^Cannot call method setSocialEnergy\(\) on App\\Entity\\PetHouseTime\|null\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: src/Controller/Item/EggController.php
-
-		-
 			message: '#^Cannot call method getName\(\) on App\\Entity\\Aura\|null\.$#'
 			identifier: method.nonObject
 			count: 1
@@ -1637,12 +1613,6 @@ parameters:
 			identifier: argument.type
 			count: 1
 			path: src/Controller/Item/Note/CreepyMaskDayController.php
-
-		-
-			message: '#^Cannot call method setSocialEnergy\(\) on App\\Entity\\PetHouseTime\|null\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: src/Controller/Item/PetAlteration/ForgettingScrollController.php
 
 		-
 			message: '#^Parameter \#2 \$userId of static method App\\Service\\InventoryService\:\:countInventory\(\) expects int, int\|null given\.$#'
@@ -2803,12 +2773,6 @@ parameters:
 			path: src/Entity/Pet.php
 
 		-
-			message: '#^Cannot call method getTimeSpent\(\) on App\\Entity\\PetHouseTime\|null\.$#'
-			identifier: method.nonObject
-			count: 2
-			path: src/Entity/Pet.php
-
-		-
 			message: '#^Method App\\Entity\\Pet\:\:assignActivityPersonality\(\) has no return type specified\.$#'
 			identifier: missingType.return
 			count: 1
@@ -3335,12 +3299,6 @@ parameters:
 			identifier: return.type
 			count: 1
 			path: src/Functions/InventoryHelpers.php
-
-		-
-			message: '#^Method App\\Functions\\ItemRepository\:\:findOneById\(\) should return App\\Entity\\Item but returns mixed\.$#'
-			identifier: return.type
-			count: 1
-			path: src/Functions/ItemRepository.php
 
 		-
 			message: '#^Method App\\Functions\\ItemRepository\:\:getIdByName\(\) should return int but returns float\|int\<min, \-1\>\|int\<1, max\>\|string\|true\.$#'
@@ -4705,24 +4663,6 @@ parameters:
 			path: src/Service/HollowEarthService.php
 
 		-
-			message: '#^Cannot call method getActivityTime\(\) on App\\Entity\\PetHouseTime\|null\.$#'
-			identifier: method.nonObject
-			count: 3
-			path: src/Service/HouseService.php
-
-		-
-			message: '#^Cannot call method getCanAttemptSocialHangoutAfter\(\) on App\\Entity\\PetHouseTime\|null\.$#'
-			identifier: method.nonObject
-			count: 2
-			path: src/Service/HouseService.php
-
-		-
-			message: '#^Cannot call method getSocialEnergy\(\) on App\\Entity\\PetHouseTime\|null\.$#'
-			identifier: method.nonObject
-			count: 3
-			path: src/Service/HouseService.php
-
-		-
 			message: '#^Cannot cast mixed to int\.$#'
 			identifier: cast.int
 			count: 1
@@ -5257,12 +5197,6 @@ parameters:
 			path: src/Service/PetActivity/Relationship/RelationshipChangeService.php
 
 		-
-			message: '#^Cannot call method setSocialEnergy\(\) on App\\Entity\\PetHouseTime\|null\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: src/Service/PetActivity/SagaSagaService.php
-
-		-
 			message: '#^Cannot call method getEnchantment\(\) on App\\Entity\\Inventory\|null\.$#'
 			identifier: method.nonObject
 			count: 1
@@ -5383,21 +5317,9 @@ parameters:
 			path: src/Service/PetActivity/TreasureMapService.php
 
 		-
-			message: '#^Cannot call method changeItem\(\) on App\\Entity\\Inventory\|null\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: src/Service/PetActivity/TreasureMapService.php
-
-		-
 			message: '#^Cannot call method getItem\(\) on App\\Entity\\Inventory\|null\.$#'
 			identifier: method.nonObject
-			count: 5
-			path: src/Service/PetActivity/TreasureMapService.php
-
-		-
-			message: '#^Cannot call method setLockedToOwner\(\) on App\\Entity\\Inventory\|null\.$#'
-			identifier: method.nonObject
-			count: 1
+			count: 4
 			path: src/Service/PetActivity/TreasureMapService.php
 
 		-
@@ -5455,24 +5377,6 @@ parameters:
 			path: src/Service/PetExperienceService.php
 
 		-
-			message: '#^Cannot call method spendActivityTime\(\) on App\\Entity\\PetHouseTime\|null\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: src/Service/PetExperienceService.php
-
-		-
-			message: '#^Cannot call method spendSocialEnergy\(\) on App\\Entity\\PetHouseTime\|null\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: src/Service/PetExperienceService.php
-
-		-
-			message: '#^Method App\\Service\\PetExperienceService\:\:forceIncreaseSkill\(\) has no return type specified\.$#'
-			identifier: missingType.return
-			count: 1
-			path: src/Service/PetExperienceService.php
-
-		-
 			message: '#^Binary operation "\." between ''Ben forgot to…'' and mixed results in an error\.$#'
 			identifier: binaryOp.invalid
 			count: 1
@@ -5506,24 +5410,6 @@ parameters:
 			message: '#^Cannot call method getLastHangOut\(\) on App\\Entity\\SpiritCompanion\|null\.$#'
 			identifier: method.nonObject
 			count: 2
-			path: src/Service/PetSocialActivityService.php
-
-		-
-			message: '#^Cannot call method getSocialEnergy\(\) on App\\Entity\\PetHouseTime\|null\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: src/Service/PetSocialActivityService.php
-
-		-
-			message: '#^Cannot call method setCanAttemptSocialHangoutAfter\(\) on App\\Entity\\PetHouseTime\|null\.$#'
-			identifier: method.nonObject
-			count: 2
-			path: src/Service/PetSocialActivityService.php
-
-		-
-			message: '#^Cannot call method setSocialEnergy\(\) on App\\Entity\\PetHouseTime\|null\.$#'
-			identifier: method.nonObject
-			count: 1
 			path: src/Service/PetSocialActivityService.php
 
 		-
@@ -5949,30 +5835,6 @@ parameters:
 		-
 			message: '#^Cannot call method getId\(\) on mixed\.$#'
 			identifier: method.nonObject
-			count: 1
-			path: src/Service/Typeahead/TypeaheadService.php
-
-		-
-			message: '#^Method App\\Service\\Typeahead\\TypeaheadService\:\:search\(\) should return array\<T\> but returns mixed\.$#'
-			identifier: return.type
-			count: 1
-			path: src/Service/Typeahead/TypeaheadService.php
-
-		-
-			message: '#^Parameter \#1 \$value of function count expects array\|Countable, mixed given\.$#'
-			identifier: argument.type
-			count: 3
-			path: src/Service/Typeahead/TypeaheadService.php
-
-		-
-			message: '#^Parameter \#1 \.\.\.\$arrays of function array_merge expects array, mixed given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Service/Typeahead/TypeaheadService.php
-
-		-
-			message: '#^Parameter \#2 \$array of function array_map expects array, mixed given\.$#'
-			identifier: argument.type
 			count: 1
 			path: src/Service/Typeahead/TypeaheadService.php
 

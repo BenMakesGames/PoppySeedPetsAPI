@@ -1632,7 +1632,7 @@ class Pet
         return $this;
     }
 
-    public function getHouseTime(): ?PetHouseTime
+    public function getHouseTime(): PetHouseTime
     {
         return $this->houseTime;
     }

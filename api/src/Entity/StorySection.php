@@ -40,7 +40,7 @@ class StorySection
     #[ORM\Column(type: 'json')]
     private $choices = [];
 
-    #[ORM\ManyToOne(targetEntity: 'App\Entity\Story')]
+    #[ORM\ManyToOne(targetEntity: Story::class)]
     #[ORM\JoinColumn(nullable: false)]
     private Story $story;
 
