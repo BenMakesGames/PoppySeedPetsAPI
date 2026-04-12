@@ -3337,12 +3337,6 @@ parameters:
 			path: src/Functions/InventoryHelpers.php
 
 		-
-			message: '#^Method App\\Functions\\ItemRepository\:\:findOneById\(\) should return App\\Entity\\Item but returns mixed\.$#'
-			identifier: return.type
-			count: 1
-			path: src/Functions/ItemRepository.php
-
-		-
 			message: '#^Method App\\Functions\\ItemRepository\:\:getIdByName\(\) should return int but returns float\|int\<min, \-1\>\|int\<1, max\>\|string\|true\.$#'
 			identifier: return.type
 			count: 1
