@@ -29,7 +29,25 @@
   <div class="dialog-body">
     @if(tab === 'status')
     {
-      <app-pet-status-effects-tab [pet]="pet" (onNavigate)="doClose()" />
+      <div>
+        @if(!pet && loading)
+        {
+          <p><app-loading-throbber /></p>
+        }
+        @else if(pet) {
+          @if(choices.length > 0)
+          {
+            <p class="buttons">
+              @for(choice of choices; track $index)
+              {
+                <button (click)="doMakeChoice(choice)">{{ choice.label }}</button>
+              }
+            </p>
+            <hr>
+          }
+          <app-pet-status-effects-tab [pet]="pet" (onNavigate)="doClose()" />
+        }
+      </div>
     }
     @else if(tab === 'logs')
     {
@@ -85,16 +103,6 @@
     @else if(tab === 'note')
     {
       <div [class.disabled]="loading">
-        @if(choices.length > 0)
-        {
-          <p class="buttons">
-            @for(choice of choices; track $index)
-            {
-              <button (click)="doMakeChoice(choice)">{{ choice.label }}</button>
-            }
-          </p>
-          <hr>
-        }
         <app-pet-notes [(pet)]="pet" (loading)="doLoading($event)" (done)="doClose()" />
       </div>
     }
