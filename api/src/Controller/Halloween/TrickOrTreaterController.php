@@ -46,7 +46,7 @@ class TrickOrTreaterController
 
         $nextTrickOrTreater = $halloweenService->getNextTrickOrTreater($user);
 
-        if((new \DateTimeImmutable())->format('Y-m-d H:i:s') < $nextTrickOrTreater->getValue())
+        if(new \DateTimeImmutable()->format('Y-m-d H:i:s') < $nextTrickOrTreater->getValue())
         {
             return $responseService->success([
                 'trickOrTreater' => null,

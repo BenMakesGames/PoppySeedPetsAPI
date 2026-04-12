@@ -63,8 +63,8 @@ class HotPotController
         if(!$dippedItem->getItem()->getFood())
             throw new PSPInvalidOperationException('That item is not a food! Dipping it into the Hot Pot would accomplish NOTHING.');
 
-        $today = (new \DateTimeImmutable())->format('Y-m-d');
-        $usedHotPot = UserQuestRepository::findOrCreate($em, $user, 'Used Hot Pot', (new \DateTimeImmutable())->modify('-1 day')->format('Y-m-d'));
+        $today = new \DateTimeImmutable()->format('Y-m-d');
+        $usedHotPot = UserQuestRepository::findOrCreate($em, $user, 'Used Hot Pot', new \DateTimeImmutable()->modify('-1 day')->format('Y-m-d'));
 
         if($today === $usedHotPot->getValue())
             throw new PSPInvalidOperationException('You already dipped something into a Hot Pot today. You\'ll just have to wait for tomorrow!');

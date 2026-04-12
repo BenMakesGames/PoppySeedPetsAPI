@@ -59,7 +59,7 @@ class ConnectAccountController
 
         if(!$subscription)
         {
-            $subscription = (new UserSubscription($patreonUserId))
+            $subscription = new UserSubscription($patreonUserId)
                 ->setUser($user);
         }
 

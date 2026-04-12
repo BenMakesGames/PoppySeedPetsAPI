@@ -143,7 +143,7 @@ class HouseFairyController
             'location' => PetLocationEnum::HOME
         ]);
 
-        $petWithFairyGodmother = ArrayFunctions::find_one($petsAtHome, fn(Pet $p) => $p->hasMerit(MeritEnum::FAIRY_GODMOTHER));
+        $petWithFairyGodmother = array_find($petsAtHome, fn(Pet $p) => $p->hasMerit(MeritEnum::FAIRY_GODMOTHER));
 
         if($petWithFairyGodmother)
         {

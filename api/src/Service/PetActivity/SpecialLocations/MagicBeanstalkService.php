@@ -79,7 +79,7 @@ class MagicBeanstalkService implements IPetActivity
                 $p->getPlant()->getName() === 'Magic Beanstalk' &&
                 $p->getIsAdult() &&
                 $p->getProgress() >= 1 &&
-                (new \DateTimeImmutable()) >= $p->getCanNextInteract()
+                new \DateTimeImmutable() >= $p->getCanNextInteract()
         );
     }
 

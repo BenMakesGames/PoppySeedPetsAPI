@@ -75,7 +75,7 @@ class HouseService
         $item->set(true)->expiresAfter(\DateInterval::createFromDateString('1 minute'));
         $this->cache->save($item);
 
-        if($user->getRegisteredOn() < (new \DateTimeImmutable())->modify('-8 hours'))
+        if($user->getRegisteredOn() < new \DateTimeImmutable()->modify('-8 hours'))
         {
             $fruitBasket = UserQuestRepository::findOrCreate($this->em, $user, 'Received Fruit Basket', false);
 
@@ -186,7 +186,7 @@ class HouseService
     {
         return
             $pet->getHouseTime()->getSocialEnergy() >= PetExperienceService::SocialEnergyPerHangOut &&
-            $pet->getHouseTime()->getCanAttemptSocialHangoutAfter() < (new \DateTimeImmutable()) &&
+            $pet->getHouseTime()->getCanAttemptSocialHangoutAfter() < new \DateTimeImmutable() &&
             !$this->houseSimService->getPetHasRunSocialTime($pet)
         ;
     }

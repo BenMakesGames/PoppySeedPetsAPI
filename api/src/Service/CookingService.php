@@ -161,7 +161,7 @@ class CookingService
             {
                 // if we cannot evenly divide all of the ingredient quantities by this batch size, then it's not a
                 // valid batch size; try the next one!
-                if(ArrayFunctions::any($quantities, fn(ItemQuantity $q) => $q->quantity % $batchSize !== 0))
+                if(array_any($quantities, fn(ItemQuantity $q) => $q->quantity % $batchSize !== 0))
                 {
                     continue;
                 }
@@ -203,7 +203,7 @@ class CookingService
         if($alreadyKnownRecipe)
             return false;
 
-        if(!ArrayFunctions::any($this->recipeRepository->recipes, fn(Recipe $recipe) => $recipe->name === $recipeName))
+        if(!array_any($this->recipeRepository->recipes, fn(Recipe $recipe) => $recipe->name === $recipeName))
             throw new \Exception('Cannot learn recipe "' . $recipeName . '" - it doesn\'t exist!');
 
         $knownRecipe = new KnownRecipes(

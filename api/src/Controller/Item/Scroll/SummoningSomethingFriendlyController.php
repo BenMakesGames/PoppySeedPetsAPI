@@ -86,7 +86,7 @@ class SummoningSomethingFriendlyController
                 }
                 else
                 {
-                    $daysInTheWild = (new \DateTimeImmutable())->diff($pet->getLastInteracted())->days;
+                    $daysInTheWild = new \DateTimeImmutable()->diff($pet->getLastInteracted())->days;
                     $percentChanceOfTransformation = min(10, (int)floor($daysInTheWild / 14));
 
                     if($rng->rngNextInt(1, 100) <= $percentChanceOfTransformation)

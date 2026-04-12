@@ -77,7 +77,7 @@ class ShowPetsController
 
         foreach($pets as $pet)
         {
-            $discovery = (new UserSpeciesCollected())
+            $discovery = new UserSpeciesCollected()
                 ->setUser($user)
                 ->setSpecies($pet->getSpecies())
                 ->setPetName($pet->getName())

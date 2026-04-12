@@ -74,7 +74,7 @@ class CravingService
         )
         {
             $craving = $pet->getCraving();
-            $fiveDaysAgo = (new \DateTimeImmutable())->modify('-5 days');
+            $fiveDaysAgo = new \DateTimeImmutable()->modify('-5 days');
 
             if($craving === null)
             {
@@ -108,10 +108,11 @@ class CravingService
         if(!$pet->getCraving() || $pet->getCraving()->isSatisfied())
             return false;
 
-        return ArrayFunctions::any(
-            $pet->getCraving()->getFoodGroup()->getItems(),
-            fn(Item $i) => $i->getId() === $food->getId()
-        );
+        return $pet->getCraving()
+            ->getFoodGroup()
+            ->getItems()
+            ->exists(fn($key, Item $i) => $i->getId() === $food->getId())
+        ;
     }
 
     public function satisfyCraving(Pet $pet, Item $food): void
