@@ -20,7 +20,7 @@
   <div class="dialog-body">
     @if(tab === 'status')
     {
-        <div>
+      <div>
         @if(!pet && loading)
         {
           <p><app-loading-throbber /></p>
@@ -38,7 +38,7 @@
           }
           <app-pet-status-effects-tab [pet]="pet" (onNavigate)="doClose()" />
         }
-        </div>
+      </div>
     }
     @else if(tab === 'logs')
     {
