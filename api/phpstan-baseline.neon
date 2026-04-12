@@ -1585,12 +1585,6 @@ parameters:
 			path: src/Controller/Item/DragonTongueController.php
 
 		-
-			message: '#^Cannot call method setSocialEnergy\(\) on App\\Entity\\PetHouseTime\|null\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: src/Controller/Item/EggController.php
-
-		-
 			message: '#^Cannot call method getName\(\) on App\\Entity\\Aura\|null\.$#'
 			identifier: method.nonObject
 			count: 1
@@ -1637,12 +1631,6 @@ parameters:
 			identifier: argument.type
 			count: 1
 			path: src/Controller/Item/Note/CreepyMaskDayController.php
-
-		-
-			message: '#^Cannot call method setSocialEnergy\(\) on App\\Entity\\PetHouseTime\|null\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: src/Controller/Item/PetAlteration/ForgettingScrollController.php
 
 		-
 			message: '#^Parameter \#2 \$userId of static method App\\Service\\InventoryService\:\:countInventory\(\) expects int, int\|null given\.$#'
@@ -2800,12 +2788,6 @@ parameters:
 			message: '#^Cannot call method getName\(\) on mixed\.$#'
 			identifier: method.nonObject
 			count: 1
-			path: src/Entity/Pet.php
-
-		-
-			message: '#^Cannot call method getTimeSpent\(\) on App\\Entity\\PetHouseTime\|null\.$#'
-			identifier: method.nonObject
-			count: 2
 			path: src/Entity/Pet.php
 
 		-
@@ -4699,24 +4681,6 @@ parameters:
 			path: src/Service/HollowEarthService.php
 
 		-
-			message: '#^Cannot call method getActivityTime\(\) on App\\Entity\\PetHouseTime\|null\.$#'
-			identifier: method.nonObject
-			count: 3
-			path: src/Service/HouseService.php
-
-		-
-			message: '#^Cannot call method getCanAttemptSocialHangoutAfter\(\) on App\\Entity\\PetHouseTime\|null\.$#'
-			identifier: method.nonObject
-			count: 2
-			path: src/Service/HouseService.php
-
-		-
-			message: '#^Cannot call method getSocialEnergy\(\) on App\\Entity\\PetHouseTime\|null\.$#'
-			identifier: method.nonObject
-			count: 3
-			path: src/Service/HouseService.php
-
-		-
 			message: '#^Cannot cast mixed to int\.$#'
 			identifier: cast.int
 			count: 1
@@ -5251,12 +5215,6 @@ parameters:
 			path: src/Service/PetActivity/Relationship/RelationshipChangeService.php
 
 		-
-			message: '#^Cannot call method setSocialEnergy\(\) on App\\Entity\\PetHouseTime\|null\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: src/Service/PetActivity/SagaSagaService.php
-
-		-
 			message: '#^Cannot call method getEnchantment\(\) on App\\Entity\\Inventory\|null\.$#'
 			identifier: method.nonObject
 			count: 1
@@ -5449,24 +5407,6 @@ parameters:
 			path: src/Service/PetExperienceService.php
 
 		-
-			message: '#^Cannot call method spendActivityTime\(\) on App\\Entity\\PetHouseTime\|null\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: src/Service/PetExperienceService.php
-
-		-
-			message: '#^Cannot call method spendSocialEnergy\(\) on App\\Entity\\PetHouseTime\|null\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: src/Service/PetExperienceService.php
-
-		-
-			message: '#^Method App\\Service\\PetExperienceService\:\:forceIncreaseSkill\(\) has no return type specified\.$#'
-			identifier: missingType.return
-			count: 1
-			path: src/Service/PetExperienceService.php
-
-		-
 			message: '#^Binary operation "\." between ''Ben forgot to…'' and mixed results in an error\.$#'
 			identifier: binaryOp.invalid
 			count: 1
@@ -5500,24 +5440,6 @@ parameters:
 			message: '#^Cannot call method getLastHangOut\(\) on App\\Entity\\SpiritCompanion\|null\.$#'
 			identifier: method.nonObject
 			count: 2
-			path: src/Service/PetSocialActivityService.php
-
-		-
-			message: '#^Cannot call method getSocialEnergy\(\) on App\\Entity\\PetHouseTime\|null\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: src/Service/PetSocialActivityService.php
-
-		-
-			message: '#^Cannot call method setCanAttemptSocialHangoutAfter\(\) on App\\Entity\\PetHouseTime\|null\.$#'
-			identifier: method.nonObject
-			count: 2
-			path: src/Service/PetSocialActivityService.php
-
-		-
-			message: '#^Cannot call method setSocialEnergy\(\) on App\\Entity\\PetHouseTime\|null\.$#'
-			identifier: method.nonObject
-			count: 1
 			path: src/Service/PetSocialActivityService.php
 
 		-
