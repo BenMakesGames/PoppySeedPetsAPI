@@ -4915,12 +4915,6 @@ parameters:
 			path: src/Service/MarketService.php
 
 		-
-			message: '#^Property App\\Service\\MuseumService\:\:\$donatedItemsThisRequest type has no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Service/MuseumService.php
-
-		-
 			message: '#^Binary operation "\." between non\-falsy\-string and mixed results in an error\.$#'
 			identifier: binaryOp.invalid
 			count: 1
@@ -4975,43 +4969,7 @@ parameters:
 			path: src/Service/ParkService.php
 
 		-
-			message: '#^Cannot call method setChanges\(\) on mixed\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: src/Service/ParkService.php
-
-		-
-			message: '#^Cannot call method setLocation\(\) on mixed\.$#'
-			identifier: method.nonObject
-			count: 2
-			path: src/Service/ParkService.php
-
-		-
-			message: '#^Cannot call method setLockedToOwner\(\) on App\\Entity\\Inventory\|null\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: src/Service/ParkService.php
-
-		-
-			message: '#^Method App\\Service\\ParkService\:\:petCollectsRandomBalloon\(\) return type has no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Service/ParkService.php
-
-		-
-			message: '#^Parameter \#1 \$hat of method App\\Entity\\Pet\:\:setHat\(\) expects App\\Entity\\Inventory\|null, mixed given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Service/ParkService.php
-
-		-
 			message: '#^Parameter \#1 \$key of function array_key_exists expects int\|string, int\|null given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Service/ParkService.php
-
-		-
-			message: '#^Parameter \#1 \$tool of method App\\Entity\\Pet\:\:setTool\(\) expects App\\Entity\\Inventory\|null, mixed given\.$#'
 			identifier: argument.type
 			count: 1
 			path: src/Service/ParkService.php
@@ -5029,20 +4987,8 @@ parameters:
 			path: src/Service/PetActivity/Crafting/MagicBindingService.php
 
 		-
-			message: '#^Method App\\Service\\PetActivity\\Crafting\\MagicBindingService\:\:bindCeremonialTrident\(\) has parameter \$otherMaterials with no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Service/PetActivity/Crafting/MagicBindingService.php
-
-		-
 			message: '#^Method App\\Service\\PetActivity\\Crafting\\MagicBindingService\:\:doMagicMirrorMaze\(\) return type has no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
-			count: 1
-			path: src/Service/PetActivity/Crafting/MagicBindingService.php
-
-		-
-			message: '#^Parameter \#1 \$item of method App\\Model\\IHouseSim\:\:loseItem\(\) expects App\\Entity\\Item\|string, mixed given\.$#'
-			identifier: argument.type
 			count: 1
 			path: src/Service/PetActivity/Crafting/MagicBindingService.php
 

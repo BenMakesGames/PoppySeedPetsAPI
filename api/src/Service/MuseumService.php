@@ -31,6 +31,7 @@ class MuseumService
     {
     }
 
+    /** @var string[] */
     private array $donatedItemsThisRequest = [];
 
     public function forceDonateItem(User $user, string|int|Item $item, ?string $comment, ?User $createdBy = null): bool

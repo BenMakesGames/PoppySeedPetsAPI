@@ -839,6 +839,7 @@ class MagicBindingService implements IPetActivity
 
     /**
      * note: THIS method should be private, but most methods here must be public!
+     * @param string[] $otherMaterials
      */
     private function bindCeremonialTrident(ComputedPetSkills $petWithSkills, array $otherMaterials, string $makes): PetActivityLog
     {
