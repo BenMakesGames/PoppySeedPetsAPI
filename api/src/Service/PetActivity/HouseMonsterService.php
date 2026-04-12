@@ -135,7 +135,7 @@ class HouseMonsterService
         }
         else if($totalSkill < 30)
         {
-            $petWithFairyGodmother = ArrayFunctions::find_one($petsAtHome, fn(Pet $p) => $p->hasMerit(MeritEnum::FAIRY_GODMOTHER));
+            $petWithFairyGodmother = array_find($petsAtHome, fn(Pet $p) => $p->hasMerit(MeritEnum::FAIRY_GODMOTHER));
 
             $won = $totalSkill >= 27 && $petWithFairyGodmother;
 

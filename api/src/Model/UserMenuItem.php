@@ -30,6 +30,6 @@ class UserMenuItem
     {
         $this->location = $location;
         $this->sortOrder = $sortOrder === false ? 0 : $sortOrder;
-        $this->isNew = $unlockDate >= (new \DateTimeImmutable())->modify('-4 hours');
+        $this->isNew = $unlockDate >= new \DateTimeImmutable()->modify('-4 hours');
     }
 }

@@ -57,7 +57,7 @@ class DaycareController
         if(count($petsWantedAtHome) > $user->getMaxPets())
             throw new PSPInvalidOperationException('You cannot have more than ' . $user->getMaxPets() . ' pets at home.');
 
-        if(ArrayFunctions::any($petsWantedAtHome, fn(Pet $pet) => $pet->getLocation() !== PetLocationEnum::HOME && $pet->getLocation() !== PetLocationEnum::DAYCARE))
+        if(array_any($petsWantedAtHome, fn(Pet $pet) => $pet->getLocation() !== PetLocationEnum::HOME && $pet->getLocation() !== PetLocationEnum::DAYCARE))
             throw new PSPInvalidOperationException('Pets may only be moved between home and/or Daycare.');
 
         $petsAtHome = $em->getRepository(Pet::class)->findBy([
@@ -66,7 +66,7 @@ class DaycareController
         ]);
 
         $petsToMoveToHome = array_filter($petsWantedAtHome, fn(Pet $pet) => $pet->getLocation() === PetLocationEnum::DAYCARE);
-        $petsToMoveToDaycare = array_filter($petsAtHome, fn(Pet $pet) => !ArrayFunctions::any($petsWantedAtHome, fn(Pet $p) => $p->getId() === $pet->getId()));
+        $petsToMoveToDaycare = array_filter($petsAtHome, fn(Pet $pet) => !array_any($petsWantedAtHome, fn(Pet $p) => $p->getId() === $pet->getId()));
 
         foreach($petsToMoveToHome as $pet)
             self::takePetOutOfDaycare($pet);

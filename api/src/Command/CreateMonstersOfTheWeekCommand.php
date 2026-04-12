@@ -43,7 +43,7 @@ class CreateMonstersOfTheWeekCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $currentMonday = (new \DateTimeImmutable())
+        $currentMonday = new \DateTimeImmutable()
             ->modify('tomorrow')
             ->modify('last monday')
             ->setTime(0, 0, 0);

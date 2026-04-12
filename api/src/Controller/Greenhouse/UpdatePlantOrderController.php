@@ -45,8 +45,9 @@ class UpdatePlantOrderController
 
         $allPlants = $user->getGreenhousePlants();
 
-        $plantIds = array_filter($plantIds, fn(int $i) =>
-            ArrayFunctions::any($allPlants, fn(GreenhousePlant $p) => $p->getId() === $i)
+        $plantIds = array_filter(
+            $plantIds,
+            fn(int $i) => $allPlants->exists(fn($key, GreenhousePlant $p) => $p->getId() === $i)
         );
 
         if(count($allPlants) !== count($plantIds))

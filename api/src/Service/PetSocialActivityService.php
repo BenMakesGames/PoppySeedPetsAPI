@@ -66,7 +66,7 @@ class PetSocialActivityService
 
         if($pet->getFood() + $pet->getAlcohol() + $pet->getJunk() < 0)
         {
-            $pet->getHouseTime()->setCanAttemptSocialHangoutAfter((new \DateTimeImmutable())->modify('+5 minutes'));
+            $pet->getHouseTime()->setCanAttemptSocialHangoutAfter(new \DateTimeImmutable()->modify('+5 minutes'));
             return false;
         }
 
@@ -134,7 +134,7 @@ class PetSocialActivityService
             }
         }
 
-        $pet->getHouseTime()->setCanAttemptSocialHangoutAfter((new \DateTimeImmutable())->modify('+15 minutes'));
+        $pet->getHouseTime()->setCanAttemptSocialHangoutAfter(new \DateTimeImmutable()->modify('+15 minutes'));
 
         return false;
     }
@@ -179,7 +179,7 @@ class PetSocialActivityService
     {
         $relationships = $this->getRelationshipsToHangOutWith($pet);
 
-        $spiritCompanionAvailable = $pet->hasMerit(MeritEnum::SPIRIT_COMPANION) && ($pet->getSpiritCompanion()->getLastHangOut() === null || $pet->getSpiritCompanion()->getLastHangOut() < (new \DateTimeImmutable())->modify('-12 hours'));
+        $spiritCompanionAvailable = $pet->hasMerit(MeritEnum::SPIRIT_COMPANION) && ($pet->getSpiritCompanion()->getLastHangOut() === null || $pet->getSpiritCompanion()->getLastHangOut() < new \DateTimeImmutable()->modify('-12 hours'));
 
         // no friends available? no spirit companion? GIT OUTTA' HE'E!
         if(count($relationships) === 0 && !$spiritCompanionAvailable)

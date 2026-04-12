@@ -93,7 +93,7 @@ class HouseSim implements IHouseSim
                 else
                     $possibleItems = $ingredient;
 
-                if(!ArrayFunctions::any(
+                if(!array_any(
                     $possibleItems,
                     fn(Item $i) => array_key_exists($i->getId(), $this->itemQuantitiesByItemId)
                 ))
@@ -120,13 +120,11 @@ class HouseSim implements IHouseSim
         $rng->rngNextShuffle($items);
 
         /** @var Inventory|null $itemToRemove */
-        $itemToRemove = ArrayFunctions::find_one(
+        $itemToRemove = array_find(
             $this->inventory,
             fn(Inventory $i) => in_array($i->getItem()->getName(), $items)
-        );
-
-        if(!$itemToRemove)
-            throw new \Exception('Cannot use ' . ArrayFunctions::list_nice($items, ', ', ', or ') . '; none exist in your house!');
+        )
+            ?? throw new \Exception('Cannot use ' . ArrayFunctions::list_nice($items, ', ', ', or ') . '; none exist in your house!');
 
         $itemId = $itemToRemove->getItem()->getId();
 
@@ -176,7 +174,7 @@ class HouseSim implements IHouseSim
 
         $this->inventory = array_filter(
             $this->inventory,
-            fn(Inventory $i) => !ArrayFunctions::find_one($inventoryToRemoveFromHouseSim, fn(Inventory $j) => $i === $j)
+            fn(Inventory $i) => !array_find($inventoryToRemoveFromHouseSim, fn(Inventory $j) => $i === $j)
         );
     }
 

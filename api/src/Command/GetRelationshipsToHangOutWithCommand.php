@@ -47,10 +47,8 @@ class GetRelationshipsToHangOutWithCommand extends Command
         if($petId <= 0)
             throw new \InvalidArgumentException('pet must be an ID (greater than 0).');
 
-        $pet = $this->em->getRepository(Pet::class)->find($petId);
-
-        if(!$pet)
-            throw new \InvalidArgumentException('pet #' . $petId . ' does not exist.');
+        $pet = $this->em->getRepository(Pet::class)->find($petId)
+            ?? throw new \InvalidArgumentException('pet #' . $petId . ' does not exist.');
 
         $output->writeln($pet->getName() . ' (#' . $petId . ')');
 

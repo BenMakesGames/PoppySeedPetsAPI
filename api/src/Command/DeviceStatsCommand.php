@@ -41,7 +41,7 @@ class DeviceStatsCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         // 4 weeks
-        $oldestDate = (new \DateTimeImmutable())->modify('-28 days');
+        $oldestDate = new \DateTimeImmutable()->modify('-28 days');
 
         /** @var DeviceStats[] $latestStats */
         $latestStats = $this->em->getRepository(DeviceStats::class)->createQueryBuilder('s')

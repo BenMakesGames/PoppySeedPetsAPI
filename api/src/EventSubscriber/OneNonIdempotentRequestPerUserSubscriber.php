@@ -62,7 +62,7 @@ class OneNonIdempotentRequestPerUserSubscriber implements EventSubscriberInterfa
         }
 
         $item
-            ->set((new \DateTimeImmutable())->format('Y-m-d H:i:s'))
+            ->set(new \DateTimeImmutable()->format('Y-m-d H:i:s'))
             ->expiresAfter((int)ini_get('max_execution_time'))
         ;
     }

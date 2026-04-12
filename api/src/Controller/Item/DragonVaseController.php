@@ -146,8 +146,8 @@ class DragonVaseController
         if(!$dippedItem->getItem()->getTool())
             throw new PSPInvalidOperationException('That item is not a tool! Dipping it into the vase would accomplish NOTHING.');
 
-        $today = (new \DateTimeImmutable())->format('Y-m-d');
-        $usedDragonVase = UserQuestRepository::findOrCreate($em, $user, 'Used Dragon Vase', (new \DateTimeImmutable())->modify('-1 day')->format('Y-m-d'));
+        $today = new \DateTimeImmutable()->format('Y-m-d');
+        $usedDragonVase = UserQuestRepository::findOrCreate($em, $user, 'Used Dragon Vase', new \DateTimeImmutable()->modify('-1 day')->format('Y-m-d'));
 
         if($today === $usedDragonVase->getValue())
             throw new PSPInvalidOperationException('You already dipped something into a Dragon Vase today. You\'ll just have to wait for tomorrow!');

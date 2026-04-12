@@ -107,7 +107,7 @@ final class CalendarFunctions
             return false;
 
         $year = $dt->format('Y');
-        $blackFriday = (new \DateTimeImmutable('fourth Thursday of November ' . $year))->modify('+1 day');
+        $blackFriday = new \DateTimeImmutable('fourth Thursday of November ' . $year)->modify('+1 day');
 
         return (int)$blackFriday->format('nd') === $monthAndDay;
     }
@@ -120,7 +120,7 @@ final class CalendarFunctions
             return false;
 
         $year = $dt->format('Y');
-        $cyberMonday = (new \DateTimeImmutable('fourth Thursday of November ' . $year))->modify('+4 days');
+        $cyberMonday = new \DateTimeImmutable('fourth Thursday of November ' . $year)->modify('+4 days');
 
         return (int)$cyberMonday->format('nd') === $monthAndDay;
     }
@@ -260,7 +260,7 @@ final class CalendarFunctions
 
     public static function getChineseCalendarInfo(\DateTimeInterface $dt): ChineseCalendarInfo
     {
-        $info = (new \Overtrue\ChineseCalendar\Calendar())
+        $info = new \Overtrue\ChineseCalendar\Calendar()
             ->solar((int)$dt->format('Y'), (int)$dt->format('m'), (int)$dt->format('d'))
         ;
 

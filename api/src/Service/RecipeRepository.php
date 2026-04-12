@@ -824,7 +824,7 @@ final class RecipeRepository
      */
     public function findOneBy(callable $delegate): ?Recipe
     {
-        return ArrayFunctions::find_one($this->recipes, $delegate);
+        return array_find($this->recipes, $delegate);
     }
 
     public function findOneByName(string $recipeName): ?Recipe

@@ -13,8 +13,10 @@ declare(strict_types=1);
 
 namespace App\Service;
 
+use App\Entity\Inventory;
 use App\Entity\ParkEvent;
 use App\Entity\Pet;
+use App\Entity\PetActivityLog;
 use App\Enum\LocationEnum;
 use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingness;
@@ -81,19 +83,20 @@ class ParkService
 
                 [ $balloon, $log ] = $this->petCollectsRandomBalloon($pet, $parkEvent->getType(), $commentExtra, $forceBalloon);
 
-                $log
-                    ->setChanges($changes->compare($pet))
-                ;
+                $log->setChanges($changes->compare($pet));
 
-                if(!$pet->getTool())
+                if($balloon)
                 {
-                    $pet->setTool($balloon);
-                    $balloon->setLocation(LocationEnum::Wardrobe);
-                }
-                else if(!$pet->getHat() && $pet->hasMerit(MeritEnum::BEHATTED))
-                {
-                    $pet->setHat($balloon);
-                    $balloon->setLocation(LocationEnum::Wardrobe);
+                    if(!$pet->getTool())
+                    {
+                        $pet->setTool($balloon);
+                        $balloon->setLocation(LocationEnum::Wardrobe);
+                    }
+                    else if(!$pet->getHat() && $pet->hasMerit(MeritEnum::BEHATTED))
+                    {
+                        $pet->setHat($balloon);
+                        $balloon->setLocation(LocationEnum::Wardrobe);
+                    }
                 }
             }
 
@@ -141,6 +144,9 @@ class ParkService
         }
     }
 
+    /**
+     * @return array{0: Inventory|null, 1: PetActivityLog }
+     */
     public function petCollectsRandomBalloon(Pet $pet, string $parkEventType, ?string $commentExtra, ?string $specificBalloon): array
     {
         if($specificBalloon)
@@ -172,7 +178,8 @@ class ParkService
 
         $item = $this->inventoryService->petCollectsItem($balloon, $pet, $balloonComment, $log);
 
-        $item->setLockedToOwner($locked);
+        if($item)
+            $item->setLockedToOwner($locked);
 
         return [ $item, $log ];
     }
