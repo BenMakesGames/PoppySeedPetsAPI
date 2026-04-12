@@ -19,23 +19,6 @@ final class ArrayFunctions
      * @template T
      * @param iterable<T> $array
      * @param callable(T): bool $delegate
-     * @return bool
-     */
-    public static function any(iterable $array, callable $delegate): bool
-    {
-        foreach($array as $item)
-        {
-            if($delegate($item))
-                return true;
-        }
-
-        return false;
-    }
-
-    /**
-     * @template T
-     * @param iterable<T> $array
-     * @param callable(T): bool $delegate
      */
     public static function count(iterable $array, callable $delegate): int
     {
@@ -48,22 +31,6 @@ final class ArrayFunctions
         }
 
         return $count;
-    }
-
-    /**
-     * @template T
-     * @param iterable<T> $array
-     * @param callable(T): bool $delegate
-     */
-    public static function all(iterable $array, callable $delegate): bool
-    {
-        foreach($array as $item)
-        {
-            if(!$delegate($item))
-                return false;
-        }
-
-        return true;
     }
 
     /**
@@ -85,23 +52,6 @@ final class ArrayFunctions
         }
 
         return array_values($result);
-    }
-
-    /**
-     * @template T
-     * @param iterable<T> $array
-     * @param callable(T): bool $delegate
-     * @return T|null
-     */
-    public static function find_one(iterable $array, callable $delegate): mixed
-    {
-        foreach($array as $item)
-        {
-            if($delegate($item))
-                return $item;
-        }
-
-        return null;
     }
 
     /**

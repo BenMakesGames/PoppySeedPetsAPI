@@ -76,7 +76,7 @@ class PassphraseResetService
 
     private function sendPasswordResetEmail(PassphraseResetRequest $request): void
     {
-        $message = (new Email())
+        $message = new Email()
             ->from('help+resetpassword@poppyseedpets.com')
             ->to($request->getUser()->getEmail())
             ->subject('✿ Poppy Seed Pets: Passphrase Reset Request')

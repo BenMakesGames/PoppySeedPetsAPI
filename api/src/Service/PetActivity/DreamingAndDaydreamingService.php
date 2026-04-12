@@ -73,35 +73,35 @@ class DreamingAndDaydreamingService
         if($pet->hasStatusEffect(StatusEffectEnum::Oneiric))
         {
             $this->dreamingService->dream($pet);
-            $pet->removeStatusEffect($pet->getStatusEffect(StatusEffectEnum::Oneiric));
+            $pet->removeStatusEffect(StatusEffectEnum::Oneiric);
             return true;
         }
 
         if($pet->hasStatusEffect(StatusEffectEnum::DaydreamingIceCream))
         {
             $this->iceCreamDaydream->doAdventure($petWithSkills);
-            $pet->removeStatusEffect($pet->getStatusEffect(StatusEffectEnum::DaydreamingIceCream));
+            $pet->removeStatusEffect(StatusEffectEnum::DaydreamingIceCream);
             return true;
         }
 
         if($pet->hasStatusEffect(StatusEffectEnum::DaydreamingPizza))
         {
             $this->pizzaDaydream->doAdventure($petWithSkills);
-            $pet->removeStatusEffect($pet->getStatusEffect(StatusEffectEnum::DaydreamingPizza));
+            $pet->removeStatusEffect(StatusEffectEnum::DaydreamingPizza);
             return true;
         }
 
         if($pet->hasStatusEffect(StatusEffectEnum::DaydreamingFoodFight))
         {
             $this->foodFightDaydream->doAdventure($petWithSkills);
-            $pet->removeStatusEffect($pet->getStatusEffect(StatusEffectEnum::DaydreamingFoodFight));
+            $pet->removeStatusEffect(StatusEffectEnum::DaydreamingFoodFight);
             return true;
         }
 
         if($pet->hasStatusEffect(StatusEffectEnum::DaydreamingNoodles))
         {
             $this->noodleDaydream->doAdventure($petWithSkills);
-            $pet->removeStatusEffect($pet->getStatusEffect(StatusEffectEnum::DaydreamingNoodles));
+            $pet->removeStatusEffect(StatusEffectEnum::DaydreamingNoodles);
             return true;
         }
 

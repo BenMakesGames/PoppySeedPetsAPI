@@ -35,7 +35,7 @@ class GetController
     ): JsonResponse
     {
         $user = $userAccessor->getUserOrThrow();
-        $now = (new \DateTimeImmutable())->format('Y-m-d');
+        $now = new \DateTimeImmutable()->format('Y-m-d');
         $costToAdopt = $adoptionService->getAdoptionFee($user);
         $lastAdopted = UserQuestRepository::find($em, $user, 'Last Adopted a Pet');
 

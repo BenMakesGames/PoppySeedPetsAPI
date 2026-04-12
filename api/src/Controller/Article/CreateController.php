@@ -51,7 +51,7 @@ class CreateController
 
         $designGoals = DesignGoalRepository::findByIdsFromParameters($em, $request->request, 'designGoals');
 
-        $article = (new Article())
+        $article = new Article()
             ->setImageUrl($imageUrl == '' ? null : $imageUrl)
             ->setTitle($title)
             ->setBody($body)

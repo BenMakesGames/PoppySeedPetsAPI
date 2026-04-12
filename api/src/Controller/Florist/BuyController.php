@@ -51,7 +51,7 @@ class BuyController
         $offers = $floristService->getInventory($user);
         $userPickName = $request->request->getString('item');
 
-        $userPick = ArrayFunctions::find_one($offers, fn($o) => $o['item']['name'] === $userPickName);
+        $userPick = array_find($offers, fn($o) => $o['item']['name'] === $userPickName);
 
         if(!$userPick)
             throw new PSPFormValidationException('That item is not available... (maybe reload the page and try again??)');

@@ -284,7 +284,7 @@ class GuildService
                 if(array_key_exists('removeIt', $effectToGive))
                 {
                     $message .= ' %pet:' . $pet->getId() . '.name%\'s ' . $effectToGive['effect']->value . '-ness was washed away!';
-                    $pet->removeStatusEffect($pet->getStatusEffect($effectToGive['effect']));
+                    $pet->removeStatusEffect($effectToGive['effect']);
                 }
                 else if(array_key_exists('duration', $effectToGive))
                 {

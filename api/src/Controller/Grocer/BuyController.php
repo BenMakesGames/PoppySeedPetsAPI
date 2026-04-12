@@ -129,7 +129,7 @@ class BuyController
             {
                 $item = ItemRepository::findOneByName($em, $itemName);
 
-                $newInventory = (new Inventory(owner: $user, item: $item))
+                $newInventory = new Inventory(owner: $user, item: $item)
                     ->setLocation($buyTo)
                     ->setLockedToOwner(true)
                     ->addComment($user->getName() . ' bought this from the Grocery Store.')

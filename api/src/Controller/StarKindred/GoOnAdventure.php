@@ -54,8 +54,8 @@ class GoOnAdventure
         if($step->getAdventure()->isREMIX() && !$starKindred->userCanPlayREMIX($user))
             throw new PSPNotUnlockedException('★Kindred REMIX');
 
-        $today = (new \DateTimeImmutable())->format('Y-m-d');
-        $playedStarKindred = UserQuestRepository::findOrCreate($em, $user, 'Played ★Kindred', (new \DateTimeImmutable())->modify('-1 day')->format('Y-m-d'));
+        $today = new \DateTimeImmutable()->format('Y-m-d');
+        $playedStarKindred = UserQuestRepository::findOrCreate($em, $user, 'Played ★Kindred', new \DateTimeImmutable()->modify('-1 day')->format('Y-m-d'));
 
         if($today === $playedStarKindred->getValue())
             throw new PSPInvalidOperationException('There\'s only time for one ★Kindred adventure per day. THEM\'S JUST THE RULES.');

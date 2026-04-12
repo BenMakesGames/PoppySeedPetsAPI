@@ -73,7 +73,7 @@ class UserSession
     {
         $sessionHours = NumberFunctions::clamp($sessionHours, 1, 7 * 24); // 1 hour to 1 week
 
-        $this->sessionExpiration = (new \DateTimeImmutable())->modify('+' . $sessionHours . ' hours');
+        $this->sessionExpiration = new \DateTimeImmutable()->modify('+' . $sessionHours . ' hours');
 
         return $this;
     }

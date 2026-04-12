@@ -61,6 +61,7 @@ class GetKnownRecipes
 
         if(array_key_exists('name', $filters))
         {
+            /** @var KnownRecipes[] $knownRecipes */
             $knownRecipes = $em->getRepository(KnownRecipes::class)->createQueryBuilder('r')
                 ->andWhere('r.user = :userId')
                 ->andWhere('r.recipe LIKE :recipeName')
@@ -71,6 +72,7 @@ class GetKnownRecipes
         }
         else
         {
+            /** @var KnownRecipes[] $knownRecipes */
             $knownRecipes = $em->getRepository(KnownRecipes::class)->findBy([ 'user' => $user->getId() ]);
         }
 

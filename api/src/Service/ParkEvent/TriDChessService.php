@@ -115,7 +115,7 @@ class TriDChessService implements ParkEventInterface
             2
         );
 
-        $parkEvent = (new ParkEvent(ParkEventTypeEnum::TriDChess))
+        $parkEvent = new ParkEvent(ParkEventTypeEnum::TriDChess)
             ->addParticipants($pets)
             ->setResults($this->results)
         ;

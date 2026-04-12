@@ -113,7 +113,7 @@ class PregnancyService
             $colorB = $temp;
         }
 
-        $petPregnancy = (new PetBaby(species: $species, colorA: $colorA, colorB: $colorB))
+        $petPregnancy = new PetBaby(species: $species, colorA: $colorA, colorB: $colorB)
             ->setParent($mother)
             ->setOtherParent($father)
         ;
@@ -144,7 +144,7 @@ class PregnancyService
             $colorB = $temp;
         }
 
-        $petPregnancy = (new PetBaby(species: $species, colorA: $colorA, colorB: $colorB))
+        $petPregnancy = new PetBaby(species: $species, colorA: $colorA, colorB: $colorB)
             ->setParent($mother)
             ->setSpiritParent($mother->getSpiritCompanion())
         ;

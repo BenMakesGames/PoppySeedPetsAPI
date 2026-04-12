@@ -66,10 +66,10 @@ class CookAndCombineController
         if(count($inventory) === 2)
         {
             /** @var Inventory $baseItem */
-            $baseItem = ArrayFunctions::find_one($inventory, fn(Inventory $i) => $i->getId() === $inventoryIds[0]);
+            $baseItem = array_find($inventory, fn(Inventory $i) => $i->getId() === $inventoryIds[0]);
 
             /** @var Inventory $addOn */
-            $addOn = ArrayFunctions::find_one($inventory, fn(Inventory $i) => $i->getId() === $inventoryIds[1]);
+            $addOn = array_find($inventory, fn(Inventory $i) => $i->getId() === $inventoryIds[1]);
 
             // try enchanting
             $enchanted = null;

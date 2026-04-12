@@ -59,7 +59,7 @@ class AdoptController
     ): JsonResponse
     {
         $user = $userAccessor->getUserOrThrow();
-        $now = (new \DateTimeImmutable())->format('Y-m-d');
+        $now = new \DateTimeImmutable()->format('Y-m-d');
         $costToAdopt = $adoptionService->getAdoptionFee($user);
         $lastAdopted = UserQuestRepository::find($em, $user, 'Last Adopted a Pet');
 
@@ -78,11 +78,9 @@ class AdoptController
 
         [$pets, $dialog] = $adoptionService->getDailyPets($user);
 
-        /** @var PetShelterPet|null $petToAdopt */
-        $petToAdopt = ArrayFunctions::find_one($pets, fn(PetShelterPet $p) => $p->id === $id);
-
-        if($petToAdopt === null)
-            throw new PSPFormValidationException('There is no such pet available for adoption... maybe reload and try again??');
+        /** @var PetShelterPet $petToAdopt */
+        $petToAdopt = array_find($pets, fn(PetShelterPet $p) => $p->id === $id)
+            ?? throw new PSPFormValidationException('There is no such pet available for adoption... maybe reload and try again??');
 
         // let's not worry about this for now... it's a suboptimal solution
         /*
@@ -112,7 +110,7 @@ class AdoptController
         {
             $newPet->addMerit(MeritRepository::findOneByName($em, 'Behatted'));
 
-            $hat = (new Inventory(owner: $user, item: ItemRepository::findOneByName($em, 'Mermaid Egg')))
+            $hat = new Inventory(owner: $user, item: ItemRepository::findOneByName($em, 'Mermaid Egg'))
                 ->setLocation(LocationEnum::Wardrobe)
                 ->addComment($newPet->getName() . ' came from the Hollow Earth wearing this...')
             ;
@@ -134,7 +132,7 @@ class AdoptController
 
         $userStatsRepository->incrementStat($user, UserStat::PetsAdopted, 1);
 
-        $now = (new \DateTimeImmutable())->format('Y-m-d');
+        $now = new \DateTimeImmutable()->format('Y-m-d');
 
         UserQuestRepository::findOrCreate($em, $user, 'Last Adopted a Pet', $now)
             ->setValue($now)

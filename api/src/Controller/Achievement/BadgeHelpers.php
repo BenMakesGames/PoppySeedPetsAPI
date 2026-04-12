@@ -839,7 +839,7 @@ final class BadgeHelpers
             // Meta
 
             case BadgeEnum::AccountAge365:
-                $progress = [ 'target' => 365, 'current' => (new \DateTimeImmutable())->diff($user->getRegisteredOn())->days ?: 0 ];
+                $progress = [ 'target' => 365, 'current' => new \DateTimeImmutable()->diff($user->getRegisteredOn())->days ?: 0 ];
                 $reward = TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($em, 'Candle'), 1);
                 break;
 

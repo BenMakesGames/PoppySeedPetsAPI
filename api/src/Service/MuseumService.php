@@ -31,6 +31,7 @@ class MuseumService
     {
     }
 
+    /** @var string[] */
     private array $donatedItemsThisRequest = [];
 
     public function forceDonateItem(User $user, string|int|Item $item, ?string $comment, ?User $createdBy = null): bool
@@ -53,7 +54,7 @@ class MuseumService
         if($museumItem)
             return false;
 
-        $museumItem = (new MuseumItem(user: $user, item: $item))
+        $museumItem = new MuseumItem(user: $user, item: $item)
             ->setCreatedBy($createdBy)
         ;
 

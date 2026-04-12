@@ -68,7 +68,7 @@ class OpenVaultController
         $userStatsService->incrementStat($user, UserStat::OpenedTheInfinityVault);
         $userStatsService->incrementStat($user, UserStat::MoneysSpentOnTheInfinityVault, $cost);
 
-        $vault->setOpenUntil((new \DateTimeImmutable())->modify('+1 hour'));
+        $vault->setOpenUntil(new \DateTimeImmutable()->modify('+1 hour'));
 
         $em->flush();
 

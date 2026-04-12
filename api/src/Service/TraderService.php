@@ -150,7 +150,7 @@ class TraderService
 
         foreach($offers as $offerGroup)
         {
-            $exchange = ArrayFunctions::find_one($offerGroup['trades'], fn(TraderOffer $o) => $o->id === $id);
+            $exchange = array_find($offerGroup['trades'], fn(TraderOffer $o) => $o->id === $id);
 
             if($exchange !== null)
                 return $exchange;
@@ -166,6 +166,7 @@ class TraderService
     {
         $quantities = $this->inventoryService->getInventoryQuantities($user, LocationEnum::Home, 'name');
 
+        /** @var array{title: string, trades: TraderOffer[]}[] $offers */
         $offers = [
             [
                 'title' => 'Food',

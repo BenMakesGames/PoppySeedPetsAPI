@@ -69,15 +69,11 @@ class GiftShopController
 
         $giftShop = $museumService->getGiftShopInventory($user);
 
-        $category = ArrayFunctions::find_one($giftShop, fn($c) => $c['category'] === $categoryName);
+        $category = array_find($giftShop, fn($c) => $c['category'] === $categoryName)
+            ?? throw new PSPNotFoundException('That item couldn\'t be found... reload and try again.');
 
-        if(!$category)
-            throw new PSPNotFoundException('That item couldn\'t be found... reload and try again.');
-
-        $item = ArrayFunctions::find_one($category['inventory'], fn($i) => $i['item']['name'] === $itemName);
-
-        if(!$item)
-            throw new PSPNotFoundException('That item couldn\'t be found... reload and try again.');
+        $item = array_find($category['inventory'], fn($i) => $i['item']['name'] === $itemName)
+            ?? throw new PSPNotFoundException('That item couldn\'t be found... reload and try again.');
 
         $pointsRemaining = $user->getMuseumPoints() - $user->getMuseumPointsSpent();
 

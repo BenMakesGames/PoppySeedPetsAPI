@@ -54,7 +54,7 @@ class MeritFunctions
             if($pet->hasMerit($merit))
                 continue;
 
-            $petAgeInDays = (new \DateTimeImmutable())->diff($pet->getBirthDate())->days >= 14;
+            $petAgeInDays = new \DateTimeImmutable()->diff($pet->getBirthDate())->days >= 14;
 
             // some merits have additional requirements:
             $available = match($merit) {

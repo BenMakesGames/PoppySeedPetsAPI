@@ -697,13 +697,13 @@ class ProgrammingService implements IPetActivity
 
         $this->em->persist($newPet);
 
-        $petWithCaptor = (new PetRelationship($newPet, $captor, RelationshipEnum::Dislike, RelationshipEnum::Dislike))
+        $petWithCaptor = new PetRelationship($newPet, $captor, RelationshipEnum::Dislike, RelationshipEnum::Dislike)
             ->setMetDescription('%relationship.name% pulled %pet.name% out of the imaginary plane, trapping them here!')
         ;
 
         $newPet->addPetRelationship($petWithCaptor);
 
-        $captorWithPet = (new PetRelationship($captor, $newPet, RelationshipEnum::Dislike, RelationshipEnum::Dislike))
+        $captorWithPet = new PetRelationship($captor, $newPet, RelationshipEnum::Dislike, RelationshipEnum::Dislike)
             ->setMetDescription('%pet.name% pulled %relationship.name% out of the imaginary plane, trapping them here!')
         ;
 

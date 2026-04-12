@@ -159,7 +159,7 @@ class BetaBugController
 
         if($startingHatItem)
         {
-            $inventory = (new Inventory(owner: $user, item: ItemRepository::findOneByName($em, $startingHatItem)))
+            $inventory = new Inventory(owner: $user, item: ItemRepository::findOneByName($em, $startingHatItem))
                 ->setCreatedBy($user)
                 ->setLocation(LocationEnum::Wardrobe)
                 ->setWearer($newPet)

@@ -51,19 +51,19 @@ class WerebaneController
 
         if($pet->hasStatusEffect(StatusEffectEnum::BittenByAVampire))
         {
-            $pet->removeStatusEffect($pet->getStatusEffect(StatusEffectEnum::BittenByAVampire));
+            $pet->removeStatusEffect(StatusEffectEnum::BittenByAVampire);
             $removedSomething = true;
         }
 
         if($pet->hasStatusEffect(StatusEffectEnum::BittenByAWerecreature))
         {
-            $pet->removeStatusEffect($pet->getStatusEffect(StatusEffectEnum::BittenByAWerecreature));
+            $pet->removeStatusEffect(StatusEffectEnum::BittenByAWerecreature);
             $removedSomething = true;
         }
 
         if($pet->hasStatusEffect(StatusEffectEnum::Wereform))
         {
-            $pet->removeStatusEffect($pet->getStatusEffect(StatusEffectEnum::Wereform));
+            $pet->removeStatusEffect(StatusEffectEnum::Wereform);
             $removedSomething = true;
         }
 

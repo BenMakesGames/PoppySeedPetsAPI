@@ -305,7 +305,7 @@ class Pet
         $this->owner = $owner;
         $this->skills = $skills;
         $this->birthDate = new \DateTimeImmutable();
-        $this->lastInteracted = (new \DateTimeImmutable())->modify('-3 days');
+        $this->lastInteracted = new \DateTimeImmutable()->modify('-3 days');
         $this->locationMoveDate = new \DateTimeImmutable();
         $this->stomachSize = $rng->rngNextInt(16, 30);
         $this->petRelationships = new ArrayCollection();
@@ -863,7 +863,7 @@ class Pet
     #[Groups(['myPet'])]
     public function getCanParticipateInParkEvents(): bool
     {
-        return $this->getLastInteracted() > (new \DateTimeImmutable())->modify('-48 hours');
+        return $this->getLastInteracted() > new \DateTimeImmutable()->modify('-48 hours');
     }
 
     public function getSkills(): PetSkills
@@ -1063,7 +1063,7 @@ class Pet
 
     public function getRelationshipWith(Pet $otherPet): ?PetRelationship
     {
-        return ArrayFunctions::find_one($this->getPetRelationships(), fn(PetRelationship $r) =>
+        return $this->getPetRelationships()->findFirst(fn($key, PetRelationship $r) =>
             $r->getRelationship()->getId() === $otherPet->getId()
         );
     }
@@ -1141,8 +1141,14 @@ class Pet
         return $this;
     }
 
-    public function removeStatusEffect(StatusEffect $statusEffect): self
+    public function removeStatusEffect(StatusEffect|StatusEffectEnum $statusEffect): self
     {
+        if($statusEffect instanceof StatusEffectEnum)
+        {
+            $statusEffect = $this->getStatusEffect($statusEffect)
+                ?? throw new \InvalidArgumentException('Pet does not have the status effect "' . $statusEffect->name . '"');
+        }
+
         if ($this->statusEffects->contains($statusEffect)) {
             $this->statusEffects->removeElement($statusEffect);
             // set the owning side to null (unless already changed)
@@ -1156,7 +1162,7 @@ class Pet
 
     public function getStatusEffect(StatusEffectEnum $statusEffect): ?StatusEffect
     {
-        return ArrayFunctions::find_one($this->statusEffects, fn(StatusEffect $se) =>
+        return $this->statusEffects->findFirst(fn($key, StatusEffect $se) =>
             $se->getStatus() === $statusEffect
         );
     }
@@ -1662,7 +1668,7 @@ class Pet
         if(!$this->getMom())
             return $this->getScale();
 
-        $factor = min(14, (new \DateTimeImmutable())->diff($this->getBirthDate())->days) / 14 * 0.5 + 0.5;
+        $factor = min(14, new \DateTimeImmutable()->diff($this->getBirthDate())->days) / 14 * 0.5 + 0.5;
 
         return (int)round($this->getScale() * $factor);
     }

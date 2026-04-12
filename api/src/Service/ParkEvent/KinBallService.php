@@ -51,7 +51,11 @@ class KinBallService implements ParkEventInterface
     private int $designatedTeam;
 
     private array $teamWins = [ 0, 0, 0 ];
+
+    /** @var int[] */
     private array $activeTeams = [];
+
+    /** @var array<int, int> */
     private array $teamPoints = [];
 
     public function __construct(
@@ -80,7 +84,7 @@ class KinBallService implements ParkEventInterface
         if(!$this->isGoodNumberOfPets(count($pets)))
             throw new \InvalidArgumentException('Exactly 12 pets are required to play Kin-Ball.');
 
-        $parkEvent = (new ParkEvent(ParkEventTypeEnum::KinBall))
+        $parkEvent = new ParkEvent(ParkEventTypeEnum::KinBall)
             ->addParticipants($pets)
         ;
 
@@ -340,7 +344,7 @@ class KinBallService implements ParkEventInterface
             return;
 
         // if none of the teams have reached a critical score, then there's nothing to do
-        if(!ArrayFunctions::any($this->teamPoints, fn(int $score) => $score >= self::CRITICAL_SCORE))
+        if(!array_any($this->teamPoints, fn(int $score) => $score >= self::CRITICAL_SCORE))
             return;
 
         $lowestScore = $this->getLowestScore();

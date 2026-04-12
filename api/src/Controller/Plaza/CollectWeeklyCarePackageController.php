@@ -44,7 +44,7 @@ class CollectWeeklyCarePackageController
 
         $type = $request->request->getInt('type');
 
-        $days = (new \DateTimeImmutable())->diff($user->getLastAllowanceCollected())->days;
+        $days = new \DateTimeImmutable()->diff($user->getLastAllowanceCollected())->days;
 
         if($days < 7)
             throw new PSPInvalidOperationException('It\'s too early to collect your weekly Care Package.');
