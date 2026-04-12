@@ -31,6 +31,8 @@ use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\PetExperienceService;
 use Doctrine\ORM\EntityManagerInterface;
+use App\Enum\GuildEnum;
+use App\Functions\ActivityHelpers;
 
 class PetSummonedAwayService
 {
@@ -52,14 +54,19 @@ class PetSummonedAwayService
 
         $pet->increaseSafety(-$this->rng->rngNextInt(2, 4));
 
-        $activityLog = match($this->rng->rngNextInt(1, 4))
-        {
-            1 => $this->doSummonedToFight($petWithSkills),
-            2 => $this->doSummonedToCleanAndHost($petWithSkills),
-            3 => $this->doSummonedToAssistWithRitual($petWithSkills),
-            4 => $this->doSummonedToAssistWithGathering($petWithSkills),
-            default => throw new UnreachableException(),
-        };
+        $possibleActivities = [
+            $this->doSummonedToFight(...),
+            $this->doSummonedToCleanAndHost(...),
+            $this->doSummonedToAssistWithRitual(...),
+            $this->doSummonedToAssistWithGathering(...)
+        ];
+
+        if ($pet->isInGuild(GuildEnum::Correspondence))
+            $possibleActivities[] = $this->doSummonedToDeliverMessage(...);
+
+        $chosenActivity = $this->rng->rngNextFromArray($possibleActivities);
+
+        $activityLog = $chosenActivity($petWithSkills);
 
         $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::OTHER, null);
 
@@ -288,5 +295,32 @@ class PetSummonedAwayService
         {
             return [ 'mine for gold', 'mining for gold', 'Gold Ore' ];
         }
+    }
+
+    private function doSummonedToDeliverMessage(ComputedPetSkills $petWithSkills): PetActivityLog
+    {
+        $pet = $petWithSkills->getPet();
+
+        $member = $pet->getGuildMembership()
+            ?? throw new \RuntimeException('Pet is not in a guild?!');
+
+        $recipient = $this->rng->rngNextFromArray([
+            'another wizard',
+            'a king',
+            'fairies'
+        ]);
+
+        $member->increaseReputation();
+
+        $message = 'While ' . ActivityHelpers::PetName($pet) . ' was thinking about what to do, they were magically summoned! The wizard that summoned them gave them a task as a Correspondence member to deliver a letter to ' . $recipient . '. After a long trek, the letter was delivered and ' . ActivityHelpers::PetName($pet) . ' returned home!';
+
+        $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, $message)
+            ->setIcon('icons/activity-logs/summoned')
+            ->addTags(PetActivityLogTagHelpers::findByNames($this->em, ['Guild']))
+        ;
+
+        $this->petExperienceService->gainExp($pet, $this->rng->rngNextInt(1, 2), [ PetSkillEnum::Brawl ], $activityLog);
+
+        return $activityLog;
     }
 }
