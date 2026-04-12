@@ -40,9 +40,11 @@ class PlantYield
     #[ORM\OneToMany(targetEntity: PlantYieldItem::class, mappedBy: 'plantYield', orphanRemoval: true)]
     private Collection $items;
 
-    public function __construct()
+    public function __construct(int $min, int $max)
     {
         $this->items = new ArrayCollection();
+        $this->min = $min;
+        $this->max = $max;
     }
 
     public function getId(): ?int
@@ -62,7 +64,7 @@ class PlantYield
         return $this;
     }
 
-    public function getMin(): ?int
+    public function getMin(): int
     {
         return $this->min;
     }
@@ -74,7 +76,7 @@ class PlantYield
         return $this;
     }
 
-    public function getMax(): ?int
+    public function getMax(): int
     {
         return $this->max;
     }

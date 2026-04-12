@@ -769,12 +769,6 @@ parameters:
 			path: src/Command/UpsertPlantCommand.php
 
 		-
-			message: '#^Parameter \#2 \$defaultValue of method App\\Command\\PoppySeedPetsCommand\:\:askInt\(\) expects int, int\|null given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Command/UpsertPlantCommand.php
-
-		-
 			message: '#^Method App\\Command\\UpsertRecipeCommand\:\:askItem\(\) should return App\\Entity\\Item but returns mixed\.$#'
 			identifier: return.type
 			count: 1
@@ -1179,18 +1173,6 @@ parameters:
 		-
 			message: '#^Cannot call method setButterfliesDismissedOn\(\) on App\\Entity\\Greenhouse\|null\.$#'
 			identifier: method.nonObject
-			count: 1
-			path: src/Controller/Greenhouse/HarvestPlantController.php
-
-		-
-			message: '#^Parameter \#1 \$min of method App\\Service\\IRandom\:\:rngNextInt\(\) expects int, int\|null given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Controller/Greenhouse/HarvestPlantController.php
-
-		-
-			message: '#^Parameter \#2 \$inclusiveMax of method App\\Service\\IRandom\:\:rngNextInt\(\) expects int, int\|null given\.$#'
-			identifier: argument.type
 			count: 1
 			path: src/Controller/Greenhouse/HarvestPlantController.php
 
