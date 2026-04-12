@@ -103,7 +103,7 @@ class PetActivityService
         if(!$pet->isAtHome())
             throw new \InvalidArgumentException('Trying to run activities for a pet that is not at home! (Ben did something horrible; please let him know.)');
 
-        if(!$pet->getHouseTime() || $pet->getHouseTime()->getActivityTime() < 60)
+        if($pet->getHouseTime()->getActivityTime() < 60)
             throw new \InvalidArgumentException('Trying to run activities for a pet that does not have enough time! (Ben did something horrible; please let him know.)');
 
         $this->responseService->setReloadPets();
