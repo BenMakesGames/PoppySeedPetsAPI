@@ -53,15 +53,19 @@ class PetSummonedAwayService
 
         $pet->increaseSafety(-$this->rng->rngNextInt(2, 4));
 
-        $activityLog = match($this->rng->rngNextInt(1, 4 + ($pet->isInGuild(GuildEnum::Correspondence) ? 1 : 0)))
-        {
-            1 => $this->doSummonedToFight($petWithSkills),
-            2 => $this->doSummonedToCleanAndHost($petWithSkills),
-            3 => $this->doSummonedToAssistWithRitual($petWithSkills),
-            4 => $this->doSummonedToAssistWithGathering($petWithSkills),
-            5 => $this->doSummonedToDeliverMessage($petWithSkills), // only possible if a correspondence member
-            default => throw new UnreachableException(),
-        };
+        $possibleActivities = [
+            $this->doSummonedToFight(...),
+            $this->doSummonedToCleanAndHost(...),
+            $this->doSummonedToAssistWithRitual(...),
+            $this->doSummonedToAssistWithGathering(...)
+        ];
+
+        if ($pet->isInGuild(GuildEnum::Correspondence))
+            $possibleActivities[] = $this->doSummonedToDeliverMessage(...);
+
+        $chosenActivity = $this->rng->rngNextFromArray($possibleActivities);
+
+        $activityLog = $chosenActivity($petWithSkills);
 
         $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::OTHER, null);
 
@@ -307,7 +311,7 @@ class PetSummonedAwayService
 
         $member->increaseReputation();
 
-        $message = 'While ' . $pet->getName() . ' was thinking about what to do, they were magically summoned! The wizard that summoned them gave them a task as a Correspondence member to deliver a letter to ' . $recipient . '. After a long trek, the letter was delivered and ' . $pet->getName() . ' returned home!';
+        $message = 'While ' . ActivityHelpers::PetName($pet) . ' was thinking about what to do, they were magically summoned! The wizard that summoned them gave them a task as a Correspondence member to deliver a letter to ' . $recipient . '. After a long trek, the letter was delivered and ' . ActivityHelpers::PetName($pet) . ' returned home!';
 
         $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, $message)
             ->setIcon('icons/activity-logs/summoned')
