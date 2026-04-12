@@ -1516,12 +1516,6 @@ class Pet
         return $this->guildMembership;
     }
 
-    public function getSpecificGuildMembership(GuildEnum $guild): ?GuildMembership
-    {
-        if ($this->guildMembership && $this->getGuildMembership()->getGuild()->getName() === $guild->value)
-            return $this->guildMembership;
-    }
-
     public function setGuildMembership(GuildMembership $guildMembership): self
     {
         $this->guildMembership = $guildMembership;
@@ -1541,6 +1535,12 @@ class Pet
             $this->getGuildMembership()->getGuild()->getName() === $guild->value &&
             $this->getGuildMembership()->getTitle() >= $minTitle
         ;
+    }
+
+    public function getSpecificGuildMembership(GuildEnum $guild): ?GuildMembership
+    {
+        if ($this->isInGuild($guild))
+            return $this->guildMembership;
     }
 
     public function getRevealedFavoriteFlavor(): int
