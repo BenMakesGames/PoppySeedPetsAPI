@@ -5317,21 +5317,9 @@ parameters:
 			path: src/Service/PetActivity/TreasureMapService.php
 
 		-
-			message: '#^Cannot call method changeItem\(\) on App\\Entity\\Inventory\|null\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: src/Service/PetActivity/TreasureMapService.php
-
-		-
 			message: '#^Cannot call method getItem\(\) on App\\Entity\\Inventory\|null\.$#'
 			identifier: method.nonObject
-			count: 5
-			path: src/Service/PetActivity/TreasureMapService.php
-
-		-
-			message: '#^Cannot call method setLockedToOwner\(\) on App\\Entity\\Inventory\|null\.$#'
-			identifier: method.nonObject
-			count: 1
+			count: 4
 			path: src/Service/PetActivity/TreasureMapService.php
 
 		-
