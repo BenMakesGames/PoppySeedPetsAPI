@@ -77,3 +77,27 @@ Commit the backfill in the same PR as the config change so CI stays green throug
 - [ ] Run `ng run PoppySeedPetsApp:storybook` — confirm Storybook still loads a component whose template now has a leading HTML comment
 - [ ] Open the running app in a browser and navigate a couple of pages — confirm templates render (leading `<!-- -->` in component templates does not break Angular parsing)
 - [ ] `git diff --stat` on the backfill commit — sanity-check the file count roughly matches expectations (hundreds of files, but no unexpected paths like `dist/` or `node_modules/`)
+
+## Learnings
+
+### Architectural decisions
+- **Custom Node backfill script instead of `license-eye header fix`**: Docker and Go were both unavailable on the dev machine, so the ticket's suggested tooling was a non-starter. Wrote `webapp/scripts/backfill-license-headers.mjs` that mimics the skywalking-eyes default comment styles — `/* ... */` with ` * ` line prefix for `.ts`/`.scss`, and `<!-- ... -->` with `  ~ ` line prefix for `.html`. The script is idempotent (checks for the signature line "This file is part of the Poppy Seed Pets Webapp." before writing). Validation was deferred to CI.
+- **Excluded `webapp/src/test.ts`** in addition to the explicitly-listed `main.ts` / `polyfills.ts` / `environment*.ts`. It's the same category of Angular-generated bootstrap file (loads the Karma test env), not authored product code. Confirmed with user before implementation.
+- **Bundled `.gitattributes` `eol=lf` change into this PR**: The backfill surfaced a CRLF-vs-LF warning, which led to a quick discussion: the old `* text=auto` convention (LF in repo, OS-native in working tree) is legacy Windows tooling compensation that modern editors don't need. Switched to `* text=auto eol=lf` so the working tree matches the repo on every OS. Orthogonal cleanup but coherent with the noise the backfill would have created in `git status`.
+
+### Problems / gotchas
+- **No local validation possible without the skywalking-eyes binary.** `license-eye header check` is the only authoritative check — if the configured `content:` wording drifts by even a trailing newline from what the fixer inserted, every backfilled file fails. Mitigation: the header text is driven by a single source (the `contentLines` array in the backfill script + the `content:` field in the config YAML), and CI will catch any mismatch on first push. If CI complains, the fix is almost always to adjust the script's output format to match what skywalking-eyes expects, not the config.
+- **`webapp/src/*.html` glob = depth-1 only.** Standard glob semantics; the script replicates this by checking `parts.length === 2` before excluding. Nested `.html` under `webapp/src/app/**` remain in scope as intended.
+
+### Tidbits
+- **File count**: 1193 files backfilled, 202 skipped (excluded by extension or rule). Useful baseline if future audits need to sanity-check coverage.
+- **skywalking-eyes config supports a list of header blocks** — converting `header:` from a mapping to a list lets one `Check License Headers` CI step enforce differently-worded headers across `api/` (PHP → "Poppy Seed Pets API") and `webapp/` (TS/HTML/SCSS → "Poppy Seed Pets Webapp") without touching the workflow YAML.
+- **COPYING resolution**: The PHP block uses `api/COPYING`; the webapp block points to the top-level `COPYING` at repo root. Both files exist (verified during implementation).
+
+### Related areas
+- **`webapp/scripts/` is new.** The backfill script is the first entry in it; kept it alongside the app for discoverability rather than burying in `webapp/src/`. Future one-off maintenance scripts can live here.
+- **`.gitattributes` changed repo-wide behavior.** Currently-checked-out CRLF files on Windows machines won't flip to LF until touched (or until someone runs `git add --renormalize .`). Non-urgent — gradual migration is fine.
+
+### Rejected alternatives
+- **Install Go and run `license-eye header fix`**: user explicitly declined installing either Docker or Go; CI will be the validation surface.
+- **Keep `* text=auto` alone in `.gitattributes`**: would have left a CRLF-vs-LF warning attached to every future edit on Windows, causing noisy working-tree state. Not worth preserving the legacy behavior.
