@@ -5521,24 +5521,6 @@ parameters:
 			path: src/Service/PetExperienceService.php
 
 		-
-			message: '#^Cannot call method getColorA\(\) on mixed\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: src/Service/PetFactory.php
-
-		-
-			message: '#^Cannot call method getColorB\(\) on mixed\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: src/Service/PetFactory.php
-
-		-
-			message: '#^Parameter \#1 \$color of method App\\Service\\IRandom\:\:rngNextTweakedColor\(\) expects string, mixed given\.$#'
-			identifier: argument.type
-			count: 2
-			path: src/Service/PetFactory.php
-
-		-
 			message: '#^Binary operation "\." between ''Ben forgot to…'' and mixed results in an error\.$#'
 			identifier: binaryOp.invalid
 			count: 1
