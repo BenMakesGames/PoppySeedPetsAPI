@@ -5097,12 +5097,6 @@ parameters:
 		-
 			message: '#^Cannot call method increaseReputation\(\) on App\\Entity\\GuildMembership\|null\.$#'
 			identifier: method.nonObject
-			count: 3
-			path: src/Service/PetActivity/HuntingService.php
-
-		-
-			message: '#^Cannot call method increaseReputation\(\) on App\\Entity\\GuildMembership\|null\.$#'
-			identifier: method.nonObject
 			count: 1
 			path: src/Service/PetActivity/LeonidsService.php
 

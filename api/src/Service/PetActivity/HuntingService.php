@@ -985,13 +985,15 @@ class HuntingService implements IPetActivity
         else
             $prize = 'Quintessence';
 
-        if($pet->isInGuild(GuildEnum::LightAndShadow))
+        $lightShadowMembership = $pet->getSpecificGuildMembership(GuildEnum::LightAndShadow);
+
+        if($lightShadowMembership)
         {
             $skill = 10 + $petWithSkills->getIntelligence()->getTotal() * 2 + $petWithSkills->getArcana()->getTotal();
 
             if($this->rng->rngNextInt(1, $skill) >= 15)
             {
-                $pet->getGuildMembership()->increaseReputation();
+                $lightShadowMembership->increaseReputation();
 
                 $prizeItem = ItemRepository::findOneByName($this->em, $prize);
 
@@ -1071,13 +1073,16 @@ class HuntingService implements IPetActivity
             'Quintessence', 'Black Feathers', 'Giant Turkey Leg', 'Smallish Pumpkin Spice'
         ]);
 
-        if($pet->isInGuild(GuildEnum::LightAndShadow))
+        $lightShadowMembership = $pet->getSpecificGuildMembership(GuildEnum::LightAndShadow);
+        $universeForgetsMembership = $pet->getSpecificGuildMembership(GuildEnum::TheUniverseForgets);
+
+        if($lightShadowMembership)
         {
             $skill = 10 + $petWithSkills->getIntelligence()->getTotal() * 2 + $petWithSkills->getArcana()->getTotal();
 
             if($this->rng->rngNextInt(1, $skill) >= 15)
             {
-                $pet->getGuildMembership()->increaseReputation();
+                $lightShadowMembership->increaseReputation();
 
                 $item = ItemRepository::findOneByName($this->em, $loot);
 
@@ -1109,14 +1114,13 @@ class HuntingService implements IPetActivity
                 return $activityLog;
             }
         }
-
-        if($pet->isInGuild(GuildEnum::TheUniverseForgets))
+        else if($universeForgetsMembership)
         {
             $skill = 10 + $petWithSkills->getIntelligence()->getTotal() * 2 + $petWithSkills->getArcana()->getTotal();
 
             if($this->rng->rngNextInt(1, $skill) >= 15)
             {
-                $pet->getGuildMembership()->increaseReputation();
+                $universeForgetsMembership->increaseReputation();
 
                 $item = ItemRepository::findOneByName($this->em, $loot);
 
@@ -1193,6 +1197,8 @@ class HuntingService implements IPetActivity
 
         $pet->increaseFood(-1);
 
+        $gizubiMembership = $pet->getSpecificGuildMembership(GuildEnum::GizubisGarden);
+
         if($pet->hasStatusEffect(StatusEffectEnum::Cordial))
         {
             $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% encountered a Satyr; the Satyr was so enamored by ' . $pet->getName() . '\'s cordiality, they had a simply _wonderful_ time, and offered gifts before leaving in peace.')
@@ -1227,6 +1233,13 @@ class HuntingService implements IPetActivity
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::Music ], $activityLog);
             $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::HUNT, true);
         }
+        else if ($gizubiMembership)
+        {
+            $gizubiMembership->increaseReputation();
+            $activityLog = $this->saytrDrunkParty($pet);
+        }
+        else if ($pet->getAlcohol() > 8) // drunk enough pets can also party!
+            $activityLog = $this->saytrDrunkParty($pet);
         else if($musicSkill > $brawlRoll)
         {
             if($pet->hasMerit(MeritEnum::SOOTHING_VOICE))
@@ -1311,6 +1324,25 @@ class HuntingService implements IPetActivity
             }
         }
 
+        return $activityLog;
+    }
+
+    private function saytrDrunkParty(Pet $pet): PetActivityLog
+    {
+        $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, ActivityHelpers::PetName($pet) . ' encountered a Satyr, who invited them to party! The Satyr danced with ' . ActivityHelpers::PetName($pet) . ' and shared some gifts before leaving in peace.')
+            ->setIcon('icons/activity-logs/drunk-satyr')
+            ->addTags(PetActivityLogTagHelpers::findByNames($this->em, ['Fae-kind']))
+        ;
+
+        $pet->increaseEsteem(1);
+        $this->inventoryService->petCollectsItem('Blackberry Wine', $pet, 'Gifts for ' . $pet->getName() . ', from a Satyr.', $activityLog);
+
+        if ($this->rng->rngNextInt(1, 5) === 1)
+            $this->inventoryService->petCollectsItem('Blackberry Wine', $pet, 'Gifts for ' . $pet->getName() . ', from a Satyr.', $activityLog);
+        else
+            $this->inventoryService->petCollectsItem('Plain Yogurt', $pet, 'Gifts for ' . $pet->getName() . ', from a Satyr.', $activityLog);
+
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::HUNT, true);
         return $activityLog;
     }
 

@@ -1543,6 +1543,14 @@ class Pet
         ;
     }
 
+    public function getSpecificGuildMembership(GuildEnum $guild): ?GuildMembership
+    {
+        if ($this->isInGuild($guild))
+            return $this->guildMembership;
+
+        return null;
+    }
+
     public function getRevealedFavoriteFlavor(): int
     {
         return $this->revealedFavoriteFlavor;
