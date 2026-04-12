@@ -1541,6 +1541,8 @@ class Pet
     {
         if ($this->isInGuild($guild))
             return $this->guildMembership;
+
+        return null;
     }
 
     public function getRevealedFavoriteFlavor(): int
