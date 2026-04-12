@@ -80,6 +80,9 @@ class PhysicsService implements IPetActivity
         if($this->houseSimService->hasInventory('Tiny Black Hole') && $this->houseSimService->hasInventory('Worms'))
             $possibilities[] = $this->createWormhole(...);
 
+        if($this->houseSimService->hasInventory('Tiny Black Hole') && $this->houseSimService->hasInventory('Iron Bar') && $this->houseSimService->hasInventory('Crystal Ball') && $this->houseSimService->hasInventory('String'))
+            $possibilities[] = $this->createHazardKey(...);
+
         if($this->houseSimService->hasInventory('Photon'))
             $possibilities[] = $this->createPoisson(...);
 
@@ -232,6 +235,54 @@ class PhysicsService implements IPetActivity
                 ->setIcon('icons/activity-logs/confused')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ PetActivityLogTagEnum::Physics ]))
             ;
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::Science ], $activityLog);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::PROGRAM, false);
+        }
+
+        return $activityLog;
+    }
+
+    private function createHazardKey(ComputedPetSkills $petWithSkills): PetActivityLog
+    {
+        $pet = $petWithSkills->getPet();
+        $roll = $this->rng->rngSkillRoll($petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getPhysicsBonus()->getTotal());
+
+        if($roll <= 2)
+        {
+            $this->houseSimService->getState()->loseItem('String', 1);
+
+            $pet->increaseSafety(-$this->rng->rngNextInt(2, 5));
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to forge a Hazard Key, but the Tiny Black Hole briefly destabilized, swallowing the String, and very nearly %pet:' . $pet->getId() . '.name%, too!')
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ PetActivityLogTagEnum::Physics, PetActivityLogTagEnum::Crafting ]))
+            ;
+
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::Science ], $activityLog);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::PROGRAM, false);
+        }
+        else if($roll >= 18)
+        {
+            $this->houseSimService->getState()->loseItem('Iron Bar', 1);
+            $this->houseSimService->getState()->loseItem('Crystal Ball', 1);
+            $this->houseSimService->getState()->loseItem('String', 1);
+            $this->houseSimService->getState()->loseItem('Tiny Black Hole', 1);
+
+            $pet->increaseEsteem(4);
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% carefully housed a Tiny Black Hole inside a Crystal Ball, forged an iron frame around it, and tied it all together with String. The result: an ominously-humming Hazard Key!')
+                ->addInterestingness(PetActivityLogInterestingness::HoHum + 18)
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ PetActivityLogTagEnum::Physics, PetActivityLogTagEnum::Crafting ]))
+            ;
+
+            $this->inventoryService->petCollectsItem('Hazard Key', $pet, $pet->getName() . ' scienced this together from an Iron Bar, a Crystal Ball, some String, and a Tiny Black Hole.', $activityLog);
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::Science ], $activityLog);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::PROGRAM, true);
+        }
+        else
+        {
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to forge a Hazard Key, but couldn\'t stabilize a Tiny Black Hole long enough to fit it inside a Crystal Ball...')
+                ->setIcon('icons/activity-logs/confused')
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ PetActivityLogTagEnum::Physics, PetActivityLogTagEnum::Crafting ]))
+            ;
+
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::Science ], $activityLog);
             $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::PROGRAM, false);
         }
