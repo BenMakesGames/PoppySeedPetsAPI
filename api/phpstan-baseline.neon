@@ -5953,30 +5953,6 @@ parameters:
 			path: src/Service/Typeahead/TypeaheadService.php
 
 		-
-			message: '#^Method App\\Service\\Typeahead\\TypeaheadService\:\:search\(\) should return array\<T\> but returns mixed\.$#'
-			identifier: return.type
-			count: 1
-			path: src/Service/Typeahead/TypeaheadService.php
-
-		-
-			message: '#^Parameter \#1 \$value of function count expects array\|Countable, mixed given\.$#'
-			identifier: argument.type
-			count: 3
-			path: src/Service/Typeahead/TypeaheadService.php
-
-		-
-			message: '#^Parameter \#1 \.\.\.\$arrays of function array_merge expects array, mixed given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Service/Typeahead/TypeaheadService.php
-
-		-
-			message: '#^Parameter \#2 \$array of function array_map expects array, mixed given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Service/Typeahead/TypeaheadService.php
-
-		-
 			message: '#^Parameter \#2 \.\.\.\$arrays of function array_merge expects array, mixed given\.$#'
 			identifier: argument.type
 			count: 1
