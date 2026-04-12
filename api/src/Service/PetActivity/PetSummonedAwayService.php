@@ -32,6 +32,7 @@ use App\Service\IRandom;
 use App\Service\PetExperienceService;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Enum\GuildEnum;
+use App\Functions\ActivityHelpers;
 
 class PetSummonedAwayService
 {
