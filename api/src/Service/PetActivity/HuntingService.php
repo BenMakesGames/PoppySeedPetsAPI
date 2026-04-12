@@ -1329,7 +1329,7 @@ class HuntingService implements IPetActivity
 
     private function saytrDrunkParty(Pet $pet): PetActivityLog
     {
-        $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% encountered a Satyr, who invited them to party! The Satyr danced with ' . $pet->getName() . ' and shared some gifts before leaving in peace.')
+        $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, ActivityHelpers::PetName($pet) . ' encountered a Satyr, who invited them to party! The Satyr danced with ' . ActivityHelpers::PetName($pet) . ' and shared some gifts before leaving in peace.')
             ->setIcon('icons/activity-logs/drunk-satyr')
             ->addTags(PetActivityLogTagHelpers::findByNames($this->em, ['Fae-kind']))
         ;
