@@ -57,7 +57,7 @@ class GetById
             ->execute();
 
         $available = self::findAvailable($em, $story, $complete);
-        $playedStarKindred = UserQuestRepository::findOrCreate($em, $user, 'Played ★Kindred', (new \DateTimeImmutable())->modify('-1 day')->format('Y-m-d'));
+        $playedStarKindred = UserQuestRepository::findOrCreate($em, $user, 'Played ★Kindred', new \DateTimeImmutable()->modify('-1 day')->format('Y-m-d'));
 
         $canNextPlayOn = \DateTimeImmutable::createFromFormat('Y-m-d', $playedStarKindred->getValue())->add(\DateInterval::createFromDateString('1 day'));
 

@@ -59,14 +59,14 @@ class WeedController
         if(!$greenhouse)
             throw new PSPNotFoundException('You don\'t have a Greenhouse plot.');
 
-        $weeds = UserQuestRepository::findOrCreate($em, $user, 'Greenhouse Weeds', (new \DateTimeImmutable())->modify('-1 minutes')->format('Y-m-d H:i:s'));
+        $weeds = UserQuestRepository::findOrCreate($em, $user, 'Greenhouse Weeds', new \DateTimeImmutable()->modify('-1 minutes')->format('Y-m-d H:i:s'));
 
         $weedTime = \DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $weeds->getValue());
 
         if($weedTime > new \DateTimeImmutable())
             throw new PSPInvalidOperationException('Your garden\'s doin\' just fine right now, weed-wise.');
 
-        $weeds->setValue((new \DateTimeImmutable())->modify('+18 hours')->format('Y-m-d H:i:s'));
+        $weeds->setValue(new \DateTimeImmutable()->modify('+18 hours')->format('Y-m-d H:i:s'));
 
         if($rng->rngNextInt(1, 4) === 1)
             $itemName = $rng->rngNextFromArray([ 'Fluff', 'Red Clover', 'Talon', 'Feathers' ]);

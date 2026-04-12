@@ -92,13 +92,13 @@ class UpsertAuraCommand extends PoppySeedPetsCommand
 
             $this->em->persist($aura);
 
-            $itemTool = (new ItemTool())
+            $itemTool = new ItemTool()
                 ->setGripX(0)
                 ->setGripY(0)
                 ->setGripScale(0)
             ;
 
-            $enchantment = (new Enchantment('', $itemTool))
+            $enchantment = new Enchantment('', $itemTool)
                 ->setAura($aura);
 
             $this->em->persist($enchantment);

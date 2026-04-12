@@ -132,7 +132,7 @@ class MoveFromVaultController
         // (bypasses lucky transformation and seasonal spice application)
         for($i = 0; $i < $quantity; $i++)
         {
-            $inv = (new Inventory(owner: $user, item: $vaultItem->getItem()))
+            $inv = new Inventory(owner: $user, item: $vaultItem->getItem())
                 ->setCreatedBy($vaultItem->getMaker())
                 ->addComment('Retrieved from the Infinity Vault.')
                 ->setLocation($targetLocation)

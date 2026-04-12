@@ -27,7 +27,7 @@ final class PlayerLogFactory
     {
         $tags = $em->getRepository(UserActivityLogTag::class)->findBy([ 'title' => $tagNames ]);
 
-        $log = (new UserActivityLog(user: $user))
+        $log = new UserActivityLog(user: $user)
             ->setUser($user)
             ->setEntry($entry)
             ->addTags($tags)

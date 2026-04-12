@@ -41,7 +41,7 @@ class PutController
 
         if($dto->userAgent && $dto->language && $dto->windowWidth && $dto->screenWidth)
         {
-            $deviceStats = (new DeviceStats())
+            $deviceStats = new DeviceStats()
                 ->setUser($user)
                 ->setUserAgent($dto->userAgent)
                 ->setLanguage($dto->language)

@@ -76,7 +76,7 @@ class HollowEarthService
         if($user->getHollowEarthPlayer() !== null)
             return;
 
-        $hollowEarthPlayer = (new HollowEarthPlayer(user: $user))
+        $hollowEarthPlayer = new HollowEarthPlayer(user: $user)
             ->setCurrentTile(HollowEarthTileRepository::findOneById($this->em, 1))
         ;
 
@@ -333,7 +333,7 @@ class HollowEarthService
             default: throw new \InvalidArgumentException('Unknown good type.');
         }
 
-        $this->responseService->addFlashMessage('Collected ' . $quantity . ' ' . ucfirst($goods) . '.');
+        $this->responseService->addFlashMessage('Collected ' . $quantity . ' ' . mb_ucfirst($goods) . '.');
 
         $player->setShowGoods();
     }
@@ -475,7 +475,7 @@ class HollowEarthService
 
     public function getTrade(HollowEarthPlayer $player, string $tradeId)
     {
-        return ArrayFunctions::find_one($this->getTrades($player), fn($t) => $t['id'] === $tradeId);
+        return array_find($this->getTrades($player), fn($t) => $t['id'] === $tradeId);
     }
 
     public function getTrades(HollowEarthPlayer $player): array
@@ -548,8 +548,8 @@ class HollowEarthService
      */
     private static function serializeItem(array $items, string $itemName): array
     {
-        /** @var Item $item */
-        $item = ArrayFunctions::find_one($items, fn(Item $i) => $i->getName() === $itemName);
+        $item = array_find($items, fn(Item $i) => $i->getName() === $itemName)
+            ?? throw new \Exception('Invalid item name.');
 
         return [
             'name' => $item->getName(),

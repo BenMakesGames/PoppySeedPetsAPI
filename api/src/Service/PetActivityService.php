@@ -169,7 +169,7 @@ class PetActivityService
             $changes = new PetChanges($pet);
             $activityLog = $this->speakToBunnySpirit($pet);
             $activityLog->setChanges($changes->compare($pet));
-            $pet->removeStatusEffect($pet->getStatusEffect(StatusEffectEnum::LapineWhispers));
+            $pet->removeStatusEffect(StatusEffectEnum::LapineWhispers);
             return;
         }
 
@@ -355,7 +355,7 @@ class PetActivityService
                 ->increaseEsteem(12)
             ;
 
-            $pet->removeStatusEffect($pet->getStatusEffect(StatusEffectEnum::BittenByAVampire));
+            $pet->removeStatusEffect(StatusEffectEnum::BittenByAVampire);
 
             $this->petExperienceService->spendTime($pet, 15, PetActivityStatEnum::OTHER, null);
 
@@ -715,7 +715,7 @@ class PetActivityService
         if($pet->hasStatusEffect(StatusEffectEnum::Wereform))
         {
             if($this->rng->rngNextInt(1, 10) === 1)
-                $pet->removeStatusEffect($pet->getStatusEffect(StatusEffectEnum::Wereform));
+                $pet->removeStatusEffect(StatusEffectEnum::Wereform);
         }
         else
         {

@@ -98,9 +98,7 @@ class StoryService
         $availableChoices = $state->currentSection->getChoices()
             ?? throw new PSPFormValidationException('There is no such option. (Maybe reload and try again?)');
 
-        $choice = ArrayFunctions::find_one($availableChoices, function($c) use ($userChoice) {
-            return $c['text'] === $userChoice;
-        });
+        $choice = array_find($availableChoices, fn($c) => $c['text'] === $userChoice);
 
         if(!$choice || !$this->choiceIsChoosable($state, $choice))
             throw new PSPFormValidationException('There is no such option. (Maybe reload and try again?)');
@@ -199,7 +197,7 @@ class StoryService
 
     private static function choiceContainsExit(array $choice): bool
     {
-        return ArrayFunctions::any($choice['actions'], fn($action) => $action['type'] === StoryActionTypeEnum::Exit);
+        return array_any($choice['actions'], fn($action) => $action['type'] === StoryActionTypeEnum::Exit);
     }
 
     /**

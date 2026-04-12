@@ -72,7 +72,7 @@ class CalculateDailyMarketItemAveragesCommand extends Command
         $this->em->getConnection()->executeQuery('TRUNCATE daily_market_inventory_transaction');
 
         $sqlRows = [];
-        $date = (new \DateTimeImmutable())->modify('-1 day')->format('Y-m-d');
+        $date = new \DateTimeImmutable()->modify('-1 day')->format('Y-m-d');
 
         $output->writeln('Computed ' . count($averages) . ' averages.');
 

@@ -109,7 +109,7 @@ class EatingService
             $favoriteFlavorStrength += $food->containsTentacles;
 
         if($pet->hasStatusEffect(StatusEffectEnum::BittenByAVampire)
-            && ArrayFunctions::any($food->baseItem->getItemGroups(), fn(ItemGroup $group) => $group->getName() === 'Bloody'))
+            && $food->baseItem->getItemGroups()->exists(fn($key, ItemGroup $group) => $group->getName() === 'Bloody'))
         {
             // Cancel out any acquired taste from bloody foods
             if ($food->love < 0)
@@ -231,7 +231,7 @@ class EatingService
 
         if($pet->hasMerit(MeritEnum::BURPS_MOTHS) && $this->rng->rngNextInt(1, 200) < $food->food + $food->junk)
         {
-            $inventory = (new Inventory(owner: $pet->getOwner(), item: ItemRepository::findOneByName($this->em, 'Moth')))
+            $inventory = new Inventory(owner: $pet->getOwner(), item: ItemRepository::findOneByName($this->em, 'Moth'))
                 ->setLocation(LocationEnum::Home)
                 ->setCreatedBy($pet->getOwner())
                 ->addComment('After eating ' . $food->name . ', ' . $pet->getName() . ' burped this up!')
@@ -259,7 +259,7 @@ class EatingService
         if(!$pet->isAtHome())
             throw new PSPInvalidOperationException('Pets that aren\'t home cannot be interacted with.');
 
-        if(ArrayFunctions::any($inventory, fn(Inventory $i) => $i->getItem()->getFood() === null))
+        if(array_any($inventory, fn(Inventory $i) => $i->getItem()->getFood() === null))
             throw new PSPInvalidOperationException('One or more of the selected items is not edible! (Yuck!)');
 
         $this->rng->rngNextShuffle($inventory);
@@ -299,7 +299,7 @@ class EatingService
 
             $loveAndEsteemGain = $favoriteFlavorStrength + $food->love;
 
-            if($isThirsty && !$gotAColdDrink && ArrayFunctions::any($i->getItem()->getItemGroups(), fn(ItemGroup $ig) => $ig->getName() === 'Cold Drink'))
+            if($isThirsty && !$gotAColdDrink && $i->getItem()->getItemGroups()->exists(fn($key, ItemGroup $ig) => $ig->getName() === 'Cold Drink'))
                 $gotAColdDrink = $i->getItem();
 
             if($isJaune && !$gotButter && str_contains(strtolower($i->getItem()->getName()), 'butter'))
@@ -412,7 +412,7 @@ class EatingService
 
     private function satisfiedCravingStatusEffect(Pet $pet, StatusEffectEnum $cravingStatusEffect): StatusEffectEnum
     {
-        $pet->removeStatusEffect($pet->getStatusEffect($cravingStatusEffect));
+        $pet->removeStatusEffect($cravingStatusEffect);
 
         $this->petExperienceService->gainAffection($pet, 2);
 

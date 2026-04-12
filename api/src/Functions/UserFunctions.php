@@ -20,7 +20,7 @@ final class UserFunctions
 {
     public static function findOneRecentlyActive(EntityManagerInterface $em, User $except, int $hours = 24): ?User
     {
-        $oneDayAgo = (new \DateTimeImmutable())->modify('-' . $hours . ' hours');
+        $oneDayAgo = new \DateTimeImmutable()->modify('-' . $hours . ' hours');
 
         $userRepository = $em->getRepository(User::class);
 

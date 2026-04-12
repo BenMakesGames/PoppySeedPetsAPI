@@ -90,7 +90,7 @@ class WeatherService
 
         for($day = 0; $day <= 6; $day++)
         {
-            $date = (new \DateTimeImmutable())->modify('+' . $day . ' days');
+            $date = new \DateTimeImmutable()->modify('+' . $day . ' days');
 
             $weather[] = $this->cache->getOrCompute(
                 'Weather ' . $date->format('Y-m-d'),

@@ -63,7 +63,7 @@ class PetExperienceService
 
         if($exp < 0) return false;
 
-        if($pet->getTool() && ArrayFunctions::any($stats, fn(string $stat) => $pet->getTool()->focusesSkill($stat)))
+        if($pet->getTool() && array_any($stats, fn(string $stat) => $pet->getTool()->focusesSkill($stat)))
         {
             $exp++;
         }
@@ -101,7 +101,7 @@ class PetExperienceService
             // only remove a Focused status effect if the focused stat was leveled-up
             if($focusStatusEffect && $focusStatusEffect->skill == $statToLevel)
             {
-                $pet->removeStatusEffect($pet->getStatusEffect($focusStatusEffect->statusEffect));
+                $pet->removeStatusEffect($focusStatusEffect->statusEffect);
                 $focusStatusEffect = null;
             }
 

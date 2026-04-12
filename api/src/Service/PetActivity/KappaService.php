@@ -111,10 +111,8 @@ class KappaService
 
         if($skills >= 5)
         {
-            $owner = UserFunctions::findOneRecentlyActive($this->em, $pet->getOwner(), 72);
-
-            if(!$owner)
-                throw new PSPNotFoundException('Hm... there\'s no one to return it to! (I guess no one\'s been playing Poppy Seed Pets...)');
+            $owner = UserFunctions::findOneRecentlyActive($this->em, $pet->getOwner(), 72)
+                ?? throw new PSPNotFoundException('Hm... there\'s no one to return it to! (I guess no one\'s been playing Poppy Seed Pets...)');
 
             EquipmentFunctions::destroyPetTool($this->em, $pet);
 
@@ -137,10 +135,8 @@ class KappaService
         }
         else if($this->rng->rngNextInt(1, 3) > 1)
         {
-            $owner = UserFunctions::findOneRecentlyActive($this->em, $pet->getOwner(), 72);
-
-            if(!$owner)
-                throw new PSPNotFoundException('Hm... there\'s no one to return it to! (I guess no one\'s been playing Poppy Seed Pets...)');
+            $owner = UserFunctions::findOneRecentlyActive($this->em, $pet->getOwner(), 72)
+                ?? throw new PSPNotFoundException('Hm... there\'s no one to return it to! (I guess no one\'s been playing Poppy Seed Pets...)');
 
             EquipmentFunctions::destroyPetTool($this->em, $pet);
 

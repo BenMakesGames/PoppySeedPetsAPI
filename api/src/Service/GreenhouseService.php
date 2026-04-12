@@ -186,7 +186,7 @@ class GreenhouseService
     private function maybeAssignPollinator(User $user, PollinatorEnum $pollinator): bool
     {
         // must not already have this pollinator present
-        if(ArrayFunctions::any($user->getGreenhousePlants(), fn(GreenhousePlant $p) => $p->getPollinators() == $pollinator))
+        if($user->getGreenhousePlants()->exists(fn($key, GreenhousePlant $p) => $p->getPollinators() == $pollinator))
             return false;
 
         // must have at least 3 generally-pollinatable plants
