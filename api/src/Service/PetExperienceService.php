@@ -101,7 +101,7 @@ class PetExperienceService
             // only remove a Focused status effect if the focused stat was leveled-up
             if($focusStatusEffect && $focusStatusEffect->skill == $statToLevel)
             {
-                $pet->removeStatusEffect($pet->getStatusEffect($focusStatusEffect->statusEffect));
+                $pet->removeStatusEffect($focusStatusEffect->statusEffect);
                 $focusStatusEffect = null;
             }
 

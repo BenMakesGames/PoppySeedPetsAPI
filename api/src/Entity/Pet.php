@@ -1141,8 +1141,14 @@ class Pet
         return $this;
     }
 
-    public function removeStatusEffect(StatusEffect $statusEffect): self
+    public function removeStatusEffect(StatusEffect|StatusEffectEnum $statusEffect): self
     {
+        if($statusEffect instanceof StatusEffectEnum)
+        {
+            $statusEffect = $this->getStatusEffect($statusEffect)
+                ?? throw new \InvalidArgumentException('Pet does not have the status effect "' . $statusEffect->name . '"');
+        }
+
         if ($this->statusEffects->contains($statusEffect)) {
             $this->statusEffects->removeElement($statusEffect);
             // set the owning side to null (unless already changed)

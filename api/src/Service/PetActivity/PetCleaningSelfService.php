@@ -50,7 +50,7 @@ class PetCleaningSelfService
     {
         $changes = new PetChanges($pet);
 
-        $pet->removeStatusEffect($pet->getStatusEffect($statusEffect));
+        $pet->removeStatusEffect($statusEffect);
         $weather = WeatherService::getWeather(new \DateTimeImmutable());
 
         if($pet->hasMerit(MeritEnum::GOURMAND))

@@ -72,6 +72,7 @@ final class StatusEffectHelpers
             ->setTimeRemaining(min($statusEffect->getTotalDuration(), $statusEffect->getTimeRemaining() + $durationInMinutes))
         ;
 
+        /** @var StatusEffect[] $statusEffectsToRemove */
         $statusEffectsToRemove = [];
 
         if($status === StatusEffectEnum::Wereform)

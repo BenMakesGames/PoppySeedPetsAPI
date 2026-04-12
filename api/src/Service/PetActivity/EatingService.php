@@ -412,7 +412,7 @@ class EatingService
 
     private function satisfiedCravingStatusEffect(Pet $pet, StatusEffectEnum $cravingStatusEffect): StatusEffectEnum
     {
-        $pet->removeStatusEffect($pet->getStatusEffect($cravingStatusEffect));
+        $pet->removeStatusEffect($cravingStatusEffect);
 
         $this->petExperienceService->gainAffection($pet, 2);
 
