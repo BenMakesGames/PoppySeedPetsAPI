@@ -1,3 +1,12 @@
+/*
+ * This file is part of the Poppy Seed Pets Webapp.
+ *
+ * The Poppy Seed Pets Webapp is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * The Poppy Seed Pets Webapp is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along with The Poppy Seed Pets Webapp. If not, see <https://www.gnu.org/licenses/>.
+ */
 const META_ACHIEVEMENT_BACKGROUND = 'conic-gradient(from 90deg at 25% -10%, #ff4500, #d3f340, #7bee85, #afeeee, #7bee85)';
 const RECYCLING_BACKGROUND = 'conic-gradient(from 90deg at 50% 110%, #1f005c, #003298, #005ac6, #007fdc, #00a2d3, #00c4ae, #00e474, #00ff00, #1f005c, #003298, #005ac6, #007fdc, #00a2d3, #00c4ae, #00e474, #00ff00)';
 const BUG_BACKGROUND = 'conic-gradient(from 90deg at 50% 110%, #ff9a0f, #ff9a0f, #ff9a0f, #ff9a0f, #dee900, #00c409)';
