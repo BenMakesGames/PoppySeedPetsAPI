@@ -61,6 +61,7 @@ import { DateAndTimeComponent } from "../shared/component/date-and-time/date-and
 import { PetAppearanceComponent } from "../shared/component/pet-appearance/pet-appearance.component";
 import { DateOnlyComponent } from "../shared/component/date-only/date-only.component";
 import { PetGroupLabelPipe } from "../shared/pipe/pet-group-label.pipe";
+import { PetGroupIconPipe } from "../shared/pipe/pet-group-icon.pipe";
 import { PlayerNameComponent } from "../shared/component/player-name/player-name.component";
 import { InventoryItemComponent } from "../shared/component/inventory-item/inventory-item.component";
 import { ImageComponent } from "../shared/component/image/image.component";
@@ -145,6 +146,7 @@ import { InputYesNoBothComponent } from "../filters/components/input-yes-no-both
     PetAppearanceComponent,
     DateOnlyComponent,
     PetGroupLabelPipe,
+    PetGroupIconPipe,
     PlayerNameComponent,
     InventoryItemComponent,
     ImageComponent,

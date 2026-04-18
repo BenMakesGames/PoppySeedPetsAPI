@@ -25,6 +25,7 @@ import { CommonModule } from "@angular/common";
 import { LoadingThrobberComponent } from "../loading-throbber/loading-throbber.component";
 import { PetGroupProductLabelPipe } from "../../pipe/pet-group-product-label.pipe";
 import { PetGroupLabelPipe } from "../../pipe/pet-group-label.pipe";
+import { PetGroupIconPipe } from "../../pipe/pet-group-icon.pipe";
 import { HelpLinkComponent } from "../help-link/help-link.component";
 
 @Component({
@@ -39,6 +40,7 @@ import { HelpLinkComponent } from "../help-link/help-link.component";
         RouterLink,
         PetGroupProductLabelPipe,
         PetGroupLabelPipe,
+        PetGroupIconPipe,
         HelpLinkComponent
     ],
     styleUrls: ['./pet-friends.component.scss']
@@ -47,14 +49,6 @@ export class PetFriendsComponent implements OnInit, OnDestroy {
 
   @Output() linkClick = new EventEmitter<void>();
   @Input() pet: MyPetSerializationGroup;
-
-  readonly GROUP_TYPE_IMAGES = [
-    '', // 0
-    'band',
-    'astronomy',
-    'gaming',
-    'sportsball'
-  ];
 
   relationships: RelationshipsModel;
   loadingFriends = true;

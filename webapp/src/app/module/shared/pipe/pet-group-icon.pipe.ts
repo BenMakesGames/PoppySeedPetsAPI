@@ -7,20 +7,27 @@
  *
  * You should have received a copy of the GNU General Public License along with The Poppy Seed Pets Webapp. If not, see <https://www.gnu.org/licenses/>.
  */
-table > tbody > tr {
-  cursor: pointer;
-}
+import { Pipe, PipeTransform } from '@angular/core';
 
-small {
-  display: block;
-}
+@Pipe({
+  standalone: true,
+  name: 'petGroupIcon'
+})
+export class PetGroupIconPipe implements PipeTransform {
 
-.type-icon-cell {
-  width: 1%;
+  readonly GROUP_TYPE_IMAGES = [
+    '',
+    'band',
+    'astronomy',
+    'gaming',
+    'sportsball',
+  ];
 
-  img {
-    display: block;
-    width: 0.3in;
-    height: 0.3in;
+  transform(value: number): string {
+    if(value < 1 || value >= this.GROUP_TYPE_IMAGES.length)
+      return '';
+
+    return '/assets/images/groups/' + this.GROUP_TYPE_IMAGES[value] + '.svg';
   }
+
 }

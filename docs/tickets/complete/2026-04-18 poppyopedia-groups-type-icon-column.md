@@ -65,3 +65,17 @@ Add a rule that constrains the icon to ~0.3in square and keeps the cell tight (e
 - [ ] Navigate to a pet's Friends panel (somewhere a pet belongs to a group) — confirm the group icons still render correctly after the switch to `petGroupIcon`
 - [ ] With a screen reader (or by reading the DOM), confirm each row announces the group type once (from the `<small>` label) — not twice
 - [ ] If a group of an unexpected type ever appears (e.g. a newly-introduced type that isn't in `GROUP_TYPE_IMAGES`), the image will 404 rather than break the row — acceptable for this ticket since the set of types is stable, but worth eyeballing the mapping matches the current `PetGroupTypeEnum` before merge
+
+## Learnings
+
+### Architectural decisions
+- **Out-of-range returns `''`, not a fallback image.** The pipe deliberately returns an empty string for unknown group types, mirroring `pet-group-product-label.pipe.ts`'s "empty string for empty slot" convention. A bound `<img src="">` is a no-op and keeps the pipe side-effect free — no magic placeholder asset to maintain.
+- **Pipe returns the full URL, not just the filename.** Callers bind `[src]="group.type|petGroupIcon"` directly with zero concatenation, which is the whole point of having the pipe be the single source of truth — if it returned just `"band"`, every caller would repeat the `/assets/images/groups/...svg` wrapping and the duplication would simply move one layer outward.
+
+### Interesting tidbits
+- `GroupsComponent` is still an NgModule-declared component (`standalone: false`), so its pipe dependencies are wired through `EncyclopediaModule`'s `imports:` array — not the component's own `imports:`. Sibling pipes on the same template (`PetGroupLabelPipe`) were already registered there, which made the pattern obvious.
+- `PetFriendsComponent` is already a standalone component, so the same pipe had to be registered in two totally different places (module `imports:` vs component `imports:`) — a direct consequence of the project's ongoing standalone-migration mid-state.
+- The Pet Friends panel uses `0.3in` for group icon squares (inches!), which matches the existing project convention — SCSS in this codebase uses `in` for small UI icons in multiple places. Worth matching rather than converting to px/rem for consistency.
+
+### Reusable patterns
+- Pipes named `petGroup*` (label, productLabel, icon) all follow the same shape: standalone pipe + `readonly` 1-indexed lookup array + bounds-checked `transform()`. The index-1 slot matching `PetGroupTypeEnum` makes the arrays line up with the enum without a `Map<enum, string>` indirection.
