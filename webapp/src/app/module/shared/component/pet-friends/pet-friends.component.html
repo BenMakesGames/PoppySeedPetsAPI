@@ -50,16 +50,6 @@
             </p>
           </div>
         }
-
-        @if(relationships.guild)
-        {
-          <div class="guild">
-            <h4>Guild</h4>
-            <img [src]="'/assets/images/guilds/' + relationships.guild.guild.emblem + '.svg'" [alt]="relationships.guild.guild.name + ' emblem'">
-            <h5><a [routerLink]="['/poppyopedia/guild/' + relationships.guild.guild.id ]" (click)="doClose()">{{ relationships.guild.guild.name }}</a></h5>
-            <p>{{ relationships.guild.rank }}. Joined <app-date-only [dateString]="relationships.guild.joinedOn" />.</p>
-          </div>
-        }
       </div>
     }
 

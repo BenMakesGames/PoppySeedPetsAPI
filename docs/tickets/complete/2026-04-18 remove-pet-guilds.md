@@ -53,18 +53,7 @@ Also drop the row in `pet_activity_log_tag` whose name is `Guild` — it was cre
 
 For each site below, remove the `if($pet->isInGuild(...))` block **and its body**. If the block is one arm of an `if/elseif` chain where the non-guild arm is a baseline outcome, preserve the baseline arm by promoting it out of the chain. If removing the guild arm leaves a dangling `else` with no `if`, clean up syntax. Remove the `use App\Enum\GuildEnum;` import from each file once its last reference is gone.
 
-Sites (see `grep isInGuild api/src` for the authoritative list at implementation time; these are today's hits):
-- `api/src/Service/PetActivity/GatheringService.php` (~line 255) — Light and Shadow variant.
-- `api/src/Service/PetActivity/GivingTreeGatheringService.php` (~line 68) — Gizubi's Garden variant.
-- `api/src/Service/PetActivity/HuntingService.php` (~lines 988, 1074, 1113) — Light and Shadow spirit hunts + Universe Forgets branch.
-- `api/src/Service/PetActivity/LeonidsService.php` (~line 161) — Light and Shadow Leonids outcome.
-- `api/src/Service/PetActivity/PetSummonedAwayService.php` (~line 64) — Correspondence-specific summon branch.
-- `api/src/Service/PetActivity/SpecialLocations/BurntForestService.php` (~lines 307, 309, 322, 380, 424, 447) — Light-and-Shadow / Universe-Forgets / Tapestries branches. Multiple arms; work through them carefully, keeping non-guild baseline code.
-- `api/src/Service/PetActivity/SpecialLocations/DeepSeaService.php` (~lines 397, 424) — High Impact branches.
-- `api/src/Service/PetActivity/SpecialLocations/IcyMoonService.php` (~lines 281, 309) — High Impact branches.
-- `api/src/Service/PetActivity/SpecialLocations/MagicBeanstalkService.php` (~lines 137, 263) — High Impact branches.
-- `api/src/Service/PetActivity/UmbraService.php` (~lines 557, 607) — Light and Shadow / Universe Forgets branches. See step 4 for the separate concern about the Umbra guild-join adventure.
-
+Sites (see `grep isInGuild api/src` for the authoritative list at implementation time).
 ### 4. Delete the guild-joining adventure branches
 **Why**: The user chose to delete these outright rather than keep the adventure with a neutral outcome.
 
@@ -159,3 +148,37 @@ Grep `webapp/src` for `guild` and `Guild` after the edits to catch any remaining
 - [ ] Open a pet's self-reflection dialog — the UI shows only the reconcile flow (no guild-picker section); the troubled-relationships list loads and a reconcile can still be executed.
 - [ ] Exercise at least one representative activity per stripped branch — Light-and-Shadow Burnt Forest content, High-Impact Icy Moon content, Gizubi-Garden Giving Tree content — and confirm the activity resolves using only the non-guild arm.
 - [ ] Grep the repo for `guild`/`Guild` (case-insensitive) and confirm only unrelated matches remain (e.g., words like "guided" or comments referring to past work are fine; any live references to the feature are not).
+
+## Learnings
+
+### Architectural decisions
+
+- **Kept the `Guild` row in `pet_activity_log_tag`** rather than deleting it (ticket originally asked for deletion). A ManyToMany join table with no `ON DELETE CASCADE` means historical activity logs reference that tag; deleting the row would have required wiping references in the junction table first, erasing the `Guild` tag from years of old logs. Leaving the tag row is harmless (no runtime code produces new tag references) and lets players filter/find what their pets did "back when guilds existed." The new migration therefore only drops the `guild` and `guild_membership` tables.
+- **Ticket mistakenly asserted a `pet.guild_membership_id` FK column**, but `Pet::$guildMembership` is the inverse side (`mappedBy: 'pet'`) — the FK actually lives on `guild_membership.pet_id`. No column drop on `pet` was needed. Verified by grepping all historical migrations for `guild_membership_id` — zero matches.
+- **`ItemFood` description about Self-reflection Points** was updated to remove the "or change Guild" clause. Missed-reference hazard: any in-universe copy that still describes guild behavior will surface to players via Poppyopedia / item descriptions. A repo-wide `grep -i guild` after implementation caught it.
+
+### Problems encountered
+
+- **PhpStan baseline references deleted files.** After deleting `GuildService.php`, `GizubisGardenService.php`, `GuildMemberFilterService.php`, `Guild.php`, phpstan refused to run because its `phpstan-baseline.neon` still had `ignoreErrors` entries pointing at those paths. The fix: strip every baseline entry whose `path:` references a deleted file, *and* decrement `count:` on any remaining baseline entry whose error count changed because of our edits (the `filterGuild()` method I deleted contained one of the three `(int)$value` mixed-to-int casts tracked in PetFilterService — had to drop that count from 3 to 2). PhpStan treats unused baseline entries as fatal errors by default.
+- **PHP else-block cleanup hazard.** Twice while collapsing `if(guild) { X } else { Y }` into just `Y`, I deleted the outer else-wrapper but left the inner body's indentation and kept a dangling `}`. The compiler catches this, but it's worth being explicit: when unwrapping an else block, fix both indentation and bracket count in the same edit.
+- **Orphan helpers from deleted branches must be removed explicitly.** Deleting guild arms in `Protocol7Service` left `doDwarfcraftDigging`, `doTimesArrow`, `deliverMessagesForCorrespondence`, and (in `MagicBeanstalkService`) `foundPegasusNestHighImpact` unreferenced. The constructor dependencies `TransactionService` (Protocol7) and `PetRelationshipService` (GatheringService) also became unused. PhpStan level 10 flags unused constructor parameters — but only if you actually run it.
+
+### Interesting tidbits
+
+- **The `PetActivity` service tree is lazy-loaded** (`config/services.yaml`). Deleting a service class or removing a constructor dependency doesn't break container compilation until that service is actually requested — which is why phpstan is more valuable than a simple boot test for this kind of refactor.
+- **Serialization groups live as string literals** in Doctrine `#[Groups([...])]` attributes, not as enum references in most places. Removing `SerializationGroupEnum::PET_GUILD` from the enum file does *not* automatically remove the `'guildMember'`, `'petGuild'`, `'guildEncyclopedia'` string annotations scattered across entity fields on Pet, Item, PetSpecies — these had to be hunted down with grep and deleted manually. Leaving stale string-literal group names won't break serialization (they just never match), but it's dead code.
+- **`SelfReflectionController::getGuildMembership()` was a 2020 artifact name** — the endpoint has been the data fetcher for reconcile-with-a-pet for years but kept its guild-era method name. Renamed to `getSelfReflectionData()` as part of this ticket. Lesson: endpoint method names ossify quickly; rename when you touch them.
+
+### Related areas affected
+
+- `phpstan-baseline.neon` (~20 entries removed/decremented).
+- `ItemFood::getModifiers()` — in-game copy about Self-reflection Points.
+- `api/src/Service/PetActivity/CLAUDE.md` — documentation of `runHour()` priority order had a "Guild Activities" entry that needed removing.
+- `SelfReflectionController` — renamed stale method name.
+- `Pet`, `Item`, `PetSpecies` entity field annotations — stale `guildMember`/`guildEncyclopedia` strings.
+
+### Rejected alternatives
+
+- **Making the guild-gated "bonus" branches universal** (so every pet gets the nicer outcome). Rejected per ticket direction — the gated branches were deleted outright. Simpler, smaller code, at the cost of some variety in adventure flavor text.
+- **Deleting the `Guild` `PetActivityLogTagEnum` entry and its row.** Rejected after user confirmation — keeping both lets old tagged log entries continue to render with their tag, and lets players find "what my pets did back when guilds existed."
+- **Adding a replacement courier log** (some neutral pet delivers the letter with a generic log entry). Explicitly rejected by the user in ticket decisions: letters now always arrive via "some pet they didn't recognize" and produce a single log on the recipient only.

@@ -40,13 +40,10 @@ import { MeritComponent } from './page/merit/merit.component';
 import { PetShelterComponent } from './page/user-profile/pet-shelter/pet-shelter.component';
 import { FollowUnfollowComponent } from './component/follow-unfollow/follow-unfollow.component';
 import { SkillsComponent } from './page/help/skills/skills.component';
-import { GuildsComponent } from './page/help/guilds/guilds.component';
 import { LockedInventoryComponent } from './page/help/locked-inventory/locked-inventory.component';
 import { PetDirectoryComponent } from './page/pet-directory/pet-directory.component';
 import { SpiritCompanionDirectoryComponent } from './page/spirit-companion-directory/spirit-companion-directory.component';
 import { PetRelationshipsComponent } from './component/pet-relationships/pet-relationships.component';
-import { GuildComponent } from './page/guild/guild.component';
-import { GuildDirectoryComponent } from './page/guild-directory/guild-directory.component';
 import {GroupsHelpComponent} from "./page/help/groups/groups-help.component";
 import { DesignGoalsComponent } from './page/design-goals/design-goals.component';
 import { DesignGoalDetailsComponent } from './page/design-goal-details/design-goal-details.component';
@@ -119,13 +116,10 @@ import { InputYesNoBothComponent } from "../filters/components/input-yes-no-both
     PetShelterComponent,
     FollowUnfollowComponent,
     SkillsComponent,
-    GuildsComponent,
     LockedInventoryComponent,
     PetDirectoryComponent,
     SpiritCompanionDirectoryComponent,
     PetRelationshipsComponent,
-    GuildComponent,
-    GuildDirectoryComponent,
     GroupsHelpComponent,
     DesignGoalsComponent,
     DesignGoalDetailsComponent,
