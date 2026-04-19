@@ -5377,46 +5377,6 @@ parameters:
 			path: src/Service/PetExperienceService.php
 
 		-
-			message: '#^Cannot call method spendSocialEnergy\(\) on App\\Entity\\PetHouseTime\|null\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: src/Service/PetExperienceService.php
-
-		-
-			message: '#^Method App\\Service\\PetExperienceService\:\:forceIncreaseSkill\(\) has no return type specified\.$#'
-			identifier: missingType.return
-			count: 1
-			path: src/Service/PetExperienceService.php
-
-		-
-			message: '#^Parameter \#1 \$statusEffect of method App\\Entity\\Pet\:\:removeStatusEffect\(\) expects App\\Entity\\StatusEffect, App\\Entity\\StatusEffect\|null given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Service/PetExperienceService.php
-
-		-
-			message: '#^Cannot call method getColorA\(\) on mixed\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: src/Service/PetFactory.php
-
-		-
-			message: '#^Cannot call method getColorB\(\) on mixed\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: src/Service/PetFactory.php
-
-		-
-			message: '#^Parameter \#1 \$color of method App\\Service\\IRandom\:\:rngNextTweakedColor\(\) expects string, mixed given\.$#'
-			identifier: argument.type
-			count: 2
-			path: src/Service/PetFactory.php
-			message: '#^Binary operation "\." between ''Ben forgot to…'' and mixed results in an error\.$#'
-			identifier: binaryOp.invalid
-			count: 1
-			path: src/Service/PetGroupService.php
-
-		-
 			message: '#^Binary operation "\." between ''Unhandled group…'' and mixed results in an error\.$#'
 			identifier: binaryOp.invalid
 			count: 1
