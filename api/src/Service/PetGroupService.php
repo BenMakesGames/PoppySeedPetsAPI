@@ -517,6 +517,7 @@ class PetGroupService
     // Creates a read or unread log, depending on if the pet passed in has an owner who
     // Is included in usersAlerted
     // For groups so users don't get 'copies' of messages
+    /** @var int[] $usersAlerted */
     public function createGroupLog(Pet $pet, string $message, array &$usersAlerted) : PetActivityLog
     {
         $alreadyMessagedThisPlayer = in_array($pet->getOwner()->getId(), $usersAlerted);

@@ -158,6 +158,7 @@ class GardeningClubService
     public function collectHarvest(PetGroup $group): array
     {
         $activityLogsPerPet = [];
+        $usersAlerted = [];
         $groupSize = count($group->getMembers());
         $contributedSkill = $group->getSkillRollTotal() / $groupSize;
 
