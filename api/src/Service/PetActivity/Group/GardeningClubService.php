@@ -236,7 +236,7 @@ class GardeningClubService
             else
                 $member->increaseEsteem($this->rng->rngNextInt(2, 4));
 
-            $message = ActivityHelpers::PetName($member) . ' spent time watering plants with ' . $group->getName() . '. ' . $extra;
+            $message = ActivityHelpers::PetName($member) . ' watered plants with ' . $group->getName() . '. ' . $extra;
 
             $activityLog = $this->petGroupService->createGroupLog($member, $message, $usersAlerted)
                 ->setIcon(self::ActivityIcon)
@@ -280,7 +280,7 @@ class GardeningClubService
 
                 $item = ItemRepository::findOneByName($this->em, $this->rng->rngNextFromArray($weedingRewards));
 
-                $message = ActivityHelpers::PetName($member) . ' spent time weeding with ' . $group->getName() . '. They managed to find ' . $item->getNameWithArticle() . ' while weeding! (Lucky~!)';
+                $message = ActivityHelpers::PetName($member) . ' did some weeding with ' . $group->getName() . '. They managed to find ' . $item->getNameWithArticle() . ' while weeding! (Lucky~!)';
 
                 $activityLog = $this->petGroupService->createGroupLog($member, $message, $usersAlerted)
                     ->setIcon(self::ActivityIcon)
@@ -296,7 +296,7 @@ class GardeningClubService
 
                 $item = ItemRepository::findOneByName($this->em, $this->rng->rngNextFromArray($weedingRewards));
 
-                $message = ActivityHelpers::PetName($member) . ' spent time weeding with ' . $group->getName() . '. They managed to find ' . $item->getNameWithArticle() . ' while weeding!';
+                $message = ActivityHelpers::PetName($member) . ' did some weeding with ' . $group->getName() . '. They managed to find ' . $item->getNameWithArticle() . ' while weeding!';
 
                 $activityLog = $this->petGroupService->createGroupLog($member, $message, $usersAlerted)
                     ->setIcon(self::ActivityIcon)
@@ -308,7 +308,7 @@ class GardeningClubService
             }
             else if($roll < 10)
             {
-                $message = ActivityHelpers::PetName($member) . ' spent time weeding with ' . $group->getName() . '. It was really tough!';
+                $message = ActivityHelpers::PetName($member) . ' did some weeding with ' . $group->getName() . '. It was really tough!';
 
                 $activityLog = $this->petGroupService->createGroupLog($member, $message, $usersAlerted)
                     ->addInterestingness(PetActivityLogInterestingness::HoHum)
@@ -319,7 +319,7 @@ class GardeningClubService
             {
                 $member->increaseEsteem($this->rng->rngNextInt(2, 4));
 
-                $message = ActivityHelpers::PetName($member) . ' spent time weeding with ' . $group->getName() . '.';
+                $message = ActivityHelpers::PetName($member) . ' did some weeding with ' . $group->getName() . '.';
 
                 $activityLog = $this->petGroupService->createGroupLog($member, $message, $usersAlerted)
                     ->setIcon(self::ActivityIcon)
@@ -363,7 +363,7 @@ class GardeningClubService
             if ($member->hasMerit(MeritEnum::LUCKY))
                 $roll = max($roll, $this->rng->rngNextInt(1, 20));
 
-            $message = ActivityHelpers::PetName($member) . ' spent making compost with ' . $group->getName() . '.';
+            $message = ActivityHelpers::PetName($member) . ' created compost with ' . $group->getName() . '.';
 
             $activityLog = $this->petGroupService->createGroupLog($member, $message, $usersAlerted)
                 ->setIcon(self::ActivityIcon)
