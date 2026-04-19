@@ -158,7 +158,10 @@ class GardeningClubService
     public function collectHarvest(PetGroup $group): array
     {
         $activityLogsPerPet = [];
+
+        /** @var int[] $usersAlerted */
         $usersAlerted = [];
+
         $groupSize = count($group->getMembers());
         $contributedSkill = $group->getSkillRollTotal() / $groupSize;
 
@@ -227,6 +230,7 @@ class GardeningClubService
     {
         $activityLogsPerPet = [];
 
+        /** @var int[] $usersAlerted */
         $usersAlerted = [];
 
         foreach($group->getMembers() as $member)
@@ -259,6 +263,7 @@ class GardeningClubService
     {
         $activityLogsPerPet = [];
 
+        /** @var int[] $usersAlerted */
         $usersAlerted = [];
 
         $weedingRewards =
@@ -355,6 +360,7 @@ class GardeningClubService
     {
         $activityLogsPerPet = [];
 
+        /** @var int[] $usersAlerted */
         $usersAlerted = [];
 
         foreach($group->getMembers() as $member)
