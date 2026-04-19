@@ -509,7 +509,7 @@ class PetGroupService
             PetGroupTypeEnum::Gaming => $this->gamingGroupService->generateGroupName(),
             PetGroupTypeEnum::Sportsball => $this->sportsBallService->generateGroupName(),
             PetGroupTypeEnum::Gardening => $this->gardeningClubService->generateGroupName(),
-            default => throw new \Exception('Ben forgot to program group names for groups of type "' . $type->name . '"! (Bad Ben!)'),
+            //default => throw new \Exception('Ben forgot to program group names for groups of type "' . $type->name . '"! (Bad Ben!)'),
         };
     }
 }

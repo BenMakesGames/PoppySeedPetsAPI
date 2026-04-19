@@ -261,7 +261,7 @@ class GardeningClubService
 
         foreach($group->getMembers() as $member)
         {
-            $roll = $member->rollWeedingSkill();
+            $roll = $member->rollWeedingSkill($member);
 
             if($member->hasMerit(MeritEnum::LUCKY) && $this->rng->rngNextInt(1, 20) == 1)
             {
