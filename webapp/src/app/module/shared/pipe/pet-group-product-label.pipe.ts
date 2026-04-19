@@ -21,7 +21,7 @@ export class PetGroupProductLabelPipe implements PipeTransform {
     'Survey',
     '',
     '',
-    'Produce'
+    'Harvest'
   ];
 
   transform(value: number): any {
