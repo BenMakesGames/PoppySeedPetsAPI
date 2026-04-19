@@ -32,6 +32,7 @@ use App\Service\PetRelationshipService;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Enum\PetActivityLogTagEnum;
 use App\Functions\ArrayFunctions;
+use App\Service\WeatherService;
 
 class GardeningClubService
 {
@@ -92,15 +93,15 @@ class GardeningClubService
         $petChanges = [];
 
         $activities = [
-            $this->doWatering(...),
-            $this->doWatering(...),
-            $this->doWatering(...),
-
             $this->doWeeding(...),
             $this->doWeeding(...),
 
             $this->doComposting(...),
         ];
+
+        // 1/2 chance to do watering, but only if it's not raining
+        if (!WeatherService::getWeather(new \DateTimeImmutable())->isRaining())
+            $activities = array_merge($activities, [ $this->doWatering(...), $this->doWatering(...), $this->doWatering(...),]);
 
         foreach($group->getMembers() as $pet)
         {
