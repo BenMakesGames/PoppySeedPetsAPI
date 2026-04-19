@@ -261,7 +261,7 @@ class GardeningClubService
 
         foreach($group->getMembers() as $member)
         {
-            $roll = $member->rollWeedingSkill($member);
+            $roll = $this->rollWeedingSkill($member);
 
             if($member->hasMerit(MeritEnum::LUCKY) && $this->rng->rngNextInt(1, 20) == 1)
             {
@@ -362,6 +362,10 @@ class GardeningClubService
 
                 $this->inventoryService->petCollectsItem($fertilizer, $member, ActivityHelpers::PetName($member) . ' made extra while making compost for ' . $group->GetName() . '!', $activityLog);
             }
+
+            $activityLogsPerPet[$member->getId()] = $activityLog;
         }
+
+        return $activityLogsPerPet;
     }
 }

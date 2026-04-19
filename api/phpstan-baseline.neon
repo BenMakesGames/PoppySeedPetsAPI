@@ -5683,12 +5683,6 @@ parameters:
 			path: src/Service/PetFactory.php
 
 		-
-			message: '#^Binary operation "\." between ''Ben forgot to…'' and mixed results in an error\.$#'
-			identifier: binaryOp.invalid
-			count: 1
-			path: src/Service/PetGroupService.php
-
-		-
 			message: '#^Binary operation "\." between ''Unhandled group…'' and mixed results in an error\.$#'
 			identifier: binaryOp.invalid
 			count: 1
