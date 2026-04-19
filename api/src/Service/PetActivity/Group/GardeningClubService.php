@@ -101,7 +101,7 @@ class GardeningClubService
 
         // 1/2 chance to do watering, but only if it's not raining
         if (!WeatherService::getWeather(new \DateTimeImmutable())->isRaining())
-            $activities = array_merge($activities, [ $this->doWatering(...), $this->doWatering(...), $this->doWatering(...),]);
+            $activities = array_merge($activities, [$this->doWatering(...), $this->doWatering(...), $this->doWatering(...)]);
 
         foreach($group->getMembers() as $pet)
         {
