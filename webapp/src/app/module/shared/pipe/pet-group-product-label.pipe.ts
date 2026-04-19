@@ -20,7 +20,8 @@ export class PetGroupProductLabelPipe implements PipeTransform {
     'Album',
     'Survey',
     '',
-    ''
+    '',
+    'Produce'
   ];
 
   transform(value: number): any {
