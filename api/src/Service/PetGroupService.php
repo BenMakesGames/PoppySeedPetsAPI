@@ -518,7 +518,7 @@ class PetGroupService
     // Is included in usersAlerted
     // For groups so users don't get 'copies' of messages
     /** @param int[] $usersAlerted */
-    public function createGroupLog(Pet $pet, string $message, array &$usersAlerted) : PetActivityLog
+    public function createGroupLog(Pet $pet, string $message, array &$usersAlerted = []) : PetActivityLog
     {
         $alreadyMessagedThisPlayer = in_array($pet->getOwner()->getId(), $usersAlerted);
 
