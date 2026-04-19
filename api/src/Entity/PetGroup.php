@@ -177,6 +177,7 @@ class PetGroup
             PetGroupTypeEnum::Astronomy => 2,
             PetGroupTypeEnum::Gaming => 3,
             PetGroupTypeEnum::Sportsball => 4,
+            PetGroupTypeEnum::Gardening => 2,
             default => throw new \Exception('Unhandled group type in group::getMinimumSize'),
         };
     }
@@ -189,6 +190,7 @@ class PetGroup
             PetGroupTypeEnum::Astronomy => 6,
             PetGroupTypeEnum::Gaming => 5,
             PetGroupTypeEnum::Sportsball => 8,
+            PetGroupTypeEnum::Gardening => 6,
             default => throw new \Exception('Unhandled group type in group::getMaximumSize'),
         };
     }
@@ -226,6 +228,7 @@ class PetGroup
     #[Groups(["petGroup", "petGroupDetails"])]
     public function getMakesStuff(): bool
     {
-        return $this->type === PetGroupTypeEnum::Band || $this->type === PetGroupTypeEnum::Astronomy;
+        return $this->type === PetGroupTypeEnum::Band || $this->type === PetGroupTypeEnum::Astronomy 
+            || $this->type === PetGroupTypeEnum::Gardening;
     }
 }
