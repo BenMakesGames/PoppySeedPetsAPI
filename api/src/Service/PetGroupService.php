@@ -518,7 +518,7 @@ class PetGroupService
     /** 
      * Creates a read or unread log, depending on if the pet passed in has an owner who is included in usersAlerted
      * For groups so users don't get 'copies' of messages
-     * @param int[] $usersAlerted 
+     * @param int[]|null[] $usersAlerted 
     */
     public function createGroupLog(Pet $pet, string $message, array &$usersAlerted) : PetActivityLog
     {
