@@ -5371,12 +5371,6 @@ parameters:
 			path: src/Service/PetExperienceService.php
 
 		-
-			message: '#^Cannot call method spendActivityTime\(\) on App\\Entity\\PetHouseTime\|null\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: src/Service/PetExperienceService.php
-
-		-
 			message: '#^Binary operation "\." between ''Unhandled group…'' and mixed results in an error\.$#'
 			identifier: binaryOp.invalid
 			count: 1
