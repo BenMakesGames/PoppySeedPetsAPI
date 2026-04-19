@@ -34,11 +34,11 @@ final class StatusEffectHelpers
         if($status == StatusEffectEnum::Wereform && ($hasSilverblood || $hasVampireBite))
             return true;
 
-        $statusIsABite = ArrayFunctions::any(self::Bites, fn($bite) => $bite == $status);
+        $statusIsABite = array_any(self::Bites, fn($bite) => $bite == $status);
 
         if($statusIsABite)
         {
-            $alreadyHasABite = ArrayFunctions::any(self::Bites, fn($bite) => $pet->hasStatusEffect($bite));
+            $alreadyHasABite = array_any(self::Bites, fn($bite) => $pet->hasStatusEffect($bite));
             $immuneToBites = $alreadyHasABite || $hasSilverblood;
 
             if($immuneToBites)
@@ -59,7 +59,7 @@ final class StatusEffectHelpers
 
         if(!$statusEffect)
         {
-            $statusEffect = (new StatusEffect())
+            $statusEffect = new StatusEffect()
                 ->setStatus($status);
 
             $pet->addStatusEffect($statusEffect);
@@ -72,6 +72,7 @@ final class StatusEffectHelpers
             ->setTimeRemaining(min($statusEffect->getTotalDuration(), $statusEffect->getTimeRemaining() + $durationInMinutes))
         ;
 
+        /** @var StatusEffect[] $statusEffectsToRemove */
         $statusEffectsToRemove = [];
 
         if($status === StatusEffectEnum::Wereform)

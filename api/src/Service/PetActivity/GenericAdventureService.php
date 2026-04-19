@@ -108,7 +108,7 @@ class GenericAdventureService
         $rescuedAFairy = UserQuestRepository::findOrCreate($this->em, $pet->getOwner(), 'Rescued a House Fairy from a Raccoon', null);
         if(!$rescuedAFairy->getValue())
         {
-            $rescuedAFairy->setValue((new \DateTimeImmutable())->format('Y-m-d H:i:s'));
+            $rescuedAFairy->setValue(new \DateTimeImmutable()->format('Y-m-d H:i:s'));
 
             $changes = new PetChanges($pet);
 
@@ -327,7 +327,7 @@ class GenericAdventureService
 
     private function maybeHaveBirthdayCelebrated(Pet $pet): ?PetActivityLog
     {
-        if($pet->getBirthDate() >= (new \DateTimeImmutable())->modify('-372 days'))
+        if($pet->getBirthDate() >= new \DateTimeImmutable()->modify('-372 days'))
             return null;
 
         $partyEnchantment = EnchantmentRepository::findOneByName($this->em, 'Party');

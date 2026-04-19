@@ -85,7 +85,7 @@ class ContributeController
 
         if($contribution === null)
         {
-            $contribution = (new MonsterOfTheWeekContribution())
+            $contribution = new MonsterOfTheWeekContribution()
                 ->setMonsterOfTheWeek($monster)
                 ->setUser($user);
 

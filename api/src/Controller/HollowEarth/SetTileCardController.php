@@ -76,7 +76,7 @@ class SetTileCardController
         if(!$card)
             throw new PSPFormValidationException('That item isn\'t a Hollow Earth Tile! (Weird! Reload and try again...)');
 
-        $canUseTile = ArrayFunctions::any($tile->getTypes(), fn(HollowEarthTileType $tt) => $tt->getId() === $card->getType()->getId());
+        $canUseTile = $tile->getTypes()->exists(fn($key, HollowEarthTileType $tt) => $tt->getId() === $card->getType()->getId());
 
         if(!$canUseTile)
             throw new PSPFormValidationException('You can\'t use that Tile on this space! (The types don\'t match!)');

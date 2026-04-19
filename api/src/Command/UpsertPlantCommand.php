@@ -58,7 +58,7 @@ class UpsertPlantCommand extends PoppySeedPetsCommand
         {
             $this->output->writeln('Creating "' . $name . '"');
 
-            $plant = (new Plant())
+            $plant = new Plant()
                 ->setName($name)
                 ->setNoPollinators(false)
             ;
@@ -281,10 +281,7 @@ class UpsertPlantCommand extends PoppySeedPetsCommand
 
     private function addYield(Plant $plant): void
     {
-        $newYield = (new PlantYield())
-            ->setMin(1)
-            ->setMax(1)
-        ;
+        $newYield = new PlantYield(1, 1);
 
         $this->editYieldQuantities($newYield);
 

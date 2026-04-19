@@ -1,24 +1,55 @@
 header:
-  license:
-    spdx-id: GPL-3.0-or-later
-    copyright-owner: Ben Hendel-Doying and contributors
-    copyright-year: '2019-2025'
-    software-name: Poppy Seed Pets API
-    content: |
-      This file is part of the Poppy Seed Pets API.
+  - license:
+      spdx-id: GPL-3.0-or-later
+      copyright-owner: Ben Hendel-Doying and contributors
+      copyright-year: '2019-2025'
+      software-name: Poppy Seed Pets API
+      content: |
+        This file is part of the Poppy Seed Pets API.
 
-      The Poppy Seed Pets API is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+        The Poppy Seed Pets API is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 
-      The Poppy Seed Pets API is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+        The Poppy Seed Pets API is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 
-      You should have received a copy of the GNU General Public License along with The Poppy Seed Pets API. If not, see <https://www.gnu.org/licenses/>.
+        You should have received a copy of the GNU General Public License along with The Poppy Seed Pets API. If not, see <https://www.gnu.org/licenses/>.
 
-  paths:
-    - 'api/src/*/**/*.php'
-    - 'api/tests/*/**/*.php'
-    - 'api/migrations/**/*.php'
+    paths:
+      - 'api/src/*/**/*.php'
+      - 'api/tests/*/**/*.php'
+      - 'api/migrations/**/*.php'
 
-  comment: on-failure
+    comment: on-failure
 
-  license-locations:
-    - api/COPYING
+    license-locations:
+      - api/COPYING
+
+  - license:
+      spdx-id: GPL-3.0-or-later
+      copyright-owner: Ben Hendel-Doying and contributors
+      copyright-year: '2019-2025'
+      software-name: Poppy Seed Pets Webapp
+      content: |
+        This file is part of the Poppy Seed Pets Webapp.
+
+        The Poppy Seed Pets Webapp is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+
+        The Poppy Seed Pets Webapp is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+        You should have received a copy of the GNU General Public License along with The Poppy Seed Pets Webapp. If not, see <https://www.gnu.org/licenses/>.
+
+    paths:
+      - 'webapp/src/**/*.ts'
+      - 'webapp/src/**/*.html'
+      - 'webapp/src/**/*.scss'
+
+    paths-ignore:
+      - 'webapp/src/environments/environment*.ts'
+      - 'webapp/src/main.ts'
+      - 'webapp/src/polyfills.ts'
+      - 'webapp/src/test.ts'
+      - 'webapp/src/*.html'
+
+    comment: on-failure
+
+    license-locations:
+      - COPYING

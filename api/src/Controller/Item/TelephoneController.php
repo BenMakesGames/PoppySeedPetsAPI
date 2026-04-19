@@ -44,8 +44,8 @@ class TelephoneController
         ItemControllerHelpers::validateInventory($user, $inventory, 'telephone/#/pizza');
         ItemControllerHelpers::validateLocationSpace($inventory, $em);
 
-        $today = (new \DateTimeImmutable())->format('Y-m-d');
-        $orderedDeliveryFood = UserQuestRepository::findOrCreate($em, $user, 'Ordered Delivery Food', (new \DateTimeImmutable())->modify('-1 day')->format('Y-m-d'));
+        $today = new \DateTimeImmutable()->format('Y-m-d');
+        $orderedDeliveryFood = UserQuestRepository::findOrCreate($em, $user, 'Ordered Delivery Food', new \DateTimeImmutable()->modify('-1 day')->format('Y-m-d'));
 
         if($today === $orderedDeliveryFood->getValue())
             return $responseService->itemActionSuccess('You can only order delivery food once per day. (More than that is just irresponsible!)');

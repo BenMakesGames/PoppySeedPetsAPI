@@ -182,7 +182,7 @@ class DreamingService
         return [
             '%item%' => $item->getName(),
             '%item_with_article%' => $item->getNameWithArticle(),
-            '%Item_with_article%' => ucfirst($item->getNameWithArticle()),
+            '%Item_with_article%' => mb_ucfirst($item->getNameWithArticle()),
             '%dreamer%' => $pet->getName(),
             '%location1%' => $locations[0],
             '%location2%' => $locations[1],

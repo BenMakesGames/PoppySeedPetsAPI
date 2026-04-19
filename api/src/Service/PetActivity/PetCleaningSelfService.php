@@ -50,7 +50,7 @@ class PetCleaningSelfService
     {
         $changes = new PetChanges($pet);
 
-        $pet->removeStatusEffect($pet->getStatusEffect($statusEffect));
+        $pet->removeStatusEffect($statusEffect);
         $weather = WeatherService::getWeather(new \DateTimeImmutable());
 
         if($pet->hasMerit(MeritEnum::GOURMAND))
@@ -112,7 +112,7 @@ class PetCleaningSelfService
     {
         $qb = $this->em->getRepository(Greenhouse::class)->createQueryBuilder('g');
 
-        $threeDaysAgo = (new \DateTimeImmutable())->modify('-3 days');
+        $threeDaysAgo = new \DateTimeImmutable()->modify('-3 days');
 
         $qb
             ->join('g.owner', 'o')

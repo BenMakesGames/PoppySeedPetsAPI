@@ -36,7 +36,7 @@ class PetBaby
     #[ORM\Column(type: 'integer')]
     private int $affection = 0;
 
-    #[ORM\ManyToOne(targetEntity: 'App\Entity\PetSpecies')]
+    #[ORM\ManyToOne(targetEntity: PetSpecies::class)]
     #[ORM\JoinColumn(nullable: false)]
     private PetSpecies $species;
 

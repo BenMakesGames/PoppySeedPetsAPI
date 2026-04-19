@@ -27,7 +27,7 @@ class Story
     #[ORM\Column(type: 'string', length: 40)]
     private string $title;
 
-    #[ORM\OneToOne(targetEntity: 'App\Entity\StorySection', cascade: ['persist', 'remove'])]
+    #[ORM\OneToOne(targetEntity: StorySection::class, cascade: ['persist', 'remove'])]
     #[ORM\JoinColumn(nullable: false)]
     private StorySection $firstSection;
 

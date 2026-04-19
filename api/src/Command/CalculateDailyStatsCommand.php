@@ -61,7 +61,7 @@ class CalculateDailyStatsCommand extends Command
         $weekNewPlayers = $this->getNewPlayerCount($week);
         $monthNewPlayers = $this->getNewPlayerCount($month);
 
-        $dailyStats = (new DailyStats())
+        $dailyStats = new DailyStats()
             ->setDate($today->modify('-1 day'))
 
             ->setNumberOfPlayers1Day($oneDayAverages['total_users'])

@@ -38,7 +38,7 @@ class ItemHistoryController
                 WHERE h.item_id=:itemId AND h.date>:earliestDate',
                 [
                     ':itemId' => $itemId,
-                    ':earliestDate' => (new \DateTimeImmutable())->sub($maxAge)->format('Y-m-d')
+                    ':earliestDate' => new \DateTimeImmutable()->sub($maxAge)->format('Y-m-d')
                 ]
             )
             ->mapResults(fn($average_price, $min_price, $max_price, $date) => [

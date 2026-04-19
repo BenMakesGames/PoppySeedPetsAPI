@@ -61,18 +61,6 @@ parameters:
 			path: src/Command/CalculateDailyStatsCommand.php
 
 		-
-			message: '#^Parameter \#1 \$array of static method App\\Functions\\ArrayFunctions\:\:find_one\(\) expects iterable\<App\\Entity\\HollowEarthTileType\>, mixed given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Command/CreateHollowEarthTileCommand.php
-
-		-
-			message: '#^Parameter \#1 \$callback of function array_map expects \(callable\(mixed\)\: mixed\)\|null, Closure\(App\\Entity\\HollowEarthTileType\)\: string given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Command/CreateHollowEarthTileCommand.php
-
-		-
 			message: '#^Parameter \#1 \$string of function mb_trim expects string, mixed given\.$#'
 			identifier: argument.type
 			count: 1
@@ -80,18 +68,6 @@ parameters:
 
 		-
 			message: '#^Parameter \#1 \$string of function mb_trim expects string, string\|null given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Command/CreateHollowEarthTileCommand.php
-
-		-
-			message: '#^Parameter \#1 \$type of method App\\Entity\\HollowEarthTileCard\:\:setType\(\) expects App\\Entity\\HollowEarthTileType, App\\Entity\\HollowEarthTileType\|null given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Command/CreateHollowEarthTileCommand.php
-
-		-
-			message: '#^Parameter \#2 \$array of function array_map expects array, mixed given\.$#'
 			identifier: argument.type
 			count: 1
 			path: src/Command/CreateHollowEarthTileCommand.php
@@ -793,12 +769,6 @@ parameters:
 			path: src/Command/UpsertPlantCommand.php
 
 		-
-			message: '#^Parameter \#2 \$defaultValue of method App\\Command\\PoppySeedPetsCommand\:\:askInt\(\) expects int, int\|null given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Command/UpsertPlantCommand.php
-
-		-
 			message: '#^Method App\\Command\\UpsertRecipeCommand\:\:askItem\(\) should return App\\Entity\\Item but returns mixed\.$#'
 			identifier: return.type
 			count: 1
@@ -1069,55 +1039,7 @@ parameters:
 			path: src/Controller/Article/UpdateController.php
 
 		-
-			message: '#^Argument of an invalid type mixed supplied for foreach, only iterables are supported\.$#'
-			identifier: foreach.nonIterable
-			count: 1
-			path: src/Controller/CookingBuddy/GetKnownRecipes.php
-
-		-
-			message: '#^Binary operation "\." between ''Recipe not found\: '' and mixed results in an error\.$#'
-			identifier: binaryOp.invalid
-			count: 1
-			path: src/Controller/CookingBuddy/GetKnownRecipes.php
-
-		-
-			message: '#^Cannot call method getId\(\) on mixed\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: src/Controller/CookingBuddy/GetKnownRecipes.php
-
-		-
-			message: '#^Cannot call method getRecipe\(\) on mixed\.$#'
-			identifier: method.nonObject
-			count: 3
-			path: src/Controller/CookingBuddy/GetKnownRecipes.php
-
-		-
-			message: '#^Parameter \#1 \$callback of function array_map expects \(callable\(mixed\)\: mixed\)\|null, Closure\(App\\Entity\\KnownRecipes\)\: string given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Controller/CookingBuddy/GetKnownRecipes.php
-
-		-
-			message: '#^Parameter \#1 \$key of function array_key_exists expects int\|string, mixed given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Controller/CookingBuddy/GetKnownRecipes.php
-
-		-
 			message: '#^Parameter \#1 \$string of static method App\\Functions\\StringFunctions\:\:escapeMySqlWildcardCharacters\(\) expects string, mixed given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Controller/CookingBuddy/GetKnownRecipes.php
-
-		-
-			message: '#^Parameter \#1 \$value of function count expects array\|Countable, mixed given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Controller/CookingBuddy/GetKnownRecipes.php
-
-		-
-			message: '#^Parameter \#2 \$array of function array_map expects array, mixed given\.$#'
 			identifier: argument.type
 			count: 1
 			path: src/Controller/CookingBuddy/GetKnownRecipes.php
@@ -1251,18 +1173,6 @@ parameters:
 		-
 			message: '#^Cannot call method setButterfliesDismissedOn\(\) on App\\Entity\\Greenhouse\|null\.$#'
 			identifier: method.nonObject
-			count: 1
-			path: src/Controller/Greenhouse/HarvestPlantController.php
-
-		-
-			message: '#^Parameter \#1 \$min of method App\\Service\\IRandom\:\:rngNextInt\(\) expects int, int\|null given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Controller/Greenhouse/HarvestPlantController.php
-
-		-
-			message: '#^Parameter \#2 \$inclusiveMax of method App\\Service\\IRandom\:\:rngNextInt\(\) expects int, int\|null given\.$#'
-			identifier: argument.type
 			count: 1
 			path: src/Controller/Greenhouse/HarvestPlantController.php
 
@@ -1657,12 +1567,6 @@ parameters:
 			path: src/Controller/Item/DragonTongueController.php
 
 		-
-			message: '#^Cannot call method setSocialEnergy\(\) on App\\Entity\\PetHouseTime\|null\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: src/Controller/Item/EggController.php
-
-		-
 			message: '#^Cannot call method getName\(\) on App\\Entity\\Aura\|null\.$#'
 			identifier: method.nonObject
 			count: 1
@@ -1709,18 +1613,6 @@ parameters:
 			identifier: argument.type
 			count: 1
 			path: src/Controller/Item/Note/CreepyMaskDayController.php
-
-		-
-			message: '#^Cannot call method setSocialEnergy\(\) on App\\Entity\\PetHouseTime\|null\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: src/Controller/Item/PetAlteration/ForgettingScrollController.php
-
-		-
-			message: '#^Parameter \#1 \$statusEffect of method App\\Entity\\Pet\:\:removeStatusEffect\(\) expects App\\Entity\\StatusEffect, App\\Entity\\StatusEffect\|null given\.$#'
-			identifier: argument.type
-			count: 3
-			path: src/Controller/Item/PetAlteration/WerebaneController.php
 
 		-
 			message: '#^Parameter \#2 \$userId of static method App\\Service\\InventoryService\:\:countInventory\(\) expects int, int\|null given\.$#'
@@ -2881,12 +2773,6 @@ parameters:
 			path: src/Entity/Pet.php
 
 		-
-			message: '#^Cannot call method getTimeSpent\(\) on App\\Entity\\PetHouseTime\|null\.$#'
-			identifier: method.nonObject
-			count: 2
-			path: src/Entity/Pet.php
-
-		-
 			message: '#^Method App\\Entity\\Pet\:\:assignActivityPersonality\(\) has no return type specified\.$#'
 			identifier: missingType.return
 			count: 1
@@ -3409,12 +3295,6 @@ parameters:
 			path: src/Functions/InventoryHelpers.php
 
 		-
-			message: '#^Method App\\Functions\\ItemRepository\:\:findOneById\(\) should return App\\Entity\\Item but returns mixed\.$#'
-			identifier: return.type
-			count: 1
-			path: src/Functions/ItemRepository.php
-
-		-
 			message: '#^Method App\\Functions\\ItemRepository\:\:getIdByName\(\) should return int but returns float\|int\<min, \-1\>\|int\<1, max\>\|string\|true\.$#'
 			identifier: return.type
 			count: 1
@@ -3565,6 +3445,18 @@ parameters:
 			path: src/Model/HouseSim.php
 
 		-
+			message: '#^Cannot call method getId\(\) on App\\Entity\\Inventory\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Model/HouseSim.php
+
+		-
+			message: '#^Cannot call method getItem\(\) on App\\Entity\\Inventory\|null\.$#'
+			identifier: method.nonObject
+			count: 2
+			path: src/Model/HouseSim.php
+
+		-
 			message: '#^Cannot use \+\+ on mixed\.$#'
 			identifier: postInc.type
 			count: 2
@@ -3580,6 +3472,12 @@ parameters:
 			message: '#^Parameter \#1 \$key of function array_key_exists expects int\|string, int\|null given\.$#'
 			identifier: argument.type
 			count: 5
+			path: src/Model/HouseSim.php
+
+		-
+			message: '#^Property App\\Model\\HouseSim\:\:\$inventoryToRemoveFromDatabase \(array\<App\\Entity\\Inventory\>\) does not accept array\<App\\Entity\\Inventory\|null\>\.$#'
+			identifier: assign.propertyType
+			count: 1
 			path: src/Model/HouseSim.php
 
 		-
@@ -4759,24 +4657,6 @@ parameters:
 			path: src/Service/HollowEarthService.php
 
 		-
-			message: '#^Cannot call method getActivityTime\(\) on App\\Entity\\PetHouseTime\|null\.$#'
-			identifier: method.nonObject
-			count: 3
-			path: src/Service/HouseService.php
-
-		-
-			message: '#^Cannot call method getCanAttemptSocialHangoutAfter\(\) on App\\Entity\\PetHouseTime\|null\.$#'
-			identifier: method.nonObject
-			count: 2
-			path: src/Service/HouseService.php
-
-		-
-			message: '#^Cannot call method getSocialEnergy\(\) on App\\Entity\\PetHouseTime\|null\.$#'
-			identifier: method.nonObject
-			count: 3
-			path: src/Service/HouseService.php
-
-		-
 			message: '#^Cannot cast mixed to int\.$#'
 			identifier: cast.int
 			count: 1
@@ -4915,12 +4795,6 @@ parameters:
 			path: src/Service/MarketService.php
 
 		-
-			message: '#^Property App\\Service\\MuseumService\:\:\$donatedItemsThisRequest type has no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Service/MuseumService.php
-
-		-
 			message: '#^Binary operation "\." between non\-falsy\-string and mixed results in an error\.$#'
 			identifier: binaryOp.invalid
 			count: 1
@@ -4929,54 +4803,6 @@ parameters:
 		-
 			message: '#^Cannot use \+\+ on mixed\.$#'
 			identifier: postInc.type
-			count: 2
-			path: src/Service/ParkEvent/KinBallService.php
-
-		-
-			message: '#^Method App\\Service\\ParkEvent\\KinBallService\:\:getHighestNonAttackingScore\(\) should return int but returns mixed\.$#'
-			identifier: return.type
-			count: 1
-			path: src/Service/ParkEvent/KinBallService.php
-
-		-
-			message: '#^Method App\\Service\\ParkEvent\\KinBallService\:\:getLowestScore\(\) should return int but returns mixed\.$#'
-			identifier: return.type
-			count: 1
-			path: src/Service/ParkEvent/KinBallService.php
-
-		-
-			message: '#^Parameter \#2 \$callback of function array_filter expects \(callable\(mixed\)\: bool\)\|null, Closure\(int\)\: bool given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Service/ParkEvent/KinBallService.php
-
-		-
-			message: '#^Parameter \#2 \$delegate of static method App\\Functions\\ArrayFunctions\:\:any\(\) expects callable\(mixed\)\: bool, Closure\(int\)\: bool given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Service/ParkEvent/KinBallService.php
-
-		-
-			message: '#^Possibly invalid array key type mixed\.$#'
-			identifier: offsetAccess.invalidOffset
-			count: 3
-			path: src/Service/ParkEvent/KinBallService.php
-
-		-
-			message: '#^Property App\\Service\\ParkEvent\\KinBallService\:\:\$activeTeams type has no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Service/ParkEvent/KinBallService.php
-
-		-
-			message: '#^Property App\\Service\\ParkEvent\\KinBallService\:\:\$designatedTeam \(int\) does not accept mixed\.$#'
-			identifier: assign.propertyType
-			count: 1
-			path: src/Service/ParkEvent/KinBallService.php
-
-		-
-			message: '#^Property App\\Service\\ParkEvent\\KinBallService\:\:\$teamPoints type has no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
 			count: 1
 			path: src/Service/ParkEvent/KinBallService.php
 
@@ -5023,43 +4849,7 @@ parameters:
 			path: src/Service/ParkService.php
 
 		-
-			message: '#^Cannot call method setChanges\(\) on mixed\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: src/Service/ParkService.php
-
-		-
-			message: '#^Cannot call method setLocation\(\) on mixed\.$#'
-			identifier: method.nonObject
-			count: 2
-			path: src/Service/ParkService.php
-
-		-
-			message: '#^Cannot call method setLockedToOwner\(\) on App\\Entity\\Inventory\|null\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: src/Service/ParkService.php
-
-		-
-			message: '#^Method App\\Service\\ParkService\:\:petCollectsRandomBalloon\(\) return type has no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Service/ParkService.php
-
-		-
-			message: '#^Parameter \#1 \$hat of method App\\Entity\\Pet\:\:setHat\(\) expects App\\Entity\\Inventory\|null, mixed given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Service/ParkService.php
-
-		-
 			message: '#^Parameter \#1 \$key of function array_key_exists expects int\|string, int\|null given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Service/ParkService.php
-
-		-
-			message: '#^Parameter \#1 \$tool of method App\\Entity\\Pet\:\:setTool\(\) expects App\\Entity\\Inventory\|null, mixed given\.$#'
 			identifier: argument.type
 			count: 1
 			path: src/Service/ParkService.php
@@ -5077,20 +4867,8 @@ parameters:
 			path: src/Service/PetActivity/Crafting/MagicBindingService.php
 
 		-
-			message: '#^Method App\\Service\\PetActivity\\Crafting\\MagicBindingService\:\:bindCeremonialTrident\(\) has parameter \$otherMaterials with no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Service/PetActivity/Crafting/MagicBindingService.php
-
-		-
 			message: '#^Method App\\Service\\PetActivity\\Crafting\\MagicBindingService\:\:doMagicMirrorMaze\(\) return type has no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
-			count: 1
-			path: src/Service/PetActivity/Crafting/MagicBindingService.php
-
-		-
-			message: '#^Parameter \#1 \$item of method App\\Model\\IHouseSim\:\:loseItem\(\) expects App\\Entity\\Item\|string, mixed given\.$#'
-			identifier: argument.type
 			count: 1
 			path: src/Service/PetActivity/Crafting/MagicBindingService.php
 
@@ -5137,12 +4915,6 @@ parameters:
 			path: src/Service/PetActivity/Daydreams/PizzaDaydream.php
 
 		-
-			message: '#^Parameter \#1 \$statusEffect of method App\\Entity\\Pet\:\:removeStatusEffect\(\) expects App\\Entity\\StatusEffect, App\\Entity\\StatusEffect\|null given\.$#'
-			identifier: argument.type
-			count: 5
-			path: src/Service/PetActivity/DreamingAndDaydreamingService.php
-
-		-
 			message: '#^Method App\\Service\\PetActivity\\DreamingService\:\:applyMadlib\(\) has parameter \$replacements with no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 1
@@ -5174,12 +4946,6 @@ parameters:
 
 		-
 			message: '#^Parameter \#1 \$statName of method App\\Entity\\PetSkills\:\:getStat\(\) expects string, mixed given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Service/PetActivity/EatingService.php
-
-		-
-			message: '#^Parameter \#1 \$statusEffect of method App\\Entity\\Pet\:\:removeStatusEffect\(\) expects App\\Entity\\StatusEffect, App\\Entity\\StatusEffect\|null given\.$#'
 			identifier: argument.type
 			count: 1
 			path: src/Service/PetActivity/EatingService.php
@@ -5299,12 +5065,6 @@ parameters:
 			path: src/Service/PetActivity/GuildService.php
 
 		-
-			message: '#^Parameter \#1 \$statusEffect of method App\\Entity\\Pet\:\:removeStatusEffect\(\) expects App\\Entity\\StatusEffect, App\\Entity\\StatusEffect\|null given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Service/PetActivity/GuildService.php
-
-		-
 			message: '#^Parameter \#2 \$guild of class App\\Entity\\GuildMembership constructor expects App\\Entity\\Guild, App\\Entity\\Guild\|null given\.$#'
 			identifier: argument.type
 			count: 1
@@ -5351,12 +5111,6 @@ parameters:
 			identifier: return.type
 			count: 1
 			path: src/Service/PetActivity/LetterService.php
-
-		-
-			message: '#^Parameter \#1 \$statusEffect of method App\\Entity\\Pet\:\:removeStatusEffect\(\) expects App\\Entity\\StatusEffect, App\\Entity\\StatusEffect\|null given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Service/PetActivity/PetCleaningSelfService.php
 
 		-
 			message: '#^Cannot call method changeItem\(\) on App\\Entity\\Inventory\|null\.$#'
@@ -5435,12 +5189,6 @@ parameters:
 			identifier: offsetAccess.notFound
 			count: 2
 			path: src/Service/PetActivity/Relationship/RelationshipChangeService.php
-
-		-
-			message: '#^Cannot call method setSocialEnergy\(\) on App\\Entity\\PetHouseTime\|null\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: src/Service/PetActivity/SagaSagaService.php
 
 		-
 			message: '#^Cannot call method getEnchantment\(\) on App\\Entity\\Inventory\|null\.$#'
@@ -5563,21 +5311,9 @@ parameters:
 			path: src/Service/PetActivity/TreasureMapService.php
 
 		-
-			message: '#^Cannot call method changeItem\(\) on App\\Entity\\Inventory\|null\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: src/Service/PetActivity/TreasureMapService.php
-
-		-
 			message: '#^Cannot call method getItem\(\) on App\\Entity\\Inventory\|null\.$#'
 			identifier: method.nonObject
-			count: 5
-			path: src/Service/PetActivity/TreasureMapService.php
-
-		-
-			message: '#^Cannot call method setLockedToOwner\(\) on App\\Entity\\Inventory\|null\.$#'
-			identifier: method.nonObject
-			count: 1
+			count: 4
 			path: src/Service/PetActivity/TreasureMapService.php
 
 		-
@@ -5629,12 +5365,6 @@ parameters:
 			path: src/Service/PetActivity/UserBirthdayService.php
 
 		-
-			message: '#^Parameter \#1 \$statusEffect of method App\\Entity\\Pet\:\:removeStatusEffect\(\) expects App\\Entity\\StatusEffect, App\\Entity\\StatusEffect\|null given\.$#'
-			identifier: argument.type
-			count: 3
-			path: src/Service/PetActivityService.php
-
-		-
 			message: '#^Cannot call method setLockedToOwner\(\) on App\\Entity\\Inventory\|null\.$#'
 			identifier: method.nonObject
 			count: 1
@@ -5681,6 +5411,10 @@ parameters:
 			identifier: argument.type
 			count: 2
 			path: src/Service/PetFactory.php
+			message: '#^Binary operation "\." between ''Ben forgot to…'' and mixed results in an error\.$#'
+			identifier: binaryOp.invalid
+			count: 1
+			path: src/Service/PetGroupService.php
 
 		-
 			message: '#^Binary operation "\." between ''Unhandled group…'' and mixed results in an error\.$#'
@@ -5704,24 +5438,6 @@ parameters:
 			message: '#^Cannot call method getLastHangOut\(\) on App\\Entity\\SpiritCompanion\|null\.$#'
 			identifier: method.nonObject
 			count: 2
-			path: src/Service/PetSocialActivityService.php
-
-		-
-			message: '#^Cannot call method getSocialEnergy\(\) on App\\Entity\\PetHouseTime\|null\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: src/Service/PetSocialActivityService.php
-
-		-
-			message: '#^Cannot call method setCanAttemptSocialHangoutAfter\(\) on App\\Entity\\PetHouseTime\|null\.$#'
-			identifier: method.nonObject
-			count: 2
-			path: src/Service/PetSocialActivityService.php
-
-		-
-			message: '#^Cannot call method setSocialEnergy\(\) on App\\Entity\\PetHouseTime\|null\.$#'
-			identifier: method.nonObject
-			count: 1
 			path: src/Service/PetSocialActivityService.php
 
 		-
@@ -5923,7 +5639,7 @@ parameters:
 			path: src/Service/StoryService.php
 
 		-
-			message: '#^Parameter \#1 \$array of static method App\\Functions\\ArrayFunctions\:\:any\(\) expects iterable, mixed given\.$#'
+			message: '#^Parameter \#1 \$array of function array_any expects array, mixed given\.$#'
 			identifier: argument.type
 			count: 1
 			path: src/Service/StoryService.php
@@ -6147,30 +5863,6 @@ parameters:
 		-
 			message: '#^Cannot call method getId\(\) on mixed\.$#'
 			identifier: method.nonObject
-			count: 1
-			path: src/Service/Typeahead/TypeaheadService.php
-
-		-
-			message: '#^Method App\\Service\\Typeahead\\TypeaheadService\:\:search\(\) should return array\<T\> but returns mixed\.$#'
-			identifier: return.type
-			count: 1
-			path: src/Service/Typeahead/TypeaheadService.php
-
-		-
-			message: '#^Parameter \#1 \$value of function count expects array\|Countable, mixed given\.$#'
-			identifier: argument.type
-			count: 3
-			path: src/Service/Typeahead/TypeaheadService.php
-
-		-
-			message: '#^Parameter \#1 \.\.\.\$arrays of function array_merge expects array, mixed given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Service/Typeahead/TypeaheadService.php
-
-		-
-			message: '#^Parameter \#2 \$array of function array_map expects array, mixed given\.$#'
-			identifier: argument.type
 			count: 1
 			path: src/Service/Typeahead/TypeaheadService.php
 

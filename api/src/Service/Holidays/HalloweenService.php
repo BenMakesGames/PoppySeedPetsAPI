@@ -35,7 +35,7 @@ class HalloweenService
 
     public function getNextTrickOrTreater(User $user): UserQuest
     {
-        return UserQuestRepository::findOrCreate($this->em, $user, 'Next Trick-or-Treater', (new \DateTimeImmutable())->modify('-1 day')->format('Y-m-d H:i:s'));
+        return UserQuestRepository::findOrCreate($this->em, $user, 'Next Trick-or-Treater', new \DateTimeImmutable()->modify('-1 day')->format('Y-m-d H:i:s'));
     }
 
     public function getTrickOrTreater(User $user): ?Pet
@@ -55,7 +55,7 @@ class HalloweenService
 
     public function findRandomTrickOrTreater(User $user): ?Pet
     {
-        $oneDayAgo = (new \DateTimeImmutable())->modify('-24 hours');
+        $oneDayAgo = new \DateTimeImmutable()->modify('-24 hours');
 
         $numberOfPets = (int)$this->em->getRepository(Pet::class)->createQueryBuilder('p')
             ->select('COUNT(p.id)')
@@ -97,7 +97,7 @@ class HalloweenService
         ;
 
         UserQuestRepository::findOrCreate($this->em, $user, 'Next Trick-or-Treater', '')
-            ->setValue((new \DateTimeImmutable())->modify('+15 minutes')->format('Y-m-d H:i:s'))
+            ->setValue(new \DateTimeImmutable()->modify('+15 minutes')->format('Y-m-d H:i:s'))
         ;
     }
 

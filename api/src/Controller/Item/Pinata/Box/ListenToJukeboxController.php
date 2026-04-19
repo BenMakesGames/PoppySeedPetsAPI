@@ -44,8 +44,8 @@ class ListenToJukeboxController
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'box/jukebox/#/listen');
 
-        $today = (new \DateTimeImmutable())->format('Y-m-d');
-        $listenedToJukebox = UserQuestRepository::findOrCreate($em, $user, 'Listened to Jukebox', (new \DateTimeImmutable())->modify('-1 day')->format('Y-m-d'));
+        $today = new \DateTimeImmutable()->format('Y-m-d');
+        $listenedToJukebox = UserQuestRepository::findOrCreate($em, $user, 'Listened to Jukebox', new \DateTimeImmutable()->modify('-1 day')->format('Y-m-d'));
 
         if($today === $listenedToJukebox->getValue())
             return $responseService->itemActionSuccess('You already listened to the Jukebox today. (Everyone knows that Jukeboxes can only be listened to once per day! Everyone!)');

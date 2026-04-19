@@ -52,7 +52,7 @@ class Item
     private ?ItemTool $tool = null;
 
     #[Groups(["myInventory", "itemEncyclopedia"])]
-    #[ORM\OneToOne(targetEntity: 'App\Entity\ItemFood', cascade: ['persist', 'remove'])]
+    #[ORM\OneToOne(targetEntity: ItemFood::class, cascade: ['persist', 'remove'])]
     private ?ItemFood $food = null;
 
     #[ORM\Column(type: 'integer')]
@@ -85,7 +85,7 @@ class Item
     private int $recycleValue = 0;
 
     #[Groups(["myInventory", "marketItem", "itemEncyclopedia"])]
-    #[ORM\ManyToOne(targetEntity: 'App\Entity\Enchantment')]
+    #[ORM\ManyToOne(targetEntity: Enchantment::class)]
     private ?Enchantment $enchants = null;
 
     #[ORM\OneToOne(targetEntity: ItemGrammar::class, mappedBy: 'item', cascade: ['persist', 'remove'], fetch: 'EAGER')]

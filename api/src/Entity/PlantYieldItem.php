@@ -24,7 +24,7 @@ class PlantYieldItem
     /** @phpstan-ignore property.unusedType */
     private ?int $id = null;
 
-    #[ORM\ManyToOne(targetEntity: 'App\Entity\PlantYield', inversedBy: 'items')]
+    #[ORM\ManyToOne(targetEntity: PlantYield::class, inversedBy: 'items')]
     #[ORM\JoinColumn(nullable: false)]
     private PlantYield $plantYield;
 

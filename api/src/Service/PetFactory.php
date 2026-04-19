@@ -65,19 +65,19 @@ class PetFactory
 
         $this->em->persist($petSkills);
 
-        $pet = (new Pet(
+        $pet = new Pet(
             name: $name,
             species: $species,
             owner: $owner,
             skills: $petSkills,
             colorA: $colorA,
             colorB: $colorB
-        ))
+        )
             ->setFavoriteFlavor($favoriteFlavor)
             ->addMerit($startingMerit)
         ;
 
-        $petHouseTime = (new PetHouseTime($pet))
+        $petHouseTime = new PetHouseTime($pet)
             ->setSocialEnergy((int)ceil(PetExperienceService::SocialEnergyPerHangOut * (4 + $pet->getExtroverted()) / 4))
         ;
 
@@ -101,6 +101,7 @@ class PetFactory
             ->getSingleScalarResult()
         ;
 
+        /** @var Pet $basePet */
         $basePet = $this->em->getRepository(Pet::class)->createQueryBuilder('p')
             ->andWhere('p.birthDate<:today')
             ->setParameter('today', $now)

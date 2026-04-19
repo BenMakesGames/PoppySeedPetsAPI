@@ -33,7 +33,7 @@ class GuildMembership
     private Pet $pet;
 
     #[Groups(["petGuild", "petPublicProfile"])]
-    #[ORM\ManyToOne(targetEntity: 'App\Entity\Guild')]
+    #[ORM\ManyToOne(targetEntity: Guild::class)]
     #[ORM\JoinColumn(nullable: false)]
     private Guild $guild;
 

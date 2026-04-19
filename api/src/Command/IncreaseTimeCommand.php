@@ -66,13 +66,13 @@ class IncreaseTimeCommand extends Command
         // delete expired sessions...
         $this->em->getConnection()->executeQuery(
             'START TRANSACTION; DELETE FROM user_session WHERE session_expiration<:now; COMMIT;',
-            [ 'now' => (new \DateTimeImmutable())->format('Y-m-d H:i:s') ]
+            [ 'now' => new \DateTimeImmutable()->format('Y-m-d H:i:s') ]
         );
 
         // delete old device stats...
         $this->em->getConnection()->executeQuery(
             'START TRANSACTION; DELETE FROM device_stats WHERE time<:oneMonthAgo; COMMIT;',
-            [ 'oneMonthAgo' => (new \DateTimeImmutable())->modify('-1 month')->format('Y-m-d') ]
+            [ 'oneMonthAgo' => new \DateTimeImmutable()->modify('-1 month')->format('Y-m-d') ]
         );
 
         return self::SUCCESS;

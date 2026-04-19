@@ -63,7 +63,7 @@ class PetExperienceService
 
         if($exp < 0) return false;
 
-        if($pet->getTool() && ArrayFunctions::any($stats, fn(string $stat) => $pet->getTool()->focusesSkill($stat)))
+        if($pet->getTool() && array_any($stats, fn(string $stat) => $pet->getTool()->focusesSkill($stat)))
         {
             $exp++;
         }
@@ -101,7 +101,7 @@ class PetExperienceService
             // only remove a Focused status effect if the focused stat was leveled-up
             if($focusStatusEffect && $focusStatusEffect->skill == $statToLevel)
             {
-                $pet->removeStatusEffect($pet->getStatusEffect($focusStatusEffect->statusEffect));
+                $pet->removeStatusEffect($focusStatusEffect->statusEffect);
                 $focusStatusEffect = null;
             }
 
@@ -134,7 +134,7 @@ class PetExperienceService
         return $levelUp;
     }
 
-    public function forceIncreaseSkill(Pet $pet, string $skill, int $amount, PetActivityLog $activityLog)
+    public function forceIncreaseSkill(Pet $pet, string $skill, int $amount, PetActivityLog $activityLog): void
     {
         if(!PetSkillEnum::isAValue($skill))
             throw new EnumInvalidValueException(PetSkillEnum::class, $skill);
@@ -335,12 +335,10 @@ class PetExperienceService
 
 class FocusingStatusEffect
 {
-    function __construct(string $skill, StatusEffectEnum $statusEffect)
+    function __construct(
+        public readonly string $skill,
+        public readonly StatusEffectEnum $statusEffect
+    )
     {
-        $this->skill = $skill;
-        $this->statusEffect = $statusEffect;
     }
-
-    public string $skill;
-    public StatusEffectEnum $statusEffect;
 }

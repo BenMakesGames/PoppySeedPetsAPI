@@ -27,7 +27,7 @@ trait FakeEnum
     public static function getValues(): array
     {
         /** @phpstan-ignore-next-line */
-        return array_values((new \ReflectionClass(__CLASS__))->getConstants());
+        return array_values(new \ReflectionClass(__CLASS__)->getConstants());
     }
 
     /**
