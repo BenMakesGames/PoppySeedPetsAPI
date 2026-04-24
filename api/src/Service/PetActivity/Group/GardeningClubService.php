@@ -291,6 +291,8 @@ class GardeningClubService
 
                 $luckyMessage = '';
 
+                $extraItem = null;
+
                 if($member->hasMerit(MeritEnum::LUCKY) && $this->rng->rngNextInt(1, 50) === 1)
                 {
                     $lucky = true;

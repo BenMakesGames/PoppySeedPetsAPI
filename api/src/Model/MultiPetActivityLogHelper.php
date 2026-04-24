@@ -32,6 +32,7 @@ use Doctrine\ORM\EntityManagerInterface;
  */
 class MultiPetActivityLogHelper
 {
+    /** @var int[] $usersAlerted */
     private array $usersAlerted = [];
 
     public function __construct(
