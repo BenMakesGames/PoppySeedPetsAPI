@@ -356,14 +356,10 @@ class Music
         // Moon (And It Went Like)
         'And it went like: mm-mm... mm-mm... mm-hm-m-m-mm-mm mm-mm... mm-mm... mm-mm, mm...',
 
-        // Imogen Heap
-        'It\'s not meant to beee liiike thiiis... not what I plaaaned aaat allll... I don\'t want to feeel liiike thiiis... yea-aay-ah...',
-        'Hiiiiiide aaaaand seeeeeeeeeee--... traaaaiins aaaaand seeewing ma-chiiiiines...',
-
         // Lifelight, Andy Hunter
         'It\'s you - the star that guides when I\'m lost at night. So light up the sky - a ray of life to every eye... life to every eeeeyee!',
 
-        // Nao Sei Parar
+        // Não Sei Parar
         'Ba-da ba ba, ba ba-da... ba-da-d\'loooo. Ba-da ba ba, ba ba-da... ba-da-d\'looooooooooooooooooooooooooooooooooooooooooooooooooooooo...!-- Eu não sei quando paraaar... só quando você voltaaar... ba-da-d\'loo...',
 
         // Prelude, by TheFatRat
@@ -520,7 +516,7 @@ class Music
         'Fraka-kaka-kaka-kaka-kow! Fraka-kaka-kaka-kaka-kow! Fraka-kaka-kaka-kaka-kow! What the fox say?!',
 
         // Yeah Yeah Yeahs
-        'Off-- off with your head! Dance-- dance \'til your dead! Dead! Heads will roll! Heads will roll! Heads will roll... on the floor!',
+        'Off-- off with your head! Dance-- dance \'til you\'re dead! Dead! Heads will roll! Heads will roll! Heads will roll... on the floor!',
 
         // Foreign Language, by Flight Facilities
         'Boy, it\'s just a puzzle, and the pieces they have scattered on the floor (ooh-ooh.. nah ooh-ooh...)',
