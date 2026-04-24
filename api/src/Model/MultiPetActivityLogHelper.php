@@ -41,10 +41,8 @@ class MultiPetActivityLogHelper
         if(!$alreadyMessagedThisPlayer)
             $this->usersAlerted[] = $pet->getOwner()->getId();
 
-        $log = $alreadyMessagedThisPlayer
+        return $alreadyMessagedThisPlayer
             ? PetActivityLogFactory::createReadLog($this->em, $pet, $message)
             : PetActivityLogFactory::createUnreadLog($this->em, $pet, $message);
-
-        return $log;
     }
 }
