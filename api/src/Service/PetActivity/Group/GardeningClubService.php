@@ -34,6 +34,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use App\Enum\PetActivityLogTagEnum;
 use App\Functions\ArrayFunctions;
 use App\Service\WeatherService;
+use App\Model\MultiPetActivityLogHelper;
 
 class GardeningClubService
 {
@@ -45,7 +46,6 @@ class GardeningClubService
         private readonly InventoryService $inventoryService,
         private readonly PetRelationshipService $petRelationshipService,
         private readonly IRandom $rng,
-        private readonly PetGroupService $petGroupService,
     )
     {
     }
@@ -77,7 +77,7 @@ class GardeningClubService
         '%animals% of the? %color%/%adjectives%? %plants%',
     ];
 
-    private const TotalCropSkillDivisor = 20;
+    private const int TotalCropSkillDivisor = 20;
 
     public function generateGroupName(): string
     {
@@ -86,7 +86,6 @@ class GardeningClubService
 
     public function meet(PetGroup $group): void
     {
-        $activityLogsPerPet = [];
         $expGainPerPet = [];
 
         $greenThumbValue = 5;
@@ -102,8 +101,8 @@ class GardeningClubService
         ];
 
         // 1/2 chance to do watering, but only if it's not raining
-        if (!WeatherService::getWeather(new \DateTimeImmutable())->isRaining())
-            $activities = array_merge($activities, [$this->doWatering(...), $this->doWatering(...), $this->doWatering(...)]);
+        if(!WeatherService::getWeather(new \DateTimeImmutable())->isRaining())
+            $activities = array_merge($activities, [ $this->doWatering(...), $this->doWatering(...), $this->doWatering(...) ]);
 
         foreach($group->getMembers() as $pet)
         {
@@ -159,9 +158,6 @@ class GardeningClubService
     {
         $activityLogsPerPet = [];
 
-        /** @var int[] $usersAlerted */
-        $usersAlerted = [];
-
         $groupSize = count($group->getMembers());
         $contributedSkill = $group->getSkillRollTotal() / $groupSize;
 
@@ -197,27 +193,30 @@ class GardeningClubService
 
             for($i = 0; $i < $bunchSize; $i++)
                 $products[] = $crop;
+        }
 
-            $productsList = ArrayFunctions::list_nice($products);
+        $productsList = ArrayFunctions::list_nice($products);
 
-            foreach($group->getMembers() as $member)
-            {
-                $member->increaseEsteem($this->rng->rngNextInt(8, 12));
+        $message = $group->getName() . ' harvested ' . $productsList . '!';
 
-                $message = $group->getName() . ' harvested ' . $productsList . '!';
-
-                $activityLog = $this->petGroupService->createGroupLog($member, $message, $usersAlerted)
-                    ->setIcon(self::ActivityIcon)
-                    ->addInterestingness(PetActivityLogInterestingness::UncommonActivity)
-                    ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Group Hangout', PetActivityLogTagEnum::Gardening_Club ]))
-                ;
-
-                foreach($products as $product)
-                    $this->inventoryService->petCollectsItem($product, $member, $group->GetName() . ' grew this!', $activityLog);
+        $groupLogHelper = new MultiPetActivityLogHelper($this->em, $message);
 
 
-                $activityLogsPerPet[$member->getId()] = $activityLog;
-            }
+        foreach($group->getMembers() as $member)
+        {
+            $member->increaseEsteem($this->rng->rngNextInt(8, 12));
+
+            $activityLog = $groupLogHelper->createGroupLog($member)
+                ->setIcon(self::ActivityIcon)
+                ->addInterestingness(PetActivityLogInterestingness::UncommonActivity)
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ PetActivityLogTagEnum::Group_Hangout, PetActivityLogTagEnum::Gardening_Club ]))
+            ;
+
+            foreach($products as $product)
+                $this->inventoryService->petCollectsItem($product, $member, $group->GetName() . ' grew this!', $activityLog);
+
+
+            $activityLogsPerPet[$member->getId()] = $activityLog;
         }
 
         return $activityLogsPerPet;
@@ -229,9 +228,6 @@ class GardeningClubService
     public function doWatering(PetGroup $group): array
     {
         $activityLogsPerPet = [];
-
-        /** @var int[] $usersAlerted */
-        $usersAlerted = [];
 
         foreach($group->getMembers() as $member)
         {
@@ -245,10 +241,10 @@ class GardeningClubService
 
             $message = ActivityHelpers::PetName($member) . ' watered plants with ' . $group->getName() . '. ' . $extra;
 
-            $activityLog = $this->petGroupService->createGroupLog($member, $message, $usersAlerted)
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $member, $message)
                 ->setIcon(self::ActivityIcon)
                 ->addInterestingness(PetActivityLogInterestingness::HoHum)
-                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Group Hangout', PetActivityLogTagEnum::Gardening_Club ]))
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ PetActivityLogTagEnum::Group_Hangout, PetActivityLogTagEnum::Gardening_Club ]))
             ;
 
 
@@ -265,62 +261,73 @@ class GardeningClubService
     {
         $activityLogsPerPet = [];
 
-        /** @var int[] $usersAlerted */
-        $usersAlerted = [];
-
         $weedingRewards =
             [
                 'Crooked Stick',
-                'Really Big Leaf',
                 'Rock',
                 'Line of Ants',
                 'Spider',
-                'Fluff'
+                'Fluff',
+                'Plastic',
+            ];
+
+        $luckyRewards =
+            [
+                'Hot Dog',
+                'Really Big Leaf',
+                'Gold Ore',
             ];
 
         foreach($group->getMembers() as $member)
         {
             $roll = $this->rollWeedingSkill($member);
 
-            if($member->hasMerit(MeritEnum::LUCKY) && $this->rng->rngNextInt(1, 20) == 1)
+            if($roll > 15)
             {
                 $member->increaseEsteem($this->rng->rngNextInt(2, 4));
 
                 $item = ItemRepository::findOneByName($this->em, $this->rng->rngNextFromArray($weedingRewards));
 
-                $message = ActivityHelpers::PetName($member) . ' did some weeding with ' . $group->getName() . '. They managed to find ' . $item->getNameWithArticle() . ' while weeding! (Lucky~!)';
+                $lucky = false;
 
-                $activityLog = $this->petGroupService->createGroupLog($member, $message, $usersAlerted)
+                $luckyMessage = '';
+
+                if($member->hasMerit(MeritEnum::LUCKY) && $this->rng->rngNextInt(1, 50) === 1)
+                {
+                    $lucky = true;
+                    $extraItem = ItemRepository::findOneByName($this->em, $this->rng->rngNextFromArray($luckyRewards));
+                    $luckyMessage = ' They also found ' . $extraItem->getNameWithArticle() . '! (Lucky!~)';
+                }
+                else if($this->rng->rngNextInt(1, 100) === 1)
+                {
+                    $extraItem = ItemRepository::findOneByName($this->em, $this->rng->rngNextFromArray($luckyRewards));
+                    $luckyMessage = ' They also found ' . $extraItem->getNameWithArticle() . '! (OMG!)';
+                }
+
+                $message = ActivityHelpers::PetName($member) . ' did some weeding with ' . $group->getName() . '. They managed to find ' . $item->getNameWithArticle() . ' while weeding!' . $luckyMessage;
+
+                $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $member, $message)
                     ->setIcon(self::ActivityIcon)
-                    ->addInterestingness(PetActivityLogInterestingness::ActivityUsingMerit)
-                    ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Group Hangout', PetActivityLogTagEnum::Gardening_Club ]))
+                    ->addInterestingness($lucky ? PetActivityLogInterestingness::ActivityUsingMerit : PetActivityLogInterestingness::HoHum)
+                    ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ PetActivityLogTagEnum::Group_Hangout, PetActivityLogTagEnum::Gardening_Club ]))
                 ;
 
-                $this->inventoryService->petCollectsItem($item, $member, ActivityHelpers::PetName($member) . ' found this while weeding!', $activityLog);
-            }
-            else if($roll > 15)
-            {
-                $member->increaseEsteem($this->rng->rngNextInt(2, 4));
-
-                $item = ItemRepository::findOneByName($this->em, $this->rng->rngNextFromArray($weedingRewards));
-
-                $message = ActivityHelpers::PetName($member) . ' did some weeding with ' . $group->getName() . '. They managed to find ' . $item->getNameWithArticle() . ' while weeding!';
-
-                $activityLog = $this->petGroupService->createGroupLog($member, $message, $usersAlerted)
-                    ->setIcon(self::ActivityIcon)
-                    ->addInterestingness(PetActivityLogInterestingness::HoHum)
-                    ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Group Hangout', PetActivityLogTagEnum::Gardening_Club ]))
-                ;
+                if($lucky)
+                    $activityLog->addTag(PetActivityLogTagHelpers::findOneByName($this->em, PetActivityLogTagEnum::Lucky));
 
                 $this->inventoryService->petCollectsItem($item, $member, ActivityHelpers::PetName($member) . ' found this while weeding!', $activityLog);
+
+                if($extraItem)
+                    $this->inventoryService->petCollectsItem($extraItem, $member, ActivityHelpers::PetName($member) . ' found this while weeding!' . ($lucky ? '(Lucky!~)' : ''), $activityLog);
+
             }
             else if($roll < 10)
             {
                 $message = ActivityHelpers::PetName($member) . ' did some weeding with ' . $group->getName() . '. It was really tough!';
 
-                $activityLog = $this->petGroupService->createGroupLog($member, $message, $usersAlerted)
+                $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $member, $message)
                     ->addInterestingness(PetActivityLogInterestingness::HoHum)
-                    ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Group Hangout', PetActivityLogTagEnum::Gardening_Club ]))
+                    ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ PetActivityLogTagEnum::Group_Hangout, PetActivityLogTagEnum::Gardening_Club ]))
                 ;
             }
             else
@@ -329,10 +336,10 @@ class GardeningClubService
 
                 $message = ActivityHelpers::PetName($member) . ' did some weeding with ' . $group->getName() . '.';
 
-                $activityLog = $this->petGroupService->createGroupLog($member, $message, $usersAlerted)
+                $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $member, $message)
                     ->setIcon(self::ActivityIcon)
                     ->addInterestingness(PetActivityLogInterestingness::HoHum)
-                    ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Group Hangout', PetActivityLogTagEnum::Gardening_Club ]))
+                    ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ PetActivityLogTagEnum::Group_Hangout, PetActivityLogTagEnum::Gardening_Club ]))
                 ;
             }
 
@@ -362,36 +369,49 @@ class GardeningClubService
     {
         $activityLogsPerPet = [];
 
-        /** @var int[] $usersAlerted */
-        $usersAlerted = [];
-
         foreach($group->getMembers() as $member)
         {
             $roll = $this->rng->rngNextInt(1, 20);
 
-            if ($member->hasMerit(MeritEnum::LUCKY))
-                $roll = max($roll, $this->rng->rngNextInt(1, 20));
-
             $message = ActivityHelpers::PetName($member) . ' created compost with ' . $group->getName() . '.';
 
-            $activityLog = $this->petGroupService->createGroupLog($member, $message, $usersAlerted)
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $member, $message)
                 ->setIcon(self::ActivityIcon)
                 ->addInterestingness(PetActivityLogInterestingness::HoHum)
-                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Group Hangout', PetActivityLogTagEnum::Gardening_Club ]))
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ PetActivityLogTagEnum::Group_Hangout, PetActivityLogTagEnum::Gardening_Club ]))
             ;
 
-            if ($roll >= 5)
+            if($roll >= 5)
             {
+                $double = false;
+                $lucky = false;
+
+                if($member->hasMerit(MeritEnum::LUCKY) && $this->rng->rngNextInt(1, 20) === 1)
+                {
+                    $double = true;
+                    $lucky = true;
+                    $activityLog->addTag(PetActivityLogTagHelpers::findOneByName($this->em, PetActivityLogTagEnum::Lucky));
+                }
+                else if($this->rng->rngNextInt(1, 50) === 1)
+                    $double = true;
+
                 $fertilizer = 'Small Bag of Fertilizer';
 
-                if ($roll == 20)
+                if($roll >= 20)
                     $fertilizer = 'Large Bag of Fertilizer';
-                else if ($roll >= 15)
+                else if($roll >= 15)
                     $fertilizer = 'Bag of Fertilizer';
 
-                $activityLog->appendEntry($member->getName() . ' made some extra ' . $fertilizer . ' and brought it home.');
-
                 $this->inventoryService->petCollectsItem($fertilizer, $member, ActivityHelpers::PetName($member) . ' made extra while making compost for ' . $group->GetName() . '!', $activityLog);
+
+                if($double)
+                {
+                    $activityLog->appendEntry($member->getName() . ' made lots of extra ' . $fertilizer . ' and brought it home.' . ($lucky ? '(Lucky!~)' : ''));
+                    $this->inventoryService->petCollectsItem($fertilizer, $member, ActivityHelpers::PetName($member) . ' made extra while making compost for ' . $group->GetName() . '!' . ($lucky ? '(Lucky!~)' : ''), $activityLog);
+                }
+                else
+                    $activityLog->appendEntry($member->getName() . ' made some extra ' . $fertilizer . ' and brought it home.');
+
             }
 
             $activityLogsPerPet[$member->getId()] = $activityLog;

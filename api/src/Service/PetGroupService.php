@@ -510,27 +510,6 @@ class PetGroupService
             PetGroupTypeEnum::Gaming => $this->gamingGroupService->generateGroupName(),
             PetGroupTypeEnum::Sportsball => $this->sportsBallService->generateGroupName(),
             PetGroupTypeEnum::Gardening => $this->gardeningClubService->generateGroupName(),
-            //default => throw new \Exception('Ben forgot to program group names for groups of type "' . $type->name . '"! (Bad Ben!)'),
         };
-    }
-
-
-    /** 
-     * Creates a read or unread log, depending on if the pet passed in has an owner who is included in usersAlerted
-     * For groups so users don't get 'copies' of messages
-     * @param int[]|null[] $usersAlerted 
-    */
-    public function createGroupLog(Pet $pet, string $message, array &$usersAlerted) : PetActivityLog
-    {
-        $alreadyMessagedThisPlayer = in_array($pet->getOwner()->getId(), $usersAlerted);
-
-        if(!$alreadyMessagedThisPlayer)
-            $usersAlerted[] = $pet->getOwner()->getId();
-
-        $log = $alreadyMessagedThisPlayer
-            ? PetActivityLogFactory::createReadLog($this->em, $pet, $message)
-            : PetActivityLogFactory::createUnreadLog($this->em, $pet, $message);
-
-        return $log;
     }
 }

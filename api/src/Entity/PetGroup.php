@@ -178,7 +178,6 @@ class PetGroup
             PetGroupTypeEnum::Gaming => 3,
             PetGroupTypeEnum::Sportsball => 4,
             PetGroupTypeEnum::Gardening => 2,
-            //default => throw new \Exception('Unhandled group type in group::getMinimumSize'),
         };
     }
 
@@ -191,7 +190,6 @@ class PetGroup
             PetGroupTypeEnum::Gaming => 5,
             PetGroupTypeEnum::Sportsball => 8,
             PetGroupTypeEnum::Gardening => 6,
-            //default => throw new \Exception('Unhandled group type in group::getMaximumSize'),
         };
     }
 

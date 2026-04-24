@@ -26,15 +26,16 @@ class MultiPetActivityLogHelper
     private array $usersAlerted = [];
 
     public function __construct(
-        private readonly EntityManagerInterface $em
+        private readonly EntityManagerInterface $em,
+        private readonly string $message,
     )
     {}
 
     /**
      * Creates a read or unread log, depending on if the pet passed in has an owner who is included in usersAlerted
-     * For groups so users don't get 'copies' of messages
+     * For logs that are the same for multiple pets, so users don't get 'copies' of messages
      */
-    public function createGroupLog(Pet $pet, string $message) : PetActivityLog
+    public function createGroupLog(Pet $pet) : PetActivityLog
     {
         $alreadyMessagedThisPlayer = in_array($pet->getOwner()->getId(), $this->usersAlerted);
 
@@ -42,7 +43,7 @@ class MultiPetActivityLogHelper
             $this->usersAlerted[] = $pet->getOwner()->getId();
 
         return $alreadyMessagedThisPlayer
-            ? PetActivityLogFactory::createReadLog($this->em, $pet, $message)
-            : PetActivityLogFactory::createUnreadLog($this->em, $pet, $message);
+            ? PetActivityLogFactory::createReadLog($this->em, $pet, $this->message)
+            : PetActivityLogFactory::createUnreadLog($this->em, $pet, $this->message);
     }
 }
