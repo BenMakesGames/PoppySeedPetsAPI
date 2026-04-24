@@ -182,6 +182,9 @@ class GardeningClubService
 
         $products = [];
 
+        // Creates 2-5 (in some cases just 1) items of the same type each pass
+        // Until the number of generated items is equal to $totalCrops!
+
         while($totalCrops >= 1)
         {
             // Replace with clamp ($this->rng->rngNextInt(2, 5), 1, $totalCrops);
