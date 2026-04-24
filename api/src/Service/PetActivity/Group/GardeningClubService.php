@@ -380,7 +380,6 @@ class GardeningClubService
 
             $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $member, $message)
                 ->setIcon(self::ActivityIcon)
-                ->addInterestingness(PetActivityLogInterestingness::HoHum)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ PetActivityLogTagEnum::Group_Hangout, PetActivityLogTagEnum::Gardening_Club ]))
             ;
 
@@ -397,7 +396,8 @@ class GardeningClubService
                     $lucky = true;
                     $activityLog->addTag(PetActivityLogTagHelpers::findOneByName($this->em, PetActivityLogTagEnum::Lucky));
                 }
-                    
+
+                $activityLog->addInterestingness($lucky ? PetActivityLogInterestingness::ActivityUsingMerit : PetActivityLogInterestingness::HoHum);
 
                 $fertilizer = 'Small Bag of Fertilizer';
 
@@ -415,6 +415,7 @@ class GardeningClubService
                 }
                 else
                     $activityLog->appendEntry($member->getName() . ' made some extra ' . $fertilizer . ' and brought it home.');
+
 
             }
 
