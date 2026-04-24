@@ -87,7 +87,7 @@ class GardeningClubService
     {
         $expGainPerPet = [];
 
-        $greenThumbValue = 5;
+        $greenThumbValue = 3;
         $skill = 0;
         /** @var PetChanges[] $petChanges */
         $petChanges = [];
@@ -357,7 +357,7 @@ class GardeningClubService
         $total =
             max($petWithSkills->getStrength()->getTotal(), $petWithSkills->getStamina()->getTotal()) +
             $petWithSkills->getNature()->getTotal() +
-            ($pet->hasMerit(MeritEnum::GREEN_THUMB) ? 5 : 0);
+            ($pet->hasMerit(MeritEnum::GREEN_THUMB) ? 4 : 0); // 5 as Green Thumb gives +1 Nature
         ;
 
         return $this->rng->rngNextInt(1, 10 + $total);
