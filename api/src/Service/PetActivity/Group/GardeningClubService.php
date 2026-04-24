@@ -232,7 +232,7 @@ class GardeningClubService
 
         foreach($group->getMembers() as $member)
         {
-            if($this->rng->rngNextInt(1, 3) === 1)
+            if($this->rng->rngNextInt(1, 3) == 1)
                 $extra = 'Nothing really happened...';
             else
             {
@@ -295,16 +295,16 @@ class GardeningClubService
 
                 $extraItem = null;
 
-                if($member->hasMerit(MeritEnum::LUCKY) && $this->rng->rngNextInt(1, 50) === 1)
+                if($this->rng->rngNextInt(1, 50) == 1)
+                {
+                    $extraItem = ItemRepository::findOneByName($this->em, $this->rng->rngNextFromArray($luckyRewards));
+                    $luckyMessage = ' They also found ' . $extraItem->getNameWithArticle() . '! (OMG!)';
+                }
+                else if($member->hasMerit(MeritEnum::LUCKY) && $this->rng->rngNextInt(1, 50) == 1)
                 {
                     $lucky = true;
                     $extraItem = ItemRepository::findOneByName($this->em, $this->rng->rngNextFromArray($luckyRewards));
                     $luckyMessage = ' They also found ' . $extraItem->getNameWithArticle() . '! (Lucky!~)';
-                }
-                else if($this->rng->rngNextInt(1, 100) === 1)
-                {
-                    $extraItem = ItemRepository::findOneByName($this->em, $this->rng->rngNextFromArray($luckyRewards));
-                    $luckyMessage = ' They also found ' . $extraItem->getNameWithArticle() . '! (OMG!)';
                 }
 
                 $message = ActivityHelpers::PetName($member) . ' did some weeding with ' . $group->getName() . '. They managed to find ' . $item->getNameWithArticle() . ' while weeding!' . $luckyMessage;
@@ -389,14 +389,15 @@ class GardeningClubService
                 $double = false;
                 $lucky = false;
 
-                if($member->hasMerit(MeritEnum::LUCKY) && $this->rng->rngNextInt(1, 20) === 1)
-                {
+                if($this->rng->rngNextInt(1, 25) == 1)
+                    $double = true;
+                else if($member->hasMerit(MeritEnum::LUCKY) && $this->rng->rngNextInt(1, 25) == 1)
+                                {
                     $double = true;
                     $lucky = true;
                     $activityLog->addTag(PetActivityLogTagHelpers::findOneByName($this->em, PetActivityLogTagEnum::Lucky));
                 }
-                else if($this->rng->rngNextInt(1, 50) === 1)
-                    $double = true;
+                    
 
                 $fertilizer = 'Small Bag of Fertilizer';
 
