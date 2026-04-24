@@ -203,7 +203,6 @@ class GardeningClubService
 
         $groupLogHelper = new MultiPetActivityLogHelper($this->em, $message);
 
-
         foreach($group->getMembers() as $member)
         {
             $member->increaseEsteem($this->rng->rngNextInt(8, 12));
