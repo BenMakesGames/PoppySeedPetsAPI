@@ -22,12 +22,11 @@ use Doctrine\ORM\EntityManagerInterface;
  * Example usage:
  *
  * <code>
- * $groupLogHelper = new MultiPetActivityLogHelper($em);
- * $message = 'This message is the same for all the pets.';
+ * $groupLogHelper = new MultiPetActivityLogHelper($em, 'This message is the same for all the pets.');
  *
  * foreach($pets as $pet)
  * {
- *     $groupLogHelper->createGroupLog($pet, $message);
+ *     $groupLogHelper->createGroupLog($pet);
  * }
  * </code>
  */
