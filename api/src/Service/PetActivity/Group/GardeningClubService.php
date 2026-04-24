@@ -28,7 +28,6 @@ use App\Model\PetChanges;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\PetExperienceService;
-use App\Service\PetGroupService;
 use App\Service\PetRelationshipService;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Enum\PetActivityLogTagEnum;
