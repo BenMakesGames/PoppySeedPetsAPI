@@ -235,11 +235,13 @@ class GardeningClubService
 
         foreach($group->getMembers() as $member)
         {
-            $extra = 'It was a nice day out!';
             if($this->rng->rngNextInt(1, 3) === 1)
                 $extra = 'Nothing really happened...';
             else
+            {
+                $extra = 'It was a nice day out!';
                 $member->increaseEsteem($this->rng->rngNextInt(2, 4));
+            }
 
             $message = ActivityHelpers::PetName($member) . ' watered plants with ' . $group->getName() . '. ' . $extra;
 
