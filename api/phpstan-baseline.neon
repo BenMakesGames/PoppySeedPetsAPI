@@ -3415,12 +3415,6 @@ parameters:
 			path: src/Model/TraderOffer.php
 
 		-
-			message: '#^Method App\\Model\\WeatherData\:\:isRaining\(\) has no return type specified\.$#'
-			identifier: missingType.return
-			count: 1
-			path: src/Model/WeatherData.php
-
-		-
 			message: '#^Parameter \#1 \$min \(0\) of function random_int expects lower number than parameter \#2 \$max \(int\<\-1, max\>\)\.$#'
 			identifier: argument.type
 			count: 1
