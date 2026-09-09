@@ -75,7 +75,7 @@ class InventoryModifierFunctionsTest extends TestCase
         }
     }
 
-    public function testMismatchedFoodTypesReturnsNull(): void
+    public function testMixedFoodTypesWithUniformSpicesExactCountCreatesPlan(): void
     {
         $owner = new User('Tester', 'tester@example.com');
         $egg = self::makeFoodItem('Egg');
@@ -89,10 +89,20 @@ class InventoryModifierFunctionsTest extends TestCase
             self::makeInventory($owner, $onion),
         ];
 
-        $this->assertNull(InventoryModifierFunctions::planBulkSpicing($inventory));
+        $plan = InventoryModifierFunctions::planBulkSpicing($inventory);
+
+        $this->assertNotNull($plan);
+        $this->assertCount(2, $plan->pairs);
+        $this->assertSame(0, $plan->leftoverFoodCount);
+        $this->assertSame(0, $plan->leftoverSpiceCount);
+
+        $this->assertSame($egg, $plan->pairs[0][0]->getItem());
+        $this->assertSame($fish, $plan->pairs[1][0]->getItem());
+        $this->assertSame($onion, $plan->pairs[0][1]->getItem());
+        $this->assertSame($onion, $plan->pairs[1][1]->getItem());
     }
 
-    public function testMismatchedSpiceTypesReturnsNull(): void
+    public function testUniformFoodTypesWithMixedSpicesExactCountCreatesPlan(): void
     {
         $owner = new User('Tester', 'tester@example.com');
         $egg = self::makeFoodItem('Egg');
@@ -101,6 +111,60 @@ class InventoryModifierFunctionsTest extends TestCase
 
         $inventory = [
             self::makeInventory($owner, $egg),
+            self::makeInventory($owner, $egg),
+            self::makeInventory($owner, $onion),
+            self::makeInventory($owner, $garlic),
+        ];
+
+        $plan = InventoryModifierFunctions::planBulkSpicing($inventory);
+
+        $this->assertNotNull($plan);
+        $this->assertCount(2, $plan->pairs);
+        $this->assertSame(0, $plan->leftoverFoodCount);
+        $this->assertSame(0, $plan->leftoverSpiceCount);
+
+        $this->assertSame($egg, $plan->pairs[0][0]->getItem());
+        $this->assertSame($egg, $plan->pairs[1][0]->getItem());
+        $this->assertSame($onion, $plan->pairs[0][1]->getItem());
+        $this->assertSame($garlic, $plan->pairs[1][1]->getItem());
+    }
+
+    public function testUniformFoodTypesWithMixedSpicesAndMoreFoodsCreatesPlan(): void
+    {
+        $owner = new User('Tester', 'tester@example.com');
+        $egg = self::makeFoodItem('Egg');
+        $onion = self::makeSpiceItem('Onion');
+        $garlic = self::makeSpiceItem('Garlic');
+
+        $inventory = [
+            self::makeInventory($owner, $egg),
+            self::makeInventory($owner, $egg),
+            self::makeInventory($owner, $egg),
+            self::makeInventory($owner, $onion),
+            self::makeInventory($owner, $garlic),
+        ];
+
+        $plan = InventoryModifierFunctions::planBulkSpicing($inventory);
+
+        $this->assertNotNull($plan);
+        $this->assertCount(2, $plan->pairs);
+        $this->assertSame(1, $plan->leftoverFoodCount);
+        $this->assertSame(0, $plan->leftoverSpiceCount);
+
+        $this->assertSame($egg, $plan->pairs[0][0]->getItem());
+        $this->assertSame($egg, $plan->pairs[1][0]->getItem());
+        $this->assertSame($onion, $plan->pairs[0][1]->getItem());
+        $this->assertSame($garlic, $plan->pairs[1][1]->getItem());
+    }
+
+    public function testUniformFoodTypesWithMixedSpicesAndMoreSpicesReturnsNull(): void
+    {
+        $owner = new User('Tester', 'tester@example.com');
+        $egg = self::makeFoodItem('Egg');
+        $onion = self::makeSpiceItem('Onion');
+        $garlic = self::makeSpiceItem('Garlic');
+
+        $inventory = [
             self::makeInventory($owner, $egg),
             self::makeInventory($owner, $onion),
             self::makeInventory($owner, $garlic),
@@ -183,7 +247,25 @@ class InventoryModifierFunctionsTest extends TestCase
         }
     }
 
-    public function testMismatchedFoodTypesIsAmbiguous(): void
+    public function testMixedFoodAndSpiceTypesIsAmbiguous(): void
+    {
+        $owner = new User('Tester', 'tester@example.com');
+        $egg = self::makeFoodItem('Egg');
+        $fish = self::makeFoodItem('Fish');
+        $onion = self::makeSpiceItem('Onion');
+        $garlic = self::makeSpiceItem('Garlic');
+
+        $inventory = [
+            self::makeInventory($owner, $egg),
+            self::makeInventory($owner, $fish),
+            self::makeInventory($owner, $onion),
+            self::makeInventory($owner, $garlic),
+        ];
+
+        $this->assertTrue(InventoryModifierFunctions::isAmbiguousBulkSpicingAttempt($inventory));
+    }
+
+    public function testMixedFoodTypesWithTooFewUniformSpicesIsAmbiguous(): void
     {
         $owner = new User('Tester', 'tester@example.com');
         $egg = self::makeFoodItem('Egg');
@@ -192,15 +274,18 @@ class InventoryModifierFunctionsTest extends TestCase
 
         $inventory = [
             self::makeInventory($owner, $egg),
+            self::makeInventory($owner, $egg),
+            self::makeInventory($owner, $fish),
             self::makeInventory($owner, $fish),
             self::makeInventory($owner, $onion),
             self::makeInventory($owner, $onion),
         ];
 
+        $this->assertNull(InventoryModifierFunctions::planBulkSpicing($inventory));
         $this->assertTrue(InventoryModifierFunctions::isAmbiguousBulkSpicingAttempt($inventory));
     }
 
-    public function testMismatchedSpiceTypesIsAmbiguous(): void
+    public function testUniformFoodTypesWithMixedSpicesAndMoreSpicesIsAmbiguous(): void
     {
         $owner = new User('Tester', 'tester@example.com');
         $egg = self::makeFoodItem('Egg');
@@ -208,7 +293,6 @@ class InventoryModifierFunctionsTest extends TestCase
         $garlic = self::makeSpiceItem('Garlic');
 
         $inventory = [
-            self::makeInventory($owner, $egg),
             self::makeInventory($owner, $egg),
             self::makeInventory($owner, $onion),
             self::makeInventory($owner, $garlic),

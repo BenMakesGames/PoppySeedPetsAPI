@@ -134,24 +134,54 @@ class CookAndCombineController
             foreach($bulkSpicingPlan->pairs as [$food, $spice])
                 InventoryModifierFunctions::spiceUp($em, $food, $spice);
 
-            $count = count($bulkSpicingPlan->pairs);
-            /** @var array{0: Inventory, 1: Inventory} $firstPair */
-            $firstPair = $bulkSpicingPlan->pairs[0];
-            /** @var Inventory $firstFood */
-            $firstFood = $firstPair[0];
-            /** @var Inventory $firstSpice */
-            $firstSpice = $firstPair[1];
+            $spicedFoodQuantities = [];
+            $appliedSpiceQuantities = [];
+            $spicedFoods = [];
+            $appliedSpices = [];
 
-            $foodName = $firstFood->getItem()->getName();
-            $spiceName = $firstSpice->getItem()->getSpice()?->getName()
-                ?? throw new PSPInvalidOperationException('There is no spice to be found!');
+            foreach($bulkSpicingPlan->pairs as [$food, $spice])
+            {
+                $foodName = $food->getItem()->getName();
+                $spiceName = $spice->getItem()->getName();
+
+                $spicedFoodQuantities[$foodName] = ($spicedFoodQuantities[$foodName] ?? 0) + 1;
+                $appliedSpiceQuantities[$spiceName] = ($appliedSpiceQuantities[$spiceName] ?? 0) + 1;
+                $spicedFoods[] = $food;
+                $appliedSpices[] = $spice;
+            }
 
             if($bulkSpicingPlan->leftoverFoodCount > 0)
-                $responseService->addFlashMessage((string)$count . ' of those ' . (string)$foodName . ' now have the ' . (string)$spiceName . ' spice - but there wasn\'t enough for the last ' . (string)$bulkSpicingPlan->leftoverFoodCount . ' ' . (string)$foodName . ' so they\'re plain for now.');
+            {
+                $unspicedFoodQuantities = [];
+
+                foreach($inventory as $item)
+                {
+                    if($item->getItem()->getFood() !== null && !in_array($item, $spicedFoods, true))
+                    {
+                        $foodName = $item->getItem()->getName();
+                        $unspicedFoodQuantities[$foodName] = ($unspicedFoodQuantities[$foodName] ?? 0) + 1;
+                    }
+                }
+
+                $responseService->addFlashMessage(ArrayFunctions::list_nice_quantities($spicedFoodQuantities) . ' are now seasoned: ' . ArrayFunctions::list_nice_quantities($appliedSpiceQuantities) . ' - but there wasn\'t enough for the last ' . ArrayFunctions::list_nice_quantities($unspicedFoodQuantities) . ' so they\'re plain for now.');
+            }
             else if($bulkSpicingPlan->leftoverSpiceCount > 0)
-                $responseService->addFlashMessage('All ' . (string)$count . ' of those ' . (string)$foodName . ' now have the ' . (string)$spiceName . ' spice! You have ' . (string)$bulkSpicingPlan->leftoverSpiceCount . ' ' . (string)$spiceName . ' spices leftover.');
+            {
+                $leftoverSpiceQuantities = [];
+
+                foreach($inventory as $item)
+                {
+                    if($item->getItem()->getSpice() !== null && !in_array($item, $appliedSpices, true))
+                    {
+                        $spiceName = $item->getItem()->getName();
+                        $leftoverSpiceQuantities[$spiceName] = ($leftoverSpiceQuantities[$spiceName] ?? 0) + 1;
+                    }
+                }
+
+                $responseService->addFlashMessage(ArrayFunctions::list_nice_quantities($spicedFoodQuantities) . ' are now seasoned: ' . ArrayFunctions::list_nice_quantities($appliedSpiceQuantities) . '! You have ' . ArrayFunctions::list_nice_quantities($leftoverSpiceQuantities) . ' leftover.');
+            }
             else
-                $responseService->addFlashMessage('All ' . (string)$count . ' of those ' . (string)$foodName . ' now have the ' . (string)$spiceName . ' spice! Batch-prepping FTW!');
+                $responseService->addFlashMessage(ArrayFunctions::list_nice_quantities($spicedFoodQuantities) . ' are now seasoned: ' . ArrayFunctions::list_nice_quantities($appliedSpiceQuantities) . '! Batch-prepping FTW!');
 
             $em->flush();
 
