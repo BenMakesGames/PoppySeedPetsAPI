@@ -68,13 +68,18 @@ class InventoryModifierFunctions
             return null;
 
         $firstFoodItem = $foods[0]->getItem();
-
-        if(array_any($foods, fn(Inventory $i) => $i->getItem() !== $firstFoodItem))
-            return null;
+        $hasMixedFoods = array_any($foods, fn(Inventory $i) => $i->getItem() !== $firstFoodItem);
 
         $firstSpiceItem = $spices[0]->getItem();
+        $hasMixedSpices = array_any($spices, fn(Inventory $i) => $i->getItem() !== $firstSpiceItem);
 
-        if(array_any($spices, fn(Inventory $i) => $i->getItem() !== $firstSpiceItem))
+        if($hasMixedFoods && $hasMixedSpices)
+            return null;
+
+        if($hasMixedFoods && count($spices) < count($foods))
+            return null;
+
+        if($hasMixedSpices && count($spices) > count($foods))
             return null;
 
         $pairCount = min(count($foods), count($spices));
